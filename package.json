@@ -1,0 +1,23 @@
+{
+  "name": "requerio",
+  "version": "0.0.0",
+  "description": "Redux + jQuery + Cheerio = predictable client-side state + server-side testability",
+  "main": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/electric-eloquence/requerio.git"
+  },
+  "keywords": [
+    "cheerio",
+    "jquery",
+    "redux",
+    "state",
+    "test",
+    "unit"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/electric-eloquence/requerio/issues"
+  },
+  "homepage": "https://github.com/electric-eloquence/requerio#readme"
+}
