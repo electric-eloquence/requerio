@@ -18,23 +18,21 @@ const $organisms = {
   '#main__section--1': null
 };
 
-function actionsClosure {
-  return requerio => {
-    const $orgs = requerio.$orgs;
+function actionsGet(requerio) {
+  const $orgs = requerio.$orgs;
 
-    return {
-      mainHide: () => {
-        $orgs['#main'].dispatchAction('css', ['display', 'none']);
-      }
+  return {
+    mainHide: () => {
+      $orgs['#main'].dispatchAction('css', ['display', 'none']);
+    }
 
-      mainShow: () => {
-        $orgs['#main'].dispatchAction('css', ['display', 'block']);
-      },
-    };
+    mainShow: () => {
+      $orgs['#main'].dispatchAction('css', ['display', 'block']);
+    },
   };
 }
 
-const requerio = new Requerio($, Redux, $organisms, actionsClosure);
+const requerio = new Requerio($, Redux, $organisms, actionsGet);
 requerio.init();
 ```
 
@@ -56,23 +54,21 @@ const $organisms = {
   '#main__section--1': null
 };
 
-function actionsClosure {
-  return requerio => {
-    const $orgs = requerio.$orgs;
+function actionsGet(requerio) {
+  const $orgs = requerio.$orgs;
 
-    return {
-      mainHide: () => {
-        $orgs['#main'].dispatchAction('css', ['display', 'none']);
-      }
+  return {
+    mainHide: () => {
+      $orgs['#main'].dispatchAction('css', ['display', 'none']);
+    }
 
-      mainShow: () => {
-        $orgs['#main'].dispatchAction('css', ['display', 'block']);
-      },
-    };
+    mainShow: () => {
+      $orgs['#main'].dispatchAction('css', ['display', 'block']);
+    },
   };
 }
 
-const requerio = new RequerioClass($, Redux, $organisms, actionsClosure);
+const requerio = new RequerioClass($, Redux, $organisms, actionsGet);
 requerio.init();
 ```
 

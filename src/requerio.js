@@ -5,11 +5,10 @@ import prototypeOverride from './prototype-override.js';
 import reducerGet from './reducer-get.js';
 
 class Requerio {
-  constructor($, Redux, $organisms, actions) {
+  constructor($, Redux, $organisms, actionsGet) {
     this.$ = $;
     this.Redux = Redux;
     this.$orgs = $organisms;
-    this.actions = actions;
 
     if (typeof window === 'object') {
       this.$window = $(window);
