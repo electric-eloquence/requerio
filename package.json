@@ -1,6 +1,6 @@
 {
   "name": "requerio",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Redux + jQuery + Cheerio = predictable client-side state + server-side testability",
   "scripts": {
     "bundle:client": "browserify dist/requerio-node.js | babel --presets=es2015 | uglifyjs -o dist/requerio-client.min.js",
