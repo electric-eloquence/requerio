@@ -2,7 +2,7 @@
 
 ### Documentation to come!
 
-If you want to experiment in the meantime, in Node:
+#### If you want to experiment in the meantime, in Node:
 
 ```
 const fs = require('fs');
@@ -39,14 +39,14 @@ const requerio = new Requerio($, Redux, $organisms, actionsGet);
 requerio.init();
 ```
 
-On the client, in HTML:
+#### On the client, in HTML:
 
 ```
 <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
 <script src="http://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 ```
 
-On the client, in a JavaScript ES6 module:
+#### On the client, in a JavaScript ES6 module:
 
 ```
 import RequerioClass from  './node_modules/requerio/src/requerio.js'; // MS Edge bug prevents same varname as classname.
