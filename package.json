@@ -13,10 +13,18 @@
   },
   "keywords": [
     "cheerio",
+    "client",
+    "client-side",
+    "isomorphic",
+    "isomorphism",
     "jquery",
     "redux",
+    "server",
+    "server-side",
+    "side",
     "state",
     "test",
+    "testing",
     "unit"
   ],
   "license": "MIT",
