@@ -21,10 +21,6 @@ class Requerio {
     this.actions = actionsGet(this);
   }
 
-  get $orgs() {
-    return this.$orgs;
-  }
-
   init() {
     const reducer = reducerGet(this.$orgs);
     const store = Redux.createStore(reducer);

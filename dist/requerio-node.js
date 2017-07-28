@@ -433,11 +433,10 @@ var reducerGet = $orgs => {
 };
 
 class Requerio {
-  constructor($, Redux, $organisms, actions) {
+  constructor($, Redux, $organisms, actionsGet) {
     this.$ = $;
     this.Redux = Redux;
     this.$orgs = $organisms;
-    this.actions = actions;
 
     if (typeof window === 'object') {
       this.$window = $(window);
@@ -448,10 +447,6 @@ class Requerio {
     }
 
     this.actions = actionsGet(this);
-  }
-
-  get $orgs() {
-    return this.$orgs;
   }
 
   init() {
