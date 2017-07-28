@@ -2,7 +2,11 @@
   "name": "requerio",
   "version": "0.0.0",
   "description": "Redux + jQuery + Cheerio = predictable client-side state + server-side testability",
-  "main": "",
+  "scripts": {
+    "bundle:client": "browserify dist/requerio-node.js | babel --presets=es2015 | uglifyjs -o dist/requerio-client.min.js",
+    "bundle:node": "rollup --format=cjs --output=dist/requerio-node.js -- src/requerio.js",
+    "bundle": "npm run bundle:node && npm run bundle:client"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/electric-eloquence/requerio.git"
@@ -19,5 +23,10 @@
   "bugs": {
     "url": "https://github.com/electric-eloquence/requerio/issues"
   },
-  "homepage": "https://github.com/electric-eloquence/requerio#readme"
+  "homepage": "https://github.com/electric-eloquence/requerio#readme",
+  "dependencies": {
+    "cheerio": "1.0.0-rc.2",
+    "jquery": "*",
+    "redux": "3.7.2"
+  }
 }
