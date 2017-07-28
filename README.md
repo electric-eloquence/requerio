@@ -27,11 +27,11 @@ function actionsGet(requerio) {
   return {
     mainHide: () => {
       $orgs['#main'].dispatchAction('css', ['display', 'none']);
-    }
+    },
 
     mainShow: () => {
       $orgs['#main'].dispatchAction('css', ['display', 'block']);
-    },
+    }
   };
 }
 
@@ -63,11 +63,11 @@ function actionsGet(requerio) {
   return {
     mainHide: () => {
       $orgs['#main'].dispatchAction('css', ['display', 'none']);
-    }
+    },
 
     mainShow: () => {
       $orgs['#main'].dispatchAction('css', ['display', 'block']);
-    },
+    }
   };
 }
 
