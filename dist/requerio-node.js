@@ -30,12 +30,11 @@ var organismsIncept = $orgs => {
 
     /**
      * @property {function} $itemsReset - Empty and fill $org.$items array with organisms selected by jQuery/Cheerio.
+     * @param {object} $orgReset - A copy, not reference, of the updated organism.
      * To be run on organism inception and dispatch of action.
      * Must only fill $items property of $orgs at top level of the $orgs object.
      */
-    $org.$itemsReset = function () {
-      const $orgReset = $(`${i}`);
-
+    $org.$itemsReset = function ($orgRest) {
       $org.$items = [];
 
       $orgReset.each(function () {
@@ -46,7 +45,9 @@ var organismsIncept = $orgs => {
       });
     };
 
-    $org.$itemsReset();
+    const $orgReset = $(`${i}`);
+
+    $org.$itemsReset($orgReset);
     $orgs[i] = $org;
   }
 };
@@ -73,7 +74,7 @@ var prototypeOverride = ($orgs, stateStore) => {
   if (!$.prototype.dispatchAction) {
     $.prototype.dispatchAction = function (method, args_, itemIdx) {
 
-      if (typeof itemIdx !== 'undefined' && !this.$items[itemIdx]) {
+      if (typeof itemIdx !== 'undefined' && typeof this[itemIdx] === 'undefined') {
         return;
       }
 
@@ -90,40 +91,56 @@ var prototypeOverride = ($orgs, stateStore) => {
         args = [args_];
       }
 
-      // Reset $items before proceeding.
-      this.$itemsReset();
-
       // Submission of itemIdx indicates that the action is to be dispatched on the specific item of the CSS class.
-      let item;
+      let $item;
       if (typeof itemIdx !== 'undefined') {
-        item = this.$items[itemIdx];
+        $item = $(this[itemIdx]);
       }
 
       // On the client, side-effects must happen here. stateStore.dispatch() depends on this.
       if (
         typeof itemIdx === 'undefined' && typeof this[method] === 'function' ||
-        typeof itemIdx !== 'undefined' && typeof item[method] === 'function'
+        typeof itemIdx !== 'undefined' && $item.length && typeof $item[method] === 'function'
       ) {
 
         // Make addClass more convenient by checking if the class already exists.
         if (method === 'addClass') {
           if (!this.hasClass(args[0])) {
             if (typeof itemIdx === 'undefined') {
+              // Apply to $org.
               this[method].apply(this, args);
             }
             else {
-              item[method].apply(item, args);
+              // Apply to $item.
+              $item[method].apply($item, args);
             }
           }
         }
+
+        // Method applications for other methods.
         else {
           if (typeof itemIdx === 'undefined') {
+            // Apply to $org.
             this[method].apply(this, args);
           }
           else {
-            item[method].apply(item, args);
+            // Apply to $item.
+            $item[method].apply($item, args);
           }
         }
+
+        // After application, reset object properties to new values.
+        const $orgReset = $(this.selector);
+
+        for (let i in $orgReset) {
+          if (!$orgReset.hasOwnProperty(i)) {
+            continue;
+          }
+
+          this[i] = $orgReset[i];
+        }
+
+        this.$itemsReset($orgReset);
       }
 
       const stateNew = stateStore.dispatch({
@@ -453,24 +470,30 @@ function reducerClosure(orgSelector) {
       try {
         // Clone old state into new state.
         state = JSON.parse(JSON.stringify(state_));
+        // Preinitialize.
+        state.$items = [];
       } catch (err) {
         // Clone default state into new state if state_ param is undefined.
-        state = JSON.parse(stateDefault);
+        state = JSON.parse(JSON.stringify(stateDefault));
       }
 
-      // Preset state.attribs.
+      // Preinitialize.
       state.attribs.class = $org.attr('class');
 
       // Build new state for organism.
       stateBuild($org, state);
 
-      // Populate $items array with clones of stateDefault.
+      // Initialize $items array with clones of stateDefault.
       action.$items.forEach($item => {
         state.$items.push(JSON.parse(JSON.stringify(stateDefault)));
       });
 
-      // Build new state for selected item in $items array.
-      if (typeof action.itemIdx !== 'undefined') {
+      // Build new state for selection in $items array.
+      if (
+        typeof action.itemIdx !== 'undefined' &&
+        typeof $org.$items[action.itemIdx] !== 'undefined' &&
+        typeof state.$items[action.itemIdx] !== 'undefined'
+      ) {
         stateBuild($org.$items[action.itemIdx], state.$items[action.itemIdx]);
       }
 
