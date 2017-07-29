@@ -25,7 +25,7 @@ class Requerio {
     const reducer = reducerGet(this.$orgs);
     const store = Redux.createStore(reducer);
 
-    prototypeOverride(store);
+    prototypeOverride(this.$orgs, store);
     organismsIncept(this.$orgs);
   }
 }

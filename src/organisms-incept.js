@@ -14,7 +14,9 @@ export default $orgs => {
 
     const $org = $(`${i}`);
 
-    if (typeof window === 'undefined') {
+    // Cheerio doesn't have .selector property.
+    // .selector property removed in jQuery 3.
+    if (typeof $org.selector === 'undefined') {
       $org.selector = i;
     }
 
@@ -32,10 +34,15 @@ export default $orgs => {
      * Must only fill $items property of $orgs at top level of the $orgs object.
      */
     $org.$itemsReset = function () {
+      const $orgReset = $(`${i}`);
+
       $org.$items = [];
 
-      $org.each(function () {
-        $org.$items.push($(this));
+      $orgReset.each(function () {
+        const $this = $(this);
+
+        $this.$parentSelector = i;
+        $org.$items.push($this);
       });
     };
 

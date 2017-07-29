@@ -5,7 +5,7 @@
  *
  * @param {object} stateStore
  */
-export default stateStore => {
+export default ($orgs, stateStore) => {
 
   /**
    * A shorthand for dispatching state actions.
@@ -52,6 +52,9 @@ export default stateStore => {
       // Reset $items before dispatching.
       if (typeof this.$itemsReset === 'function') {
         this.$itemsReset();
+      }
+      else if (this.$parentSelector && typeof $orgs[this.$parentSelector].$itemsReset === 'function') {
+        $orgs[this.$parentSelector].$itemsReset();
       }
 
       const stateNew = stateStore.dispatch({
