@@ -14,7 +14,9 @@ var organismsIncept = $orgs => {
 
     const $org = $(`${i}`);
 
-    if (typeof window === 'undefined') {
+    // Cheerio doesn't have .selector property.
+    // .selector property removed in jQuery 3.
+    if (typeof $org.selector === 'undefined') {
       $org.selector = i;
     }
 
@@ -32,10 +34,15 @@ var organismsIncept = $orgs => {
      * Must only fill $items property of $orgs at top level of the $orgs object.
      */
     $org.$itemsReset = function () {
+      const $orgReset = $(`${i}`);
+
       $org.$items = [];
 
-      $org.each(function () {
-        $org.$items.push($(this));
+      $orgReset.each(function () {
+        const $this = $(this);
+
+        $this.$parentSelector = i;
+        $org.$items.push($this);
       });
     };
 
@@ -49,7 +56,7 @@ var organismsIncept = $orgs => {
  *
  * @param {object} stateStore
  */
-var prototypeOverride = stateStore => {
+var prototypeOverride = ($orgs, stateStore) => {
 
   /**
    * A shorthand for dispatching state actions.
@@ -96,6 +103,9 @@ var prototypeOverride = stateStore => {
       // Reset $items before dispatching.
       if (typeof this.$itemsReset === 'function') {
         this.$itemsReset();
+      }
+      else if (this.$parentSelector && typeof $orgs[this.$parentSelector].$itemsReset === 'function') {
+        $orgs[this.$parentSelector].$itemsReset();
       }
 
       const stateNew = stateStore.dispatch({
@@ -453,7 +463,7 @@ class Requerio {
     const reducer = reducerGet(this.$orgs);
     const store = Redux.createStore(reducer);
 
-    prototypeOverride(store);
+    prototypeOverride(this.$orgs, store);
     organismsIncept(this.$orgs);
   }
 }
