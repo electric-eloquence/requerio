@@ -20,7 +20,11 @@ export default ($orgs, stateStore) => {
    * @return {object} The new application state.
    */
   if (!$.prototype.dispatchAction) {
-    $.prototype.dispatchAction = function (method, args_) {
+    $.prototype.dispatchAction = function (method, args_, itemIdx) {
+
+      if (typeof itemIdx !== 'undefined' && !this.$items[itemIdx]) {
+        return;
+      }
 
       let args = [];
 
@@ -35,26 +39,40 @@ export default ($orgs, stateStore) => {
         args = [args_];
       }
 
+      // Reset $items before proceeding.
+      this.$itemsReset();
+
+      // Submission of itemIdx indicates that the action is to be dispatched on the specific item of the CSS class.
+      let item;
+      if (typeof itemIdx !== 'undefined') {
+        item = this.$items[itemIdx];
+      }
+
       // On the client, side-effects must happen here. stateStore.dispatch() depends on this.
-      if (typeof this[method] === 'function') {
+      if (
+        typeof itemIdx === 'undefined' && typeof this[method] === 'function' ||
+        typeof itemIdx !== 'undefined' && typeof item[method] === 'function'
+      ) {
 
         // Make addClass more convenient by checking if the class already exists.
         if (method === 'addClass') {
           if (!this.hasClass(args[0])) {
-            this[method].apply(this, args);
+            if (typeof itemIdx === 'undefined') {
+              this[method].apply(this, args);
+            }
+            else {
+              item[method].apply(item, args);
+            }
           }
         }
         else {
-          this[method].apply(this, args);
+          if (typeof itemIdx === 'undefined') {
+            this[method].apply(this, args);
+          }
+          else {
+            item[method].apply(item, args);
+          }
         }
-      }
-
-      // Reset $items before dispatching.
-      if (typeof this.$itemsReset === 'function') {
-        this.$itemsReset();
-      }
-      else if (this.$parentSelector && typeof $orgs[this.$parentSelector].$itemsReset === 'function') {
-        $orgs[this.$parentSelector].$itemsReset();
       }
 
       const stateNew = stateStore.dispatch({
@@ -62,6 +80,7 @@ export default ($orgs, stateStore) => {
         selector: this.selector,
         $org: this,
         $items: this.$items,
+        itemIdx: itemIdx,
         method: method,
         args: args
       });

@@ -39,21 +39,80 @@ function reducerClosure(orgSelector) {
       $items: []
     };
 
-    // If this is the reducer for the selected organism, reduce and return a new state.
-    if (action.selector === orgSelector) {
+    /**
+     * This builds state objects for organisms and their member items.
+     *
+     * @param {object} $org - Organism.
+     * @param {object} state - Preinitialized state.
+     * @return {undefined} This function mutates the state param.
+     */
+    function stateBuild($org, state) {
 
-      let state;
-      const $org = action.$org;
+      /**
+       * Helper function to add class to state.
+       *
+       * @param {array} classesForReducedState
+       * @param {string} classParam
+       * @return {undefined} This function mutates the new state object.
+       */
+      function addClass(classesForReducedState, classParam) {
+        let classesToAdd;
 
-      try {
-        // Clone old state into new state.
-        state = JSON.parse(JSON.stringify(state_));
-      } catch (err) {
-        state = stateDefault;
+        if (typeof classParam === 'string') {
+          classesToAdd = classParam.split(' ');
+        }
+        else if (typeof classParam === 'function') {
+          const retval = classParam();
+
+          if (typeof retval === 'string') {
+            classesToAdd = retval.split(' ');
+          }
+        }
+
+        classesToAdd.forEach(classToAdd => {
+          if (classesForReducedState.indexOf(classToAdd) === -1) {
+            state.attribs.class += ` ${classToAdd}`;
+          }
+        });
       }
 
-      state.attribs.class = $org.attr('class');
-      state.$items = action.$items;
+      /**
+       * Helper function to remove class from state.
+       *
+       * @param {array} classesForReducedState
+       * @param {string} classParam
+       * @param {number} classIdx
+       * @return {undefined} This function mutates the new state object.
+       */
+      function removeClass(classesForReducedState, classParam, classIdx_) {
+        let classesToRemove;
+
+        if (typeof classParam === 'string') {
+          classesToRemove = classParam.split(' ');
+        }
+        else if (typeof classParam === 'function') {
+          const retval = classParam();
+
+          if (typeof retval === 'string') {
+            classesToRemove = retval.split(' ');
+          }
+        }
+
+        classesToRemove.forEach(classToRemove => {
+          const classIdx = classIdx_ || classesForReducedState.indexOf(classToRemove);
+
+          if (classIdx > -1) {
+            classesForReducedState.splice(classIdx, 1);
+          }
+        });
+
+        state.attribs.class = classesForReducedState.join(' ');
+      }
+
+      // ///////////////////////////////////////////////////////////////////////
+      // END FUNCTION DECLARATIONS WITHIN THIS FUNCTION.
+      // BEGIN MAIN EXECUTION.
+      // ///////////////////////////////////////////////////////////////////////
 
       try {
         // The attributes property of jQuery objects is based off of the DOM's Element.attributes collection.
@@ -69,55 +128,9 @@ function reducerClosure(orgSelector) {
           state.attribs = $org[0].attribs;
         }
 
-        function addClass(classesForReducedState, classParam) {
-          let classesToAdd;
-
-          if (typeof classParam === 'string') {
-            classesToAdd = classParam.split(' ');
-          }
-          else if (typeof classParam === 'function') {
-            const retval = classParam();
-
-            if (typeof retval === 'string') {
-              classesToAdd = retval.split(' ');
-            }
-          }
-
-          classesToAdd.forEach(classToAdd => {
-            if (classesForReducedState.indexOf(classToAdd) === -1) {
-              state.attribs.class += ` ${classToAdd}`;
-            }
-          });
-        }
-
-        function removeClass(classesForReducedState, classParam, classIdx_) {
-          let classesToRemove;
-
-          if (typeof classParam === 'string') {
-            classesToRemove = classParam.split(' ');
-          }
-          else if (typeof classParam === 'function') {
-            const retval = classParam();
-
-            if (typeof retval === 'string') {
-              classesToRemove = retval.split(' ');
-            }
-          }
-
-          classesToRemove.forEach(classToRemove => {
-            const classIdx = classIdx_ || classesForReducedState.indexOf(classToRemove);
-
-            if (classIdx > -1) {
-              classesForReducedState.splice(classIdx, 1);
-            }
-          });
-
-          state.attribs.class = classesForReducedState.join(' ');
-        }
-
         let classesForReducedState = [];
-        if (stateDefault.attribs.class) {
-          classesForReducedState = stateDefault.attribs.class.split(' ');
+        if (state.attribs.class) {
+          classesForReducedState = state.attribs.class.split(' ');
         }
 
         switch (action.method) {
@@ -260,6 +273,42 @@ function reducerClosure(orgSelector) {
       } catch (err) {
         console.error(err); // eslint-disable-line no-console
         throw err;
+      }
+    }
+
+    // /////////////////////////////////////////////////////////////////////////
+    // END VAR AND FUNCTION DECLARATIONS FOR THIS CLOSURE.
+    // BEGIN MAIN EXECUTION.
+    // /////////////////////////////////////////////////////////////////////////
+
+    // If this is the reducer for the selected organism, reduce and return a new state.
+    if (action.selector === orgSelector) {
+
+      let state;
+      const $org = action.$org;
+
+      try {
+        // Clone old state into new state.
+        state = JSON.parse(JSON.stringify(state_));
+      } catch (err) {
+        // Clone default state into new state if state_ param is undefined.
+        state = JSON.parse(stateDefault);
+      }
+
+      // Preset state.attribs.
+      state.attribs.class = $org.attr('class');
+
+      // Build new state for organism.
+      stateBuild($org, state);
+
+      // Populate $items array with clones of stateDefault.
+      action.$items.forEach($item => {
+        state.$items.push(JSON.parse(JSON.stringify(stateDefault)));
+      });
+
+      // Build new state for selected item in $items array.
+      if (typeof action.itemIdx !== 'undefined') {
+        stateBuild($org.$items[action.itemIdx], state.$items[action.itemIdx]);
       }
 
       return state;
