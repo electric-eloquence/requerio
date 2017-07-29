@@ -290,23 +290,25 @@ function reducerClosure(orgSelector) {
       try {
         // Clone old state into new state.
         state = JSON.parse(JSON.stringify(state_));
+        // Preinitialize.
+        state.$items = [];
       } catch (err) {
         // Clone default state into new state if state_ param is undefined.
-        state = JSON.parse(stateDefault);
+        state = JSON.parse(JSON.stringify(stateDefault));
       }
 
-      // Preset state.attribs.
+      // Preinitialize.
       state.attribs.class = $org.attr('class');
 
       // Build new state for organism.
       stateBuild($org, state);
 
-      // Populate $items array with clones of stateDefault.
+      // Initialize $items array with clones of stateDefault.
       action.$items.forEach($item => {
         state.$items.push(JSON.parse(JSON.stringify(stateDefault)));
       });
 
-      // Build new state for selected item in $items array.
+      // Build new state for selection in $items array.
       if (typeof action.itemIdx !== 'undefined') {
         stateBuild($org.$items[action.itemIdx], state.$items[action.itemIdx]);
       }
