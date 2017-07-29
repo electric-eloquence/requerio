@@ -4,7 +4,7 @@
 
 #### If you want to experiment in the meantime, in Node:
 
-```
+```javascript
 const fs = require('fs');
 const path = require('path');
 
@@ -41,14 +41,14 @@ requerio.init();
 
 #### On the client, in HTML:
 
-```
-<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
-<script src="http://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+```html
+<script src="node_modules/redux/dist/redux.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 ```
 
 #### On the client, in a JavaScript ES6 module:
 
-```
+```javascript
 import RequerioClass from  './node_modules/requerio/src/requerio.js'; // MS Edge bug prevents same varname as classname.
 
 const $organisms = {
