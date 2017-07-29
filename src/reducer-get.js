@@ -309,7 +309,11 @@ function reducerClosure(orgSelector) {
       });
 
       // Build new state for selection in $items array.
-      if (typeof action.itemIdx !== 'undefined') {
+      if (
+        typeof action.itemIdx !== 'undefined' &&
+        typeof $org.$items[action.itemIdx] !== 'undefined' &&
+        typeof state.$items[action.itemIdx] !== 'undefined'
+      ) {
         stateBuild($org.$items[action.itemIdx], state.$items[action.itemIdx]);
       }
 

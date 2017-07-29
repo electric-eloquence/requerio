@@ -51,7 +51,7 @@ export default ($orgs, stateStore) => {
       // On the client, side-effects must happen here. stateStore.dispatch() depends on this.
       if (
         typeof itemIdx === 'undefined' && typeof this[method] === 'function' ||
-        typeof itemIdx !== 'undefined' && typeof item[method] === 'function'
+        typeof itemIdx !== 'undefined' && typeof item !== 'undefined' && typeof item[method] === 'function'
       ) {
 
         // Make addClass more convenient by checking if the class already exists.
