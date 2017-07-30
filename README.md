@@ -17,8 +17,8 @@ const $ = global.$ = cheerio.load(html);
 
 const $organisms = {
   '#main': null,
-  '#main__section--0': null,
-  '#main__section--1': null
+  '.main__section--0': null,
+  '.main__section--1': null
 };
 
 function actionsGet(requerio) {
@@ -53,8 +53,8 @@ import RequerioClass from  './node_modules/requerio/src/requerio.js'; // MS Edge
 
 const $organisms = {
   '#main': null,
-  '#main__section--0': null,
-  '#main__section--1': null
+  '.main__section--0': null,
+  '.main__section--1': null
 };
 
 function actionsGet(requerio) {
