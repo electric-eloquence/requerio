@@ -42,8 +42,8 @@ requerio.init();
 #### On the client, in HTML:
 
 ```html
-<script src="node_modules/redux/dist/redux.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="node_modules/redux/dist/redux.min.js"></script>
 ```
 
 #### On the client, in a JavaScript ES6 module:
