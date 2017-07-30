@@ -7,6 +7,10 @@
  */
 export default ($orgs, stateStore) => {
 
+  if (!$.prototype.hasRequerio) {
+    $.prototype.hasRequerio = true;
+  }
+
   /**
    * A shorthand for dispatching state actions.
    *   1. Apply the jQuery or Cheerio method.
