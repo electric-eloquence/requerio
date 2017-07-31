@@ -59,6 +59,10 @@ var organismsIncept = $orgs => {
  */
 var prototypeOverride = ($orgs, stateStore) => {
 
+  if (!$.prototype.hasRequerio) {
+    $.prototype.hasRequerio = true;
+  }
+
   /**
    * A shorthand for dispatching state actions.
    *   1. Apply the jQuery or Cheerio method.
@@ -210,12 +214,17 @@ function reducerClosure(orgSelector) {
      *   modified. null has a completely different meaning than empty string.
      * @property {null|number} scrollTop - number of pixels scrolled.
      * @property {object} style - to DOM Element.style spec.
+     * @property {null|number} width - width in number of pixels.
+     * @property {null|number} height - height in number of pixels.
+     * @property {array} $items - jQuery/Cheerio object members belonging to selection.
      */
     const stateDefault = {
       attribs: {},
       innerHTML: null,
       scrollTop: null,
       style: {},
+      width: null,
+      height: null,
       $items: []
     };
 
@@ -397,6 +406,14 @@ function reducerClosure(orgSelector) {
             }
             break;
 
+          case 'height':
+            if (action.args.length === 1) {
+              if (typeof action.args[0] === 'number') {
+                state.height = action.args[0];
+              }
+            }
+            break;
+
           case 'html':
             if (action.args.length === 1) {
               if (typeof action.args[0] === 'string') {
@@ -445,6 +462,14 @@ function reducerClosure(orgSelector) {
             if (action.args.length === 1) {
               if (typeof action.args[0] === 'number') {
                 state.scrollTop = action.args[0];
+              }
+            }
+            break;
+
+          case 'width':
+            if (action.args.length === 1) {
+              if (typeof action.args[0] === 'number') {
+                state.width = action.args[0];
               }
             }
             break;
