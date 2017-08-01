@@ -2,7 +2,7 @@
 
 ### Documentation to come!
 
-#### If you want to experiment in the meantime, in Node:
+#### If you want to experiment in the meantime, in Node.js:
 
 ```javascript
 const fs = require('fs');
@@ -16,6 +16,9 @@ const html = fs.readFileSync(path.resolve(__dirname, 'markup-you-want-to-test.ht
 const $ = global.$ = cheerio.load(html);
 
 const $organisms = {
+  'window': null,
+  'html': null,
+  'body': null,
   '#main': null,
   '.main__section--0': null,
   '.main__section--1': null
