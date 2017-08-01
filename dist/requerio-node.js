@@ -50,15 +50,21 @@ var organismsIncept = $orgs => {
     $org.$itemsReset($orgReset);
 
     /**
-     * Set functions that enable server-side tests to run by returning empty values as defaults.
+     * Set methods that server-side tests are likely to depend on.
+     * These methods come with client-side jQuery, but not with server-side Cheerio.
+     * Just return empty values as defaults.
      */
-    if (typeof global === 'object') {
+    if (!$org.scrollTop) {
       $org.scrollTop = () => {
         return 0;
       };
+    }
+    if (!$org.width) {
       $org.width = () => {
         return 0;
       };
+    }
+    if (!$org.height) {
       $org.height = () => {
         return 0;
       };
@@ -186,9 +192,9 @@ var prototypeOverride = ($orgs, stateStore) => {
     $.prototype.getState = function () {
       const state = stateStore.getState()[this.selector];
 
-      // If uninitialized, initialize organism's state so returned values are not empty.
-      // Not initializing .innerHTML property because we don't want to populate app with large amount of data on init.
-      // Not initializing .style property because we only want to keep track of style dispatches done through js.
+      // Initialize organism's state so returned values are not empty.
+      // Not initializing .innerHTML property because we don't want to bloat the app with too much data on init.
+      // Not initializing .style property because we only want to keep track of styles dispatched through js.
       if (!state.initialized) {
 
         // case state.scrollTop:
@@ -204,7 +210,9 @@ var prototypeOverride = ($orgs, stateStore) => {
         if (this[0].attribs) {
 
           // case state.attribs:
-          this.dispatchAction('attr', this[0].attribs);
+          if (this[0].attribs) {
+            this.dispatchAction('attr', this[0].attribs);
+          }
         }
 
         // jQuery.
@@ -212,13 +220,15 @@ var prototypeOverride = ($orgs, stateStore) => {
           const attribs = {};
 
           // case state.attribs:
-          for (let i = 0; i < this[0].attributes.length; i++) {
-            const attr = this[0].attributes[i];
+          if (this[0].attributes) {
+            for (let i = 0; i < this[0].attributes.length; i++) {
+              const attr = this[0].attributes[i];
 
-            attribs[attr.name] = attr.value;
+              attribs[attr.name] = attr.value;
+            }
+
+            this.dispatchAction('attr', attribs);
           }
-
-          this.dispatchAction('attr', attribs);
         }
 
         this.dispatchAction('initialize', []);

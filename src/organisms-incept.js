@@ -50,15 +50,21 @@ export default $orgs => {
     $org.$itemsReset($orgReset);
 
     /**
-     * Set functions that enable server-side tests to run by returning empty values as defaults.
+     * Set methods that server-side tests are likely to depend on.
+     * These methods come with client-side jQuery, but not with server-side Cheerio.
+     * Just return empty values as defaults.
      */
-    if (typeof global === 'object') {
+    if (!$org.scrollTop) {
       $org.scrollTop = () => {
         return 0;
       };
+    }
+    if (!$org.width) {
       $org.width = () => {
         return 0;
       };
+    }
+    if (!$org.height) {
       $org.height = () => {
         return 0;
       };
