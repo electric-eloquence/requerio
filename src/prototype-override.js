@@ -116,6 +116,46 @@ export default ($orgs, stateStore) => {
    */
   if (!$.prototype.getState) {
     $.prototype.getState = function () {
+      const state = stateStore.getState()[this.selector];
+
+      // Initialize organism's state so returned values are not empty.
+      // Not initializing .innerHTML property because we don't want to populate app with large amounts of data on init.
+      // Not initializing .style property because we only want to keep track of styles dispatched through js.
+      if (!state.initialized) {
+
+        // case state.scrollTop:
+        this.dispatchAction('scrollTop', this.scrollTop());
+
+        // case state.width:
+        this.dispatchAction('width', this.width());
+
+        // case state.height:
+        this.dispatchAction('height', this.height());
+
+        // Cheerio.
+        if (this[0].attribs) {
+
+          // case state.attribs:
+          this.dispatchAction('attr', this[0].attribs);
+        }
+
+        // jQuery.
+        else if (this[0].attributes && this[0].attributes.length) {
+          const attribs = {};
+
+          // case state.attribs:
+          for (let i = 0; i < this[0].attributes.length; i++) {
+            const attr = this[0].attributes[i];
+
+            attribs[attr.name] = attr.value;
+          }
+
+          this.dispatchAction('attr', attribs);
+        }
+
+        this.dispatchAction('initialize', []);
+      }
+
       return stateStore.getState()[this.selector];
     };
   }

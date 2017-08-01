@@ -48,6 +48,22 @@ export default $orgs => {
     const $orgReset = $(`${i}`);
 
     $org.$itemsReset($orgReset);
+
+    /**
+     * Set functions that enable server-side tests to run by returning empty values as defaults.
+     */
+    if (typeof global === 'object') {
+      $org.scrollTop = () => {
+        return 0;
+      };
+      $org.width = () => {
+        return 0;
+      };
+      $org.height = () => {
+        return 0;
+      };
+    }
+
     $orgs[i] = $org;
   }
 };

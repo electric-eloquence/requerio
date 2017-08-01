@@ -35,6 +35,7 @@ function reducerClosure(orgSelector) {
      * @property {array} $items - jQuery/Cheerio object members belonging to selection.
      */
     const stateDefault = {
+      initialized: false,
       attribs: {},
       innerHTML: null,
       scrollTop: null,
@@ -140,6 +141,10 @@ function reducerClosure(orgSelector) {
 
         switch (action.method) {
 
+          case 'initialize':
+            state.initialized = true;
+            break;
+
           case 'addClass':
             if (action.args.length === 1) {
               addClass(classesForReducedState, action.args[0]);
@@ -193,6 +198,35 @@ function reducerClosure(orgSelector) {
 
             break;
 
+          case 'attr':
+            if (action.args.length === 2) {
+              if (typeof action.args[0] === 'string') {
+                if (typeof action.args[1] === 'string') {
+                  state.attribs[action.args[0]] = action.args[1];
+                }
+                else if (typeof action.args[1] === 'function') {
+                  const retval = action.args[1]();
+
+                  if (typeof retval === 'string') {
+                    state.attribs[action.args[0]] = retval;
+                  }
+                }
+              }
+            }
+            else if (
+              action.args.length === 1 &&
+              action.args[0] instanceof Object &&
+              action.args[0].constructor === Object
+            ) {
+              for (let i in action.args[0]) {
+                if (!action.args[0].hasOwnProperty(i)) {
+                  continue;
+                }
+                state.attribs[i] = action.args[0][i];
+              }
+            }
+            break;
+
           case 'css':
             if (action.args.length === 2) {
               if (typeof action.args[0] === 'string') {
@@ -241,35 +275,6 @@ function reducerClosure(orgSelector) {
                 if (typeof retval === 'string') {
                   state.style[action.args[0]] = retval;
                 }
-              }
-            }
-            break;
-
-          case 'prop':
-            if (action.args.length === 2) {
-              if (typeof action.args[0] === 'string') {
-                if (typeof action.args[1] === 'string') {
-                  state.attribs[action.args[0]] = action.args[1];
-                }
-                else if (typeof action.args[1] === 'function') {
-                  const retval = action.args[1]();
-
-                  if (typeof retval === 'string') {
-                    state.attribs[action.args[0]] = retval;
-                  }
-                }
-              }
-            }
-            else if (
-              action.args.length === 1 &&
-              action.args[0] instanceof Object &&
-              action.args[0].constructor === Object
-            ) {
-              for (let i in action.args[0]) {
-                if (!action.args[0].hasOwnProperty(i)) {
-                  continue;
-                }
-                state.attribs[i] = action.args[0][i];
               }
             }
             break;
