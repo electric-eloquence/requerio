@@ -75,6 +75,23 @@ export default ($orgs, stateStore) => {
             }
             break;
 
+          // Need to reset $org and $org.$items on removeClass.
+          case 'removeClass':
+            applyMethod(this, method, args, itemIdx, $item);
+
+            const $orgReset = $(this.selector);
+
+            for (let i in $orgReset) {
+              if (!$orgReset.hasOwnProperty(i)) {
+                continue;
+              }
+
+              this[i] = $orgReset[i];
+            }
+
+            this.$itemsReset($orgReset);
+            break;
+
           // scrollTop, width, and height methods with no args take measurements and update state.
           case 'scrollTop':
           case 'width':
