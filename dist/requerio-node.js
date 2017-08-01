@@ -12,7 +12,13 @@ var organismsIncept = $orgs => {
       continue;
     }
 
-    const $org = $(`${i}`);
+    let $org;
+    if (i === 'window' && typeof window === 'undefined') {
+      $org = {};
+    }
+    else {
+      $org = $(`${i}`);
+    }
 
     // Cheerio doesn't have .selector property.
     // .selector property removed in jQuery 3.
@@ -34,7 +40,7 @@ var organismsIncept = $orgs => {
      * To be run on organism inception and dispatch of action.
      * Must only fill $items property of $orgs at top level of the $orgs object.
      */
-    $org.$itemsReset = function ($orgRest) {
+    $org.$itemsReset = function ($orgReset) {
       $org.$items = [];
 
       $orgReset.each(function () {
@@ -45,9 +51,11 @@ var organismsIncept = $orgs => {
       });
     };
 
-    const $orgReset = $(`${i}`);
+    if (i !== 'window') {
+      const $orgReset = $(`${i}`);
 
-    $org.$itemsReset($orgReset);
+      $org.$itemsReset($orgReset);
+    }
 
     /**
      * Set methods that server-side tests are likely to depend on.
