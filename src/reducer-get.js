@@ -135,7 +135,7 @@ function reducerClosure(orgSelector) {
         }
 
         let classesForReducedState = [];
-        if (state.attribs.class) {
+        if (state.attribs && state.attribs.class) {
           classesForReducedState = state.attribs.class.split(' ');
         }
 
@@ -324,7 +324,9 @@ function reducerClosure(orgSelector) {
       }
 
       // Preinitialize.
-      state.attribs.class = $org.attr('class');
+      if (state.attribs) {
+        state.attribs.class = $org.attr('class');
+      }
 
       // Build new state for organism.
       stateBuild($org, state);

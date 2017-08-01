@@ -15,7 +15,7 @@ export default $orgs => {
     let $org;
     if (i === 'document') {
       if (typeof document === 'object') {
-        $org = {document};
+        $org = $(document);
       }
       else {
         $org = {};
@@ -23,7 +23,7 @@ export default $orgs => {
     }
     else if (i === 'window') {
       if (typeof window === 'object') {
-        $org = {window};
+        $org = $(window);
       }
       else {
         $org = {};

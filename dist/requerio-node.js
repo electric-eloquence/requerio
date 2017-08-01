@@ -15,7 +15,7 @@ var organismsIncept = $orgs => {
     let $org;
     if (i === 'document') {
       if (typeof document === 'object') {
-        $org = {document};
+        $org = $(document);
       }
       else {
         $org = {};
@@ -23,7 +23,7 @@ var organismsIncept = $orgs => {
     }
     else if (i === 'window') {
       if (typeof window === 'object') {
-        $org = {window};
+        $org = $(window);
       }
       else {
         $org = {};
@@ -406,7 +406,7 @@ function reducerClosure(orgSelector) {
         }
 
         let classesForReducedState = [];
-        if (state.attribs.class) {
+        if (state.attribs && state.attribs.class) {
           classesForReducedState = state.attribs.class.split(' ');
         }
 
@@ -595,7 +595,9 @@ function reducerClosure(orgSelector) {
       }
 
       // Preinitialize.
-      state.attribs.class = $org.attr('class');
+      if (state.attribs) {
+        state.attribs.class = $org.attr('class');
+      }
 
       // Build new state for organism.
       stateBuild($org, state);
