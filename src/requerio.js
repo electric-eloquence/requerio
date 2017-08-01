@@ -9,15 +9,6 @@ class Requerio {
     this.$ = $;
     this.Redux = Redux;
     this.$orgs = $organisms;
-
-    if (typeof window === 'object') {
-      this.$window = $(window);
-    }
-    else if (typeof global === 'object') {
-      // Properties to server-side $window to be assigned in testing suite.
-      this.$window = global.$window = {};
-    }
-
     this.actions = actionsGet(this);
   }
 
