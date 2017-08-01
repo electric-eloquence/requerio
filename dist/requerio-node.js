@@ -232,36 +232,38 @@ var prototypeOverride = ($orgs, stateStore) => {
    * @return {object} The component's state.
    */
   if (!$.prototype.getState) {
-    $.prototype.getState = function () {
+    $.prototype.getState = function (itemIdx) {
 
-      // In order to return latest, most accurate state, dispatch these actions to update their properties.
+      // In order to return the latest, most accurate state, dispatch these actions to update their properties.
       // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data.
       // Do not preemptively update .style property because we only want to keep track of styles dispatched through js.
 
       // case state.scrollTop:
-      this.dispatchAction('scrollTop', []);
+      this.dispatchAction('scrollTop', [], itemIdx);
 
       // case state.width:
-      this.dispatchAction('width', []);
+      this.dispatchAction('width', [], itemIdx);
 
       // case state.height:
-      this.dispatchAction('height', []);
+      this.dispatchAction('height', [], itemIdx);
 
+      // case state.attribs:
       // Cheerio.
       if (this[0].attribs) {
-
-        // case state.attribs:
-        if (this[0].attribs) {
+        if (typeof itemIdx === 'undefined') {
           this.dispatchAction('attr', this[0].attribs);
+        }
+        else {
+          this.dispatchAction('attr', this[itemIdx].attribs, itemIdx);
         }
       }
 
+      // case state.attribs:
       // jQuery.
       else if (this[0].attributes && this[0].attributes.length) {
         const attribs = {};
 
-        // case state.attribs:
-        if (this[0].attributes) {
+        if (typeof itemIdx === 'undefined') {
           for (let i = 0; i < this[0].attributes.length; i++) {
             const attr = this[0].attributes[i];
 
@@ -270,9 +272,24 @@ var prototypeOverride = ($orgs, stateStore) => {
 
           this.dispatchAction('attr', attribs);
         }
+
+        else {
+          for (let i = 0; i < this[itemIdx].attributes.length; i++) {
+            const attr = this[itemIdx].attributes[i];
+
+            attribs[attr.name] = attr.value;
+          }
+
+          this.dispatchAction('attr', attribs, itemIdx);
+        }
       }
 
-      return stateStore.getState()[this.selector];
+      if (typeof itemIdx === 'undefined') {
+        return stateStore.getState()[this.selector];
+      }
+      else {
+        return stateStore.getState()[this.selector].$items[itemIdx];
+      }
     };
   }
 
