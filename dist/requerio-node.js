@@ -75,17 +75,17 @@ var organismsIncept = $orgs => {
      * These methods come with client-side jQuery, but not with server-side Cheerio.
      * Just return empty values as defaults.
      */
-    if (!$org.scrollTop) {
+    if (typeof $org.scrollTop === 'undefined') {
       $org.scrollTop = () => {
         return 0;
       };
     }
-    if (!$org.width) {
+    if (typeof $org.width === 'undefined') {
       $org.width = () => {
         return 0;
       };
     }
-    if (!$org.height) {
+    if (typeof $org.height === 'undefined') {
       $org.height = () => {
         return 0;
       };
@@ -150,25 +150,10 @@ var prototypeOverride = ($orgs, stateStore) => {
         typeof itemIdx !== 'undefined' && $item.length && typeof $item[method] === 'function'
       ) {
 
-        // Make addClass more convenient by checking if the class already exists.
-        if (method === 'addClass') {
-          if (!this.hasClass(args[0])) {
-            if (typeof itemIdx === 'undefined') {
-              // Apply to $org.
-              this[method].apply(this, args);
-            }
-            else {
-              // Apply to $item.
-              $item[method].apply($item, args);
-            }
-          }
-        }
-
-        // Method applications for other methods.
-        else {
-          if (typeof itemIdx === 'undefined') {
+        function applyMethod($org, method, args, itemIdx, $item) {
+          if (typeof $item === 'undefined') {
             // Apply to $org.
-            this[method].apply(this, args);
+            $org[method].apply($org, args);
           }
           else {
             // Apply to $item.
@@ -176,18 +161,38 @@ var prototypeOverride = ($orgs, stateStore) => {
           }
         }
 
-        // After application, reset object properties to new values.
-        const $orgReset = $(this.selector);
+        switch (method) {
 
-        for (let i in $orgReset) {
-          if (!$orgReset.hasOwnProperty(i)) {
-            continue;
-          }
+          // Make addClass more convenient by checking if the class already exists.
+          case 'addClass':
+            if (!this.hasClass(args[0])) {
+              applyMethod(this, method, args, itemIdx, $item);
+            }
+            break;
 
-          this[i] = $orgReset[i];
+          // scrollTop, width, and height methods take measurements and update state.
+          case 'scrollTop':
+          case 'width':
+          case 'height':
+            if (args.length) {
+              applyMethod(this, method, args, itemIdx, $item);
+            }
+            else {
+              if (typeof $item === 'undefined') {
+                // Apply to $org.
+                args[0] = this[method].apply(this);
+              }
+              else {
+                // Apply to $item.
+                args[0] = $item[method].apply($item);
+              }
+            }
+            break;
+
+          // Method applications for other methods.
+          default:
+            applyMethod(this, method, args, itemIdx, $item);
         }
-
-        this.$itemsReset($orgReset);
       }
 
       const stateNew = stateStore.dispatch({
@@ -211,48 +216,43 @@ var prototypeOverride = ($orgs, stateStore) => {
    */
   if (!$.prototype.getState) {
     $.prototype.getState = function () {
-      const state = stateStore.getState()[this.selector];
 
-      // Initialize organism's state so returned values are not empty.
-      // Not initializing .innerHTML property because we don't want to bloat the app with too much data on init.
-      // Not initializing .style property because we only want to keep track of styles dispatched through js.
-      if (!state.initialized) {
+      // In order to return latest, most accurate state, dispatch these actions to update their properties.
+      // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data.
+      // Do not preemptively update .style property because we only want to keep track of styles dispatched through js.
 
-        // case state.scrollTop:
-        this.dispatchAction('scrollTop', this.scrollTop());
+      // case state.scrollTop:
+      this.dispatchAction('scrollTop', []);
 
-        // case state.width:
-        this.dispatchAction('width', this.width());
+      // case state.width:
+      this.dispatchAction('width', []);
 
-        // case state.height:
-        this.dispatchAction('height', this.height());
+      // case state.height:
+      this.dispatchAction('height', []);
 
-        // Cheerio.
+      // Cheerio.
+      if (this[0].attribs) {
+
+        // case state.attribs:
         if (this[0].attribs) {
-
-          // case state.attribs:
-          if (this[0].attribs) {
-            this.dispatchAction('attr', this[0].attribs);
-          }
+          this.dispatchAction('attr', this[0].attribs);
         }
+      }
 
-        // jQuery.
-        else if (this[0].attributes && this[0].attributes.length) {
-          const attribs = {};
+      // jQuery.
+      else if (this[0].attributes && this[0].attributes.length) {
+        const attribs = {};
 
-          // case state.attribs:
-          if (this[0].attributes) {
-            for (let i = 0; i < this[0].attributes.length; i++) {
-              const attr = this[0].attributes[i];
+        // case state.attribs:
+        if (this[0].attributes) {
+          for (let i = 0; i < this[0].attributes.length; i++) {
+            const attr = this[0].attributes[i];
 
-              attribs[attr.name] = attr.value;
-            }
-
-            this.dispatchAction('attr', attribs);
+            attribs[attr.name] = attr.value;
           }
-        }
 
-        this.dispatchAction('initialize', []);
+          this.dispatchAction('attr', attribs);
+        }
       }
 
       return stateStore.getState()[this.selector];
@@ -306,7 +306,6 @@ function reducerClosure(orgSelector) {
      * @property {array} $items - jQuery/Cheerio object members belonging to selection.
      */
     const stateDefault = {
-      initialized: false,
       attribs: {},
       innerHTML: null,
       scrollTop: null,
@@ -411,10 +410,6 @@ function reducerClosure(orgSelector) {
         }
 
         switch (action.method) {
-
-          case 'initialize':
-            state.initialized = true;
-            break;
 
           case 'addClass':
             if (action.args.length === 1) {
