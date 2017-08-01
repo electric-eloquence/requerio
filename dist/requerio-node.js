@@ -13,8 +13,21 @@ var organismsIncept = $orgs => {
     }
 
     let $org;
-    if (i === 'window' && typeof window === 'undefined') {
-      $org = {};
+    if (i === 'document') {
+      if (typeof document === 'object') {
+        $org = {document};
+      }
+      else {
+        $org = {};
+      }
+    }
+    else if (i === 'window') {
+      if (typeof window === 'object') {
+        $org = {window};
+      }
+      else {
+        $org = {};
+      }
     }
     else {
       $org = $(`${i}`);
