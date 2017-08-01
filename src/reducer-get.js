@@ -35,7 +35,6 @@ function reducerClosure(orgSelector) {
      * @property {array} $items - jQuery/Cheerio object members belonging to selection.
      */
     const stateDefault = {
-      initialized: false,
       attribs: {},
       innerHTML: null,
       scrollTop: null,
@@ -140,10 +139,6 @@ function reducerClosure(orgSelector) {
         }
 
         switch (action.method) {
-
-          case 'initialize':
-            state.initialized = true;
-            break;
 
           case 'addClass':
             if (action.args.length === 1) {

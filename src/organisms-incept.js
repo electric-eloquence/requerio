@@ -75,17 +75,17 @@ export default $orgs => {
      * These methods come with client-side jQuery, but not with server-side Cheerio.
      * Just return empty values as defaults.
      */
-    if (!$org.scrollTop) {
+    if (typeof $org.scrollTop === 'undefined') {
       $org.scrollTop = () => {
         return 0;
       };
     }
-    if (!$org.width) {
+    if (typeof $org.width === 'undefined') {
       $org.width = () => {
         return 0;
       };
     }
-    if (!$org.height) {
+    if (typeof $org.height === 'undefined') {
       $org.height = () => {
         return 0;
       };
