@@ -121,7 +121,6 @@ export default ($orgs, stateStore) => {
         type: '',
         selector: this.selector,
         $org: this,
-        $items: this.$items,
         itemIdx: itemIdx,
         method: method,
         args: args

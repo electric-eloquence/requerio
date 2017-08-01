@@ -64,13 +64,13 @@ function reducerClosure(orgSelector) {
         let classesToAdd;
 
         if (typeof classParam === 'string') {
-          classesToAdd = classParam.split(' ');
+          classesToAdd = classParam.split(/s+/);
         }
         else if (typeof classParam === 'function') {
           const retval = classParam();
 
           if (typeof retval === 'string') {
-            classesToAdd = retval.split(' ');
+            classesToAdd = retval.split(/s+/);
           }
         }
 
@@ -93,13 +93,13 @@ function reducerClosure(orgSelector) {
         let classesToRemove;
 
         if (typeof classParam === 'string') {
-          classesToRemove = classParam.split(' ');
+          classesToRemove = classParam.split(/s+/);
         }
         else if (typeof classParam === 'function') {
           const retval = classParam();
 
           if (typeof retval === 'string') {
-            classesToRemove = retval.split(' ');
+            classesToRemove = retval.split(/s+/);
           }
         }
 
@@ -135,7 +135,7 @@ function reducerClosure(orgSelector) {
 
         let classesForReducedState = [];
         if (state.attribs && state.attribs.class) {
-          classesForReducedState = state.attribs.class.split(' ');
+          classesForReducedState = state.attribs.class.split(/s+/);
         }
 
         switch (action.method) {
@@ -156,13 +156,13 @@ function reducerClosure(orgSelector) {
             let classesToToggle;
 
             if (typeof action.args[0] === 'string') {
-              classesToToggle = action.args[0].split(' ');
+              classesToToggle = action.args[0].split(/s+/);
             }
             else if (typeof action.args[0] === 'function') {
               const retval = actions.args[0]();
 
               if (typeof retval === 'string') {
-                classesToToggle = retval.split(' ');
+                classesToToggle = retval.split(/s+/);
               }
             }
 
@@ -311,11 +311,36 @@ function reducerClosure(orgSelector) {
       try {
         // Clone old state into new state.
         state = JSON.parse(JSON.stringify(state_));
-        // Preinitialize.
-        state.$items = [];
+
       } catch (err) {
         // Clone default state into new state if state_ param is undefined.
         state = JSON.parse(JSON.stringify(stateDefault));
+      }
+
+      // Populate or update $items array.
+      if (action.method === 'removeClass') {
+        try {
+          // Update $items array with clones of stateDefault.
+          state.$items = [];
+          $org.$items.forEach(($item, idx) => {
+            state.$items[idx] = JSON.parse(JSON.stringify(stateDefault));
+          });
+
+        } catch (err) {
+          console.error(err); // eslint-disable-line no-console
+        }
+      }
+      else {
+        try {
+          // Populate $items array with clones of stateDefault if necessary.
+          $org.$items.forEach(($item, idx) => {
+            if (!state.$items[idx]) {
+              state.$items[idx] = JSON.parse(JSON.stringify(stateDefault));
+            }
+          });
+        } catch (err) {
+          console.error(err); // eslint-disable-line no-console
+        }
       }
 
       // Preinitialize.
@@ -325,11 +350,6 @@ function reducerClosure(orgSelector) {
 
       // Build new state for organism.
       stateBuild($org, state);
-
-      // Initialize $items array with clones of stateDefault.
-      action.$items.forEach($item => {
-        state.$items.push(JSON.parse(JSON.stringify(stateDefault)));
-      });
 
       // Build new state for selection in $items array.
       if (

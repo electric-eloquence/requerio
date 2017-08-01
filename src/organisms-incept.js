@@ -59,7 +59,7 @@ export default $orgs => {
       $orgReset.each(function () {
         const $this = $(this);
 
-        $this.$parentSelector = i;
+        $this.parentSelector = i;
         $org.$items.push($this);
       });
     };
