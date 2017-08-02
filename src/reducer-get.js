@@ -26,6 +26,7 @@ function reducerClosure(orgSelector) {
      *   Element.attributes collection, as utilized by jQuery. The attribs property is not documented in the Cheerio
      *   documentation, and may change without notice. However, this is unlikely, since it is derived from its
      *   htmlparser2 dependency. The htmlparser2 package has had this property since its initial release.
+     * @property {object} boundingClientRect - key-value copy of object returned by Element.getBoundingClientRect().
      * @property {null|string} innerHTML - to DOM Element.innerHTML spec. null means the initial innerHTML state wasn't
      *   modified. null has a completely different meaning than empty string.
      * @property {null|number} scrollTop - number of pixels scrolled.
@@ -36,6 +37,14 @@ function reducerClosure(orgSelector) {
      */
     const stateDefault = {
       attribs: {},
+      boundingClientRect: {
+        bottom: null,
+        height: null,
+        left: null,
+        right: null,
+        top: null,
+        width: null
+      },
       innerHTML: null,
       scrollTop: null,
       style: {},
@@ -120,17 +129,18 @@ function reducerClosure(orgSelector) {
       // ///////////////////////////////////////////////////////////////////////
 
       try {
-        // The attributes property of jQuery objects is based off of the DOM's Element.attributes collection.
-        const domElAttr = $org[0].attributes;
-        // jQuery.
-        if (domElAttr) {
-          for (let i = 0; i < domElAttr.length; i++) {
-            state.attribs[domElAttr[i].name] = domElAttr[i].value;
-          }
-
         // Cheerio.
-        } else {
+        if ($org[0].attribs) {
           state.attribs = $org[0].attribs;
+        }
+
+        // jQuery.
+        else if ($org[0].attributes && $org[0].attributes.length) {
+          for (let i = 0; i < $org[0].attributes.length; i++) {
+            const attr = $org[0].attributes[i];
+
+            state.attribs[attr.name] = attr.value;
+          }
         }
 
         let classesForReducedState = [];
@@ -247,6 +257,15 @@ function reducerClosure(orgSelector) {
                   continue;
                 }
                 state.style[i] = action.args[0][i];
+              }
+            }
+            break;
+
+          case 'getBoundingClientRect':
+            if (action.args.length === 1) {
+              if (action.args[0] instanceof Object) {
+                // Copy DOMRect object to plain object.
+                state.boundingClientRect = JSON.parse(JSON.stringify(action.args[0]));
               }
             }
             break;

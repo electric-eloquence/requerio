@@ -38,7 +38,7 @@ export default ($orgs, stateStore) => {
       else if (
         typeof args_ === 'string' ||
         typeof args_ === 'number' ||
-        args_ instanceof Object && args_.constructor === Object
+        args_ instanceof Object
       ) {
         args = [args_];
       }
@@ -92,6 +92,22 @@ export default ($orgs, stateStore) => {
             this.$itemsReset($orgReset);
             break;
 
+          // getBoundingClientRect takes measurements and updates state. This never accepts an argument.
+          case 'getBoundingClientRect':
+            if (this.selector === 'document' || this.selector === 'window') {
+              break;
+            }
+
+            if (typeof $item === 'undefined') {
+              // Apply to $org.
+              args[0] = this[0][method].apply(this[0]);
+            }
+            else {
+              // Apply to $item.
+              args[0] = this[itemIdx][method].apply(this[itemIdx]);
+            }
+            break;
+
           // scrollTop, width, and height methods with no args take measurements and update state.
           case 'scrollTop':
           case 'width':
@@ -141,6 +157,9 @@ export default ($orgs, stateStore) => {
       // In order to return the latest, most accurate state, dispatch these actions to update their properties.
       // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data.
       // Do not preemptively update .style property because we only want to keep track of styles dispatched through js.
+
+      // case state.getBoundingClientRect:
+      this.dispatchAction('getBoundingClientRect', [], itemIdx);
 
       // case state.scrollTop:
       this.dispatchAction('scrollTop', [], itemIdx);

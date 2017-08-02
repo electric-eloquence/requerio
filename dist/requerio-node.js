@@ -75,9 +75,24 @@ var organismsIncept = $orgs => {
      * These methods come with client-side jQuery, but not with server-side Cheerio.
      * Just return empty values as defaults.
      */
+    if ($org[0] && typeof $org[0].getBoundingClientRect === 'undefined') {
+      $org[0].getBoundingClientRect = () => {
+        return {
+          bottom: 0,
+          height: 0,
+          left: 0,
+          right: 0,
+          top: 0,
+          width: 0
+        };
+      };
+    }
     if (typeof $org.scrollTop === 'undefined') {
-      $org.scrollTop = () => {
-        return 0;
+      $org.scrollTop = num => {
+        if (typeof num !== 'undefined') {
+          $org._scrollTop = num;
+        }
+        return $org._scrollTop;
       };
     }
     if (typeof $org.width === 'undefined') {
@@ -133,7 +148,7 @@ var prototypeOverride = ($orgs, stateStore) => {
       else if (
         typeof args_ === 'string' ||
         typeof args_ === 'number' ||
-        args_ instanceof Object && args_.constructor === Object
+        args_ instanceof Object
       ) {
         args = [args_];
       }
@@ -187,6 +202,22 @@ var prototypeOverride = ($orgs, stateStore) => {
             this.$itemsReset($orgReset);
             break;
 
+          // getBoundingClientRect takes measurements and updates state. This never accepts an argument.
+          case 'getBoundingClientRect':
+            if (this.selector === 'document' || this.selector === 'window') {
+              break;
+            }
+
+            if (typeof $item === 'undefined') {
+              // Apply to $org.
+              args[0] = this[0][method].apply(this[0]);
+            }
+            else {
+              // Apply to $item.
+              args[0] = this[itemIdx][method].apply(this[itemIdx]);
+            }
+            break;
+
           // scrollTop, width, and height methods with no args take measurements and update state.
           case 'scrollTop':
           case 'width':
@@ -236,6 +267,9 @@ var prototypeOverride = ($orgs, stateStore) => {
       // In order to return the latest, most accurate state, dispatch these actions to update their properties.
       // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data.
       // Do not preemptively update .style property because we only want to keep track of styles dispatched through js.
+
+      // case state.getBoundingClientRect:
+      this.dispatchAction('getBoundingClientRect', [], itemIdx);
 
       // case state.scrollTop:
       this.dispatchAction('scrollTop', [], itemIdx);
@@ -330,6 +364,7 @@ function reducerClosure(orgSelector) {
      *   Element.attributes collection, as utilized by jQuery. The attribs property is not documented in the Cheerio
      *   documentation, and may change without notice. However, this is unlikely, since it is derived from its
      *   htmlparser2 dependency. The htmlparser2 package has had this property since its initial release.
+     * @property {object} boundingClientRect - key-value copy of object returned by Element.getBoundingClientRect().
      * @property {null|string} innerHTML - to DOM Element.innerHTML spec. null means the initial innerHTML state wasn't
      *   modified. null has a completely different meaning than empty string.
      * @property {null|number} scrollTop - number of pixels scrolled.
@@ -340,6 +375,14 @@ function reducerClosure(orgSelector) {
      */
     const stateDefault = {
       attribs: {},
+      boundingClientRect: {
+        bottom: null,
+        height: null,
+        left: null,
+        right: null,
+        top: null,
+        width: null
+      },
       innerHTML: null,
       scrollTop: null,
       style: {},
@@ -424,17 +467,18 @@ function reducerClosure(orgSelector) {
       // ///////////////////////////////////////////////////////////////////////
 
       try {
-        // The attributes property of jQuery objects is based off of the DOM's Element.attributes collection.
-        const domElAttr = $org[0].attributes;
-        // jQuery.
-        if (domElAttr) {
-          for (let i = 0; i < domElAttr.length; i++) {
-            state.attribs[domElAttr[i].name] = domElAttr[i].value;
-          }
-
         // Cheerio.
-        } else {
+        if ($org[0].attribs) {
           state.attribs = $org[0].attribs;
+        }
+
+        // jQuery.
+        else if ($org[0].attributes && $org[0].attributes.length) {
+          for (let i = 0; i < $org[0].attributes.length; i++) {
+            const attr = $org[0].attributes[i];
+
+            state.attribs[attr.name] = attr.value;
+          }
         }
 
         let classesForReducedState = [];
@@ -551,6 +595,15 @@ function reducerClosure(orgSelector) {
                   continue;
                 }
                 state.style[i] = action.args[0][i];
+              }
+            }
+            break;
+
+          case 'getBoundingClientRect':
+            if (action.args.length === 1) {
+              if (action.args[0] instanceof Object) {
+                // Copy DOMRect object to plain object.
+                state.boundingClientRect = JSON.parse(JSON.stringify(action.args[0]));
               }
             }
             break;
