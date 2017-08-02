@@ -161,8 +161,10 @@ var prototypeOverride = ($orgs, stateStore) => {
 
       // On the client, side-effects must happen here. stateStore.dispatch() depends on this.
       if (
-        typeof itemIdx === 'undefined' && typeof this[method] === 'function' ||
-        typeof itemIdx !== 'undefined' && $item.length && typeof $item[method] === 'function'
+        typeof itemIdx === 'undefined' &&
+          (typeof this[method] === 'function' || typeof this[0][method] === 'function') ||
+        typeof itemIdx !== 'undefined' && $item.length &&
+          (typeof $item[method] === 'function' || typeof $item[itemIdx][method] === 'function')
       ) {
 
         function applyMethod($org, method, args, itemIdx, $item) {
