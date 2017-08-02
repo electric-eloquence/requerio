@@ -164,7 +164,7 @@ var prototypeOverride = ($orgs, stateStore) => {
         typeof itemIdx === 'undefined' &&
           (typeof this[method] === 'function' || typeof this[0][method] === 'function') ||
         typeof itemIdx !== 'undefined' && $item.length &&
-          (typeof $item[method] === 'function' || typeof $item[itemIdx][method] === 'function')
+          (typeof $item[method] === 'function' || typeof this[itemIdx][method] === 'function')
       ) {
 
         function applyMethod($org, method, args, itemIdx, $item) {
@@ -187,6 +187,53 @@ var prototypeOverride = ($orgs, stateStore) => {
             }
             break;
 
+          // attr method with no arg retrieves data and updates state.
+          case 'attr':
+            if (args.length) {
+              applyMethod(this, method, args, itemIdx, $item);
+            }
+            else {
+              // Cheerio objects have an .attribs property for member element attributes, which is undocumented and may
+              // change without notice. However, this is unlikely, since it is derived from its htmlparser2 dependency.
+              // The htmlparser2 package has had this property since its initial release.
+              if (this[0].attribs) {
+                if (typeof itemIdx === 'undefined') {
+                  args[0] = this[0].attribs;
+                }
+                else {
+                  args[0] = this[itemIdx].attribs;
+                }
+              }
+
+              // jQuery saves and keys selected DOM Element objects in an array-like manner on the jQuery object.
+              // The .attributes property of each Element object are per the DOM spec.
+              // We need to parse the .attributes property to create a key-value store, which we'll submit as args[0].
+              else if (this[0].attributes && this[0].attributes.length) {
+                const attribs = {};
+
+                if (typeof itemIdx === 'undefined') {
+                  for (let i = 0; i < this[0].attributes.length; i++) {
+                    const attr = this[0].attributes[i];
+
+                    attribs[attr.name] = attr.value;
+                  }
+
+                  args[0] = attribs;
+                }
+
+                else {
+                  for (let i = 0; i < this[itemIdx].attributes.length; i++) {
+                    const attr = this[itemIdx].attributes[i];
+
+                    attribs[attr.name] = attr.value;
+                  }
+
+                  args[0] = attribs;
+                }
+              }
+            }
+            break;
+
           // Need to reset $org and $org.$items on removeClass.
           case 'removeClass':
             applyMethod(this, method, args, itemIdx, $item);
@@ -205,6 +252,7 @@ var prototypeOverride = ($orgs, stateStore) => {
             break;
 
           // getBoundingClientRect takes measurements and updates state. This never accepts an argument.
+          // Also has to operate on the DOM Element member of the jQuery object (or its Cheerio facsimile).
           case 'getBoundingClientRect':
             if (this.selector === 'document' || this.selector === 'window') {
               break;
@@ -270,6 +318,9 @@ var prototypeOverride = ($orgs, stateStore) => {
       // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data.
       // Do not preemptively update .style property because we only want to keep track of styles dispatched through js.
 
+      // case state.attribs:
+      this.dispatchAction('attr', [], itemIdx);
+
       // case state.getBoundingClientRect:
       this.dispatchAction('getBoundingClientRect', [], itemIdx);
 
@@ -281,43 +332,6 @@ var prototypeOverride = ($orgs, stateStore) => {
 
       // case state.height:
       this.dispatchAction('height', [], itemIdx);
-
-      // case state.attribs:
-      // Cheerio.
-      if (this[0].attribs) {
-        if (typeof itemIdx === 'undefined') {
-          this.dispatchAction('attr', this[0].attribs);
-        }
-        else {
-          this.dispatchAction('attr', this[itemIdx].attribs, itemIdx);
-        }
-      }
-
-      // case state.attribs:
-      // jQuery.
-      else if (this[0].attributes && this[0].attributes.length) {
-        const attribs = {};
-
-        if (typeof itemIdx === 'undefined') {
-          for (let i = 0; i < this[0].attributes.length; i++) {
-            const attr = this[0].attributes[i];
-
-            attribs[attr.name] = attr.value;
-          }
-
-          this.dispatchAction('attr', attribs);
-        }
-
-        else {
-          for (let i = 0; i < this[itemIdx].attributes.length; i++) {
-            const attr = this[itemIdx].attributes[i];
-
-            attribs[attr.name] = attr.value;
-          }
-
-          this.dispatchAction('attr', attribs, itemIdx);
-        }
-      }
 
       if (typeof itemIdx === 'undefined') {
         return stateStore.getState()[this.selector];
