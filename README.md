@@ -55,6 +55,9 @@ requerio.init();
 import RequerioClass from  './node_modules/requerio/src/requerio.js'; // MS Edge bug prevents same varname as classname.
 
 const $organisms = {
+  'window': null,
+  'html': null,
+  'body': null,
   '#main': null,
   '.main__section--0': null,
   '.main__section--1': null
