@@ -49,7 +49,7 @@ export default ($orgs, stateStore) => {
         $item = $(this[itemIdx]);
       }
 
-      // On the client, side-effects must happen here. stateStore.dispatch() depends on this.
+      // Side-effects must happen here. stateStore.dispatch() depends on this.
       if (
         typeof itemIdx === 'undefined' &&
           (typeof this[method] === 'function' || typeof this[0][method] === 'function') ||

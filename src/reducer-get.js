@@ -73,13 +73,13 @@ function reducerClosure(orgSelector) {
         let classesToAdd;
 
         if (typeof classParam === 'string') {
-          classesToAdd = classParam.split(/s+/);
+          classesToAdd = classParam.split(/\s+/);
         }
         else if (typeof classParam === 'function') {
           const retval = classParam();
 
           if (typeof retval === 'string') {
-            classesToAdd = retval.split(/s+/);
+            classesToAdd = retval.split(/\s+/);
           }
         }
 
@@ -102,13 +102,13 @@ function reducerClosure(orgSelector) {
         let classesToRemove;
 
         if (typeof classParam === 'string') {
-          classesToRemove = classParam.split(/s+/);
+          classesToRemove = classParam.split(/\s+/);
         }
         else if (typeof classParam === 'function') {
           const retval = classParam();
 
           if (typeof retval === 'string') {
-            classesToRemove = retval.split(/s+/);
+            classesToRemove = retval.split(/\s+/);
           }
         }
 
@@ -145,7 +145,7 @@ function reducerClosure(orgSelector) {
 
         let classesForReducedState = [];
         if (state.attribs && state.attribs.class) {
-          classesForReducedState = state.attribs.class.split(/s+/);
+          classesForReducedState = state.attribs.class.split(/\s+/);
         }
 
         switch (action.method) {
@@ -166,13 +166,13 @@ function reducerClosure(orgSelector) {
             let classesToToggle;
 
             if (typeof action.args[0] === 'string') {
-              classesToToggle = action.args[0].split(/s+/);
+              classesToToggle = action.args[0].split(/\s+/);
             }
             else if (typeof action.args[0] === 'function') {
               const retval = actions.args[0]();
 
               if (typeof retval === 'string') {
-                classesToToggle = retval.split(/s+/);
+                classesToToggle = retval.split(/\s+/);
               }
             }
 
