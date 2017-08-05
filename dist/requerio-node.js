@@ -485,7 +485,7 @@ function reducerClosure(orgSelector) {
       try {
         // Cheerio.
         if ($org[0].attribs) {
-          state.attribs = $org[0].attribs;
+          state.attribs = JSON.parse(JSON.stringify($org[0].attribs));
         }
 
         // jQuery.
@@ -619,7 +619,12 @@ function reducerClosure(orgSelector) {
             if (action.args.length === 1) {
               if (action.args[0] instanceof Object) {
                 // Copy DOMRect object to plain object.
-                state.boundingClientRect = JSON.parse(JSON.stringify(action.args[0]));
+                try {
+                  state.boundingClientRect = JSON.parse(JSON.stringify(action.args[0]));
+                }
+                catch (err) {
+                  console.error(err); // eslint-disable-line no-console
+                }
               }
             }
             break;
