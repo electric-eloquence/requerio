@@ -279,6 +279,10 @@ function reducerClosure(orgSelector) {
             if (action.args.length === 1) {
               if (typeof action.args[0] === 'number') {
                 state.height = action.args[0];
+
+                if (typeof global === 'object') {
+                  state.boundingClientRect.height = action.args[0];
+                }
               }
             }
             break;
@@ -310,6 +314,10 @@ function reducerClosure(orgSelector) {
             if (action.args.length === 1) {
               if (typeof action.args[0] === 'number') {
                 state.width = action.args[0];
+
+                if (typeof global === 'object') {
+                  state.boundingClientRect.width = action.args[0];
+                }
               }
             }
             break;
