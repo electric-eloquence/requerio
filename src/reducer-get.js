@@ -268,7 +268,9 @@ function reducerClosure(orgSelector) {
                 // browsers, DOMRect properties are inherited, not "own" properties (as in hasOwnProperty).
                 const rectObj = action.args[0];
                 for (let i in rectObj) {
-                  state.boundingClientRect[i] = rectObj[i];
+                  if (typeof rectObj[i] === 'number') {
+                    state.boundingClientRect[i] = rectObj[i];
+                  }
                 }
               }
             }
