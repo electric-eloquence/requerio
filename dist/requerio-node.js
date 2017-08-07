@@ -618,12 +618,11 @@ function reducerClosure(orgSelector) {
           case 'getBoundingClientRect':
             if (action.args.length === 1) {
               if (action.args[0] instanceof Object) {
-                // Copy DOMRect object to plain object.
-                try {
-                  state.boundingClientRect = JSON.parse(JSON.stringify(action.args[0]));
-                }
-                catch (err) {
-                  console.error(err); // eslint-disable-line no-console
+                // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) in FF and Edge because in those
+                // browsers, DOMRect properties are inherited, not "own" properties (as in hasOwnProperty).
+                const rectObj = action.args[0];
+                for (let i in rectObj) {
+                  state.boundingClientRect[i] = rectObj[i];
                 }
               }
             }
