@@ -1,5 +1,3 @@
-'use strict';
-
 import organismsIncept from './organisms-incept.js';
 import prototypeOverride from './prototype-override.js';
 import reducerGet from './reducer-get.js';
@@ -13,11 +11,11 @@ class Requerio {
   }
 
   init() {
-    const reducer = reducerGet(this.$orgs);
-    const store = Redux.createStore(reducer);
+    const reducer = reducerGet(this.$orgs, this.Redux);
+    const store = this.Redux.createStore(reducer);
 
-    prototypeOverride(this.$orgs, store);
-    organismsIncept(this.$orgs);
+    prototypeOverride(this.$, store);
+    organismsIncept(this.$orgs, this.$);
   }
 }
 

@@ -1,18 +1,17 @@
-'use strict';
-
 /**
  * Populate $orgs values with jQuery or Cheerio objects.
  *
- * @param {object} $orgs
+ * @param {object} $orgs - Organisms keyed by selector.
+ * @param {object} $ - jQuery object.
  */
-export default $orgs => {
-
+export default ($orgs, $) => {
   for (let i in $orgs) {
     if (!$orgs.hasOwnProperty(i)) {
       continue;
     }
 
     let $org;
+
     if (i === 'document') {
       if (typeof document === 'object') {
         $org = $(document);
@@ -48,7 +47,7 @@ export default $orgs => {
     $org.$items = [];
 
     /**
-     * @property {function} $itemsReset - Empty and fill $org.$items array with organisms selected by jQuery/Cheerio.
+     * @prop {function} $itemsReset - Empty and fill $org.$items array with organisms selected by jQuery/Cheerio.
      * @param {object} $orgReset - A copy, not reference, of the updated organism.
      * To be run on organism inception and dispatch of action.
      * Must only fill $items property of $orgs at top level of the $orgs object.
@@ -58,8 +57,8 @@ export default $orgs => {
 
       $orgReset.each(function () {
         const $this = $(this);
-
         $this.parentSelector = i;
+
         $org.$items.push($this);
       });
     };
@@ -76,6 +75,10 @@ export default $orgs => {
      * Just return empty values as defaults.
      */
     if ($org[0] && typeof $org[0].getBoundingClientRect === 'undefined') {
+
+      /**
+       * @return {object} Object of measurements.
+       */
       $org[0].getBoundingClientRect = () => {
         return {
           bottom: 0,
@@ -87,20 +90,37 @@ export default $orgs => {
         };
       };
     }
+
     if (typeof $org.scrollTop === 'undefined') {
+
+      /**
+       * @param {number} [num] - Distance.
+       * @return {number} Measurement.
+       */
       $org.scrollTop = num => {
         if (typeof num !== 'undefined') {
           $org._scrollTop = num;
         }
+
         return $org._scrollTop;
       };
     }
+
     if (typeof $org.width === 'undefined') {
+
+      /**
+       * @return {number} Measurement.
+       */
       $org.width = () => {
         return 0;
       };
     }
+
     if (typeof $org.height === 'undefined') {
+
+      /**
+       * @return {number} Measurement.
+       */
       $org.height = () => {
         return 0;
       };

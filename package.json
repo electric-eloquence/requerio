@@ -3,9 +3,9 @@
   "version": "0.0.11",
   "description": "Redux + jQuery + Cheerio = predictable client-side state + server-side testability",
   "scripts": {
-    "bundle:client": "browserify dist/requerio-node.js | babel --presets=es2015 | uglifyjs -o dist/requerio-client.min.js",
-    "bundle:node": "rollup --format=cjs --output=dist/requerio-node.js -- src/requerio.js",
-    "bundle": "npm run bundle:node && npm run bundle:client"
+    "bundle": "node run/bundle-node.js && node run/bundle-client.js",
+    "lint": "./node_modules/.bin/eslint src/",
+    "watch": "./node_modules/.bin/nodemon --watch src -e js --exec 'npm run bundle'"
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,12 @@
     "redux": "3.7.2"
   },
   "devDependencies": {
-    "babel-preset-es2015": "^6.24.1"
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "browserify": "^14.4.0",
+    "eslint": "^3.19.0",
+    "nodemon": "^1.12.1",
+    "rollup": "^0.50.0",
+    "uglify": "^0.1.5"
   }
 }

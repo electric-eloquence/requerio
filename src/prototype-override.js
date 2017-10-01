@@ -1,11 +1,30 @@
-'use strict';
+/**
+ * Apply the jQuery or Cheerio method on the organism.
+ *
+ * @param {object} $org - Organism object.
+ * @param {string} method - Name of the method to be applied.
+ * @param {array} args - Arguments array, (not array-like object).
+ * @param {number} [itemIdx] - Index of child item if targeting a child.
+ * @param {object} [$item] - Child item if targeting a child.
+ */
+function applyMethod($org, method, args, itemIdx, $item) {
+  if (typeof $item === 'undefined') {
+    // Apply to $org.
+    $org[method].apply($org, args);
+  }
+  else {
+    // Apply to $item.
+    $item[method].apply($item, args);
+  }
+}
 
 /**
  * Override $.prototype with custom methods for dealing with state.
  *
- * @param {object} stateStore
+ * @param {object} $ - jQuery or Cheerio.
+ * @param {object} stateStore - Redux state store.
  */
-export default ($orgs, stateStore) => {
+export default ($, stateStore) => {
 
   if (!$.prototype.hasRequerio) {
     $.prototype.hasRequerio = true;
@@ -21,6 +40,7 @@ export default ($orgs, stateStore) => {
    * @param {*} args_ - This param contains the values to be passed within the args array to this[method].apply()
    *   If args_ is not an array, we want to preemptively limit the allowed types to string, number, and object.
    *   If it is one of these types, it will get wrapped in an array and submitted.
+   * @param {number} [itemIdx] - Index of child item if targeting a child.
    * @return {object} The new application state.
    */
   if (!$.prototype.dispatchAction) {
@@ -57,32 +77,24 @@ export default ($orgs, stateStore) => {
           (typeof $item[method] === 'function' || typeof this[itemIdx][method] === 'function')
       ) {
 
-        function applyMethod($org, method, args, itemIdx, $item) {
-          if (typeof $item === 'undefined') {
-            // Apply to $org.
-            $org[method].apply($org, args);
-          }
-          else {
-            // Apply to $item.
-            $item[method].apply($item, args);
-          }
-        }
-
         switch (method) {
 
           // Make addClass more convenient by checking if the class already exists.
-          case 'addClass':
+          case 'addClass': {
             if (!this.hasClass(args[0])) {
               applyMethod(this, method, args, itemIdx, $item);
             }
+
             break;
+          }
 
           // attr method with no arg retrieves data and updates state.
-          case 'attr':
+          case 'attr': {
             if (args.length) {
               applyMethod(this, method, args, itemIdx, $item);
             }
             else {
+
               // Cheerio objects have an .attribs property for member element attributes, which is undocumented and may
               // change without notice. However, this is unlikely, since it is derived from its htmlparser2 dependency.
               // The htmlparser2 package has had this property since its initial release.
@@ -122,10 +134,12 @@ export default ($orgs, stateStore) => {
                 }
               }
             }
+
             break;
+          }
 
           // Need to reset $org and $org.$items on removeClass.
-          case 'removeClass':
+          case 'removeClass': {
             applyMethod(this, method, args, itemIdx, $item);
 
             const $orgReset = $(this.selector);
@@ -139,11 +153,13 @@ export default ($orgs, stateStore) => {
             }
 
             this.$itemsReset($orgReset);
+
             break;
+          }
 
           // getBoundingClientRect takes measurements and updates state. This never accepts an argument.
           // Also has to operate on the DOM Element member of the jQuery object (or its Cheerio facsimile).
-          case 'getBoundingClientRect':
+          case 'getBoundingClientRect': {
             if (this.selector === 'document' || this.selector === 'window') {
               break;
             }
@@ -156,12 +172,29 @@ export default ($orgs, stateStore) => {
               // Apply to $item.
               args[0] = this[itemIdx][method].apply(this[itemIdx]);
             }
-            break;
 
-          // scrollTop, width, and height methods with no args take measurements and update state.
+            break;
+          }
+
+          // If innerWidth and innerHeight methods are applied to the window object, copy the respective property to the
+          // state.
+          case 'innerWidth':
+          case 'innerHeight': {
+            if (this.selector === 'window' && typeof window === 'object') {
+              this[method] = window[method];
+              args[0] = window[method];
+
+              break;
+            }
+          }
+
+          // scrollTop, width, height, innerWidth, and innerHeight methods with no args take measurements and update
+          // state. innerWidth and innerHeight, when not applied to window, run the jQuery method.
           case 'scrollTop':
           case 'width':
           case 'height':
+          case 'innerWidth':
+          case 'innerHeight': {
             if (args.length) {
               applyMethod(this, method, args, itemIdx, $item);
             }
@@ -175,7 +208,9 @@ export default ($orgs, stateStore) => {
                 args[0] = $item[method].apply($item);
               }
             }
+
             break;
+          }
 
           // Method applications for other methods.
           default:
@@ -199,7 +234,8 @@ export default ($orgs, stateStore) => {
   /**
    * A reference to Redux store.getState().
    *
-   * @return {object} The component's state.
+   * @param {number} [itemIdx] - If targeting a child of a selector, that child's index.
+   * @return {object} The organism's state.
    */
   if (!$.prototype.getState) {
     $.prototype.getState = function (itemIdx) {
@@ -213,6 +249,12 @@ export default ($orgs, stateStore) => {
 
       // case state.getBoundingClientRect:
       this.dispatchAction('getBoundingClientRect', [], itemIdx);
+
+      // case state.innerWidth:
+      this.dispatchAction('innerWidth', [], itemIdx);
+
+      // case state.innerHeight:
+      this.dispatchAction('innerHeight', [], itemIdx);
 
       // case state.scrollTop:
       this.dispatchAction('scrollTop', [], itemIdx);

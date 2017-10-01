@@ -1,10 +1,8 @@
-'use strict';
-
 /**
  * Closure to generate reducers specific to organisms.
  *
- * @param {string} orgSelector
- * @return
+ * @param {string} orgSelector - The organism's selector.
+ * @return {function} A function configured to work on the orgSelector.
  */
 function reducerClosure(orgSelector) {
 
@@ -18,21 +16,21 @@ function reducerClosure(orgSelector) {
   return function (state_, action) {
 
     /**
-     * A contract for future states. Initial state contains empty values. Do not to let states bloat for no reason (as 
+     * A contract for future states. Initial state contains empty values. Do not to let states bloat for no reason (as
      *   it could with large innerHTML).
      *
-     * @property {object} attribs - equivalent to the attribs property of a Cheerio object. This consists of simple
+     * @property {object} attribs - Equivalent to the attribs property of a Cheerio object. This consists of simple
      *   key-value pairs, and as such, is preferable to use for storing state than a replica of the much more complex
      *   Element.attributes collection, as utilized by jQuery. The attribs property is not documented in the Cheerio
      *   documentation, and may change without notice. However, this is unlikely, since it is derived from its
      *   htmlparser2 dependency. The htmlparser2 package has had this property since its initial release.
-     * @property {object} boundingClientRect - key-value copy of object returned by Element.getBoundingClientRect().
-     * @property {null|string} innerHTML - to DOM Element.innerHTML spec. null means the initial innerHTML state wasn't
+     * @property {object} boundingClientRect - Key-value copy of object returned by Element.getBoundingClientRect().
+     * @property {null|string} innerHTML - To DOM Element.innerHTML spec. null means the initial innerHTML state wasn't
      *   modified. null has a completely different meaning than empty string.
-     * @property {null|number} scrollTop - number of pixels scrolled.
-     * @property {object} style - to DOM Element.style spec.
-     * @property {null|number} width - width in number of pixels.
-     * @property {null|number} height - height in number of pixels.
+     * @property {null|number} scrollTop - Number of pixels scrolled.
+     * @property {object} style - To DOM Element.style spec.
+     * @property {null|number} width - Width in number of pixels.
+     * @property {null|number} height - Height in number of pixels.
      * @property {array} $items - jQuery/Cheerio object members belonging to selection.
      */
     const stateDefault = {
@@ -46,6 +44,8 @@ function reducerClosure(orgSelector) {
         width: null
       },
       innerHTML: null,
+      innerWidth: null,
+      innerHeight: null,
       scrollTop: null,
       style: {},
       width: null,
@@ -65,8 +65,8 @@ function reducerClosure(orgSelector) {
       /**
        * Helper function to add class to state.
        *
-       * @param {array} classesForReducedState
-       * @param {string} classParam
+       * @param {array} classesForReducedState - Array of classes.
+       * @param {string} classParam - Class to add to classesForReducedState.
        * @return {undefined} This function mutates the new state object.
        */
       function addClass(classesForReducedState, classParam) {
@@ -93,9 +93,9 @@ function reducerClosure(orgSelector) {
       /**
        * Helper function to remove class from state.
        *
-       * @param {array} classesForReducedState
-       * @param {string} classParam
-       * @param {number} classIdx
+       * @param {array} classesForReducedState - Array of classes.
+       * @param {string} classParam - Class to remove from classesForReducedState.
+       * @param {number} classIdx_ - Index of class to be removed.
        * @return {undefined} This function mutates the new state object.
        */
       function removeClass(classesForReducedState, classParam, classIdx_) {
@@ -149,27 +149,30 @@ function reducerClosure(orgSelector) {
         }
 
         switch (action.method) {
-
-          case 'addClass':
+          case 'addClass': {
             if (action.args.length === 1) {
               addClass(classesForReducedState, action.args[0]);
             }
-            break;
 
-          case 'removeClass':
+            break;
+          }
+
+          case 'removeClass': {
             if (action.args.length === 1) {
               removeClass(classesForReducedState, action.args[0]);
             }
-            break;
 
-          case 'toggleClass':
+            break;
+          }
+
+          case 'toggleClass': {
             let classesToToggle;
 
             if (typeof action.args[0] === 'string') {
               classesToToggle = action.args[0].split(/\s+/);
             }
             else if (typeof action.args[0] === 'function') {
-              const retval = actions.args[0]();
+              const retval = action.args[0]();
 
               if (typeof retval === 'string') {
                 classesToToggle = retval.split(/\s+/);
@@ -177,7 +180,6 @@ function reducerClosure(orgSelector) {
             }
 
             classesToToggle.forEach(classToToggle => {
-
               if (action.args.length === 1) {
                 const classIdx = classesForReducedState.indexOf(classToToggle);
 
@@ -202,8 +204,9 @@ function reducerClosure(orgSelector) {
             });
 
             break;
+          }
 
-          case 'attr':
+          case 'attr': {
             if (action.args.length === 2) {
               if (typeof action.args[0] === 'string') {
                 if (typeof action.args[1] === 'string') {
@@ -230,9 +233,11 @@ function reducerClosure(orgSelector) {
                 state.attribs[i] = action.args[0][i];
               }
             }
-            break;
 
-          case 'css':
+            break;
+          }
+
+          case 'css': {
             if (action.args.length === 2) {
               if (typeof action.args[0] === 'string') {
                 if (typeof action.args[1] === 'string') {
@@ -256,17 +261,21 @@ function reducerClosure(orgSelector) {
                 if (!action.args[0].hasOwnProperty(i)) {
                   continue;
                 }
+
                 state.style[i] = action.args[0][i];
               }
             }
-            break;
 
-          case 'getBoundingClientRect':
+            break;
+          }
+
+          case 'getBoundingClientRect': {
             if (action.args.length === 1) {
               if (action.args[0] instanceof Object) {
                 // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) in FF and Edge because in those
                 // browsers, DOMRect properties are inherited, not "own" properties (as in hasOwnProperty).
                 const rectObj = action.args[0];
+
                 for (let i in rectObj) {
                   if (typeof rectObj[i] === 'number') {
                     state.boundingClientRect[i] = rectObj[i];
@@ -274,9 +283,11 @@ function reducerClosure(orgSelector) {
                 }
               }
             }
-            break;
 
-          case 'height':
+            break;
+          }
+
+          case 'height': {
             if (action.args.length === 1) {
               if (typeof action.args[0] === 'number') {
                 state.height = action.args[0];
@@ -286,9 +297,11 @@ function reducerClosure(orgSelector) {
                 }
               }
             }
-            break;
 
-          case 'html':
+            break;
+          }
+
+          case 'html': {
             if (action.args.length === 1) {
               if (typeof action.args[0] === 'string') {
                 state.innerHTML = action.args[0];
@@ -301,17 +314,41 @@ function reducerClosure(orgSelector) {
                 }
               }
             }
-            break;
 
-          case 'scrollTop':
+            break;
+          }
+
+          case 'innerWidth': {
+            if (action.args.length === 1) {
+              if (typeof action.args[0] === 'number') {
+                state.innerWidth = action.args[0];
+              }
+            }
+
+            break;
+          }
+
+          case 'innerHeight': {
+            if (action.args.length === 1) {
+              if (typeof action.args[0] === 'number') {
+                state.innerHeight = action.args[0];
+              }
+            }
+
+            break;
+          }
+
+          case 'scrollTop': {
             if (action.args.length === 1) {
               if (typeof action.args[0] === 'number') {
                 state.scrollTop = action.args[0];
               }
             }
-            break;
 
-          case 'width':
+            break;
+          }
+
+          case 'width': {
             if (action.args.length === 1) {
               if (typeof action.args[0] === 'number') {
                 state.width = action.args[0];
@@ -321,10 +358,12 @@ function reducerClosure(orgSelector) {
                 }
               }
             }
-            break;
-        }
 
-      } catch (err) {
+            break;
+          }
+        }
+      }
+      catch (err) {
         console.error(err); // eslint-disable-line no-console
         throw err;
       }
@@ -345,7 +384,8 @@ function reducerClosure(orgSelector) {
         // Clone old state into new state.
         state = JSON.parse(JSON.stringify(state_));
 
-      } catch (err) {
+      }
+      catch (err) {
         // Clone default state into new state if state_ param is undefined.
         state = JSON.parse(JSON.stringify(stateDefault));
       }
@@ -359,7 +399,8 @@ function reducerClosure(orgSelector) {
             state.$items[idx] = JSON.parse(JSON.stringify(stateDefault));
           });
 
-        } catch (err) {
+        }
+        catch (err) {
           console.error(err); // eslint-disable-line no-console
         }
       }
@@ -371,7 +412,8 @@ function reducerClosure(orgSelector) {
               state.$items[idx] = JSON.parse(JSON.stringify(stateDefault));
             }
           });
-        } catch (err) {
+        }
+        catch (err) {
           console.error(err); // eslint-disable-line no-console
         }
       }
@@ -412,10 +454,11 @@ function reducerClosure(orgSelector) {
 /**
  * Combine organism-specific reducers for consumption by whole app.
  *
- * @param {object} $orgs
- * @return {object} combined reducers
+ * @param {object} $orgs - Organisms keyed by selector.
+ * @param {object} Redux - Redux object.
+ * @return {object} Combined reducers
  */
-export default $orgs => {
+export default ($orgs, Redux) => {
   const reducers = {};
 
   for (let i in $orgs) {
@@ -427,4 +470,4 @@ export default $orgs => {
   }
 
   return Redux.combineReducers(reducers);
-}
+};
