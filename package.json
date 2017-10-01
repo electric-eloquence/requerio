@@ -32,6 +32,9 @@
     "url": "https://github.com/electric-eloquence/requerio/issues"
   },
   "homepage": "https://github.com/electric-eloquence/requerio#readme",
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "dependencies": {
     "cheerio": "1.0.0-rc.2",
     "redux": "3.7.2"
