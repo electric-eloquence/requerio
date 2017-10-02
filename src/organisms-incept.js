@@ -80,6 +80,18 @@ export default ($orgs, $) => {
        * @return {object} Object of measurements.
        */
       $org[0].getBoundingClientRect = () => {
+        const rectState = $org.getStore().getState()[$org.selector].boundingClientRect;
+
+        for (let i in rectState) {
+          if (!rectState.hasOwnProperty(i)) {
+            continue;
+          }
+
+          if (rectState[i] !== null) {
+            return rectState;
+          }
+        }
+
         return {
           bottom: 0,
           height: 0,
@@ -90,6 +102,15 @@ export default ($orgs, $) => {
         };
       };
     }
+
+    /**
+     * Give the ability to set boundingClientRect properties. Mostly useful for testing.
+     *
+     * @return {object} Object of measurements.
+     */
+    $org.setBoundingClientRect = (rectObj, itemIdx) => {
+      $org.dispatchAction('setBoundingClientRect', rectObj, itemIdx);
+    };
 
     if (typeof $org.scrollTop === 'undefined') {
 

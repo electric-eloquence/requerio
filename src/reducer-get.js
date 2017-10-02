@@ -272,6 +272,7 @@ function reducerClosure(orgSelector) {
           case 'getBoundingClientRect': {
             if (action.args.length === 1) {
               if (action.args[0] instanceof Object) {
+
                 // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) in FF and Edge because in those
                 // browsers, DOMRect properties are inherited, not "own" properties (as in hasOwnProperty).
                 const rectObj = action.args[0];
@@ -282,6 +283,14 @@ function reducerClosure(orgSelector) {
                   }
                 }
               }
+            }
+
+            break;
+          }
+
+          case 'setBoundingClientRect': {
+            if (action.args[0] instanceof Object) {
+              state.boundingClientRect = JSON.parse(JSON.stringify(action.args[0]));
             }
 
             break;
