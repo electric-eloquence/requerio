@@ -106,7 +106,8 @@ export default ($orgs, $) => {
     /**
      * Give the ability to set boundingClientRect properties. Mostly useful for testing.
      *
-     * @return {object} Object of measurements.
+     * @param {object} rectObj - Object of boundingClientRect measurements. Does not need to include all of them.
+     * @param {number} [itemIdx] - Index of item if child item.
      */
     $org.setBoundingClientRect = (rectObj, itemIdx) => {
       $org.dispatchAction('setBoundingClientRect', rectObj, itemIdx);
