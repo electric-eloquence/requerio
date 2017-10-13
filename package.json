@@ -2,6 +2,7 @@
   "name": "requerio",
   "version": "0.1.0",
   "description": "Redux + jQuery + Cheerio = predictable client-side state + server-side testability",
+  "main": "dist/requerio-node.js",
   "scripts": {
     "bundle": "node run/bundle-node.js && node run/bundle-client.js",
     "lint": "./node_modules/.bin/eslint src/",
