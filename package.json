@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/electric-eloquence/requerio#readme",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=0.1.14"
   },
   "dependencies": {
     "cheerio": "1.0.0-rc.2",
