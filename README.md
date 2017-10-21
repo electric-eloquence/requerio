@@ -10,7 +10,7 @@ const path = require('path');
 
 const cheerio = require('cheerio');
 const Redux = global.Redux = require('redux');
-const Requerio = require('requerio/dist/requerio-node');
+const Requerio = require('requerio/dist/requerio.module');
 
 const html = fs.readFileSync(path.resolve(__dirname, 'markup-you-want-to-test.html'), 'utf8');
 const $ = global.$ = cheerio.load(html);
@@ -39,7 +39,12 @@ function actionsGet(requerio) {
 }
 
 const requerio = new Requerio($, Redux, $organisms, actionsGet);
+
 requerio.init();
+
+const actions = actionsGet(requerio);
+
+/* Test here */
 ```
 
 #### On the client, in HTML:
@@ -47,14 +52,13 @@ requerio.init();
 ```html
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="node_modules/redux/dist/redux.min.js"></script>
+<script src="node_modules/requerio/dist/requerio.min.js"></script>
 ```
 
-#### On the client, in a JavaScript ES6 module:
+#### On the client, in JavaScript:
 
 ```javascript
-import RequerioClass from  './node_modules/requerio/src/requerio.js'; // MS Edge bug prevents same varname as classname.
-
-const $organisms = {
+var $organisms = {
   'window': null,
   'html': null,
   'body': null,
@@ -64,21 +68,30 @@ const $organisms = {
 };
 
 function actionsGet(requerio) {
-  const $orgs = requerio.$orgs;
+  var $orgs = requerio.$orgs;
 
   return {
-    mainHide: () => {
+    mainHide: function () {
       $orgs['#main'].dispatchAction('css', ['display', 'none']);
     },
 
-    mainShow: () => {
+    mainShow: function () {
       $orgs['#main'].dispatchAction('css', ['display', 'block']);
     }
   };
 }
 
-const requerio = new RequerioClass($, Redux, $organisms, actionsGet);
+var requerio = new window.Requerio($, Redux, $organisms, actionsGet);
+
 requerio.init();
+
+var actions = actionsGet(requerio);
+
+actions.mainHide();
+
+setTimeout(function () {
+  actions.mainShow();
+}, 1000);
 ```
 
 Please report any bugs and submit contributions at 

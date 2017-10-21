@@ -19,16 +19,97 @@ function applyMethod($org, method, args, itemIdx, $item) {
 }
 
 /**
+ * Create a stand-in for Element.getBoundingClientRect for the server.
+ * Need this closure to return a function with $org and itemIdx baked in.
+ *
+ * @param {object} $org - Organism object.
+ * @param {number|undefined} itemIdx_ - If targeting an organism item, its index.
+ * @return {function} The returned function returns an object with properties correspond to the properties of DOMRect.
+ */
+function getBoundingClientRectClosure($org, itemIdx_) {
+  return () => {
+    let itemIdx;
+
+    if (itemIdx_) {
+      itemIdx = itemIdx_;
+    }
+    else {
+      itemIdx = 0;
+    }
+
+    const rectState = $org.getStore().getState()[$org.selector].$items[itemIdx].boundingClientRect;
+
+    for (let i in rectState) {
+      if (!rectState.hasOwnProperty(i)) {
+        continue;
+      }
+
+      if (rectState[i] !== null) {
+        return rectState;
+      }
+    }
+
+    return {
+      bottom: 0,
+      height: 0,
+      left: 0,
+      right: 0,
+      top: 0,
+      width: 0
+    };
+  };
+}
+
+/**
+ * Resets the organism's items as they are added or removed.
+ * Executes the .$itemsReset() method attached to the prototype. The reason for this private function is that outside
+ * this file's scope, we don't want to query for the result of the entire selector, only its items.
+ *
+ * @param {object} prototype - The `this` reference from the jQuery/Cheerio prototype.
+ */
+function $itemsReset(prototype) {
+  if (prototype.selector === 'document' || prototype.selector === 'window') {
+    return;
+  }
+
+  const $orgToReset = $(prototype.selector);
+
+  if (prototype.length !== $orgToReset.length) {
+    for (let i in $orgToReset) {
+      if (!$orgToReset.hasOwnProperty(i)) {
+        continue;
+      }
+
+      prototype[i] = $orgToReset[i];
+
+      if (i === parseInt(i, 10).toString()) {
+        if (typeof global === 'object') {
+          prototype[i].getBoundingClientRect = getBoundingClientRectClosure(prototype, i);
+        }
+      }
+    }
+  }
+
+  prototype.$itemsPopulate($orgToReset);
+}
+
+/**
  * Override $.prototype with custom methods for dealing with state.
  *
  * @param {object} $ - jQuery or Cheerio.
  * @param {object} stateStore - Redux state store.
  */
 export default ($, stateStore) => {
-
   if (!$.prototype.hasRequerio) {
     $.prototype.hasRequerio = true;
   }
+
+  /**
+   * A true Array of the selection's numerically-keyed properties.
+   * This is necessary for selection by class and tag, where results number more than one.
+   * Members of this array will be fully-incepted organisms.
+   */
+  $.prototype.$items = [];
 
   /**
    * A shorthand for dispatching state actions.
@@ -45,7 +126,6 @@ export default ($, stateStore) => {
    */
   if (!$.prototype.dispatchAction) {
     $.prototype.dispatchAction = function (method, args_, itemIdx) {
-
       if (typeof itemIdx !== 'undefined' && typeof this[itemIdx] === 'undefined') {
         return;
       }
@@ -65,6 +145,7 @@ export default ($, stateStore) => {
 
       // Submission of itemIdx indicates that the action is to be dispatched on the specific item of the CSS class.
       let $item;
+
       if (typeof itemIdx !== 'undefined') {
         $item = $(this[itemIdx]);
       }
@@ -72,7 +153,8 @@ export default ($, stateStore) => {
       // Side-effects must happen here. stateStore.dispatch() depends on this.
       if (
         typeof itemIdx === 'undefined' &&
-          (typeof this[method] === 'function' || typeof this[0][method] === 'function') ||
+          (typeof this[method] === 'function' || typeof this[0][method] === 'function')
+        ||
         typeof itemIdx !== 'undefined' && $item.length &&
           (typeof $item[method] === 'function' || typeof this[itemIdx][method] === 'function')
       ) {
@@ -97,7 +179,7 @@ export default ($, stateStore) => {
 
               // Cheerio objects have an .attribs property for member element attributes, which is undocumented and may
               // change without notice. However, this is unlikely, since it is derived from its htmlparser2 dependency.
-              // The htmlparser2 package has had this property since its initial release.
+              // The htmlparser3 package has had this property since its initial release.
               if (this[0].attribs) {
                 if (typeof itemIdx === 'undefined') {
                   args[0] = this[0].attribs;
@@ -141,18 +223,7 @@ export default ($, stateStore) => {
           // Need to reset $org and $org.$items on removeClass.
           case 'removeClass': {
             applyMethod(this, method, args, itemIdx, $item);
-
-            const $orgReset = $(this.selector);
-
-            for (let i in $orgReset) {
-              if (!$orgReset.hasOwnProperty(i)) {
-                continue;
-              }
-
-              this[i] = $orgReset[i];
-            }
-
-            this.$itemsReset($orgReset);
+            $itemsReset($(this.selector));
 
             break;
           }
@@ -173,6 +244,10 @@ export default ($, stateStore) => {
               args[0] = this[itemIdx][method].apply(this[itemIdx]);
             }
 
+            break;
+          }
+
+          case 'setBoundingClientRect': {
             break;
           }
 
@@ -243,6 +318,7 @@ export default ($, stateStore) => {
       // In order to return the latest, most accurate state, dispatch these actions to update their properties.
       // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data.
       // Do not preemptively update .style property because we only want to keep track of styles dispatched through js.
+      $itemsReset(this);
 
       // case state.attribs:
       this.dispatchAction('attr', [], itemIdx);
@@ -282,6 +358,43 @@ export default ($, stateStore) => {
   if (!$.prototype.getStore) {
     $.prototype.getStore = function () {
       return stateStore;
+    };
+  }
+
+  /**
+   * Populate organism's items with child organisms.
+   *
+   * @param {object} $orgToPopulate - The parent to the child organisms.
+   */
+  if (!$.prototype.$itemsPopulate) {
+    $.prototype.$itemsPopulate = function ($orgToPopulate) {
+      if (this.selector === 'document' || this.selector === 'window') {
+        return;
+      }
+
+      this.$items = [];
+
+      const $org = this;
+
+      $orgToPopulate.each(function () {
+        const $this = $(this);
+
+        $this.parentSelector = $org.selector;
+
+        $org.$items.push($this);
+      });
+    };
+  }
+
+  /**
+   * Give the ability to set boundingClientRect properties. Only for server-side testing.
+   *
+   * @param {object} rectObj - Object of boundingClientRect measurements. Does not need to include all of them.
+   * @param {number} [itemIdx] - Index of item if child item.
+   */
+  if (typeof global === 'object') {
+    $.prototype.setBoundingClientRect = function (rectObj, itemIdx) {
+      this.dispatchAction('setBoundingClientRect', rectObj, itemIdx);
     };
   }
 };

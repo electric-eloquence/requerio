@@ -6,11 +6,10 @@ const path = require('path');
 
 const binPath = path.resolve('node_modules', '.bin');
 const begin = Date.now();
-const bld = 'dist/requerio-client.min.js';
-const src = 'dist/requerio-node.js';
+const bld = 'dist/requerio.min.js';
+const src = 'dist/requerio.module.js';
 
 let cmd = `${binPath}/browserify ${src} | `;
-cmd += `${binPath}/babel --presets=es2015 | `;
 cmd += `${binPath}/uglifyjs -o ${bld}`;
 
 exec(cmd, (err, stdout, stderr) => {

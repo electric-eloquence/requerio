@@ -21,4 +21,8 @@ class Requerio {
   }
 }
 
+if (typeof window === 'object') {
+  window.Requerio = Requerio;
+}
+
 export default Requerio;
