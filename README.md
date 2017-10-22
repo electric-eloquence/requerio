@@ -5,6 +5,7 @@
 #### If you want to experiment in the meantime, in Node.js:
 
 ```javascript
+const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 
@@ -25,26 +26,30 @@ const $organisms = {
 };
 
 function actionsGet(requerio) {
-  const $orgs = requerio.$orgs;
-
   return {
     mainHide: () => {
-      $orgs['#main'].dispatchAction('css', ['display', 'none']);
+      requerio.$orgs['#main'].dispatchAction('css', ['display', 'none']);
     },
 
     mainShow: () => {
-      $orgs['#main'].dispatchAction('css', ['display', 'block']);
+      requerio.$orgs['#main'].dispatchAction('css', ['display', 'block']);
     }
   };
 }
 
 const requerio = new Requerio($, Redux, $organisms, actionsGet);
-
 requerio.init();
-
 const actions = actionsGet(requerio);
 
-/* Test here */
+/* Test */
+
+actions.mainHide();
+const hiddenDisplayStyle = requerio.$orgs['#main'].getState().style.display;
+assert.equal(hiddenDisplayStyle, 'none');
+
+actions.mainShow();
+const shownDisplayStyle = requerio.$orgs['#main'].getState().style.display;
+assert.equal(shownDisplayStyle, 'block');
 ```
 
 #### On the client, in HTML:
@@ -68,27 +73,25 @@ var $organisms = {
 };
 
 function actionsGet(requerio) {
-  var $orgs = requerio.$orgs;
-
   return {
     mainHide: function () {
-      $orgs['#main'].dispatchAction('css', ['display', 'none']);
+      requerio.$orgs['#main'].dispatchAction('css', ['display', 'none']);
     },
 
     mainShow: function () {
-      $orgs['#main'].dispatchAction('css', ['display', 'block']);
+      requerio.$orgs['#main'].dispatchAction('css', ['display', 'block']);
     }
   };
 }
 
 var requerio = new window.Requerio($, Redux, $organisms, actionsGet);
-
 requerio.init();
-
 var actions = actionsGet(requerio);
 
+// Immediately hide #main.
 actions.mainHide();
 
+// Show #main after 1 second.
 setTimeout(function () {
   actions.mainShow();
 }, 1000);
