@@ -7,13 +7,12 @@
 ```javascript
 const assert = require('assert');
 const fs = require('fs');
-const path = require('path');
 
 const cheerio = require('cheerio');
 const Redux = global.Redux = require('redux');
-const Requerio = require('requerio/dist/requerio.module');
+const Requerio = require('../dist/requerio.module');
 
-const html = fs.readFileSync(path.resolve(__dirname, 'markup-you-want-to-test.html'), 'utf8');
+const html = fs.readFileSync('./index.html', 'utf8');
 const $ = global.$ = cheerio.load(html);
 
 const $organisms = {
@@ -50,14 +49,16 @@ assert.equal(hiddenDisplayStyle, 'none');
 actions.mainShow();
 const shownDisplayStyle = requerio.$orgs['#main'].getState().style.display;
 assert.equal(shownDisplayStyle, 'block');
+
+console.log('Tests passed');
 ```
 
 #### On the client, in HTML:
 
 ```html
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="node_modules/redux/dist/redux.min.js"></script>
-<script src="node_modules/requerio/dist/requerio.min.js"></script>
+<script src="../node_modules/redux/dist/redux.min.js"></script>
+<script src="../dist/requerio.min.js"></script>
 ```
 
 #### On the client, in JavaScript:
@@ -71,31 +72,46 @@ var $organisms = {
   '.main__section--0': null,
   '.main__section--1': null
 };
-
+ 
 function actionsGet(requerio) {
   return {
     mainHide: function () {
       requerio.$orgs['#main'].dispatchAction('css', ['display', 'none']);
     },
-
+ 
     mainShow: function () {
       requerio.$orgs['#main'].dispatchAction('css', ['display', 'block']);
     }
   };
 }
-
+ 
 var requerio = new window.Requerio($, Redux, $organisms, actionsGet);
 requerio.init();
 var actions = actionsGet(requerio);
-
+ 
 // Immediately hide #main.
 actions.mainHide();
-
+ 
 // Show #main after 1 second.
 setTimeout(function () {
   actions.mainShow();
 }, 1000);
 ```
 
-Please report any bugs and submit contributions at 
-https://github.com/electric-eloquence/requerio
+#### Methods supported (thus far):
+
+* addClass
+* removeClass
+* toggleClass
+* attr
+* css
+* getBoundingClientRect
+* setBoundingClientRect
+* height
+* html
+* innerWidth
+* innerHeight
+* scrollTop
+* width
+
+#### See also the <a href="https://github.com/electric-eloquence/requerio/tree/master/examples" target="_blank">examples in GitHub</a>.
