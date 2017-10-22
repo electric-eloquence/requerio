@@ -270,6 +270,8 @@ function applyMethod($org, method, args, itemIdx, $item) {
  * Create a stand-in for Element.getBoundingClientRect for the server.
  * Need this closure to return a function with $org and itemIdx baked in.
  *
+ * @param {object} $org - Organism object.
+ * @param {number|undefined} itemIdx_ - If targeting an organism item, its index.
  * @return {function} The returned function returns an object with properties correspond to the properties of DOMRect.
  */
 function getBoundingClientRectClosure($org, itemIdx_) {
@@ -1118,5 +1120,9 @@ var Requerio = function () {
   }]);
   return Requerio;
 }();
+
+if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object') {
+  window.Requerio = Requerio;
+}
 
 module.exports = Requerio;
