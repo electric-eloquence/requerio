@@ -5,7 +5,7 @@
   "main": "dist/requerio.module.js",
   "scripts": {
     "bundle": "./node_modules/.bin/rollup --config && node run/bundle-client.js",
-    "lint": "./node_modules/.bin/eslint src/",
+    "lint": "./node_modules/.bin/eslint src && ./node_modules/.bin/eslint examples",
     "watch": "./node_modules/.bin/nodemon --watch src -e js --exec 'npm run bundle'"
   },
   "repository": {
