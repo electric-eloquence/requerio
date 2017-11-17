@@ -79,12 +79,12 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
 function stateBuild($org, state, action) {
   try {
     // Cheerio.
-    if ($org[0].attribs) {
+    if ($org[0] && $org[0].attribs) {
       state.attribs = JSON.parse(JSON.stringify($org[0].attribs));
     }
 
     // jQuery.
-    else if ($org[0].attributes && $org[0].attributes.length) {
+    else if ($org[0] && $org[0].attributes && $org[0].attributes.length) {
       for (let i = 0; i < $org[0].attributes.length; i++) {
         const attr = $org[0].attributes[i];
 
@@ -93,6 +93,7 @@ function stateBuild($org, state, action) {
     }
 
     let classesForReducedState = [];
+
     if (state.attribs && state.attribs.class) {
       classesForReducedState = state.attribs.class.split(/\s+/);
     }
@@ -398,21 +399,21 @@ function reducerClosure(orgSelector) {
         state = JSON.parse(JSON.stringify(stateDefault));
       }
 
-      // Populate or update $items array.
-      if (action.method === 'removeClass') {
+      // Update length of state.$items array to match length of $org.$items.
+      if ($org.$items.length < state.$items.length) {
         try {
           // Update $items array with clones of stateDefault.
           state.$items = [];
           $org.$items.forEach(($item, idx) => {
             state.$items[idx] = JSON.parse(JSON.stringify(stateDefault));
           });
-
         }
         catch (err) {
           console.error(err); // eslint-disable-line no-console
         }
       }
-      else {
+
+      else if ($org.$items.length > state.$items.length) {
         try {
           // Populate $items array with clones of stateDefault if necessary.
           $org.$items.forEach(($item, idx) => {

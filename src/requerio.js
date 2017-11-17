@@ -4,7 +4,7 @@ import reducerGet from './reducer-get.js';
 
 class Requerio {
   constructor($, Redux, $organisms, actionsGet) {
-    let root = typeof window === 'object' && window || typeof global === 'object' && global;
+    let root = (typeof window === 'object' && window) || (typeof global === 'object' && global);
 
     this.$ = $;
     this.Redux = Redux;

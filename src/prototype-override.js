@@ -153,18 +153,25 @@ export default ($, stateStore) => {
       // Side-effects must happen here. stateStore.dispatch() depends on this.
       if (
         typeof itemIdx === 'undefined' &&
-          (typeof this[method] === 'function' || typeof this[0][method] === 'function')
+          (typeof this[method] === 'function' || (this[0] && typeof this[0][method] === 'function'))
         ||
         typeof itemIdx !== 'undefined' && $item.length &&
-          (typeof $item[method] === 'function' || typeof this[itemIdx][method] === 'function')
+          (typeof $item[method] === 'function' || (this[itemIdx] && typeof this[itemIdx][method] === 'function'))
       ) {
 
         switch (method) {
 
           // Make addClass more convenient by checking if the class already exists.
           case 'addClass': {
-            if (!this.hasClass(args[0])) {
-              applyMethod(this, method, args, itemIdx, $item);
+            if (typeof itemIdx === 'undefined') {
+              if (!this.hasClass(args[0])) {
+                applyMethod(this, method, args, itemIdx, $item);
+              }
+            }
+            else {
+              if (!$item.hasClass(args[0])) {
+                applyMethod(this, method, args, itemIdx, $item);
+              }
             }
 
             break;
@@ -180,11 +187,11 @@ export default ($, stateStore) => {
               // Cheerio objects have an .attribs property for member element attributes, which is undocumented and may
               // change without notice. However, this is unlikely, since it is derived from its htmlparser2 dependency.
               // The htmlparser3 package has had this property since its initial release.
-              if (this[0].attribs) {
+              if (this[0] && this[0].attribs) {
                 if (typeof itemIdx === 'undefined') {
                   args[0] = this[0].attribs;
                 }
-                else {
+                else if (this[itemIdx] && this[itemIdx].attribs) {
                   args[0] = this[itemIdx].attribs;
                 }
               }
@@ -192,7 +199,7 @@ export default ($, stateStore) => {
               // jQuery saves and keys selected DOM Element objects in an array-like manner on the jQuery object.
               // The .attributes property of each Element object are per the DOM spec.
               // We need to parse the .attributes property to create a key-value store, which we'll submit as args[0].
-              else if (this[0].attributes && this[0].attributes.length) {
+              else if (this[0] && this[0].attributes && this[0].attributes.length) {
                 const attribs = {};
 
                 if (typeof itemIdx === 'undefined') {
@@ -205,7 +212,7 @@ export default ($, stateStore) => {
                   args[0] = attribs;
                 }
 
-                else {
+                else if (this[itemIdx] && this[itemIdx].attributes && this[itemIdx].attributes.length) {
                   for (let i = 0; i < this[itemIdx].attributes.length; i++) {
                     const attr = this[itemIdx].attributes[i];
 
@@ -216,14 +223,6 @@ export default ($, stateStore) => {
                 }
               }
             }
-
-            break;
-          }
-
-          // Need to reset $org and $org.$items on removeClass.
-          case 'removeClass': {
-            applyMethod(this, method, args, itemIdx, $item);
-            $itemsReset($(this.selector));
 
             break;
           }

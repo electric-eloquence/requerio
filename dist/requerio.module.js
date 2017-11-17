@@ -393,15 +393,21 @@ var prototypeOverride = (function ($, stateStore) {
       }
 
       // Side-effects must happen here. stateStore.dispatch() depends on this.
-      if (typeof itemIdx === 'undefined' && (typeof this[method] === 'function' || typeof this[0][method] === 'function') || typeof itemIdx !== 'undefined' && $item.length && (typeof $item[method] === 'function' || typeof this[itemIdx][method] === 'function')) {
+      if (typeof itemIdx === 'undefined' && (typeof this[method] === 'function' || this[0] && typeof this[0][method] === 'function') || typeof itemIdx !== 'undefined' && $item.length && (typeof $item[method] === 'function' || this[itemIdx] && typeof this[itemIdx][method] === 'function')) {
 
         switch (method) {
 
           // Make addClass more convenient by checking if the class already exists.
           case 'addClass':
             {
-              if (!this.hasClass(args[0])) {
-                applyMethod(this, method, args, itemIdx, $item);
+              if (typeof itemIdx === 'undefined') {
+                if (!this.hasClass(args[0])) {
+                  applyMethod(this, method, args, itemIdx, $item);
+                }
+              } else {
+                if (!$item.hasClass(args[0])) {
+                  applyMethod(this, method, args, itemIdx, $item);
+                }
               }
 
               break;
@@ -417,10 +423,10 @@ var prototypeOverride = (function ($, stateStore) {
                 // Cheerio objects have an .attribs property for member element attributes, which is undocumented and may
                 // change without notice. However, this is unlikely, since it is derived from its htmlparser2 dependency.
                 // The htmlparser3 package has had this property since its initial release.
-                if (this[0].attribs) {
+                if (this[0] && this[0].attribs) {
                   if (typeof itemIdx === 'undefined') {
                     args[0] = this[0].attribs;
-                  } else {
+                  } else if (this[itemIdx] && this[itemIdx].attribs) {
                     args[0] = this[itemIdx].attribs;
                   }
                 }
@@ -428,7 +434,7 @@ var prototypeOverride = (function ($, stateStore) {
                 // jQuery saves and keys selected DOM Element objects in an array-like manner on the jQuery object.
                 // The .attributes property of each Element object are per the DOM spec.
                 // We need to parse the .attributes property to create a key-value store, which we'll submit as args[0].
-                else if (this[0].attributes && this[0].attributes.length) {
+                else if (this[0] && this[0].attributes && this[0].attributes.length) {
                     var attribs = {};
 
                     if (typeof itemIdx === 'undefined') {
@@ -439,7 +445,7 @@ var prototypeOverride = (function ($, stateStore) {
                       }
 
                       args[0] = attribs;
-                    } else {
+                    } else if (this[itemIdx] && this[itemIdx].attributes && this[itemIdx].attributes.length) {
                       for (var _i = 0; _i < this[itemIdx].attributes.length; _i++) {
                         var _attr = this[itemIdx].attributes[_i];
 
@@ -450,15 +456,6 @@ var prototypeOverride = (function ($, stateStore) {
                     }
                   }
               }
-
-              break;
-            }
-
-          // Need to reset $org and $org.$items on removeClass.
-          case 'removeClass':
-            {
-              applyMethod(this, method, args, itemIdx, $item);
-              $itemsReset($(this.selector));
 
               break;
             }
@@ -712,12 +709,12 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
 function stateBuild($org, state, action) {
   try {
     // Cheerio.
-    if ($org[0].attribs) {
+    if ($org[0] && $org[0].attribs) {
       state.attribs = JSON.parse(JSON.stringify($org[0].attribs));
     }
 
     // jQuery.
-    else if ($org[0].attributes && $org[0].attributes.length) {
+    else if ($org[0] && $org[0].attributes && $org[0].attributes.length) {
         for (var i = 0; i < $org[0].attributes.length; i++) {
           var attr = $org[0].attributes[i];
 
@@ -726,6 +723,7 @@ function stateBuild($org, state, action) {
       }
 
     var classesForReducedState = [];
+
     if (state.attribs && state.attribs.class) {
       classesForReducedState = state.attribs.class.split(/\s+/);
     }
@@ -1023,8 +1021,8 @@ function reducerClosure(orgSelector) {
         state = JSON.parse(JSON.stringify(stateDefault));
       }
 
-      // Populate or update $items array.
-      if (action.method === 'removeClass') {
+      // Update length of state.$items array to match length of $org.$items.
+      if ($org.$items.length < state.$items.length) {
         try {
           // Update $items array with clones of stateDefault.
           state.$items = [];
@@ -1034,7 +1032,7 @@ function reducerClosure(orgSelector) {
         } catch (err) {
           console.error(err); // eslint-disable-line no-console
         }
-      } else {
+      } else if ($org.$items.length > state.$items.length) {
         try {
           // Populate $items array with clones of stateDefault if necessary.
           $org.$items.forEach(function ($item, idx) {
