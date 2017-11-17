@@ -56,8 +56,8 @@ console.log('Tests passed');
 #### On the client, in HTML:
 
 ```html
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="../node_modules/redux/dist/redux.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
 <script src="../dist/requerio.min.js"></script>
 ```
 
@@ -72,26 +72,26 @@ var $organisms = {
   '.main__section--0': null,
   '.main__section--1': null
 };
- 
+
 function actionsGet(requerio) {
   return {
     mainHide: function () {
       requerio.$orgs['#main'].dispatchAction('css', ['display', 'none']);
     },
- 
+
     mainShow: function () {
       requerio.$orgs['#main'].dispatchAction('css', ['display', 'block']);
     }
   };
 }
- 
+
 var requerio = new window.Requerio($, Redux, $organisms, actionsGet);
 requerio.init();
 var actions = actionsGet(requerio);
- 
+
 // Immediately hide #main.
 actions.mainHide();
- 
+
 // Show #main after 1 second.
 setTimeout(function () {
   actions.mainShow();
