@@ -69,7 +69,7 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
 }
 
 /**
- * This builds state objects for organisms and their member items.
+ * This builds state objects for organisms and their members.
  *
  * @param {object} $org - Organism.
  * @param {object} state - Preinitialized state.
@@ -361,7 +361,7 @@ function reducerClosure(orgSelector) {
      * @property {object} style - To DOM Element.style spec.
      * @property {null|number} width - Width in number of pixels.
      * @property {null|number} height - Height in number of pixels.
-     * @property {array} $items - jQuery/Cheerio object members belonging to selection.
+     * @property {array} $members - jQuery/Cheerio object members belonging to selection.
      */
     const stateDefault = {
       attribs: {},
@@ -380,7 +380,7 @@ function reducerClosure(orgSelector) {
       style: {},
       width: null,
       height: null,
-      $items: []
+      $members: []
     };
 
     // If this is the reducer for the selected organism, reduce and return a new state.
@@ -399,13 +399,13 @@ function reducerClosure(orgSelector) {
         state = JSON.parse(JSON.stringify(stateDefault));
       }
 
-      // Update length of state.$items array to match length of $org.$items.
-      if ($org.$items.length < state.$items.length) {
+      // Update length of state.$members array to match length of $org.$members.
+      if ($org.$members.length < state.$members.length) {
         try {
-          // Update $items array with clones of stateDefault.
-          state.$items = [];
-          $org.$items.forEach(($item, idx) => {
-            state.$items[idx] = JSON.parse(JSON.stringify(stateDefault));
+          // Update $members array with clones of stateDefault.
+          state.$members = [];
+          $org.$members.forEach(($member, idx) => {
+            state.$members[idx] = JSON.parse(JSON.stringify(stateDefault));
           });
         }
         catch (err) {
@@ -413,12 +413,12 @@ function reducerClosure(orgSelector) {
         }
       }
 
-      else if ($org.$items.length > state.$items.length) {
+      else if ($org.$members.length > state.$members.length) {
         try {
-          // Populate $items array with clones of stateDefault if necessary.
-          $org.$items.forEach(($item, idx) => {
-            if (!state.$items[idx]) {
-              state.$items[idx] = JSON.parse(JSON.stringify(stateDefault));
+          // Populate $members array with clones of stateDefault if necessary.
+          $org.$members.forEach(($member, idx) => {
+            if (!state.$members[idx]) {
+              state.$members[idx] = JSON.parse(JSON.stringify(stateDefault));
             }
           });
         }
@@ -435,13 +435,13 @@ function reducerClosure(orgSelector) {
       // Build new state for organism.
       stateBuild($org, state, action);
 
-      // Build new state for selection in $items array.
+      // Build new state for selection in $members array.
       if (
-        typeof action.itemIdx !== 'undefined' &&
-        typeof $org.$items[action.itemIdx] !== 'undefined' &&
-        typeof state.$items[action.itemIdx] !== 'undefined'
+        typeof action.memberIdx !== 'undefined' &&
+        typeof $org.$members[action.memberIdx] !== 'undefined' &&
+        typeof state.$members[action.memberIdx] !== 'undefined'
       ) {
-        stateBuild($org.$items[action.itemIdx], state.$items[action.itemIdx], action);
+        stateBuild($org.$members[action.memberIdx], state.$members[action.memberIdx], action);
       }
 
       return state;

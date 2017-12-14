@@ -4,40 +4,40 @@
  * @param {object} $org - Organism object.
  * @param {string} method - Name of the method to be applied.
  * @param {array} args - Arguments array, (not array-like object).
- * @param {number} [itemIdx] - Index of child item if targeting a child.
- * @param {object} [$item] - Child item if targeting a child.
+ * @param {number} [memberIdx] - Index of member if targeting a member.
+ * @param {object} [$member] - Organism member if targeting a member.
  */
-function applyMethod($org, method, args, itemIdx, $item) {
-  if (typeof $item === 'undefined') {
+function applyMethod($org, method, args, memberIdx, $member) {
+  if (typeof $member === 'undefined') {
     // Apply to $org.
     $org[method].apply($org, args);
   }
   else {
-    // Apply to $item.
-    $item[method].apply($item, args);
+    // Apply to $member.
+    $member[method].apply($member, args);
   }
 }
 
 /**
  * Create a stand-in for Element.getBoundingClientRect for the server.
- * Need this closure to return a function with $org and itemIdx baked in.
+ * Need this closure to return a function with $org and memberIdx baked in.
  *
  * @param {object} $org - Organism object.
- * @param {number|undefined} itemIdx_ - If targeting an organism item, its index.
+ * @param {number|undefined} memberIdx_ - If targeting an organism member, its index.
  * @return {function} The returned function returns an object with properties correspond to the properties of DOMRect.
  */
-function getBoundingClientRectClosure($org, itemIdx_) {
+function getBoundingClientRectClosure($org, memberIdx_) {
   return () => {
-    let itemIdx;
+    let memberIdx;
 
-    if (itemIdx_) {
-      itemIdx = itemIdx_;
+    if (memberIdx_) {
+      memberIdx = memberIdx_;
     }
     else {
-      itemIdx = 0;
+      memberIdx = 0;
     }
 
-    const rectState = $org.getStore().getState()[$org.selector].$items[itemIdx].boundingClientRect;
+    const rectState = $org.getStore().getState()[$org.selector].$members[memberIdx].boundingClientRect;
 
     for (let i in rectState) {
       if (!rectState.hasOwnProperty(i)) {
@@ -61,13 +61,13 @@ function getBoundingClientRectClosure($org, itemIdx_) {
 }
 
 /**
- * Resets the organism's items as they are added or removed.
- * Executes the .$itemsReset() method attached to the prototype. The reason for this private function is that outside
- * this file's scope, we don't want to query for the result of the entire selector, only its items.
+ * Resets the organism's members as they are added or removed.
+ * Executes the .$membersReset() method attached to the prototype. The reason for this private function is that outside
+ * this file's scope, we don't want to query for the result of the entire selector, only its members.
  *
  * @param {object} prototype - The `this` reference from the jQuery/Cheerio prototype.
  */
-function $itemsReset(prototype) {
+function $membersReset(prototype) {
   if (prototype.selector === 'document' || prototype.selector === 'window') {
     return;
   }
@@ -90,7 +90,7 @@ function $itemsReset(prototype) {
     }
   }
 
-  prototype.$itemsPopulate($orgToReset);
+  prototype.$membersPopulate($orgToReset);
 }
 
 /**
@@ -109,7 +109,7 @@ export default ($, stateStore) => {
    * This is necessary for selection by class and tag, where results number more than one.
    * Members of this array will be fully-incepted organisms.
    */
-  $.prototype.$items = [];
+  $.prototype.$members = [];
 
   /**
    * A shorthand for dispatching state actions.
@@ -121,12 +121,12 @@ export default ($, stateStore) => {
    * @param {*} args_ - This param contains the values to be passed within the args array to this[method].apply()
    *   If args_ is not an array, we want to preemptively limit the allowed types to string, number, and object.
    *   If it is one of these types, it will get wrapped in an array and submitted.
-   * @param {number} [itemIdx] - Index of child item if targeting a child.
+   * @param {number} [memberIdx] - Index of member if targeting a member.
    * @return {object} The new application state.
    */
   if (!$.prototype.dispatchAction) {
-    $.prototype.dispatchAction = function (method, args_, itemIdx) {
-      if (typeof itemIdx !== 'undefined' && typeof this[itemIdx] === 'undefined') {
+    $.prototype.dispatchAction = function (method, args_, memberIdx) {
+      if (typeof memberIdx !== 'undefined' && typeof this[memberIdx] === 'undefined') {
         return;
       }
 
@@ -143,34 +143,34 @@ export default ($, stateStore) => {
         args = [args_];
       }
 
-      // Submission of itemIdx indicates that the action is to be dispatched on the specific item of the CSS class.
-      let $item;
+      // Submission of memberIdx indicates that the action is to be dispatched on the specific member of the CSS class.
+      let $member;
 
-      if (typeof itemIdx !== 'undefined') {
-        $item = $(this[itemIdx]);
+      if (typeof memberIdx !== 'undefined') {
+        $member = $(this[memberIdx]);
       }
 
       // Side-effects must happen here. stateStore.dispatch() depends on this.
       if (
-        typeof itemIdx === 'undefined' &&
+        typeof memberIdx === 'undefined' &&
           (typeof this[method] === 'function' || (this[0] && typeof this[0][method] === 'function'))
         ||
-        typeof itemIdx !== 'undefined' && $item.length &&
-          (typeof $item[method] === 'function' || (this[itemIdx] && typeof this[itemIdx][method] === 'function'))
+        typeof memberIdx !== 'undefined' && $member.length &&
+          (typeof $member[method] === 'function' || (this[memberIdx] && typeof this[memberIdx][method] === 'function'))
       ) {
 
         switch (method) {
 
           // Make addClass more convenient by checking if the class already exists.
           case 'addClass': {
-            if (typeof itemIdx === 'undefined') {
+            if (typeof memberIdx === 'undefined') {
               if (!this.hasClass(args[0])) {
-                applyMethod(this, method, args, itemIdx, $item);
+                applyMethod(this, method, args, memberIdx, $member);
               }
             }
             else {
-              if (!$item.hasClass(args[0])) {
-                applyMethod(this, method, args, itemIdx, $item);
+              if (!$member.hasClass(args[0])) {
+                applyMethod(this, method, args, memberIdx, $member);
               }
             }
 
@@ -180,7 +180,7 @@ export default ($, stateStore) => {
           // attr method with no arg retrieves data and updates state.
           case 'attr': {
             if (args.length) {
-              applyMethod(this, method, args, itemIdx, $item);
+              applyMethod(this, method, args, memberIdx, $member);
             }
             else {
 
@@ -188,11 +188,11 @@ export default ($, stateStore) => {
               // change without notice. However, this is unlikely, since it is derived from its htmlparser2 dependency.
               // The htmlparser3 package has had this property since its initial release.
               if (this[0] && this[0].attribs) {
-                if (typeof itemIdx === 'undefined') {
+                if (typeof memberIdx === 'undefined') {
                   args[0] = this[0].attribs;
                 }
-                else if (this[itemIdx] && this[itemIdx].attribs) {
-                  args[0] = this[itemIdx].attribs;
+                else if (this[memberIdx] && this[memberIdx].attribs) {
+                  args[0] = this[memberIdx].attribs;
                 }
               }
 
@@ -202,7 +202,7 @@ export default ($, stateStore) => {
               else if (this[0] && this[0].attributes && this[0].attributes.length) {
                 const attribs = {};
 
-                if (typeof itemIdx === 'undefined') {
+                if (typeof memberIdx === 'undefined') {
                   for (let i = 0; i < this[0].attributes.length; i++) {
                     const attr = this[0].attributes[i];
 
@@ -212,9 +212,9 @@ export default ($, stateStore) => {
                   args[0] = attribs;
                 }
 
-                else if (this[itemIdx] && this[itemIdx].attributes && this[itemIdx].attributes.length) {
-                  for (let i = 0; i < this[itemIdx].attributes.length; i++) {
-                    const attr = this[itemIdx].attributes[i];
+                else if (this[memberIdx] && this[memberIdx].attributes && this[memberIdx].attributes.length) {
+                  for (let i = 0; i < this[memberIdx].attributes.length; i++) {
+                    const attr = this[memberIdx].attributes[i];
 
                     attribs[attr.name] = attr.value;
                   }
@@ -234,13 +234,13 @@ export default ($, stateStore) => {
               break;
             }
 
-            if (typeof $item === 'undefined') {
+            if (typeof $member === 'undefined') {
               // Apply to $org.
               args[0] = this[0][method].apply(this[0]);
             }
             else {
-              // Apply to $item.
-              args[0] = this[itemIdx][method].apply(this[itemIdx]);
+              // Apply to $member.
+              args[0] = this[memberIdx][method].apply(this[memberIdx]);
             }
 
             break;
@@ -270,16 +270,16 @@ export default ($, stateStore) => {
           case 'innerWidth':
           case 'innerHeight': {
             if (args.length) {
-              applyMethod(this, method, args, itemIdx, $item);
+              applyMethod(this, method, args, memberIdx, $member);
             }
             else {
-              if (typeof $item === 'undefined') {
+              if (typeof $member === 'undefined') {
                 // Apply to $org.
                 args[0] = this[method].apply(this);
               }
               else {
-                // Apply to $item.
-                args[0] = $item[method].apply($item);
+                // Apply to $member.
+                args[0] = $member[method].apply($member);
               }
             }
 
@@ -288,7 +288,7 @@ export default ($, stateStore) => {
 
           // Method applications for other methods.
           default:
-            applyMethod(this, method, args, itemIdx, $item);
+            applyMethod(this, method, args, memberIdx, $member);
         }
       }
 
@@ -296,7 +296,7 @@ export default ($, stateStore) => {
         type: '',
         selector: this.selector,
         $org: this,
-        itemIdx: itemIdx,
+        memberIdx: memberIdx,
         method: method,
         args: args
       });
@@ -308,43 +308,43 @@ export default ($, stateStore) => {
   /**
    * A reference to Redux store.getState().
    *
-   * @param {number} [itemIdx] - If targeting a child of a selector, that child's index.
+   * @param {number} [memberIdx] - If targeting a child of a selector, that child's index.
    * @return {object} The organism's state.
    */
   if (!$.prototype.getState) {
-    $.prototype.getState = function (itemIdx) {
+    $.prototype.getState = function (memberIdx) {
 
       // In order to return the latest, most accurate state, dispatch these actions to update their properties.
       // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data.
       // Do not preemptively update .style property because we only want to keep track of styles dispatched through js.
-      $itemsReset(this);
+      $membersReset(this);
 
       // case state.attribs:
-      this.dispatchAction('attr', [], itemIdx);
+      this.dispatchAction('attr', [], memberIdx);
 
       // case state.getBoundingClientRect:
-      this.dispatchAction('getBoundingClientRect', [], itemIdx);
+      this.dispatchAction('getBoundingClientRect', [], memberIdx);
 
       // case state.innerWidth:
-      this.dispatchAction('innerWidth', [], itemIdx);
+      this.dispatchAction('innerWidth', [], memberIdx);
 
       // case state.innerHeight:
-      this.dispatchAction('innerHeight', [], itemIdx);
+      this.dispatchAction('innerHeight', [], memberIdx);
 
       // case state.scrollTop:
-      this.dispatchAction('scrollTop', [], itemIdx);
+      this.dispatchAction('scrollTop', [], memberIdx);
 
       // case state.width:
-      this.dispatchAction('width', [], itemIdx);
+      this.dispatchAction('width', [], memberIdx);
 
       // case state.height:
-      this.dispatchAction('height', [], itemIdx);
+      this.dispatchAction('height', [], memberIdx);
 
-      if (typeof itemIdx === 'undefined') {
+      if (typeof memberIdx === 'undefined') {
         return stateStore.getState()[this.selector];
       }
       else {
-        return stateStore.getState()[this.selector].$items[itemIdx];
+        return stateStore.getState()[this.selector].$members[memberIdx];
       }
     };
   }
@@ -361,17 +361,17 @@ export default ($, stateStore) => {
   }
 
   /**
-   * Populate organism's items with child organisms.
+   * Populate organism's members with child organisms.
    *
    * @param {object} $orgToPopulate - The parent to the child organisms.
    */
-  if (!$.prototype.$itemsPopulate) {
-    $.prototype.$itemsPopulate = function ($orgToPopulate) {
+  if (!$.prototype.$membersPopulate) {
+    $.prototype.$membersPopulate = function ($orgToPopulate) {
       if (this.selector === 'document' || this.selector === 'window') {
         return;
       }
 
-      this.$items = [];
+      this.$members = [];
 
       const $org = this;
 
@@ -380,7 +380,7 @@ export default ($, stateStore) => {
 
         $this.parentSelector = $org.selector;
 
-        $org.$items.push($this);
+        $org.$members.push($this);
       });
     };
   }
@@ -389,11 +389,11 @@ export default ($, stateStore) => {
    * Give the ability to set boundingClientRect properties. Only for server-side testing.
    *
    * @param {object} rectObj - Object of boundingClientRect measurements. Does not need to include all of them.
-   * @param {number} [itemIdx] - Index of item if child item.
+   * @param {number} [memberIdx] - Index of member if child member.
    */
   if (typeof global === 'object') {
-    $.prototype.setBoundingClientRect = function (rectObj, itemIdx) {
-      this.dispatchAction('setBoundingClientRect', rectObj, itemIdx);
+    $.prototype.setBoundingClientRect = function (rectObj, memberIdx) {
+      this.dispatchAction('setBoundingClientRect', rectObj, memberIdx);
     };
   }
 };

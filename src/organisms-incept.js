@@ -34,14 +34,14 @@ export default ($orgs, $) => {
 
     // Cheerio doesn't have .selector property.
     // .selector property removed in jQuery 3.
-    // Needs to get set here and not in the prototype override because $org.$itemsPopulate() depends on it and there
+    // Needs to get set here and not in the prototype override because $org.$membersPopulate() depends on it and there
     // doesn't seem to be an easy way to determine it from within the prototype.
     if (typeof $org.selector === 'undefined') {
       $org.selector = i;
     }
 
     if (i !== 'document' && i !== 'window') {
-      $org.$itemsPopulate($org);
+      $org.$membersPopulate($org);
     }
 
     // /////////////////////////////////////////////////////////////////////////
