@@ -4,6 +4,14 @@
 
 #### If you want to experiment in the meantime, in Node.js:
 
+##### Install
+
+```javascript
+npm install cheerio redux requerio
+```
+
+##### Code
+
 ```javascript
 const assert = require('assert');
 const fs = require('fs');
