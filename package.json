@@ -1,6 +1,6 @@
 {
   "name": "requerio",
-  "version": "0.2.2-rc.0",
+  "version": "0.2.2-rc.1",
   "description": "Redux + jQuery + Cheerio = predictable client-side state + server-side testability",
   "main": "dist/requerio.module.js",
   "scripts": {
