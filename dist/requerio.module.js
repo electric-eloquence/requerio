@@ -183,14 +183,14 @@ var organismsIncept = (function ($orgs, $) {
 
     // Cheerio doesn't have .selector property.
     // .selector property removed in jQuery 3.
-    // Needs to get set here and not in the prototype override because $org.$itemsPopulate() depends on it and there
+    // Needs to get set here and not in the prototype override because $org.$membersPopulate() depends on it and there
     // doesn't seem to be an easy way to determine it from within the prototype.
     if (typeof $org.selector === 'undefined') {
       $org.selector = i;
     }
 
     if (i !== 'document' && i !== 'window') {
-      $org.$itemsPopulate($org);
+      $org.$membersPopulate($org);
     }
 
     // /////////////////////////////////////////////////////////////////////////
@@ -253,38 +253,38 @@ var organismsIncept = (function ($orgs, $) {
  * @param {object} $org - Organism object.
  * @param {string} method - Name of the method to be applied.
  * @param {array} args - Arguments array, (not array-like object).
- * @param {number} [itemIdx] - Index of child item if targeting a child.
- * @param {object} [$item] - Child item if targeting a child.
+ * @param {number} [memberIdx] - Index of member if targeting a member.
+ * @param {object} [$member] - Organism member if targeting a member.
  */
-function applyMethod($org, method, args, itemIdx, $item) {
-  if (typeof $item === 'undefined') {
+function applyMethod($org, method, args, memberIdx, $member) {
+  if (typeof $member === 'undefined') {
     // Apply to $org.
     $org[method].apply($org, args);
   } else {
-    // Apply to $item.
-    $item[method].apply($item, args);
+    // Apply to $member.
+    $member[method].apply($member, args);
   }
 }
 
 /**
  * Create a stand-in for Element.getBoundingClientRect for the server.
- * Need this closure to return a function with $org and itemIdx baked in.
+ * Need this closure to return a function with $org and memberIdx baked in.
  *
  * @param {object} $org - Organism object.
- * @param {number|undefined} itemIdx_ - If targeting an organism item, its index.
+ * @param {number|undefined} memberIdx_ - If targeting an organism member, its index.
  * @return {function} The returned function returns an object with properties correspond to the properties of DOMRect.
  */
-function getBoundingClientRectClosure($org, itemIdx_) {
+function getBoundingClientRectClosure($org, memberIdx_) {
   return function () {
-    var itemIdx = void 0;
+    var memberIdx = void 0;
 
-    if (itemIdx_) {
-      itemIdx = itemIdx_;
+    if (memberIdx_) {
+      memberIdx = memberIdx_;
     } else {
-      itemIdx = 0;
+      memberIdx = 0;
     }
 
-    var rectState = $org.getStore().getState()[$org.selector].$items[itemIdx].boundingClientRect;
+    var rectState = $org.getStore().getState()[$org.selector].$members[memberIdx].boundingClientRect;
 
     for (var i in rectState) {
       if (!rectState.hasOwnProperty(i)) {
@@ -308,13 +308,13 @@ function getBoundingClientRectClosure($org, itemIdx_) {
 }
 
 /**
- * Resets the organism's items as they are added or removed.
- * Executes the .$itemsReset() method attached to the prototype. The reason for this private function is that outside
- * this file's scope, we don't want to query for the result of the entire selector, only its items.
+ * Resets the organism's members as they are added or removed.
+ * Executes the .$membersReset() method attached to the prototype. The reason for this private function is that outside
+ * this file's scope, we don't want to query for the result of the entire selector, only its members.
  *
  * @param {object} prototype - The `this` reference from the jQuery/Cheerio prototype.
  */
-function $itemsReset(prototype) {
+function $membersReset(prototype) {
   if (prototype.selector === 'document' || prototype.selector === 'window') {
     return;
   }
@@ -337,7 +337,7 @@ function $itemsReset(prototype) {
     }
   }
 
-  prototype.$itemsPopulate($orgToReset);
+  prototype.$membersPopulate($orgToReset);
 }
 
 /**
@@ -356,7 +356,7 @@ var prototypeOverride = (function ($, stateStore) {
    * This is necessary for selection by class and tag, where results number more than one.
    * Members of this array will be fully-incepted organisms.
    */
-  $.prototype.$items = [];
+  $.prototype.$members = [];
 
   /**
    * A shorthand for dispatching state actions.
@@ -368,12 +368,12 @@ var prototypeOverride = (function ($, stateStore) {
    * @param {*} args_ - This param contains the values to be passed within the args array to this[method].apply()
    *   If args_ is not an array, we want to preemptively limit the allowed types to string, number, and object.
    *   If it is one of these types, it will get wrapped in an array and submitted.
-   * @param {number} [itemIdx] - Index of child item if targeting a child.
+   * @param {number} [memberIdx] - Index of member if targeting a member.
    * @return {object} The new application state.
    */
   if (!$.prototype.dispatchAction) {
-    $.prototype.dispatchAction = function (method, args_, itemIdx) {
-      if (typeof itemIdx !== 'undefined' && typeof this[itemIdx] === 'undefined') {
+    $.prototype.dispatchAction = function (method, args_, memberIdx) {
+      if (typeof memberIdx !== 'undefined' && typeof this[memberIdx] === 'undefined') {
         return;
       }
 
@@ -385,28 +385,28 @@ var prototypeOverride = (function ($, stateStore) {
         args = [args_];
       }
 
-      // Submission of itemIdx indicates that the action is to be dispatched on the specific item of the CSS class.
-      var $item = void 0;
+      // Submission of memberIdx indicates that the action is to be dispatched on the specific member of the CSS class.
+      var $member = void 0;
 
-      if (typeof itemIdx !== 'undefined') {
-        $item = $(this[itemIdx]);
+      if (typeof memberIdx !== 'undefined') {
+        $member = $(this[memberIdx]);
       }
 
       // Side-effects must happen here. stateStore.dispatch() depends on this.
-      if (typeof itemIdx === 'undefined' && (typeof this[method] === 'function' || this[0] && typeof this[0][method] === 'function') || typeof itemIdx !== 'undefined' && $item.length && (typeof $item[method] === 'function' || this[itemIdx] && typeof this[itemIdx][method] === 'function')) {
+      if (typeof memberIdx === 'undefined' && (typeof this[method] === 'function' || this[0] && typeof this[0][method] === 'function') || typeof memberIdx !== 'undefined' && $member.length && (typeof $member[method] === 'function' || this[memberIdx] && typeof this[memberIdx][method] === 'function')) {
 
         switch (method) {
 
           // Make addClass more convenient by checking if the class already exists.
           case 'addClass':
             {
-              if (typeof itemIdx === 'undefined') {
+              if (typeof memberIdx === 'undefined') {
                 if (!this.hasClass(args[0])) {
-                  applyMethod(this, method, args, itemIdx, $item);
+                  applyMethod(this, method, args, memberIdx, $member);
                 }
               } else {
-                if (!$item.hasClass(args[0])) {
-                  applyMethod(this, method, args, itemIdx, $item);
+                if (!$member.hasClass(args[0])) {
+                  applyMethod(this, method, args, memberIdx, $member);
                 }
               }
 
@@ -417,17 +417,17 @@ var prototypeOverride = (function ($, stateStore) {
           case 'attr':
             {
               if (args.length) {
-                applyMethod(this, method, args, itemIdx, $item);
+                applyMethod(this, method, args, memberIdx, $member);
               } else {
 
                 // Cheerio objects have an .attribs property for member element attributes, which is undocumented and may
                 // change without notice. However, this is unlikely, since it is derived from its htmlparser2 dependency.
                 // The htmlparser3 package has had this property since its initial release.
                 if (this[0] && this[0].attribs) {
-                  if (typeof itemIdx === 'undefined') {
+                  if (typeof memberIdx === 'undefined') {
                     args[0] = this[0].attribs;
-                  } else if (this[itemIdx] && this[itemIdx].attribs) {
-                    args[0] = this[itemIdx].attribs;
+                  } else if (this[memberIdx] && this[memberIdx].attribs) {
+                    args[0] = this[memberIdx].attribs;
                   }
                 }
 
@@ -437,7 +437,7 @@ var prototypeOverride = (function ($, stateStore) {
                 else if (this[0] && this[0].attributes && this[0].attributes.length) {
                     var attribs = {};
 
-                    if (typeof itemIdx === 'undefined') {
+                    if (typeof memberIdx === 'undefined') {
                       for (var i = 0; i < this[0].attributes.length; i++) {
                         var attr = this[0].attributes[i];
 
@@ -445,9 +445,9 @@ var prototypeOverride = (function ($, stateStore) {
                       }
 
                       args[0] = attribs;
-                    } else if (this[itemIdx] && this[itemIdx].attributes && this[itemIdx].attributes.length) {
-                      for (var _i = 0; _i < this[itemIdx].attributes.length; _i++) {
-                        var _attr = this[itemIdx].attributes[_i];
+                    } else if (this[memberIdx] && this[memberIdx].attributes && this[memberIdx].attributes.length) {
+                      for (var _i = 0; _i < this[memberIdx].attributes.length; _i++) {
+                        var _attr = this[memberIdx].attributes[_i];
 
                         attribs[_attr.name] = _attr.value;
                       }
@@ -468,12 +468,12 @@ var prototypeOverride = (function ($, stateStore) {
                 break;
               }
 
-              if (typeof $item === 'undefined') {
+              if (typeof $member === 'undefined') {
                 // Apply to $org.
                 args[0] = this[0][method].apply(this[0]);
               } else {
-                // Apply to $item.
-                args[0] = this[itemIdx][method].apply(this[itemIdx]);
+                // Apply to $member.
+                args[0] = this[memberIdx][method].apply(this[memberIdx]);
               }
 
               break;
@@ -506,14 +506,14 @@ var prototypeOverride = (function ($, stateStore) {
           case 'innerHeight':
             {
               if (args.length) {
-                applyMethod(this, method, args, itemIdx, $item);
+                applyMethod(this, method, args, memberIdx, $member);
               } else {
-                if (typeof $item === 'undefined') {
+                if (typeof $member === 'undefined') {
                   // Apply to $org.
                   args[0] = this[method].apply(this);
                 } else {
-                  // Apply to $item.
-                  args[0] = $item[method].apply($item);
+                  // Apply to $member.
+                  args[0] = $member[method].apply($member);
                 }
               }
 
@@ -522,7 +522,7 @@ var prototypeOverride = (function ($, stateStore) {
 
           // Method applications for other methods.
           default:
-            applyMethod(this, method, args, itemIdx, $item);
+            applyMethod(this, method, args, memberIdx, $member);
         }
       }
 
@@ -530,7 +530,7 @@ var prototypeOverride = (function ($, stateStore) {
         type: '',
         selector: this.selector,
         $org: this,
-        itemIdx: itemIdx,
+        memberIdx: memberIdx,
         method: method,
         args: args
       });
@@ -542,42 +542,42 @@ var prototypeOverride = (function ($, stateStore) {
   /**
    * A reference to Redux store.getState().
    *
-   * @param {number} [itemIdx] - If targeting a child of a selector, that child's index.
+   * @param {number} [memberIdx] - If targeting a child of a selector, that child's index.
    * @return {object} The organism's state.
    */
   if (!$.prototype.getState) {
-    $.prototype.getState = function (itemIdx) {
+    $.prototype.getState = function (memberIdx) {
 
       // In order to return the latest, most accurate state, dispatch these actions to update their properties.
       // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data.
       // Do not preemptively update .style property because we only want to keep track of styles dispatched through js.
-      $itemsReset(this);
+      $membersReset(this);
 
       // case state.attribs:
-      this.dispatchAction('attr', [], itemIdx);
+      this.dispatchAction('attr', [], memberIdx);
 
       // case state.getBoundingClientRect:
-      this.dispatchAction('getBoundingClientRect', [], itemIdx);
+      this.dispatchAction('getBoundingClientRect', [], memberIdx);
 
       // case state.innerWidth:
-      this.dispatchAction('innerWidth', [], itemIdx);
+      this.dispatchAction('innerWidth', [], memberIdx);
 
       // case state.innerHeight:
-      this.dispatchAction('innerHeight', [], itemIdx);
+      this.dispatchAction('innerHeight', [], memberIdx);
 
       // case state.scrollTop:
-      this.dispatchAction('scrollTop', [], itemIdx);
+      this.dispatchAction('scrollTop', [], memberIdx);
 
       // case state.width:
-      this.dispatchAction('width', [], itemIdx);
+      this.dispatchAction('width', [], memberIdx);
 
       // case state.height:
-      this.dispatchAction('height', [], itemIdx);
+      this.dispatchAction('height', [], memberIdx);
 
-      if (typeof itemIdx === 'undefined') {
+      if (typeof memberIdx === 'undefined') {
         return stateStore.getState()[this.selector];
       } else {
-        return stateStore.getState()[this.selector].$items[itemIdx];
+        return stateStore.getState()[this.selector].$members[memberIdx];
       }
     };
   }
@@ -594,17 +594,17 @@ var prototypeOverride = (function ($, stateStore) {
   }
 
   /**
-   * Populate organism's items with child organisms.
+   * Populate organism's members with child organisms.
    *
    * @param {object} $orgToPopulate - The parent to the child organisms.
    */
-  if (!$.prototype.$itemsPopulate) {
-    $.prototype.$itemsPopulate = function ($orgToPopulate) {
+  if (!$.prototype.$membersPopulate) {
+    $.prototype.$membersPopulate = function ($orgToPopulate) {
       if (this.selector === 'document' || this.selector === 'window') {
         return;
       }
 
-      this.$items = [];
+      this.$members = [];
 
       var $org = this;
 
@@ -613,7 +613,7 @@ var prototypeOverride = (function ($, stateStore) {
 
         $this.parentSelector = $org.selector;
 
-        $org.$items.push($this);
+        $org.$members.push($this);
       });
     };
   }
@@ -622,11 +622,11 @@ var prototypeOverride = (function ($, stateStore) {
    * Give the ability to set boundingClientRect properties. Only for server-side testing.
    *
    * @param {object} rectObj - Object of boundingClientRect measurements. Does not need to include all of them.
-   * @param {number} [itemIdx] - Index of item if child item.
+   * @param {number} [memberIdx] - Index of member if child member.
    */
   if ((typeof global === 'undefined' ? 'undefined' : _typeof(global)) === 'object') {
-    $.prototype.setBoundingClientRect = function (rectObj, itemIdx) {
-      this.dispatchAction('setBoundingClientRect', rectObj, itemIdx);
+    $.prototype.setBoundingClientRect = function (rectObj, memberIdx) {
+      this.dispatchAction('setBoundingClientRect', rectObj, memberIdx);
     };
   }
 });
@@ -699,7 +699,7 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
 }
 
 /**
- * This builds state objects for organisms and their member items.
+ * This builds state objects for organisms and their members.
  *
  * @param {object} $org - Organism.
  * @param {object} state - Preinitialized state.
@@ -985,7 +985,7 @@ function reducerClosure(orgSelector) {
      * @property {object} style - To DOM Element.style spec.
      * @property {null|number} width - Width in number of pixels.
      * @property {null|number} height - Height in number of pixels.
-     * @property {array} $items - jQuery/Cheerio object members belonging to selection.
+     * @property {array} $members - jQuery/Cheerio object members belonging to selection.
      */
     var stateDefault = {
       attribs: {},
@@ -1004,7 +1004,7 @@ function reducerClosure(orgSelector) {
       style: {},
       width: null,
       height: null,
-      $items: []
+      $members: []
     };
 
     // If this is the reducer for the selected organism, reduce and return a new state.
@@ -1021,23 +1021,23 @@ function reducerClosure(orgSelector) {
         state = JSON.parse(JSON.stringify(stateDefault));
       }
 
-      // Update length of state.$items array to match length of $org.$items.
-      if ($org.$items.length < state.$items.length) {
+      // Update length of state.$members array to match length of $org.$members.
+      if ($org.$members.length < state.$members.length) {
         try {
-          // Update $items array with clones of stateDefault.
-          state.$items = [];
-          $org.$items.forEach(function ($item, idx) {
-            state.$items[idx] = JSON.parse(JSON.stringify(stateDefault));
+          // Update $members array with clones of stateDefault.
+          state.$members = [];
+          $org.$members.forEach(function ($member, idx) {
+            state.$members[idx] = JSON.parse(JSON.stringify(stateDefault));
           });
         } catch (err) {
           console.error(err); // eslint-disable-line no-console
         }
-      } else if ($org.$items.length > state.$items.length) {
+      } else if ($org.$members.length > state.$members.length) {
         try {
-          // Populate $items array with clones of stateDefault if necessary.
-          $org.$items.forEach(function ($item, idx) {
-            if (!state.$items[idx]) {
-              state.$items[idx] = JSON.parse(JSON.stringify(stateDefault));
+          // Populate $members array with clones of stateDefault if necessary.
+          $org.$members.forEach(function ($member, idx) {
+            if (!state.$members[idx]) {
+              state.$members[idx] = JSON.parse(JSON.stringify(stateDefault));
             }
           });
         } catch (err) {
@@ -1053,9 +1053,9 @@ function reducerClosure(orgSelector) {
       // Build new state for organism.
       stateBuild($org, state, action);
 
-      // Build new state for selection in $items array.
-      if (typeof action.itemIdx !== 'undefined' && typeof $org.$items[action.itemIdx] !== 'undefined' && typeof state.$items[action.itemIdx] !== 'undefined') {
-        stateBuild($org.$items[action.itemIdx], state.$items[action.itemIdx], action);
+      // Build new state for selection in $members array.
+      if (typeof action.memberIdx !== 'undefined' && typeof $org.$members[action.memberIdx] !== 'undefined' && typeof state.$members[action.memberIdx] !== 'undefined') {
+        stateBuild($org.$members[action.memberIdx], state.$members[action.memberIdx], action);
       }
 
       return state;
