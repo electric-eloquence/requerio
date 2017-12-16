@@ -2,7 +2,7 @@
   "name": "requerio",
   "version": "0.2.2-rc.1",
   "description": "Redux + jQuery + Cheerio = predictable client-side state + server-side testability",
-  "main": "dist/requerio.module.js",
+  "main": "dist/requerio.node_module.js",
   "scripts": {
     "bundle": "./node_modules/.bin/rollup --config && node run/bundle-client.js",
     "lint": "./node_modules/.bin/eslint src && ./node_modules/.bin/eslint examples",
@@ -33,9 +33,6 @@
     "url": "https://github.com/electric-eloquence/requerio/issues"
   },
   "homepage": "https://github.com/electric-eloquence/requerio#readme",
-  "engines": {
-    "node": ">=0.10.0"
-  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-plugin-external-helpers": "^6.22.0",

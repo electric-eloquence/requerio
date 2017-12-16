@@ -13,10 +13,10 @@ function addClass(classesForReducedState, classParam, state) {
     classesToAdd = classParam.split(/\s+/);
   }
   else if (typeof classParam === 'function') {
-    const retval = classParam();
+    const retVal = classParam();
 
-    if (typeof retval === 'string') {
-      classesToAdd = retval.split(/\s+/);
+    if (typeof retVal === 'string') {
+      classesToAdd = retVal.split(/\s+/);
     }
   }
 
@@ -25,6 +25,9 @@ function addClass(classesForReducedState, classParam, state) {
       state.attribs.class += ` ${classToAdd}`;
     }
   });
+
+  state.classArray = classesToAdd;
+  state.classList = state.classArray;
 }
 
 /**
@@ -43,10 +46,10 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
     classesToRemove = classParam.split(/\s+/);
   }
   else if (typeof classParam === 'function') {
-    const retval = classParam();
+    const retVal = classParam();
 
-    if (typeof retval === 'string') {
-      classesToRemove = retval.split(/\s+/);
+    if (typeof retVal === 'string') {
+      classesToRemove = retVal.split(/\s+/);
     }
   }
 
@@ -66,6 +69,8 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
   });
 
   state.attribs.class = classesForReducedState.join(' ');
+  state.classArray = classesForReducedState;
+  state.classList = state.classArray;
 }
 
 /**
@@ -96,6 +101,8 @@ function stateBuild($org, state, action) {
 
     if (state.attribs && state.attribs.class) {
       classesForReducedState = state.attribs.class.split(/\s+/);
+      state.classArray = classesForReducedState;
+      state.classList = state.classArray;
     }
 
     switch (action.method) {
@@ -122,10 +129,10 @@ function stateBuild($org, state, action) {
           classesToToggle = action.args[0].split(/\s+/);
         }
         else if (typeof action.args[0] === 'function') {
-          const retval = action.args[0]();
+          const retVal = action.args[0]();
 
-          if (typeof retval === 'string') {
-            classesToToggle = retval.split(/\s+/);
+          if (typeof retVal === 'string') {
+            classesToToggle = retVal.split(/\s+/);
           }
         }
 
@@ -163,10 +170,10 @@ function stateBuild($org, state, action) {
               state.attribs[action.args[0]] = action.args[1];
             }
             else if (typeof action.args[1] === 'function') {
-              const retval = action.args[1]();
+              const retVal = action.args[1]();
 
-              if (typeof retval === 'string') {
-                state.attribs[action.args[0]] = retval;
+              if (typeof retVal === 'string') {
+                state.attribs[action.args[0]] = retVal;
               }
             }
           }
@@ -194,10 +201,10 @@ function stateBuild($org, state, action) {
               state.style[action.args[0]] = action.args[1];
             }
             else if (typeof action.args[1] === 'function') {
-              const retval = action.args[1]();
+              const retVal = action.args[1]();
 
-              if (typeof retval === 'string') {
-                state.style[action.args[0]] = retval;
+              if (typeof retVal === 'string') {
+                state.style[action.args[0]] = retVal;
               }
             }
           }
@@ -268,10 +275,10 @@ function stateBuild($org, state, action) {
             state.innerHTML = action.args[0];
           }
           else if (typeof action.args[0] === 'function') {
-            const retval = action.args[0]();
+            const retVal = action.args[0]();
 
-            if (typeof retval === 'string') {
-              state.style[action.args[0]] = retval;
+            if (typeof retVal === 'string') {
+              state.style[action.args[0]] = retVal;
             }
           }
         }
@@ -375,6 +382,8 @@ function reducerClosure(orgSelector) {
         bottom: null,
         left: null
       },
+      classArray: [],
+      classList: [],
       innerHTML: null,
       innerWidth: null,
       innerHeight: null,

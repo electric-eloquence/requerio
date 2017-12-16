@@ -7,7 +7,7 @@ const path = require('path');
 const binPath = path.resolve('node_modules', '.bin');
 const begin = Date.now();
 const bld = 'dist/requerio.min.js';
-const src = 'dist/requerio.module.js';
+const src = 'dist/requerio.node_module.js';
 
 let cmd = `${binPath}/browserify ${src} | `;
 cmd += `${binPath}/uglifyjs -o ${bld}`;

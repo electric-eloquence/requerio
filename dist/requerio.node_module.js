@@ -645,10 +645,10 @@ function addClass(classesForReducedState, classParam, state) {
   if (typeof classParam === 'string') {
     classesToAdd = classParam.split(/\s+/);
   } else if (typeof classParam === 'function') {
-    var retval = classParam();
+    var retVal = classParam();
 
-    if (typeof retval === 'string') {
-      classesToAdd = retval.split(/\s+/);
+    if (typeof retVal === 'string') {
+      classesToAdd = retVal.split(/\s+/);
     }
   }
 
@@ -657,6 +657,9 @@ function addClass(classesForReducedState, classParam, state) {
       state.attribs.class += ' ' + classToAdd;
     }
   });
+
+  state.classArray = classesToAdd;
+  state.classList = state.classArray;
 }
 
 /**
@@ -674,10 +677,10 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
   if (typeof classParam === 'string') {
     classesToRemove = classParam.split(/\s+/);
   } else if (typeof classParam === 'function') {
-    var retval = classParam();
+    var retVal = classParam();
 
-    if (typeof retval === 'string') {
-      classesToRemove = retval.split(/\s+/);
+    if (typeof retVal === 'string') {
+      classesToRemove = retVal.split(/\s+/);
     }
   }
 
@@ -696,6 +699,8 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
   });
 
   state.attribs.class = classesForReducedState.join(' ');
+  state.classArray = classesForReducedState;
+  state.classList = state.classArray;
 }
 
 /**
@@ -726,6 +731,8 @@ function stateBuild($org, state, action) {
 
     if (state.attribs && state.attribs.class) {
       classesForReducedState = state.attribs.class.split(/\s+/);
+      state.classArray = classesForReducedState;
+      state.classList = state.classArray;
     }
 
     switch (action.method) {
@@ -754,10 +761,10 @@ function stateBuild($org, state, action) {
           if (typeof action.args[0] === 'string') {
             classesToToggle = action.args[0].split(/\s+/);
           } else if (typeof action.args[0] === 'function') {
-            var retval = action.args[0]();
+            var retVal = action.args[0]();
 
-            if (typeof retval === 'string') {
-              classesToToggle = retval.split(/\s+/);
+            if (typeof retVal === 'string') {
+              classesToToggle = retVal.split(/\s+/);
             }
           }
 
@@ -791,10 +798,10 @@ function stateBuild($org, state, action) {
               if (typeof action.args[1] === 'string') {
                 state.attribs[action.args[0]] = action.args[1];
               } else if (typeof action.args[1] === 'function') {
-                var _retval = action.args[1]();
+                var _retVal = action.args[1]();
 
-                if (typeof _retval === 'string') {
-                  state.attribs[action.args[0]] = _retval;
+                if (typeof _retVal === 'string') {
+                  state.attribs[action.args[0]] = _retVal;
                 }
               }
             }
@@ -817,10 +824,10 @@ function stateBuild($org, state, action) {
               if (typeof action.args[1] === 'string') {
                 state.style[action.args[0]] = action.args[1];
               } else if (typeof action.args[1] === 'function') {
-                var _retval2 = action.args[1]();
+                var _retVal2 = action.args[1]();
 
-                if (typeof _retval2 === 'string') {
-                  state.style[action.args[0]] = _retval2;
+                if (typeof _retVal2 === 'string') {
+                  state.style[action.args[0]] = _retVal2;
                 }
               }
             }
@@ -889,10 +896,10 @@ function stateBuild($org, state, action) {
             if (typeof action.args[0] === 'string') {
               state.innerHTML = action.args[0];
             } else if (typeof action.args[0] === 'function') {
-              var _retval3 = action.args[0]();
+              var _retVal3 = action.args[0]();
 
-              if (typeof _retval3 === 'string') {
-                state.style[action.args[0]] = _retval3;
+              if (typeof _retVal3 === 'string') {
+                state.style[action.args[0]] = _retVal3;
               }
             }
           }
@@ -999,6 +1006,8 @@ function reducerClosure(orgSelector) {
         bottom: null,
         left: null
       },
+      classArray: [],
+      classList: [],
       innerHTML: null,
       innerWidth: null,
       innerHeight: null,

@@ -18,7 +18,7 @@ const fs = require('fs');
 
 const cheerio = require('cheerio');
 const Redux = global.Redux = require('redux');
-const Requerio = require('../dist/requerio.module');
+const Requerio = require('requerio');
 
 const html = fs.readFileSync('./index.html', 'utf8');
 const $ = global.$ = cheerio.load(html);
