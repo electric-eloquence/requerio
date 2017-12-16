@@ -240,7 +240,9 @@ function stateBuild($org, state, action) {
 
       case 'setBoundingClientRect': {
         if (action.args[0] instanceof Object) {
-          state.boundingClientRect = JSON.parse(JSON.stringify(action.args[0]));
+          const rectObj = JSON.parse(JSON.stringify(action.args[0]));
+
+          Object.assign(state.boundingClientRect, rectObj);
         }
 
         break;
@@ -366,12 +368,12 @@ function reducerClosure(orgSelector) {
     const stateDefault = {
       attribs: {},
       boundingClientRect: {
-        bottom: null,
+        width: null,
         height: null,
-        left: null,
-        right: null,
         top: null,
-        width: null
+        right: null,
+        bottom: null,
+        left: null
       },
       innerHTML: null,
       innerWidth: null,
