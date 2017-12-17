@@ -197,18 +197,16 @@ var organismsIncept = (function ($orgs, $) {
     // Set methods that server-side tests are likely to depend on.
     // They need to be defined here and not in the prototype override because
     // `document` and `window` organisms are not Cheerio objects.
-    //
-    // Just return empty values as defaults.
     // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param {number} [num] - Distance.
-     * @return {number} Measurement.
+     * @param {number} [distance] - Distance.
+     * @return {number|undefined} Distance.
      */
     if (typeof $org.scrollTop === 'undefined') {
-      $org.scrollTop = function (num) {
-        if (typeof num !== 'undefined') {
-          $org._scrollTop = num;
+      $org.scrollTop = function (distance) {
+        if (typeof distance !== 'undefined') {
+          $org._scrollTop = distance;
         }
 
         return $org._scrollTop;
@@ -216,22 +214,22 @@ var organismsIncept = (function ($orgs, $) {
     }
 
     /**
-     * @param {number} [num] - Distance.
-     * @return {number} Measurement.
+     * @param {number} [distance] - Distance.
+     * @return {number|undefined} Distance.
      */
     if (typeof $org.width === 'undefined') {
-      $org.width = function (num) {
-        return num;
+      $org.width = function (distance) {
+        return distance;
       };
     }
 
     /**
-     * @param {number} [num] - Distance.
-     * @return {number} Measurement.
+     * @param {number} [distance] - Distance.
+     * @return {number|undefined} Distance.
      */
     if (typeof $org.height === 'undefined') {
-      $org.height = function (num) {
-        return num;
+      $org.height = function (distance) {
+        return distance;
       };
     }
 

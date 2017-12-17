@@ -48,18 +48,16 @@ export default ($orgs, $) => {
     // Set methods that server-side tests are likely to depend on.
     // They need to be defined here and not in the prototype override because
     // `document` and `window` organisms are not Cheerio objects.
-    //
-    // Just return empty values as defaults.
     // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param {number} [num] - Distance.
-     * @return {number} Measurement.
+     * @param {number} [distance] - Distance.
+     * @return {number|undefined} Distance.
      */
     if (typeof $org.scrollTop === 'undefined') {
-      $org.scrollTop = (num) => {
-        if (typeof num !== 'undefined') {
-          $org._scrollTop = num;
+      $org.scrollTop = (distance) => {
+        if (typeof distance !== 'undefined') {
+          $org._scrollTop = distance;
         }
 
         return $org._scrollTop;
@@ -67,22 +65,22 @@ export default ($orgs, $) => {
     }
 
     /**
-     * @param {number} [num] - Distance.
-     * @return {number} Measurement.
+     * @param {number} [distance] - Distance.
+     * @return {number|undefined} Distance.
      */
     if (typeof $org.width === 'undefined') {
-      $org.width = (num) => {
-        return num;
+      $org.width = (distance) => {
+        return distance;
       };
     }
 
     /**
-     * @param {number} [num] - Distance.
-     * @return {number} Measurement.
+     * @param {number} [distance] - Distance.
+     * @return {number|undefined} Distance.
      */
     if (typeof $org.height === 'undefined') {
-      $org.height = (num) => {
-        return num;
+      $org.height = (distance) => {
+        return distance;
       };
     }
 
