@@ -57,7 +57,7 @@ export default ($orgs, $) => {
      * @return {number} Measurement.
      */
     if (typeof $org.scrollTop === 'undefined') {
-      $org.scrollTop = num => {
+      $org.scrollTop = (num) => {
         if (typeof num !== 'undefined') {
           $org._scrollTop = num;
         }
@@ -70,8 +70,8 @@ export default ($orgs, $) => {
      * @return {number} Measurement.
      */
     if (typeof $org.width === 'undefined') {
-      $org.width = () => {
-        return 0;
+      $org.width = (distance) => {
+        return distance;
       };
     }
 
@@ -79,8 +79,8 @@ export default ($orgs, $) => {
      * @return {number} Measurement.
      */
     if (typeof $org.height === 'undefined') {
-      $org.height = () => {
-        return 0;
+      $org.height = (distance) => {
+        return distance;
       };
     }
 

@@ -20,7 +20,7 @@ function addClass(classesForReducedState, classParam, state) {
     }
   }
 
-  classesToAdd.forEach(classToAdd => {
+  classesToAdd.forEach((classToAdd) => {
     if (classesForReducedState.indexOf(classToAdd) === -1) {
       state.attribs.class += ` ${classToAdd}`;
     }
@@ -53,7 +53,7 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
     }
   }
 
-  classesToRemove.forEach(classToRemove => {
+  classesToRemove.forEach((classToRemove) => {
     let classIdx;
 
     if (typeof classIdx_ === 'number') {
@@ -136,7 +136,7 @@ function stateBuild($org, state, action) {
           }
         }
 
-        classesToToggle.forEach(classToToggle => {
+        classesToToggle.forEach((classToToggle) => {
           if (action.args.length === 1) {
             const classIdx = classesForReducedState.indexOf(classToToggle);
 
