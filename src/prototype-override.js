@@ -186,7 +186,7 @@ export default ($, stateStore) => {
 
               // Cheerio objects have an .attribs property for member element attributes, which is undocumented and may
               // change without notice. However, this is unlikely, since it is derived from its htmlparser2 dependency.
-              // The htmlparser3 package has had this property since its initial release.
+              // The htmlparser2 package has had this property since its initial release.
               if (this[0] && this[0].attribs) {
                 if (typeof memberIdx === 'undefined') {
                   args[0] = this[0].attribs;
