@@ -216,20 +216,22 @@ var organismsIncept = (function ($orgs, $) {
     }
 
     /**
+     * @param {number} [num] - Distance.
      * @return {number} Measurement.
      */
     if (typeof $org.width === 'undefined') {
-      $org.width = function () {
-        return 0;
+      $org.width = function (num) {
+        return num;
       };
     }
 
     /**
+     * @param {number} [num] - Distance.
      * @return {number} Measurement.
      */
     if (typeof $org.height === 'undefined') {
-      $org.height = function () {
-        return 0;
+      $org.height = function (num) {
+        return num;
       };
     }
 
@@ -422,7 +424,7 @@ var prototypeOverride = (function ($, stateStore) {
 
                 // Cheerio objects have an .attribs property for member element attributes, which is undocumented and may
                 // change without notice. However, this is unlikely, since it is derived from its htmlparser2 dependency.
-                // The htmlparser3 package has had this property since its initial release.
+                // The htmlparser2 package has had this property since its initial release.
                 if (this[0] && this[0].attribs) {
                   if (typeof memberIdx === 'undefined') {
                     args[0] = this[0].attribs;

@@ -3,7 +3,7 @@ import babel from 'rollup-plugin-babel';
 export default {
   input: 'src/requerio.js',
   output:{
-    file: 'dist/requerio.node_module.js',
+    file: 'dist/requerio.npm.js',
     format: 'cjs'
   },
   plugins: [

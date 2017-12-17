@@ -67,20 +67,22 @@ export default ($orgs, $) => {
     }
 
     /**
+     * @param {number} [num] - Distance.
      * @return {number} Measurement.
      */
     if (typeof $org.width === 'undefined') {
-      $org.width = (distance) => {
-        return distance;
+      $org.width = (num) => {
+        return num;
       };
     }
 
     /**
+     * @param {number} [num] - Distance.
      * @return {number} Measurement.
      */
     if (typeof $org.height === 'undefined') {
-      $org.height = (distance) => {
-        return distance;
+      $org.height = (num) => {
+        return num;
       };
     }
 
