@@ -1130,7 +1130,11 @@ var Requerio = function () {
   return Requerio;
 }();
 
-if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object') {
+if (typeof define === 'function') {
+  define(function () {
+    return Requerio;
+  });
+} else if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object') {
   window.Requerio = Requerio;
 }
 

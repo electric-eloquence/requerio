@@ -1,32 +1,30 @@
 'use strict';
 
-const {exec} = require('child_process');
+process.chdir(__dirname);
+
+const browserify = require('browserify');
 const fs = require('fs');
-const path = require('path');
+const uglifyES = require('uglify-es');
 
-const binPath = path.resolve('node_modules', '.bin');
 const begin = Date.now();
-const bld = 'dist/requerio.min.js';
-const src = 'dist/requerio.npm.js';
+const bld = '../dist/requerio.min.js';
+const src = '../dist/requerio.npm.js';
 
-let cmd = `${binPath}/browserify ${src} | `;
-cmd += `${binPath}/uglifyjs -o ${bld}`;
+browserify(src)
+  .bundle((err, buf) => {
+    if (err) {
+      throw err;
+    }
 
-exec(cmd, (err, stdout, stderr) => {
-  if (err) {
-    throw err;
-  }
+    const browserified = buf.toString('utf8');
+    const uglified = uglifyES.minify(browserified);
 
-  /* eslint-disable no-console */
-  if (stdout) {
-    console.log(stdout);
-  }
+    if (uglified.error) {
+      throw uglified.error;
+    }
 
-  if (stderr) {
-    console.error(stderr);
-  }
+    fs.writeFileSync(bld, uglified.code);
 
-  if (fs.existsSync(bld)) {
     const end = Date.now();
     const elapsed = end - begin;
 
@@ -34,5 +32,4 @@ exec(cmd, (err, stdout, stderr) => {
     console.log('\x1b[1m\x1b[36m' + src + '\x1b[0m\x1b[36m → \x1b[1m' + bld + '\x1b[0m\x1b[36m' + '...' + '\x1b[0m');
     console.log('\x1b[32m' + 'created ' + `\x1b[1m${bld} ` + '\x1b[0m\x1b[32m' + 'in \x1b[1m' + `${elapsed}ms` +
       '\x1b[0m');
-  }
-});
+  });
