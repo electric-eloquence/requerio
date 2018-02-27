@@ -6,7 +6,7 @@
 
 ##### Install
 
-```javascript
+```bash
 npm install cheerio redux requerio
 ```
 
