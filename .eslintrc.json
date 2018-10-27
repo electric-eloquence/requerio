@@ -11,7 +11,8 @@
     "sourceType": "module"
   },
   "globals": {
-    "$": true
+    "$": true,
+    "define": true
   },
   "rules": {
     // Errors.
