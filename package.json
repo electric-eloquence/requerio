@@ -4,9 +4,9 @@
   "description": "Redux + jQuery + Cheerio = predictable client-side state + server-side testability",
   "main": "dist/requerio.npm.js",
   "scripts": {
-    "bundle": "npx rollup --config && node run/bundle-client.js",
-    "lint": "npx eslint src && npx eslint examples",
-    "watch": "npx nodemon --watch src -e js --exec 'npm run bundle'"
+    "bundle": "rollup --config && node run/bundle-client.js",
+    "lint": "eslint src && eslint examples",
+    "watch": "nodemon --watch src -e js --exec 'npm run bundle'"
   },
   "repository": {
     "type": "git",
