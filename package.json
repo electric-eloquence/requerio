@@ -6,6 +6,7 @@
   "scripts": {
     "bundle": "rollup --config && node run/bundle-client.js",
     "lint": "eslint src && eslint examples",
+    "start": "npm run watch",
     "watch": "nodemon --watch src -e js --exec 'npm run bundle'"
   },
   "repository": {
