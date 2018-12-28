@@ -11,7 +11,7 @@ export default {
       exclude: 'node_modules/**',
       presets: [
         [
-          'es2015',
+          'env',
           {
             modules: false
           }
