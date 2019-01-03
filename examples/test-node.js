@@ -1,11 +1,14 @@
+'use strict';
+
 const assert = require('assert');
 const fs = require('fs');
+const path = require('path');
 
 const cheerio = require('cheerio');
 const Redux = global.Redux = require('redux');
-const Requerio = require('requerio');
+const Requerio = require(path.join(__dirname, '..', 'dist', 'requerio.npm.js'));
 
-const html = fs.readFileSync('./index.html', 'utf8');
+const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 const $ = global.$ = cheerio.load(html);
 
 const $organisms = {
