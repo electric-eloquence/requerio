@@ -1,5 +1,4 @@
 .*
-examples/
 rollup.config.js
 run/
 test/
