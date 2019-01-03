@@ -1,5 +1,5 @@
-/.eslintrc.json
-/examples/
-/rollup.config.js
-/run/
-/test/
+.*
+examples/
+rollup.config.js
+run/
+test/
