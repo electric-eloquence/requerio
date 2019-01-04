@@ -7,7 +7,7 @@
     "bundle": "rollup --config && node run/bundle-client.js",
     "lint": "eslint src && eslint examples",
     "start": "npm run watch",
-    "test": "mocha --require @babel/register",
+    "test": "nyc mocha --require @babel/register test/tests",
     "watch": "nodemon --watch src -e js --exec 'npm run bundle'"
   },
   "repository": {
@@ -44,8 +44,10 @@
     "chai": "4.x",
     "cheerio": "1.0.0-rc.2",
     "eslint": "3.x",
+    "jsdom": "^13.1.0",
     "mocha": "5.x",
     "nodemon": "^1.18.9",
+    "nyc": "^13.1.0",
     "redux": "4.0.1",
     "rollup": "^1.0.1",
     "rollup-plugin-babel": "^4.2.0",
