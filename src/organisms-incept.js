@@ -6,6 +6,7 @@
  */
 export default ($orgs, $) => {
   for (let i in $orgs) {
+    /* istanbul ignore if */
     if (!$orgs.hasOwnProperty(i)) {
       continue;
     }
