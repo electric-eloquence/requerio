@@ -250,6 +250,21 @@ function stateBuild($org, state, action) {
           const rectObj = JSON.parse(JSON.stringify(action.args[0]));
 
           Object.assign(state.boundingClientRect, rectObj);
+
+          // If this is called on the server, we need to copy the rectObj to the state $members.
+          if (typeof global === 'object') {
+            if (
+              typeof action.memberIdx !== 'undefined' &&
+              typeof state.$members[action.memberIdx] !== 'undefined'
+            ) {
+              Object.assign(state.$members[action.memberIdx].boundingClientRect, rectObj);
+            }
+            else {
+              state.$members.forEach(($member) => {
+                Object.assign($member.boundingClientRect, rectObj);
+              });
+            }
+          }
         }
 
         break;

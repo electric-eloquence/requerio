@@ -29,6 +29,7 @@ const $organismsBefore = {
   'html': null,
   'body': null,
   '#main': null,
+  '.main__section': null,
   '.main__section--0': null,
   '.main__section--1': null
 };

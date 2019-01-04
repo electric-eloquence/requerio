@@ -50,12 +50,12 @@ function getBoundingClientRectClosure($org, memberIdx_) {
     }
 
     return {
-      bottom: 0,
-      height: 0,
-      left: 0,
-      right: 0,
-      top: 0,
-      width: 0
+      bottom: null,
+      height: null,
+      left: null,
+      right: null,
+      top: null,
+      width: null
     };
   };
 }
@@ -367,6 +367,7 @@ export default ($, stateStore) => {
    */
   if (!$.prototype.$membersPopulate) {
     $.prototype.$membersPopulate = function ($orgToPopulate) {
+      /* istanbul ignore if */
       if (this.selector === 'document' || this.selector === 'window') {
         return;
       }
@@ -382,6 +383,14 @@ export default ($, stateStore) => {
 
         $org.$members.push($this);
       });
+
+      if (typeof global === 'object') {
+        for (let i in this) {
+          if (i === parseInt(i, 10).toString()) {
+            this[i].getBoundingClientRect = getBoundingClientRectClosure(this, i);
+          }
+        }
+      }
     };
   }
 

@@ -7,7 +7,7 @@
     "bundle": "rollup --config && node run/bundle-client.js",
     "lint": "eslint src && eslint examples",
     "start": "npm run watch",
-    "test": "nyc mocha --require @babel/register test/tests",
+    "test": "nyc mocha --require @babel/register --exit test/tests",
     "watch": "nodemon --watch src -e js --exec 'npm run bundle'"
   },
   "repository": {
