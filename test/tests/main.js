@@ -28,31 +28,31 @@ const $organisms = $organismsAfter;
 
 function actionsGet(requerio) {
   return {
-    addClassTest: () => {
+    addClass: () => {
       requerio.$orgs['#main'].dispatchAction('addClass', 'test');
     },
 
-    removeClassTest: () => {
+    removeClass: () => {
       requerio.$orgs['#main'].dispatchAction('removeClass', 'test');
     },
 
-    toggleClassTest: () => {
+    toggleClass: () => {
       requerio.$orgs['#main'].dispatchAction('toggleClass', 'test');
     },
 
-    attrTest: () => {
+    attr: () => {
       requerio.$orgs['#main'].dispatchAction('attr', ['data-test', 'test']);
     },
 
-    cssTest: () => {
+    css: () => {
       requerio.$orgs['#main'].dispatchAction('css', ['color', 'black']);
     },
 
-    getBoundingClientRectTest: () => {
-      return requerio.$orgs['#main'].dispatchAction('getBoundingClientRect');
+    getBoundingClientRect: () => {
+      requerio.$orgs['#main'].dispatchAction('getBoundingClientRect');
     },
 
-    setBoundingClientRectTest: () => {
+    setBoundingClientRect: () => {
       requerio.$orgs['#main'].dispatchAction(
         'setBoundingClientRect',
         {
@@ -66,7 +66,7 @@ function actionsGet(requerio) {
       );
     },
 
-    setBoundingClientRectTest1: () => {
+    setBoundingClientRect1: () => {
       requerio.$orgs['.main__section'].dispatchAction(
         'setBoundingClientRect',
         {
@@ -81,27 +81,27 @@ function actionsGet(requerio) {
       );
     },
 
-    heightTest: () => {
+    height: () => {
       requerio.$orgs['#main'].dispatchAction('height', 1000);
     },
 
-    htmlTest: () => {
+    html: () => {
       requerio.$orgs['#main'].dispatchAction('html', '<h2>Section 1</h2><p>Paragraph 1</p>');
     },
 
-    innerWidthTest: () => {
+    innerWidth: () => {
       requerio.$orgs['#main'].dispatchAction('innerWidth', 1000);
     },
 
-    innerHeightTest: () => {
+    innerHeight: () => {
       requerio.$orgs['#main'].dispatchAction('innerHeight', 1000);
     },
 
-    scrollTopTest: () => {
+    scrollTop: () => {
       requerio.$orgs['#main'].dispatchAction('scrollTop', 100);
     },
 
-    widthTest: () => {
+    width: () => {
       requerio.$orgs['#main'].dispatchAction('width', 1000);
     }
   };
@@ -352,35 +352,35 @@ describe('Requerio', function () {
 
   describe('reducer-get', function () {
     it('should dispatch the "addClass" action', function () {
-      actions.addClassTest();
+      actions.addClass();
       const state = $organisms['#main'].getState();
 
       expect(state.attribs['class']).to.equal('test');
     });
 
     it('should dispatch the "removeClass" action', function () {
-      actions.removeClassTest();
+      actions.removeClass();
       const state = $organisms['#main'].getState();
 
       expect(state.attribs['class']).to.equal('');
     });
 
     it('should dispatch the "toggleClass" action', function () {
-      actions.toggleClassTest();
+      actions.toggleClass();
       const state = $organisms['#main'].getState();
 
       expect(state.attribs['class']).to.equal('test');
     });
 
     it('should dispatch the "attr" action', function () {
-      actions.attrTest();
+      actions.attr();
       const state = $organisms['#main'].getState();
 
       expect(state.attribs['data-test']).to.equal('test');
     });
 
     it('should dispatch the "css" action', function () {
-      actions.cssTest();
+      actions.css();
       const state = $organisms['#main'].getState();
 
       expect(state.style.color).to.equal('black');
@@ -396,7 +396,7 @@ describe('Requerio', function () {
       stateBefore.boundingClientRect = {};
       const boundingClientRectBefore = JSON.parse(JSON.stringify(stateBefore.boundingClientRect));
 
-      actions.getBoundingClientRectTest();
+      actions.getBoundingClientRect();
       const stateAfter = $org.getState();
       const boundingClientRectAfter = stateAfter.boundingClientRect;
 
@@ -410,7 +410,7 @@ describe('Requerio', function () {
     });
 
     it('should dispatch the "setBoundingClientRect" action', function () {
-      actions.setBoundingClientRectTest();
+      actions.setBoundingClientRect();
       const state = $organisms['#main'].getState();
       const boundingClientRect = state.boundingClientRect;
 
@@ -423,7 +423,7 @@ describe('Requerio', function () {
     });
 
     it('should dispatch the "setBoundingClientRect" action in a targeted manner', function () {
-      actions.setBoundingClientRectTest1();
+      actions.setBoundingClientRect1();
       const state0 = $organisms['.main__section'].getState(0);
       const boundingClientRect0 = state0.boundingClientRect;
       const state1 = $organisms['.main__section'].getState(1);
@@ -444,35 +444,42 @@ describe('Requerio', function () {
     });
 
     it('should dispatch the "height" action', function () {
-      actions.heightTest();
+      actions.height();
       const state = $organisms['#main'].getState();
 
       expect(state.height).to.equal(1000);
     });
 
     it('should dispatch the "html" action', function () {
-      actions.htmlTest();
+      actions.html();
       const state = $organisms['#main'].getState();
 
       expect(state.innerHTML).to.equal('<h2>Section 1</h2><p>Paragraph 1</p>');
     });
 
     it('should dispatch the "innerWidth" action', function () {
-      actions.innerWidthTest();
+      actions.innerWidth();
       const state = $organisms['#main'].getState();
 
       expect(state.innerWidth).to.equal(1000);
     });
 
+    it('should dispatch the "innerHeight" action', function () {
+      actions.innerHeight();
+      const state = $organisms['#main'].getState();
+
+      expect(state.innerHeight).to.equal(1000);
+    });
+
     it('should dispatch the "scrollTop" action', function () {
-      actions.scrollTopTest();
+      actions.scrollTop();
       const state = $organisms['#main'].getState();
 
       expect(state.scrollTop).to.equal(100);
     });
 
     it('should dispatch the "width" action', function () {
-      actions.widthTest();
+      actions.width();
       const state = $organisms['#main'].getState();
 
       expect(state.width).to.equal(1000);

@@ -55,6 +55,26 @@ export default ($orgs, $) => {
      * @param {number} [distance] - Distance.
      * @returns {number|undefined} Distance.
      */
+    if (typeof $org.innerWidth === 'undefined') {
+      $org.innerWidth = (distance) => {
+        return distance;
+      };
+    }
+
+    /**
+     * @param {number} [distance] - Distance.
+     * @returns {number|undefined} Distance.
+     */
+    if (typeof $org.innerHeight === 'undefined') {
+      $org.innerHeight = (distance) => {
+        return distance;
+      };
+    }
+
+    /**
+     * @param {number} [distance] - Distance.
+     * @returns {number|undefined} Distance.
+     */
     if (typeof $org.scrollTop === 'undefined') {
       $org.scrollTop = (distance) => {
         if (typeof distance !== 'undefined') {

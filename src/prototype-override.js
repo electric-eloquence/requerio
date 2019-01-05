@@ -199,13 +199,13 @@ export default ($, stateStore) => {
               // jQuery saves and keys selected DOM Element objects in an array-like manner on the jQuery object.
               // The .attributes property of each Element object are per the DOM spec.
               // We need to parse the .attributes property to create a key-value store, which we'll submit as args[0].
-              else if (this[0] && this[0].attributes && this[0].attributes.length) {
-                const attribs = {};
+              else if (this[0] && this[0].attributes) {
+                if (typeof memberIdx === 'undefined' && this[0].attributes.length) {
+                  const attribs = {};
 
-                if (typeof memberIdx === 'undefined') {
                   for (let i = 0; i < this[0].attributes.length; i++) {
                     const attr = this[0].attributes[i];
-
+                    attribs = attribs || {};
                     attribs[attr.name] = attr.value;
                   }
 
@@ -213,6 +213,8 @@ export default ($, stateStore) => {
                 }
 
                 else if (this[memberIdx] && this[memberIdx].attributes && this[memberIdx].attributes.length) {
+                  const attribs = {};
+
                   for (let i = 0; i < this[memberIdx].attributes.length; i++) {
                     const attr = this[memberIdx].attributes[i];
 
