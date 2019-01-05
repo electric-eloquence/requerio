@@ -61,7 +61,7 @@ assert.equal(shownDisplayStyle, 'block');
 console.log('Tests passed');
 ```
 
-#### On the client, in HTML:
+##### On the client, in HTML:
 
 ```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
@@ -69,7 +69,7 @@ console.log('Tests passed');
 <script src="requerio/dist/requerio.min.js"></script>
 ```
 
-#### On the client, in JavaScript:
+##### On the client, in JavaScript:
 
 ```javascript
 var $organisms = {

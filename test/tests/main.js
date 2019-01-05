@@ -32,12 +32,77 @@ function actionsGet(requerio) {
       requerio.$orgs['#main'].dispatchAction('addClass', 'test');
     },
 
+    removeClassTest: () => {
+      requerio.$orgs['#main'].dispatchAction('removeClass', 'test');
+    },
+
+    toggleClassTest: () => {
+      requerio.$orgs['#main'].dispatchAction('toggleClass', 'test');
+    },
+
     attrTest: () => {
       requerio.$orgs['#main'].dispatchAction('attr', ['data-test', 'test']);
     },
 
+    cssTest: () => {
+      requerio.$orgs['#main'].dispatchAction('css', ['color', 'black']);
+    },
+
     getBoundingClientRectTest: () => {
       return requerio.$orgs['#main'].dispatchAction('getBoundingClientRect');
+    },
+
+    setBoundingClientRectTest: () => {
+      requerio.$orgs['#main'].dispatchAction(
+        'setBoundingClientRect',
+        {
+          width: 1100,
+          height: 1100,
+          top: 110,
+          right: 1210,
+          bottom: 1210,
+          left: 110
+        }
+      );
+    },
+
+    setBoundingClientRectTest1: () => {
+      requerio.$orgs['.main__section'].dispatchAction(
+        'setBoundingClientRect',
+        {
+          width: 1100,
+          height: 1100,
+          top: 110,
+          right: 1210,
+          bottom: 1210,
+          left: 110
+        },
+        1
+      );
+    },
+
+    heightTest: () => {
+      requerio.$orgs['#main'].dispatchAction('height', 1000);
+    },
+
+    htmlTest: () => {
+      requerio.$orgs['#main'].dispatchAction('html', '<h2>Section 1</h2><p>Paragraph 1</p>');
+    },
+
+    innerWidthTest: () => {
+      requerio.$orgs['#main'].dispatchAction('innerWidth', 1000);
+    },
+
+    innerHeightTest: () => {
+      requerio.$orgs['#main'].dispatchAction('innerHeight', 1000);
+    },
+
+    scrollTopTest: () => {
+      requerio.$orgs['#main'].dispatchAction('scrollTop', 100);
+    },
+
+    widthTest: () => {
+      requerio.$orgs['#main'].dispatchAction('width', 1000);
     }
   };
 }
@@ -100,6 +165,7 @@ describe('Requerio', function () {
       it('should set a value on the server to mock the method call on the client', function () {
         Object.keys($organisms).forEach((selector) => {
           const $organism = $organisms[selector];
+
           const scrollTopVal = $organism.scrollTop(1);
 
           expect(scrollTopVal).to.equal(1);
@@ -122,6 +188,7 @@ describe('Requerio', function () {
         function () {
           Object.keys($organisms).forEach((selector) => {
             const $organism = $organisms[selector];
+
             const widthVal = $organism.width(1);
 
             expect(widthVal).to.equal(1);
@@ -136,6 +203,7 @@ describe('Requerio', function () {
         function () {
           Object.keys($organisms).forEach((selector) => {
             const $organism = $organisms[selector];
+
             const heightVal = $organism.height(1);
 
             expect(heightVal).to.equal(1);
@@ -148,6 +216,7 @@ describe('Requerio', function () {
   describe('prototype-override', function () {
     it('should .dispatchAction() to change state which should be retrievable by .getState()', function () {
       const $org = $organisms['#main'];
+
       $org.dispatchAction('css', ['display', 'none']);
       const displayStyle = $org.getState().style.display;
 
@@ -158,6 +227,7 @@ describe('Requerio', function () {
       'should get the state for a specific $organism $member when .getState() is called in a targeted manner',
       function() {
         const $org = $organisms['.main__section'];
+
         $org.dispatchAction('css', ['display', 'none'], 1);
         const displayStyle0 = $org.getState(0).style.display;
         const displayStyle1 = $org.getState(1).style.display;
@@ -169,6 +239,7 @@ describe('Requerio', function () {
 
     it('should get Redux store when .getStore() is called', function() {
       const $org = $organisms['#main'];
+
       const stateStore = $org.getStore();
 
       expect(stateStore).to.have.property('dispatch');
@@ -181,6 +252,7 @@ describe('Requerio', function () {
       const $org = $organisms['.main__section'];
       $org.$members = [];
       const $membersLengthBefore = $org.$members.length;
+
       $org.$membersPopulate($org);
       const $members =  $org.$members
       const $membersLengthAfter = $members.length;
@@ -192,39 +264,11 @@ describe('Requerio', function () {
     });
 
     it(
-      'should set .boundingClientRect properties when .setBoundingClientRect() is called for an $organism with one $member',
+      'should set .boundingClientRect properties when .setBoundingClientRect() is called',
       function() {
         const $org = $organisms['#main'];
         const boundingClientRectBefore = JSON.parse(JSON.stringify($org.getState().boundingClientRect));
-        $org.setBoundingClientRect(
-          {
-            width: 1000,
-            height: 1000,
-            top: 100,
-            right: 1100,
-            bottom: 1100,
-            left: 100
-          }
-        );
-        const boundingClientRectAfter = $org.getState().boundingClientRect;
 
-        Object.keys(boundingClientRectBefore).forEach((i) => {
-          expect(boundingClientRectBefore[i]).to.equal(null);
-        });
-        expect(boundingClientRectAfter.width).to.equal(1000);
-        expect(boundingClientRectAfter.height).to.equal(1000);
-        expect(boundingClientRectAfter.top).to.equal(100);
-        expect(boundingClientRectAfter.right).to.equal(1100);
-        expect(boundingClientRectAfter.bottom).to.equal(1100);
-        expect(boundingClientRectAfter.left).to.equal(100);
-      }
-    );
-
-    it(
-      'should set .boundingClientRect properties when .setBoundingClientRect() is called for an $organism with multiple $members',
-      function() {
-        const $org = $organisms['.main__section'];
-        const boundingClientRectBefore = JSON.parse(JSON.stringify($org.getState().boundingClientRect));
         $org.setBoundingClientRect(
           {
             width: 1000,
@@ -253,18 +297,9 @@ describe('Requerio', function () {
       'should set .boundingClientRect properties on a specific $organism $member when .setBoundingClientRect() is called in a targeted manner',
       function() {
         const $org = $organisms['.main__section'];
-        $org.setBoundingClientRect(
-          {
-            width: null,
-            height: null,
-            top: null,
-            right: null,
-            bottom: null,
-            left: null
-          }
-        );
         const stateBefore0 = JSON.parse(JSON.stringify($org.getState(0)));
         const stateBefore1 = JSON.parse(JSON.stringify($org.getState(1)));
+
         $org.setBoundingClientRect(
           {
             width: 1000,
@@ -302,26 +337,145 @@ describe('Requerio', function () {
     );
 
     it('should get .boundingClientRect properties when .getBoundingClientRect() is called', function() {
+      const $org = $organisms['.main__section'];
+
+      const boundingClientRect = $org[1].getBoundingClientRect();
+
+      expect(boundingClientRect.width).to.equal(1000);
+      expect(boundingClientRect.height).to.equal(1000);
+      expect(boundingClientRect.top).to.equal(100);
+      expect(boundingClientRect.right).to.equal(1100);
+      expect(boundingClientRect.bottom).to.equal(1100);
+      expect(boundingClientRect.left).to.equal(100);
     });
   });
 
-  describe('dispatchAction', function () {
-    it('should dispatch "addClass" action', function () {
+  describe('reducer-get', function () {
+    it('should dispatch the "addClass" action', function () {
       actions.addClassTest();
       const state = $organisms['#main'].getState();
 
       expect(state.attribs['class']).to.equal('test');
     });
 
-    it('should dispatch "attr" action', function () {
+    it('should dispatch the "removeClass" action', function () {
+      actions.removeClassTest();
+      const state = $organisms['#main'].getState();
+
+      expect(state.attribs['class']).to.equal('');
+    });
+
+    it('should dispatch the "toggleClass" action', function () {
+      actions.toggleClassTest();
+      const state = $organisms['#main'].getState();
+
+      expect(state.attribs['class']).to.equal('test');
+    });
+
+    it('should dispatch the "attr" action', function () {
       actions.attrTest();
       const state = $organisms['#main'].getState();
 
       expect(state.attribs['data-test']).to.equal('test');
     });
 
-    it('should dispatch "getBoundingClientRect" action', function () {
+    it('should dispatch the "css" action', function () {
+      actions.cssTest();
+      const state = $organisms['#main'].getState();
+
+      expect(state.style.color).to.equal('black');
+    });
+
+    it('should dispatch the "getBoundingClientRect" action', function () {
+      // On the client, getBoundingClientRect takes measurements and set the state.
+      // On the server, it will normally do nothing.
+      // However, since it ensures that the .boundingClientRect object is fully populated, we can test that it works by
+      // first unsetting the .boundingClientRect properties and checking whether it resets them.
+      const $org = $organisms['#main'];
+      const stateBefore = $org.getState();
+      stateBefore.boundingClientRect = {};
+      const boundingClientRectBefore = JSON.parse(JSON.stringify(stateBefore.boundingClientRect));
+
       actions.getBoundingClientRectTest();
+      const stateAfter = $org.getState();
+      const boundingClientRectAfter = stateAfter.boundingClientRect;
+
+      expect(Object.keys(boundingClientRectBefore)).to.have.lengthOf(0);
+      expect(boundingClientRectAfter.width).to.equal(1000);
+      expect(boundingClientRectAfter.height).to.equal(1000);
+      expect(boundingClientRectAfter.top).to.equal(100);
+      expect(boundingClientRectAfter.right).to.equal(1100);
+      expect(boundingClientRectAfter.bottom).to.equal(1100);
+      expect(boundingClientRectAfter.left).to.equal(100);
+    });
+
+    it('should dispatch the "setBoundingClientRect" action', function () {
+      actions.setBoundingClientRectTest();
+      const state = $organisms['#main'].getState();
+      const boundingClientRect = state.boundingClientRect;
+
+      expect(boundingClientRect.width).to.equal(1100);
+      expect(boundingClientRect.height).to.equal(1100);
+      expect(boundingClientRect.top).to.equal(110);
+      expect(boundingClientRect.right).to.equal(1210);
+      expect(boundingClientRect.bottom).to.equal(1210);
+      expect(boundingClientRect.left).to.equal(110);
+    });
+
+    it('should dispatch the "setBoundingClientRect" action in a targeted manner', function () {
+      actions.setBoundingClientRectTest1();
+      const state0 = $organisms['.main__section'].getState(0);
+      const boundingClientRect0 = state0.boundingClientRect;
+      const state1 = $organisms['.main__section'].getState(1);
+      const boundingClientRect1 = state1.boundingClientRect;
+
+      expect(boundingClientRect0.width).to.equal(null);
+      expect(boundingClientRect0.height).to.equal(null);
+      expect(boundingClientRect0.top).to.equal(null);
+      expect(boundingClientRect0.right).to.equal(null);
+      expect(boundingClientRect0.bottom).to.equal(null);
+      expect(boundingClientRect0.left).to.equal(null);
+      expect(boundingClientRect1.width).to.equal(1100);
+      expect(boundingClientRect1.height).to.equal(1100);
+      expect(boundingClientRect1.top).to.equal(110);
+      expect(boundingClientRect1.right).to.equal(1210);
+      expect(boundingClientRect1.bottom).to.equal(1210);
+      expect(boundingClientRect1.left).to.equal(110);
+    });
+
+    it('should dispatch the "height" action', function () {
+      actions.heightTest();
+      const state = $organisms['#main'].getState();
+
+      expect(state.height).to.equal(1000);
+    });
+
+    it('should dispatch the "html" action', function () {
+      actions.htmlTest();
+      const state = $organisms['#main'].getState();
+
+      expect(state.innerHTML).to.equal('<h2>Section 1</h2><p>Paragraph 1</p>');
+    });
+
+    it('should dispatch the "innerWidth" action', function () {
+      actions.innerWidthTest();
+      const state = $organisms['#main'].getState();
+
+      expect(state.innerWidth).to.equal(1000);
+    });
+
+    it('should dispatch the "scrollTop" action', function () {
+      actions.scrollTopTest();
+      const state = $organisms['#main'].getState();
+
+      expect(state.scrollTop).to.equal(100);
+    });
+
+    it('should dispatch the "width" action', function () {
+      actions.widthTest();
+      const state = $organisms['#main'].getState();
+
+      expect(state.width).to.equal(1000);
     });
   });
 });
