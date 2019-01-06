@@ -32,6 +32,14 @@ function actionsGet(requerio) {
       requerio.$orgs['#main'].dispatchAction('addClass', 'test');
     },
 
+    addClass1: () => {
+      requerio.$orgs['.main__section'].dispatchAction('addClass', 'test', 1);
+    },
+
+    addClass2: () => {
+      requerio.$orgs['.main__section'].dispatchAction('addClass', 'out-of-bounds', 3);
+    },
+
     removeClass: () => {
       requerio.$orgs['#main'].dispatchAction('removeClass', 'test');
     },
@@ -237,7 +245,32 @@ describe('Requerio', function () {
       }
     );
 
-    it('should get Redux store when .getStore() is called', function() {
+    it('should reset members and .$members when .getState() is called', function() {
+      const $org = $organisms['.main__section'];
+      delete $org[0];
+      delete $org[1];
+      $org.length = 0;
+      $org.$members = [];
+      const membersLengthBefore = $org.length;
+      const $membersLengthBefore = $org.$members.length;
+
+      $org.getState();
+
+      const $members = $org.$members
+      const membersLengthAfter = $org.length;
+      const $membersLengthAfter = $members.length;
+
+      expect($membersLengthBefore).to.equal(0);
+      expect($membersLengthAfter).to.equal(2);
+      expect(membersLengthBefore).to.equal(0);
+      expect(membersLengthAfter).to.equal(2);
+      expect($org[0]).to.not.be.undefined;
+      expect($org[1]).to.not.be.undefined;
+      expect($members[0][0].attribs.class).to.equal('main__section main__section--0');
+      expect($members[1][0].attribs.class).to.equal('main__section main__section--1');
+    });
+
+    it('should get the Redux store when .getStore() is called', function() {
       const $org = $organisms['#main'];
 
       const stateStore = $org.getStore();
@@ -254,7 +287,7 @@ describe('Requerio', function () {
       const $membersLengthBefore = $org.$members.length;
 
       $org.$membersPopulate($org);
-      const $members =  $org.$members
+      const $members = $org.$members
       const $membersLengthAfter = $members.length;
 
       expect($membersLengthBefore).to.equal(0);
@@ -337,9 +370,9 @@ describe('Requerio', function () {
     );
 
     it('should get .boundingClientRect properties when .getBoundingClientRect() is called', function() {
-      const $org = $organisms['.main__section'];
+      const $org = $organisms['#main'];
 
-      const boundingClientRect = $org[1].getBoundingClientRect();
+      const boundingClientRect = $org[0].getBoundingClientRect();
 
       expect(boundingClientRect.width).to.equal(1000);
       expect(boundingClientRect.height).to.equal(1000);
@@ -356,6 +389,24 @@ describe('Requerio', function () {
       const state = $organisms['#main'].getState();
 
       expect(state.attribs['class']).to.equal('test');
+    });
+
+    it('should dispatch the "addClass" action in a targeted manner', function () {
+      actions.addClass1();
+      const state0 = $organisms['.main__section'].getState(0);
+      const state1 = $organisms['.main__section'].getState(1);
+
+      expect(state0.attribs['class']).to.not.have.string('test');
+      expect(state1.attribs['class']).to.have.string('test');
+    });
+
+    it('should not dispatch the "addClass" action if the target is out-of-bounds', function () {
+      actions.addClass2();
+      const state0 = $organisms['.main__section'].getState(0);
+      const state1 = $organisms['.main__section'].getState(1);
+
+      expect(state0.attribs['class']).to.not.have.string('out-of-bounds');
+      expect(state1.attribs['class']).to.not.have.string('out-of-bounds');
     });
 
     it('should dispatch the "removeClass" action', function () {

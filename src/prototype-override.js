@@ -23,23 +23,15 @@ function applyMethod($org, method, args, memberIdx, $member) {
  * Need this closure to return a function with $org and memberIdx baked in.
  *
  * @param {object} $org - Organism object.
- * @param {number|undefined} memberIdx_ - If targeting an organism member, its index.
+ * @param {number} memberIdx - The index of the organism member.
  * @returns {function} The returned function returns an object with properties correspond to the properties of DOMRect.
  */
-function getBoundingClientRectClosure($org, memberIdx_) {
+function getBoundingClientRectClosure($org, memberIdx) {
   return () => {
-    let memberIdx;
-
-    if (memberIdx_) {
-      memberIdx = memberIdx_;
-    }
-    else {
-      memberIdx = 0;
-    }
-
     const rectState = $org.getStore().getState()[$org.selector].$members[memberIdx].boundingClientRect;
 
     for (let i in rectState) {
+      /* istanbul ignore if */
       if (!rectState.hasOwnProperty(i)) {
         continue;
       }
@@ -205,7 +197,6 @@ export default ($, stateStore) => {
 
                   for (let i = 0; i < this[0].attributes.length; i++) {
                     const attr = this[0].attributes[i];
-                    attribs = attribs || {};
                     attribs[attr.name] = attr.value;
                   }
 
@@ -217,7 +208,6 @@ export default ($, stateStore) => {
 
                   for (let i = 0; i < this[memberIdx].attributes.length; i++) {
                     const attr = this[memberIdx].attributes[i];
-
                     attribs[attr.name] = attr.value;
                   }
 
@@ -232,6 +222,7 @@ export default ($, stateStore) => {
           // getBoundingClientRect takes measurements and updates state. This never accepts an argument.
           // Also has to operate on the DOM Element member of the jQuery object (or its Cheerio facsimile).
           case 'getBoundingClientRect': {
+            /* istanbul ignore if */
             if (this.selector === 'document' || this.selector === 'window') {
               break;
             }
@@ -275,6 +266,7 @@ export default ($, stateStore) => {
               applyMethod(this, method, args, memberIdx, $member);
             }
             else {
+              /* istanbul ignore else */
               if (typeof $member === 'undefined') {
                 // Apply to $org.
                 args[0] = this[method].apply(this);
