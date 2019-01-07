@@ -1,8 +1,10 @@
 # Redux + jQuery + Cheerio = predictable client-side state + server-side testability
 
-### Documentation to come!
-
-#### If you want to experiment in the meantime, in Node.js:
+[![Known Vulnerabilities][snyk-image]][snyk-url]
+[![Mac/Linux Build Status][travis-image]][travis-url]
+[![Windows Build Status][appveyor-image]][appveyor-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
+[![License][license-image]][license-url]
 
 ##### Install
 
@@ -106,7 +108,7 @@ setTimeout(function () {
 }, 1000);
 ```
 
-#### Methods supported (thus far):
+#### Methods supported:
 
 * addClass
 * removeClass
@@ -123,3 +125,18 @@ setTimeout(function () {
 * width
 
 #### See also the <a href="https://github.com/electric-eloquence/requerio/tree/master/examples" target="_blank">examples in GitHub</a>.
+
+[snyk-image]: https://snyk.io/test/github/electric-eloquence/requerio/master/badge.svg
+[snyk-url]: https://snyk.io/test/github/electric-eloquence/requerio/master
+
+[travis-image]: https://img.shields.io/travis/electric-eloquence/requerio.svg
+[travis-url]: https://travis-ci.org/electric-eloquence/requerio
+
+[appveyor-image]: https://img.shields.io/appveyor/ci/e2tha-e/requerio.svg?label=windows
+[appveyor-url]: https://ci.appveyor.com/project/e2tha-e/requerio
+
+[coveralls-image]: https://img.shields.io/coveralls/electric-eloquence/requerio/master.svg
+[coveralls-url]: https://coveralls.io/r/electric-eloquence/requerio
+
+[license-image]: https://img.shields.io/github/license/electric-eloquence/requerio.svg
+[license-url]: https://raw.githubusercontent.com/electric-eloquence/requerio/master/LICENSE
