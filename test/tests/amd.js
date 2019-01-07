@@ -28,7 +28,7 @@ const $organismsBefore = {
 };
 const $organismsAfter = Object.assign({}, $organismsBefore);
 
-function actionsGet(requerio) {
+function actionsGet() {
   return {};
 }
 

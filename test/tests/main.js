@@ -8,7 +8,6 @@ import cheerio from 'cheerio';
 import {expect} from 'chai';
 
 import Requerio from '../../src/requerio';
-import organismsIncept from '../../src/organisms-incept';
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'fixtures', 'index.html'), 'utf8');
 const $ = global.$ = cheerio.load(html);
@@ -159,7 +158,7 @@ const requerio = new Requerio($, Redux, $organismsAfter, actionsGet);
 const actions = requerio.actions;
 
 describe('Requerio', function () {
-  describe('constructor', function() {
+  describe('constructor', function () {
     it('should instantiate correctly', function () {
       expect(requerio).to.be.an.instanceof(Requerio);
       expect(requerio).to.have.property('$');
@@ -273,7 +272,7 @@ describe('Requerio', function () {
 
     it(
       'should get the state for a specific $organism $member when .getState() is called in a targeted manner',
-      function() {
+      function () {
         const $org = $organisms['.main__section'];
 
         $org.dispatchAction('css', ['display', 'none'], 1);
@@ -285,7 +284,7 @@ describe('Requerio', function () {
       }
     );
 
-    it('should reset members and .$members when .getState() is called', function() {
+    it('should reset members and .$members when .getState() is called', function () {
       const $org = $organisms['.main__section'];
       delete $org[0];
       delete $org[1];
@@ -296,7 +295,7 @@ describe('Requerio', function () {
 
       $org.getState();
 
-      const $members = $org.$members
+      const $members = $org.$members;
       const membersLengthAfter = $org.length;
       const $membersLengthAfter = $members.length;
 
@@ -310,7 +309,7 @@ describe('Requerio', function () {
       expect($members[1][0].attribs.class).to.equal('main__section main__section--1');
     });
 
-    it('should get the Redux store when .getStore() is called', function() {
+    it('should get the Redux store when .getStore() is called', function () {
       const $org = $organisms['#main'];
 
       const stateStore = $org.getStore();
@@ -321,13 +320,13 @@ describe('Requerio', function () {
       expect(stateStore).to.have.property('replaceReducer');
     });
 
-    it('should reset .$members when .$membersPopulate() is called', function() {
+    it('should reset .$members when .$membersPopulate() is called', function () {
       const $org = $organisms['.main__section'];
       $org.$members = [];
       const $membersLengthBefore = $org.$members.length;
 
       $org.$membersPopulate($org);
-      const $members = $org.$members
+      const $members = $org.$members;
       const $membersLengthAfter = $members.length;
 
       expect($membersLengthBefore).to.equal(0);
@@ -338,7 +337,7 @@ describe('Requerio', function () {
 
     it(
       'should set .boundingClientRect properties when .setBoundingClientRect() is called',
-      function() {
+      function () {
         const $org = $organisms['#main'];
         const boundingClientRectBefore = $org.getState().boundingClientRect;
 
@@ -368,7 +367,7 @@ describe('Requerio', function () {
 
     it(
       'should set .boundingClientRect properties on a specific $organism $member when .setBoundingClientRect() is called in a targeted manner',
-      function() {
+      function () {
         const $org = $organisms['.main__section'];
         const stateBefore0 = $org.getState(0);
         const stateBefore1 = $org.getState(1);
@@ -409,7 +408,7 @@ describe('Requerio', function () {
       }
     );
 
-    it('should get .boundingClientRect properties when .getBoundingClientRect() is called', function() {
+    it('should get .boundingClientRect properties when .getBoundingClientRect() is called', function () {
       const $org = $organisms['#main'];
 
       const boundingClientRect = $org[0].getBoundingClientRect();
