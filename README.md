@@ -129,7 +129,7 @@ setTimeout(function () {
 [snyk-image]: https://snyk.io/test/github/electric-eloquence/requerio/master/badge.svg
 [snyk-url]: https://snyk.io/test/github/electric-eloquence/requerio/master
 
-[travis-image]: https://img.shields.io/travis/electric-eloquence/requerio.svg
+[travis-image]: https://img.shields.io/travis/electric-eloquence/requerio.svg?label=mac%20%26%20linux
 [travis-url]: https://travis-ci.org/electric-eloquence/requerio
 
 [appveyor-image]: https://img.shields.io/appveyor/ci/e2tha-e/requerio.svg?label=windows
