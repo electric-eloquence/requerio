@@ -28,28 +28,48 @@ const $organisms = $organismsAfter;
 
 function actionsGet(requerio) {
   return {
-    addClass: () => {
-      requerio.$orgs['#main'].dispatchAction('addClass', 'test');
+    addClassString: () => {
+      requerio.$orgs['#main'].dispatchAction('addClass', 'add-class-string');
+    },
+
+    addClassFunction: () => {
+      requerio.$orgs['#main'].dispatchAction('addClass', () => 'add-class-function');
     },
 
     addClass0: () => {
-      requerio.$orgs['.main__section'].dispatchAction('addClass', 'test0', 0);
+      requerio.$orgs['.main__section'].dispatchAction('addClass', 'add-class-0', 0);
     },
 
     addClass1: () => {
-      requerio.$orgs['.main__section'].dispatchAction('addClass', 'test1', 1);
+      requerio.$orgs['.main__section'].dispatchAction('addClass', 'add-class-1', 1);
     },
 
     addClass2: () => {
       requerio.$orgs['.main__section'].dispatchAction('addClass', 'out-of-bounds', 2);
     },
 
-    removeClass: () => {
-      requerio.$orgs['#main'].dispatchAction('removeClass', 'test');
+    removeClassString: () => {
+      requerio.$orgs['#main'].dispatchAction('removeClass', 'remove-class-string');
     },
 
-    toggleClass: () => {
-      requerio.$orgs['#main'].dispatchAction('toggleClass', 'test');
+    removeClassFunction: () => {
+      requerio.$orgs['#main'].dispatchAction('removeClass', () => 'remove-class-function');
+    },
+
+    toggleClassString: () => {
+      requerio.$orgs['#main'].dispatchAction('toggleClass', 'toggle-class-string');
+    },
+
+    toggleClassFunction: () => {
+      requerio.$orgs['#main'].dispatchAction('toggleClass', () => 'toggle-class-function');
+    },
+
+    toggleClassTrue: () => {
+      requerio.$orgs['#main'].dispatchAction('toggleClass', ['toggle-class-true', true]);
+    },
+
+    toggleClassFalse: () => {
+      requerio.$orgs['#main'].dispatchAction('toggleClass', ['toggle-class-false', false]);
     },
 
     attrArrayString: () => {
@@ -320,7 +340,7 @@ describe('Requerio', function () {
       'should set .boundingClientRect properties when .setBoundingClientRect() is called',
       function() {
         const $org = $organisms['#main'];
-        const boundingClientRectBefore = JSON.parse(JSON.stringify($org.getState().boundingClientRect));
+        const boundingClientRectBefore = $org.getState().boundingClientRect;
 
         $org.setBoundingClientRect(
           {
@@ -350,8 +370,8 @@ describe('Requerio', function () {
       'should set .boundingClientRect properties on a specific $organism $member when .setBoundingClientRect() is called in a targeted manner',
       function() {
         const $org = $organisms['.main__section'];
-        const stateBefore0 = JSON.parse(JSON.stringify($org.getState(0)));
-        const stateBefore1 = JSON.parse(JSON.stringify($org.getState(1)));
+        const stateBefore0 = $org.getState(0);
+        const stateBefore1 = $org.getState(1);
 
         $org.setBoundingClientRect(
           {
@@ -404,11 +424,18 @@ describe('Requerio', function () {
   });
 
   describe('reducer-get', function () {
-    it('should dispatch the "addClass" action', function () {
-      actions.addClass();
+    it('should dispatch the "addClass" action with a string argument', function () {
+      actions.addClassString();
       const state = $organisms['#main'].getState();
 
-      expect(state.attribs.class).to.equal('test');
+      expect(state.attribs.class).to.equal('add-class-string');
+    });
+
+    it('should dispatch the "addClass" action with a function argument', function () {
+      actions.addClassFunction();
+      const state = $organisms['#main'].getState();
+
+      expect(state.attribs.class).to.have.string('add-class-function');
     });
 
     it('should dispatch the "addClass" action and reset $members', function () {
@@ -427,8 +454,8 @@ describe('Requerio', function () {
       const state0 = $organisms['.main__section'].getState(0);
       const state1 = $organisms['.main__section'].getState(1);
 
-      expect(state0.attribs.class).to.not.have.string('test1');
-      expect(state1.attribs.class).to.have.string('test1');
+      expect(state0.attribs.class).to.not.have.string('add-class-1');
+      expect(state1.attribs.class).to.have.string('add-class-1');
     });
 
     it('should not dispatch the "addClass" action if the target is out-of-bounds', function () {
@@ -440,18 +467,73 @@ describe('Requerio', function () {
       expect(state1.attribs.class).to.not.have.string('out-of-bounds');
     });
 
-    it('should dispatch the "removeClass" action', function () {
-      actions.removeClass();
-      const state = $organisms['#main'].getState();
+    it('should dispatch the "removeClass" action with a string argument', function () {
+      requerio.$orgs['#main'].dispatchAction('addClass', 'remove-class-string');
+      const stateBefore = $organisms['#main'].getState();
+      actions.removeClassString();
+      const stateAfter = $organisms['#main'].getState();
 
-      expect(state.attribs.class).to.equal('');
+      expect(stateBefore.attribs.class).to.have.string('remove-class-string');
+      expect(stateAfter.attribs.class).to.not.have.string('remove-class-string');
     });
 
-    it('should dispatch the "toggleClass" action', function () {
-      actions.toggleClass();
-      const state = $organisms['#main'].getState();
+    it('should dispatch the "removeClass" action with a function argument', function () {
+      requerio.$orgs['#main'].dispatchAction('addClass', 'remove-class-function');
+      const stateBefore = $organisms['#main'].getState();
+      actions.removeClassFunction();
+      const stateAfter = $organisms['#main'].getState();
 
-      expect(state.attribs.class).to.equal('test');
+      expect(stateBefore.attribs.class).to.have.string('remove-class-function');
+      expect(stateAfter.attribs.class).to.not.have.string('remove-class-function');
+    });
+
+    it('should dispatch the "toggleClass" action with a string argument', function () {
+      const state0 = $organisms['#main'].getState();
+      actions.toggleClassString();
+      const state1 = $organisms['#main'].getState();
+      actions.toggleClassString();
+      const state2 = $organisms['#main'].getState();
+
+      expect(state0.attribs.class).to.not.have.string('toggle-class-string');
+      expect(state1.attribs.class).to.have.string('toggle-class-string');
+      expect(state2.attribs.class).to.not.have.string('toggle-class-string');
+    });
+
+    it('should dispatch the "toggleClass" action with a function argument', function () {
+      const state0 = $organisms['#main'].getState();
+      actions.toggleClassFunction();
+      const state1 = $organisms['#main'].getState();
+      actions.toggleClassFunction();
+      const state2 = $organisms['#main'].getState();
+
+      expect(state0.attribs.class).to.not.have.string('toggle-class-function');
+      expect(state1.attribs.class).to.have.string('toggle-class-function');
+      expect(state2.attribs.class).to.not.have.string('toggle-class-function');
+    });
+
+    it('should dispatch the "toggleClass" action with a true boolean argument', function () {
+      const state0 = $organisms['#main'].getState();
+      actions.toggleClassTrue();
+      const state1 = $organisms['#main'].getState();
+      actions.toggleClassTrue();
+      const state2 = $organisms['#main'].getState();
+
+      expect(state0.attribs.class).to.not.have.string('toggle-class-true');
+      expect(state1.attribs.class).to.have.string('toggle-class-true');
+      expect(state2.attribs.class).to.have.string('toggle-class-true');
+    });
+
+    it('should dispatch the "toggleClass" action with a false boolean argument', function () {
+      requerio.$orgs['#main'].dispatchAction('addClass', 'toggle-class-false');
+      const state0 = $organisms['#main'].getState();
+      actions.toggleClassFalse();
+      const state1 = $organisms['#main'].getState();
+      actions.toggleClassFalse();
+      const state2 = $organisms['#main'].getState();
+
+      expect(state0.attribs.class).to.have.string('toggle-class-false');
+      expect(state1.attribs.class).to.not.have.string('toggle-class-false');
+      expect(state2.attribs.class).to.not.have.string('toggle-class-false');
     });
 
     it('should dispatch the "attr" action with an array argument comprising strings', function () {
@@ -497,7 +579,7 @@ describe('Requerio', function () {
       const $org = $organisms['#main'];
       const stateBefore = $org.getState();
       stateBefore.boundingClientRect = {};
-      const boundingClientRectBefore = JSON.parse(JSON.stringify(stateBefore.boundingClientRect));
+      const boundingClientRectBefore = stateBefore.boundingClientRect;
 
       actions.getBoundingClientRect();
       const stateAfter = $org.getState();

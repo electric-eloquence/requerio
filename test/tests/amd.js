@@ -36,7 +36,7 @@ const Requerio = defineArgs[0]();
 const requerio = new Requerio($, Redux, $organismsAfter, actionsGet);
 
 describe('Requerio', function () {
-  describe('Via AMD', function () {
+  describe('via AMD', function () {
     it('should instantiate correctly', function () {
       expect(requerio).to.be.an.instanceof(Requerio);
       expect(requerio).to.have.property('$');

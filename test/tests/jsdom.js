@@ -68,7 +68,7 @@ const requerio = new window.Requerio($, Redux, $organismsAfter, actionsGet);
 const actions = requerio.actions;
 
 describe('Requerio', function () {
-  describe('On the DOM', function () {
+  describe('on the DOM', function () {
     it('should instantiate correctly', function () {
       expect(requerio).to.be.an.instanceof(window.Requerio);
       expect(requerio).to.have.property('$');
