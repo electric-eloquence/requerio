@@ -32,12 +32,16 @@ function actionsGet(requerio) {
       requerio.$orgs['#main'].dispatchAction('addClass', 'test');
     },
 
+    addClass0: () => {
+      requerio.$orgs['.main__section'].dispatchAction('addClass', 'test0', 0);
+    },
+
     addClass1: () => {
-      requerio.$orgs['.main__section'].dispatchAction('addClass', 'test', 1);
+      requerio.$orgs['.main__section'].dispatchAction('addClass', 'test1', 1);
     },
 
     addClass2: () => {
-      requerio.$orgs['.main__section'].dispatchAction('addClass', 'out-of-bounds', 3);
+      requerio.$orgs['.main__section'].dispatchAction('addClass', 'out-of-bounds', 2);
     },
 
     removeClass: () => {
@@ -48,12 +52,24 @@ function actionsGet(requerio) {
       requerio.$orgs['#main'].dispatchAction('toggleClass', 'test');
     },
 
-    attr: () => {
-      requerio.$orgs['#main'].dispatchAction('attr', ['data-test', 'test']);
+    attrArrayString: () => {
+      requerio.$orgs['#main'].dispatchAction('attr', ['data-test', 'testing12345']);
     },
 
-    css: () => {
-      requerio.$orgs['#main'].dispatchAction('css', ['color', 'black']);
+    attrArrayFunction: () => {
+      requerio.$orgs['#main'].dispatchAction('attr', ['data-test', () => 'testing67890']);
+    },
+
+    cssArrayString: () => {
+      requerio.$orgs['#main'].dispatchAction('css', ['color', 'red']);
+    },
+
+    cssArrayFunction: () => {
+      requerio.$orgs['#main'].dispatchAction('css', ['color', () => 'green']);
+    },
+
+    cssObject: () => {
+      requerio.$orgs['#main'].dispatchAction('css', {color: 'blue'});
     },
 
     getBoundingClientRect: () => {
@@ -93,8 +109,12 @@ function actionsGet(requerio) {
       requerio.$orgs['#main'].dispatchAction('height', 1000);
     },
 
-    html: () => {
+    htmlString: () => {
       requerio.$orgs['#main'].dispatchAction('html', '<h2>Section 1</h2><p>Paragraph 1</p>');
+    },
+
+    htmlFunction: () => {
+      requerio.$orgs['#main'].dispatchAction('html', () => '<h2>Section 1</h2><p>Paragraph 1</p>');
     },
 
     innerWidth: () => {
@@ -388,7 +408,18 @@ describe('Requerio', function () {
       actions.addClass();
       const state = $organisms['#main'].getState();
 
-      expect(state.attribs['class']).to.equal('test');
+      expect(state.attribs.class).to.equal('test');
+    });
+
+    it('should dispatch the "addClass" action and reset $members', function () {
+      const $org = $organisms['.main__section'];
+      $org.$members.pop();
+      const $membersLengthBefore = $org.$members.length;
+      actions.addClass0();
+      const $membersLengthAfter = $org.getState().$members.length;
+
+      expect($membersLengthBefore).to.equal(1);
+      expect($membersLengthAfter).to.equal(2);
     });
 
     it('should dispatch the "addClass" action in a targeted manner', function () {
@@ -396,8 +427,8 @@ describe('Requerio', function () {
       const state0 = $organisms['.main__section'].getState(0);
       const state1 = $organisms['.main__section'].getState(1);
 
-      expect(state0.attribs['class']).to.not.have.string('test');
-      expect(state1.attribs['class']).to.have.string('test');
+      expect(state0.attribs.class).to.not.have.string('test1');
+      expect(state1.attribs.class).to.have.string('test1');
     });
 
     it('should not dispatch the "addClass" action if the target is out-of-bounds', function () {
@@ -405,36 +436,57 @@ describe('Requerio', function () {
       const state0 = $organisms['.main__section'].getState(0);
       const state1 = $organisms['.main__section'].getState(1);
 
-      expect(state0.attribs['class']).to.not.have.string('out-of-bounds');
-      expect(state1.attribs['class']).to.not.have.string('out-of-bounds');
+      expect(state0.attribs.class).to.not.have.string('out-of-bounds');
+      expect(state1.attribs.class).to.not.have.string('out-of-bounds');
     });
 
     it('should dispatch the "removeClass" action', function () {
       actions.removeClass();
       const state = $organisms['#main'].getState();
 
-      expect(state.attribs['class']).to.equal('');
+      expect(state.attribs.class).to.equal('');
     });
 
     it('should dispatch the "toggleClass" action', function () {
       actions.toggleClass();
       const state = $organisms['#main'].getState();
 
-      expect(state.attribs['class']).to.equal('test');
+      expect(state.attribs.class).to.equal('test');
     });
 
-    it('should dispatch the "attr" action', function () {
-      actions.attr();
+    it('should dispatch the "attr" action with an array argument comprising strings', function () {
+      actions.attrArrayString();
       const state = $organisms['#main'].getState();
 
-      expect(state.attribs['data-test']).to.equal('test');
+      expect(state.attribs['data-test']).to.equal('testing12345');
     });
 
-    it('should dispatch the "css" action', function () {
-      actions.css();
+    it('should dispatch the "attr" action with an array argument comprising a string and a function', function () {
+      actions.attrArrayFunction();
       const state = $organisms['#main'].getState();
 
-      expect(state.style.color).to.equal('black');
+      expect(state.attribs['data-test']).to.equal('testing67890');
+    });
+
+    it('should dispatch the "css" action with an array argument comprising strings', function () {
+      actions.cssArrayString();
+      const state = $organisms['#main'].getState();
+
+      expect(state.style.color).to.equal('red');
+    });
+
+    it('should dispatch the "css" action with an array argument comprising a string and a function', function () {
+      actions.cssArrayFunction();
+      const state = $organisms['#main'].getState();
+
+      expect(state.style.color).to.equal('green');
+    });
+
+    it('should dispatch the "css" action with an object argument', function () {
+      actions.cssObject();
+      const state = $organisms['#main'].getState();
+
+      expect(state.style.color).to.equal('blue');
     });
 
     it('should dispatch the "getBoundingClientRect" action', function () {
@@ -501,8 +553,15 @@ describe('Requerio', function () {
       expect(state.height).to.equal(1000);
     });
 
-    it('should dispatch the "html" action', function () {
-      actions.html();
+    it('should dispatch the "html" action with a string argument', function () {
+      actions.htmlString();
+      const state = $organisms['#main'].getState();
+
+      expect(state.innerHTML).to.equal('<h2>Section 1</h2><p>Paragraph 1</p>');
+    });
+
+    it('should dispatch the "html" action with a function argument', function () {
+      actions.htmlFunction();
       const state = $organisms['#main'].getState();
 
       expect(state.innerHTML).to.equal('<h2>Section 1</h2><p>Paragraph 1</p>');

@@ -184,6 +184,7 @@ function stateBuild($org, state, action) {
           action.args[0].constructor === Object
         ) {
           for (let i in action.args[0]) {
+            /* istanbul ignore if */
             if (!action.args[0].hasOwnProperty(i)) {
               continue;
             }
@@ -215,6 +216,7 @@ function stateBuild($org, state, action) {
           action.args[0].constructor === Object
         ) {
           for (let i in action.args[0]) {
+            /* istanbul ignore if */
             if (!action.args[0].hasOwnProperty(i)) {
               continue;
             }
@@ -347,7 +349,9 @@ function stateBuild($org, state, action) {
     }
   }
   catch (err) {
+    /* istanbul ignore next */
     console.error(err); // eslint-disable-line no-console
+    /* istanbul ignore next */
     throw err;
   }
 }
@@ -422,6 +426,7 @@ function reducerClosure(orgSelector) {
       }
       catch (err) {
         // Clone default state into new state if state_ param is undefined.
+        /* istanbul ignore next */
         state = JSON.parse(JSON.stringify(stateDefault));
       }
 
@@ -435,6 +440,7 @@ function reducerClosure(orgSelector) {
           });
         }
         catch (err) {
+          /* istanbul ignore next */
           console.error(err); // eslint-disable-line no-console
         }
       }
@@ -449,6 +455,7 @@ function reducerClosure(orgSelector) {
           });
         }
         catch (err) {
+          /* istanbul ignore next */
           console.error(err); // eslint-disable-line no-console
         }
       }
@@ -497,6 +504,7 @@ export default ($orgs, Redux) => {
   const reducers = {};
 
   for (let i in $orgs) {
+    /* istanbul ignore if */
     if (!$orgs.hasOwnProperty(i)) {
       continue;
     }
