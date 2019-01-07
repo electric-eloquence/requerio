@@ -1,155 +1,40 @@
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
-
-
-
-
-
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
-
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
     };
   }
 
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
+  return _typeof(obj);
+}
 
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
-
-
-
-
-
-var classCallCheck = function (instance, Constructor) {
+function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
   }
-};
+}
 
-var createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
   }
+}
 
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
 
 /**
  * Populate $orgs values with jQuery or Cheerio objects.
@@ -159,41 +44,40 @@ var createClass = function () {
  */
 var organismsIncept = (function ($orgs, $) {
   var _loop = function _loop(i) {
+    /* istanbul ignore if */
     if (!$orgs.hasOwnProperty(i)) {
-      return 'continue';
+      return "continue";
     }
 
     var $org = void 0;
 
     if (i === 'document') {
-      if ((typeof document === 'undefined' ? 'undefined' : _typeof(document)) === 'object') {
+      if ((typeof document === "undefined" ? "undefined" : _typeof(document)) === 'object') {
         $org = $(document);
       } else {
         $org = {};
       }
     } else if (i === 'window') {
-      if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object') {
+      if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object') {
         $org = $(window);
       } else {
         $org = {};
       }
     } else {
-      $org = $('' + i);
-    }
-
-    // Cheerio doesn't have .selector property.
+      $org = $("".concat(i));
+    } // Cheerio doesn't have .selector property.
     // .selector property removed in jQuery 3.
     // Needs to get set here and not in the prototype override because $org.$membersPopulate() depends on it and there
     // doesn't seem to be an easy way to determine it from within the prototype.
+
+
     if (typeof $org.selector === 'undefined') {
       $org.selector = i;
     }
 
     if (i !== 'document' && i !== 'window') {
       $org.$membersPopulate($org);
-    }
-
-    // /////////////////////////////////////////////////////////////////////////
+    } // /////////////////////////////////////////////////////////////////////////
     // Set methods that server-side tests are likely to depend on.
     // They need to be defined here and not in the prototype override because
     // `document` and `window` organisms are not Cheerio objects.
@@ -203,6 +87,30 @@ var organismsIncept = (function ($orgs, $) {
      * @param {number} [distance] - Distance.
      * @returns {number|undefined} Distance.
      */
+
+
+    if (typeof $org.innerWidth === 'undefined') {
+      $org.innerWidth = function (distance) {
+        return distance;
+      };
+    }
+    /**
+     * @param {number} [distance] - Distance.
+     * @returns {number|undefined} Distance.
+     */
+
+
+    if (typeof $org.innerHeight === 'undefined') {
+      $org.innerHeight = function (distance) {
+        return distance;
+      };
+    }
+    /**
+     * @param {number} [distance] - Distance.
+     * @returns {number|undefined} Distance.
+     */
+
+
     if (typeof $org.scrollTop === 'undefined') {
       $org.scrollTop = function (distance) {
         if (typeof distance !== 'undefined') {
@@ -212,30 +120,31 @@ var organismsIncept = (function ($orgs, $) {
         return $org._scrollTop;
       };
     }
-
     /**
      * @param {number} [distance] - Distance.
      * @returns {number|undefined} Distance.
      */
+
+
     if (typeof $org.width === 'undefined') {
       $org.width = function (distance) {
         return distance;
       };
     }
-
     /**
      * @param {number} [distance] - Distance.
      * @returns {number|undefined} Distance.
      */
+
+
     if (typeof $org.height === 'undefined') {
       $org.height = function (distance) {
         return distance;
       };
-    }
-
-    // /////////////////////////////////////////////////////////////////////////
+    } // /////////////////////////////////////////////////////////////////////////
     // Attach the organism to the object of organisms and finish.
     // /////////////////////////////////////////////////////////////////////////
+
 
     $orgs[i] = $org;
   };
@@ -243,7 +152,7 @@ var organismsIncept = (function ($orgs, $) {
   for (var i in $orgs) {
     var _ret = _loop(i);
 
-    if (_ret === 'continue') continue;
+    if (_ret === "continue") continue;
   }
 });
 
@@ -265,28 +174,22 @@ function applyMethod($org, method, args, memberIdx, $member) {
     $member[method].apply($member, args);
   }
 }
-
 /**
  * Create a stand-in for Element.getBoundingClientRect for the server.
  * Need this closure to return a function with $org and memberIdx baked in.
  *
  * @param {object} $org - Organism object.
- * @param {number|undefined} memberIdx_ - If targeting an organism member, its index.
+ * @param {number} memberIdx - The index of the organism member.
  * @returns {function} The returned function returns an object with properties correspond to the properties of DOMRect.
  */
-function getBoundingClientRectClosure($org, memberIdx_) {
+
+
+function getBoundingClientRectClosure($org, memberIdx) {
   return function () {
-    var memberIdx = void 0;
-
-    if (memberIdx_) {
-      memberIdx = memberIdx_;
-    } else {
-      memberIdx = 0;
-    }
-
     var rectState = $org.getStore().getState()[$org.selector].$members[memberIdx].boundingClientRect;
 
     for (var i in rectState) {
+      /* istanbul ignore if */
       if (!rectState.hasOwnProperty(i)) {
         continue;
       }
@@ -297,16 +200,15 @@ function getBoundingClientRectClosure($org, memberIdx_) {
     }
 
     return {
-      bottom: 0,
-      height: 0,
-      left: 0,
-      right: 0,
-      top: 0,
-      width: 0
+      bottom: null,
+      height: null,
+      left: null,
+      right: null,
+      top: null,
+      width: null
     };
   };
 }
-
 /**
  * Resets the organism's members as they are added or removed.
  * Executes the .$membersReset() method attached to the prototype. The reason for this private function is that outside
@@ -314,6 +216,8 @@ function getBoundingClientRectClosure($org, memberIdx_) {
  *
  * @param {object} prototype - The `this` reference from the jQuery/Cheerio prototype.
  */
+
+
 function $membersReset(prototype) {
   if (prototype.selector === 'document' || prototype.selector === 'window') {
     return;
@@ -330,7 +234,7 @@ function $membersReset(prototype) {
       prototype[i] = $orgToReset[i];
 
       if (i === parseInt(i, 10).toString()) {
-        if ((typeof global === 'undefined' ? 'undefined' : _typeof(global)) === 'object') {
+        if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object') {
           prototype[i].getBoundingClientRect = getBoundingClientRectClosure(prototype, i);
         }
       }
@@ -339,25 +243,26 @@ function $membersReset(prototype) {
 
   prototype.$membersPopulate($orgToReset);
 }
-
 /**
  * Override $.prototype with custom methods for dealing with state.
  *
  * @param {object} $ - jQuery or Cheerio.
  * @param {object} stateStore - Redux state store.
  */
+
+
 var prototypeOverride = (function ($, stateStore) {
   if (!$.prototype.hasRequerio) {
     $.prototype.hasRequerio = true;
   }
-
   /**
    * A true Array of the selection's numerically-keyed properties.
    * This is necessary for selection by class and tag, where results number more than one.
    * Members of this array will be fully-incepted organisms.
    */
-  $.prototype.$members = [];
 
+
+  $.prototype.$members = [];
   /**
    * A shorthand for dispatching state actions.
    *   1. Apply the jQuery or Cheerio method.
@@ -371,6 +276,7 @@ var prototypeOverride = (function ($, stateStore) {
    * @param {number} [memberIdx] - Index of member if targeting a member.
    * @returns {object} The new application state.
    */
+
   if (!$.prototype.dispatchAction) {
     $.prototype.dispatchAction = function (method, args_, memberIdx) {
       if (typeof memberIdx !== 'undefined' && typeof this[memberIdx] === 'undefined') {
@@ -383,20 +289,18 @@ var prototypeOverride = (function ($, stateStore) {
         args = args_;
       } else if (typeof args_ === 'string' || typeof args_ === 'number' || args_ instanceof Object) {
         args = [args_];
-      }
+      } // Submission of memberIdx indicates that the action is to be dispatched on the specific member of the CSS class.
 
-      // Submission of memberIdx indicates that the action is to be dispatched on the specific member of the CSS class.
-      var $member = void 0;
+
+      var $member;
 
       if (typeof memberIdx !== 'undefined') {
         $member = $(this[memberIdx]);
-      }
+      } // Side-effects must happen here. stateStore.dispatch() depends on this.
 
-      // Side-effects must happen here. stateStore.dispatch() depends on this.
+
       if (typeof memberIdx === 'undefined' && (typeof this[method] === 'function' || this[0] && typeof this[0][method] === 'function') || typeof memberIdx !== 'undefined' && $member.length && (typeof $member[method] === 'function' || this[memberIdx] && typeof this[memberIdx][method] === 'function')) {
-
         switch (method) {
-
           // Make addClass more convenient by checking if the class already exists.
           case 'addClass':
             {
@@ -412,14 +316,13 @@ var prototypeOverride = (function ($, stateStore) {
 
               break;
             }
-
           // attr method with no arg retrieves data and updates state.
+
           case 'attr':
             {
               if (args.length) {
                 applyMethod(this, method, args, memberIdx, $member);
               } else {
-
                 // Cheerio objects have an .attribs property for member element attributes, which is undocumented and may
                 // change without notice. However, this is unlikely, since it is derived from its htmlparser2 dependency.
                 // The htmlparser2 package has had this property since its initial release.
@@ -429,41 +332,40 @@ var prototypeOverride = (function ($, stateStore) {
                   } else if (this[memberIdx] && this[memberIdx].attribs) {
                     args[0] = this[memberIdx].attribs;
                   }
-                }
-
-                // jQuery saves and keys selected DOM Element objects in an array-like manner on the jQuery object.
+                } // jQuery saves and keys selected DOM Element objects in an array-like manner on the jQuery object.
                 // The .attributes property of each Element object are per the DOM spec.
                 // We need to parse the .attributes property to create a key-value store, which we'll submit as args[0].
-                else if (this[0] && this[0].attributes && this[0].attributes.length) {
-                    var attribs = {};
+                else if (this[0] && this[0].attributes) {
+                    if (typeof memberIdx === 'undefined' && this[0].attributes.length) {
+                      var attribs = {};
 
-                    if (typeof memberIdx === 'undefined') {
                       for (var i = 0; i < this[0].attributes.length; i++) {
                         var attr = this[0].attributes[i];
-
                         attribs[attr.name] = attr.value;
                       }
 
                       args[0] = attribs;
                     } else if (this[memberIdx] && this[memberIdx].attributes && this[memberIdx].attributes.length) {
+                      var _attribs = {};
+
                       for (var _i = 0; _i < this[memberIdx].attributes.length; _i++) {
                         var _attr = this[memberIdx].attributes[_i];
-
-                        attribs[_attr.name] = _attr.value;
+                        _attribs[_attr.name] = _attr.value;
                       }
 
-                      args[0] = attribs;
+                      args[0] = _attribs;
                     }
                   }
               }
 
               break;
             }
-
           // getBoundingClientRect takes measurements and updates state. This never accepts an argument.
           // Also has to operate on the DOM Element member of the jQuery object (or its Cheerio facsimile).
+
           case 'getBoundingClientRect':
             {
+              /* istanbul ignore if */
               if (this.selector === 'document' || this.selector === 'window') {
                 break;
               }
@@ -483,22 +385,21 @@ var prototypeOverride = (function ($, stateStore) {
             {
               break;
             }
-
           // If innerWidth and innerHeight methods are applied to the window object, copy the respective property to the
           // state.
+
           case 'innerWidth':
           case 'innerHeight':
             {
-              if (this.selector === 'window' && (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object') {
+              if (this.selector === 'window' && (typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object') {
                 this[method] = window[method];
                 args[0] = window[method];
-
                 break;
               }
             }
-
           // scrollTop, width, height, innerWidth, and innerHeight methods with no args take measurements and update
           // state. innerWidth and innerHeight, when not applied to window, run the jQuery method.
+
           case 'scrollTop':
           case 'width':
           case 'height':
@@ -508,6 +409,7 @@ var prototypeOverride = (function ($, stateStore) {
               if (args.length) {
                 applyMethod(this, method, args, memberIdx, $member);
               } else {
+                /* istanbul ignore else */
                 if (typeof $member === 'undefined') {
                   // Apply to $org.
                   args[0] = this[method].apply(this);
@@ -519,8 +421,8 @@ var prototypeOverride = (function ($, stateStore) {
 
               break;
             }
-
           // Method applications for other methods.
+
           default:
             applyMethod(this, method, args, memberIdx, $member);
         }
@@ -534,44 +436,36 @@ var prototypeOverride = (function ($, stateStore) {
         method: method,
         args: args
       });
-
       return stateNew;
     };
   }
-
   /**
    * A reference to Redux store.getState().
    *
    * @param {number} [memberIdx] - If targeting a child of a selector, that child's index.
    * @returns {object} The organism's state.
    */
+
+
   if (!$.prototype.getState) {
     $.prototype.getState = function (memberIdx) {
-
       // In order to return the latest, most accurate state, dispatch these actions to update their properties.
       // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data.
       // Do not preemptively update .style property because we only want to keep track of styles dispatched through js.
-      $membersReset(this);
+      $membersReset(this); // case state.attribs:
 
-      // case state.attribs:
-      this.dispatchAction('attr', [], memberIdx);
+      this.dispatchAction('attr', [], memberIdx); // case state.getBoundingClientRect:
 
-      // case state.getBoundingClientRect:
-      this.dispatchAction('getBoundingClientRect', [], memberIdx);
+      this.dispatchAction('getBoundingClientRect', [], memberIdx); // case state.innerWidth:
 
-      // case state.innerWidth:
-      this.dispatchAction('innerWidth', [], memberIdx);
+      this.dispatchAction('innerWidth', [], memberIdx); // case state.innerHeight:
 
-      // case state.innerHeight:
-      this.dispatchAction('innerHeight', [], memberIdx);
+      this.dispatchAction('innerHeight', [], memberIdx); // case state.scrollTop:
 
-      // case state.scrollTop:
-      this.dispatchAction('scrollTop', [], memberIdx);
+      this.dispatchAction('scrollTop', [], memberIdx); // case state.width:
 
-      // case state.width:
-      this.dispatchAction('width', [], memberIdx);
+      this.dispatchAction('width', [], memberIdx); // case state.height:
 
-      // case state.height:
       this.dispatchAction('height', [], memberIdx);
 
       if (typeof memberIdx === 'undefined') {
@@ -581,50 +475,58 @@ var prototypeOverride = (function ($, stateStore) {
       }
     };
   }
-
   /**
    * A reference to Redux store.
    *
    * @returns {object} This app's state store.
    */
+
+
   if (!$.prototype.getStore) {
     $.prototype.getStore = function () {
       return stateStore;
     };
   }
-
   /**
    * Populate organism's members with child organisms.
    *
    * @param {object} $orgToPopulate - The parent to the child organisms.
    */
+
+
   if (!$.prototype.$membersPopulate) {
     $.prototype.$membersPopulate = function ($orgToPopulate) {
+      /* istanbul ignore if */
       if (this.selector === 'document' || this.selector === 'window') {
         return;
       }
 
       this.$members = [];
-
       var $org = this;
-
       $orgToPopulate.each(function () {
         var $this = $(this);
-
         $this.parentSelector = $org.selector;
-
         $org.$members.push($this);
       });
+
+      if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object') {
+        for (var i in this) {
+          if (i === parseInt(i, 10).toString()) {
+            this[i].getBoundingClientRect = getBoundingClientRectClosure(this, i);
+          }
+        }
+      }
     };
   }
-
   /**
    * Give the ability to set boundingClientRect properties. Only for server-side testing.
    *
    * @param {object} rectObj - Object of boundingClientRect measurements. Does not need to include all of them.
    * @param {number} [memberIdx] - Index of member if child member.
    */
-  if ((typeof global === 'undefined' ? 'undefined' : _typeof(global)) === 'object') {
+
+
+  if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object') {
     $.prototype.setBoundingClientRect = function (rectObj, memberIdx) {
       this.dispatchAction('setBoundingClientRect', rectObj, memberIdx);
     };
@@ -640,7 +542,7 @@ var prototypeOverride = (function ($, stateStore) {
  * @returns {undefined} This function mutates the new state object.
  */
 function addClass(classesForReducedState, classParam, state) {
-  var classesToAdd = void 0;
+  var classesToAdd;
 
   if (typeof classParam === 'string') {
     classesToAdd = classParam.split(/\s+/);
@@ -654,14 +556,12 @@ function addClass(classesForReducedState, classParam, state) {
 
   classesToAdd.forEach(function (classToAdd) {
     if (classesForReducedState.indexOf(classToAdd) === -1) {
-      state.attribs.class += ' ' + classToAdd;
+      state.attribs.class += " ".concat(classToAdd);
     }
   });
-
   state.classArray = classesToAdd;
   state.classList = state.classArray;
 }
-
 /**
  * Helper function to remove class from state.
  *
@@ -671,6 +571,8 @@ function addClass(classesForReducedState, classParam, state) {
  * @param {object} state - Current state.
  * @returns {undefined} This function mutates the new state object.
  */
+
+
 function removeClass(classesForReducedState, classParam, classIdx_, state) {
   var classesToRemove = [];
 
@@ -685,7 +587,7 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
   }
 
   classesToRemove.forEach(function (classToRemove) {
-    var classIdx = void 0;
+    var classIdx;
 
     if (typeof classIdx_ === 'number') {
       classIdx = classIdx_;
@@ -697,12 +599,10 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
       classesForReducedState.splice(classIdx, 1);
     }
   });
-
   state.attribs.class = classesForReducedState.join(' ');
   state.classArray = classesForReducedState;
   state.classList = state.classArray;
 }
-
 /**
  * This builds state objects for organisms and their members.
  *
@@ -711,18 +611,17 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
  * @param {object} action - Object defining how we'll act.
  * @returns {undefined} This function mutates the state param.
  */
+
+
 function stateBuild($org, state, action) {
   try {
     // Cheerio.
     if ($org[0] && $org[0].attribs) {
       state.attribs = JSON.parse(JSON.stringify($org[0].attribs));
-    }
-
-    // jQuery.
+    } // jQuery.
     else if ($org[0] && $org[0].attributes && $org[0].attributes.length) {
         for (var i = 0; i < $org[0].attributes.length; i++) {
           var attr = $org[0].attributes[i];
-
           state.attribs[attr.name] = attr.value;
         }
       }
@@ -787,7 +686,6 @@ function stateBuild($org, state, action) {
               }
             }
           });
-
           break;
         }
 
@@ -807,9 +705,11 @@ function stateBuild($org, state, action) {
             }
           } else if (action.args.length === 1 && action.args[0] instanceof Object && action.args[0].constructor === Object) {
             for (var _i in action.args[0]) {
+              /* istanbul ignore if */
               if (!action.args[0].hasOwnProperty(_i)) {
                 continue;
               }
+
               state.attribs[_i] = action.args[0][_i];
             }
           }
@@ -833,6 +733,7 @@ function stateBuild($org, state, action) {
             }
           } else if (action.args.length === 1 && action.args[0] instanceof Object && action.args[0].constructor === Object) {
             for (var _i2 in action.args[0]) {
+              /* istanbul ignore if */
               if (!action.args[0].hasOwnProperty(_i2)) {
                 continue;
               }
@@ -848,7 +749,6 @@ function stateBuild($org, state, action) {
         {
           if (action.args.length === 1) {
             if (action.args[0] instanceof Object) {
-
               // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) in FF and Edge because in those
               // browsers, DOMRect properties are inherited, not "own" properties (as in hasOwnProperty).
               var rectObj = action.args[0];
@@ -869,7 +769,17 @@ function stateBuild($org, state, action) {
           if (action.args[0] instanceof Object) {
             var _rectObj = JSON.parse(JSON.stringify(action.args[0]));
 
-            Object.assign(state.boundingClientRect, _rectObj);
+            Object.assign(state.boundingClientRect, _rectObj); // If this is called on the server, we need to copy the rectObj to the state $members.
+
+            if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object') {
+              if (typeof action.memberIdx !== 'undefined' && typeof state.$members[action.memberIdx] !== 'undefined') {
+                Object.assign(state.$members[action.memberIdx].boundingClientRect, _rectObj);
+              } else {
+                state.$members.forEach(function ($member) {
+                  Object.assign($member.boundingClientRect, _rectObj);
+                });
+              }
+            }
           }
 
           break;
@@ -881,7 +791,7 @@ function stateBuild($org, state, action) {
             if (typeof action.args[0] === 'number') {
               state.height = action.args[0];
 
-              if ((typeof global === 'undefined' ? 'undefined' : _typeof(global)) === 'object') {
+              if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object') {
                 state.boundingClientRect.height = action.args[0];
               }
             }
@@ -946,7 +856,7 @@ function stateBuild($org, state, action) {
             if (typeof action.args[0] === 'number') {
               state.width = action.args[0];
 
-              if ((typeof global === 'undefined' ? 'undefined' : _typeof(global)) === 'object') {
+              if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object') {
                 state.boundingClientRect.width = action.args[0];
               }
             }
@@ -956,19 +866,23 @@ function stateBuild($org, state, action) {
         }
     }
   } catch (err) {
+    /* istanbul ignore next */
     console.error(err); // eslint-disable-line no-console
+
+    /* istanbul ignore next */
+
     throw err;
   }
 }
-
 /**
  * Closure to generate reducers specific to organisms.
  *
  * @param {string} orgSelector - The organism's selector.
  * @returns {function} A function configured to work on the orgSelector.
  */
-function reducerClosure(orgSelector) {
 
+
+function reducerClosure(orgSelector) {
   /**
    * Clone an old state, update the clone based on an action, and return the clone.
    *
@@ -977,7 +891,6 @@ function reducerClosure(orgSelector) {
    * @returns {object} New state.
    */
   return function (state_, action) {
-
     /**
      * A contract for future states. Initial state contains empty values. Do not to let states bloat for no reason (as
      *   it could with large innerHTML).
@@ -1016,12 +929,10 @@ function reducerClosure(orgSelector) {
       width: null,
       height: null,
       $members: []
-    };
+    }; // If this is the reducer for the selected organism, reduce and return a new state.
 
-    // If this is the reducer for the selected organism, reduce and return a new state.
     if (action.selector === orgSelector) {
-
-      var state = void 0;
+      var state;
       var $org = action.$org;
 
       try {
@@ -1029,10 +940,12 @@ function reducerClosure(orgSelector) {
         state = JSON.parse(JSON.stringify(state_));
       } catch (err) {
         // Clone default state into new state if state_ param is undefined.
-        state = JSON.parse(JSON.stringify(stateDefault));
-      }
 
-      // Update length of state.$members array to match length of $org.$members.
+        /* istanbul ignore next */
+        state = JSON.parse(JSON.stringify(stateDefault));
+      } // Update length of state.$members array to match length of $org.$members.
+
+
       if ($org.$members.length < state.$members.length) {
         try {
           // Update $members array with clones of stateDefault.
@@ -1041,6 +954,7 @@ function reducerClosure(orgSelector) {
             state.$members[idx] = JSON.parse(JSON.stringify(stateDefault));
           });
         } catch (err) {
+          /* istanbul ignore next */
           console.error(err); // eslint-disable-line no-console
         }
       } else if ($org.$members.length > state.$members.length) {
@@ -1052,27 +966,25 @@ function reducerClosure(orgSelector) {
             }
           });
         } catch (err) {
+          /* istanbul ignore next */
           console.error(err); // eslint-disable-line no-console
         }
-      }
+      } // Preinitialize.
 
-      // Preinitialize.
+
       if (state.attribs) {
         state.attribs.class = $org.attr('class');
-      }
+      } // Build new state for organism.
 
-      // Build new state for organism.
-      stateBuild($org, state, action);
 
-      // Build new state for selection in $members array.
+      stateBuild($org, state, action); // Build new state for selection in $members array.
+
       if (typeof action.memberIdx !== 'undefined' && typeof $org.$members[action.memberIdx] !== 'undefined' && typeof state.$members[action.memberIdx] !== 'undefined') {
         stateBuild($org.$members[action.memberIdx], state.$members[action.memberIdx], action);
       }
 
       return state;
-    }
-
-    // If this is not the reducer for the selected organism, return the unmutated state if submitted as a defined param.
+    } // If this is not the reducer for the selected organism, return the unmutated state if submitted as a defined param.
     // Else return the default state.
     else {
         if (state_) {
@@ -1083,7 +995,6 @@ function reducerClosure(orgSelector) {
       }
   };
 }
-
 /**
  * Combine organism-specific reducers for consumption by whole app.
  *
@@ -1091,10 +1002,13 @@ function reducerClosure(orgSelector) {
  * @param {object} Redux - Redux object.
  * @returns {object} Combined reducers
  */
+
+
 var reducerGet = (function ($orgs, Redux) {
   var reducers = {};
 
   for (var i in $orgs) {
+    /* istanbul ignore if */
     if (!$orgs.hasOwnProperty(i)) {
       continue;
     }
@@ -1105,28 +1019,29 @@ var reducerGet = (function ($orgs, Redux) {
   return Redux.combineReducers(reducers);
 });
 
-var Requerio = function () {
+var Requerio =
+/*#__PURE__*/
+function () {
   function Requerio($, Redux, $organisms, actionsGet) {
-    classCallCheck(this, Requerio);
+    _classCallCheck(this, Requerio);
 
-    var root = (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' && window || (typeof global === 'undefined' ? 'undefined' : _typeof(global)) === 'object' && global;
-
+    var root = (typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object' && window || (typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object' && global;
     this.$ = $;
     this.Redux = Redux;
     this.$orgs = $organisms;
     this.actions = actionsGet(this, root);
   }
 
-  createClass(Requerio, [{
-    key: 'init',
+  _createClass(Requerio, [{
+    key: "init",
     value: function init() {
       var reducer = reducerGet(this.$orgs, this.Redux);
       var store = this.Redux.createStore(reducer);
-
       prototypeOverride(this.$, store);
       organismsIncept(this.$orgs, this.$);
     }
   }]);
+
   return Requerio;
 }();
 
@@ -1134,7 +1049,7 @@ if (typeof define === 'function') {
   define(function () {
     return Requerio;
   });
-} else if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object') {
+} else if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object') {
   window.Requerio = Requerio;
 }
 

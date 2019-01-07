@@ -11,13 +11,13 @@ export default {
       exclude: 'node_modules/**',
       presets: [
         [
-          'env',
+          '@babel/env',
           {
             modules: false
           }
         ]
       ],
-      plugins: ['external-helpers']
+      plugins: ['@babel/external-helpers']
     })
   ]
 };
