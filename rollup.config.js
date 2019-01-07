@@ -16,8 +16,7 @@ export default {
             modules: false
           }
         ]
-      ],
-      plugins: ['@babel/external-helpers']
+      ]
     })
   ]
 };
