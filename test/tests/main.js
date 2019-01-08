@@ -150,7 +150,7 @@ const actions = {
   width: () => {
     requerio.$orgs['#main'].dispatchAction('width', 1000);
   }
-}
+};
 
 describe('Requerio', function () {
   describe('constructor', function () {

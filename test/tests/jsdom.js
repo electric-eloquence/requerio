@@ -60,7 +60,7 @@ const actions = {
   innerHeightWindow: () => {
     requerio.$orgs.window.dispatchAction('innerHeight', 1000);
   }
-}
+};
 
 describe('Requerio', function () {
   describe('on the DOM', function () {
