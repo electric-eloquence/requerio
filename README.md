@@ -110,21 +110,20 @@ setTimeout(function () {
 
 #### Methods supported:
 
-* addClass
-* removeClass
-* toggleClass
-* attr
-* css
-* getBoundingClientRect
-* setBoundingClientRect
-* height
-* html
-* innerWidth
-* innerHeight
-* scrollTop
-* width
+* [addClass](docs/README.md#addclassclasses)
+* [removeClass](docs/README.md#removeclassclasses)
+* [toggleClass](docs/README.md#toggleclassclasses-switch)
+* [attr](docs/README.md#attrattributename-value)
+* [css](docs/README.md#csspropertyname-value)
+* [setBoundingClientRect](docs/README.md#setboundingclientrectboundingclientrect)
+* [height](docs/README.md#heightvalue)
+* [html](docs/README.md#htmlhtmlstring)
+* [innerWidth](docs/README.md#innerwidthvalue)
+* [innerHeight](docs/README.md#innerheightvalue)
+* [scrollTop](docs/README.md#scrolltopvalue)
+* [width](docs/README.md#widthvalue)
 
-#### See also the <a href="https://github.com/electric-eloquence/requerio/tree/master/examples" target="_blank">examples in GitHub</a>.
+#### See also the <a href="https://github.com/electric-eloquence/requerio/tree/master/examples" target="_blank">code examples</a>.
 
 [snyk-image]: https://snyk.io/test/github/electric-eloquence/requerio/master/badge.svg
 [snyk-url]: https://snyk.io/test/github/electric-eloquence/requerio/master

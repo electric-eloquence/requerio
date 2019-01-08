@@ -533,6 +533,10 @@ var prototypeOverride = (function ($, stateStore) {
   }
 });
 
+/* eslint-disable lines-around-comment */
+
+/* eslint-disable max-len */
+
 /**
  * Helper function to add class to state.
  *
@@ -635,6 +639,13 @@ function stateBuild($org, state, action) {
     }
 
     switch (action.method) {
+      /**
+      ## addClass(classes)
+      For each submitted class, add that class to all matched elements which do not already have that class.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | classes | `string` \| `function` | A space-separated string, or a function that returns a space-separated string. |
+      */
       case 'addClass':
         {
           if (action.args.length === 1) {
@@ -644,6 +655,14 @@ function stateBuild($org, state, action) {
           break;
         }
 
+      /**
+      ## removeClass(classes)
+      For each submitted class, remove that class from all matched elements which have that class.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | classes | `string` \| `function` | A space-separated string, or a function that returns a space-separated string. |
+      */
+
       case 'removeClass':
         {
           if (action.args.length === 1) {
@@ -652,6 +671,15 @@ function stateBuild($org, state, action) {
 
           break;
         }
+
+      /**
+      ## toggleClass(classes, [switch])
+      For each submitted class, add or remove that class from all matched elements, depending on whether or not the element has that class, or depending on the value of the switch parameter.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | classes | `string` \| `function` | A space-separated string, or a function that returns a space-separated string. |
+      | switch | `boolean` | `true` means add, `false` means remove. |
+      */
 
       case 'toggleClass':
         {
@@ -689,6 +717,20 @@ function stateBuild($org, state, action) {
           break;
         }
 
+      /**
+      ## attr(attributeName, value)
+      Set an attribute for all matched elements.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | attributeName | `string` | The name of the attribute to set. |
+      | value | `string` \| `function` \| `null` | The value to set the attribute to. If `null`, the specified attribute will be removed. |
+      ## attr(attributes)
+      Set one or more attributes for all matched elements.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | attributes | `object` | An object of attribute-value pairs to set. |
+      */
+
       case 'attr':
         {
           if (action.args.length === 2) {
@@ -717,6 +759,20 @@ function stateBuild($org, state, action) {
           break;
         }
 
+      /**
+      ## css(propertyName, value)
+      Set a CSS property for all matched elements.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | propertyName | `string` | The name of the property to set. |
+      | value | `string` \| `function` | The value to set the property to. |
+      ## css(properties)
+      Set one or more CSS properties for all matched elements.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | properties | `object` | An object of property-value pairs to set. |
+      */
+
       case 'css':
         {
           if (action.args.length === 2) {
@@ -744,6 +800,7 @@ function stateBuild($org, state, action) {
 
           break;
         }
+      // Internal. Do not document.
 
       case 'getBoundingClientRect':
         {
@@ -763,6 +820,14 @@ function stateBuild($org, state, action) {
 
           break;
         }
+
+      /**
+      ## setBoundingClientRect(boundingClientRect)
+      Copy properties of the `boundingClientRect` parameter over corresponding properties on `state.boundingClientRect`.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | boundingClientRect | `object` | An object of key-values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class, with the exception of `.x` and `.y` (as per compatibility with Microsoft browsers). |
+      */
 
       case 'setBoundingClientRect':
         {
@@ -785,6 +850,14 @@ function stateBuild($org, state, action) {
           break;
         }
 
+      /**
+      ## height(value)
+      Set the height (not including padding, border, or margin) of all matched elements.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
+      */
+
       case 'height':
         {
           if (action.args.length === 1) {
@@ -799,6 +872,14 @@ function stateBuild($org, state, action) {
 
           break;
         }
+
+      /**
+      ## html(htmlString)
+      Set the innerHTML of all matched elements.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | htmlString | `string` \| `function` | A string of HTML or a function returning HTML. |
+      */
 
       case 'html':
         {
@@ -817,6 +898,14 @@ function stateBuild($org, state, action) {
           break;
         }
 
+      /**
+      ## innerWidth(value)
+      Set the innerWidth (including padding, but not border or margin) of all matched elements.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
+      */
+
       case 'innerWidth':
         {
           if (action.args.length === 1) {
@@ -827,6 +916,14 @@ function stateBuild($org, state, action) {
 
           break;
         }
+
+      /**
+      ## innerHeight(value)
+      Set the innerHeight (including padding, but not border or margin) of all matched elements.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
+      */
 
       case 'innerHeight':
         {
@@ -839,6 +936,14 @@ function stateBuild($org, state, action) {
           break;
         }
 
+      /**
+      ## scrollTop(value)
+      Set the vertical scroll position (the number of CSS pixels that are hidden from view above the scrollable area) of all matched elements.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | value | `number` | The number to set the scroll position to. |
+      */
+
       case 'scrollTop':
         {
           if (action.args.length === 1) {
@@ -849,6 +954,14 @@ function stateBuild($org, state, action) {
 
           break;
         }
+
+      /**
+      ## width(value)
+      Set the width (not including padding, border, or margin) of all matched elements.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
+      */
 
       case 'width':
         {
@@ -864,7 +977,9 @@ function stateBuild($org, state, action) {
 
           break;
         }
-    }
+      // DO NOT REMOVE FOLLOWING COMMENT.
+    } // end switch (action.method)
+
   } catch (err) {
     /* istanbul ignore next */
     console.error(err); // eslint-disable-line no-console
@@ -903,10 +1018,10 @@ function reducerClosure(orgSelector) {
      * @property {object} boundingClientRect - Key-value copy of object returned by Element.getBoundingClientRect().
      * @property {null|string} innerHTML - To DOM Element.innerHTML spec. null means the initial innerHTML state wasn't
      *   modified. null has a completely different meaning than empty string.
-     * @property {null|number} scrollTop - Number of pixels scrolled.
+     * @property {null|number} scrollTop - Number of CSS pixels scrolled.
      * @property {object} style - To DOM Element.style spec.
-     * @property {null|number} width - Width in number of pixels.
-     * @property {null|number} height - Height in number of pixels.
+     * @property {null|number} width - Width in number of CSS pixels.
+     * @property {null|number} height - Height in number of CSS pixels.
      * @property {array} $members - jQuery/Cheerio object members belonging to selection.
      */
     var stateDefault = {
