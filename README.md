@@ -6,25 +6,53 @@
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![License][license-image]][license-url]
 
-##### Install
+##### Install:
 
 ```bash
 npm install cheerio redux requerio
 ```
 
-##### Code
+##### Declare `$`:
+
+```html
+<script src="jquery.min.js"></script>
+```
+
+##### - or -
 
 ```javascript
-const assert = require('assert');
-const fs = require('fs');
-
 const cheerio = require('cheerio');
-const Redux = global.Redux = require('redux');
-const Requerio = require('requerio');
-
 const html = fs.readFileSync('./index.html', 'utf8');
 const $ = global.$ = cheerio.load(html);
+```
 
+##### Declare `Redux`:
+
+```html
+<script src="redux.min.js"></script>
+```
+
+##### - or -
+
+```javascript
+const Redux = global.Redux = require('redux');
+```
+
+##### Declare `Requerio`:
+
+```html
+<script src="requerio.min.js"></script>
+```
+
+##### - or -
+
+```javascript
+const Requerio = require('requerio');
+```
+
+##### Declare `$organisms`: (Organism inception will occur as part of Requerio initialization.)
+
+```javascript
 const $organisms = {
   'window': null,
   'html': null,
@@ -33,79 +61,34 @@ const $organisms = {
   '.main__section--0': null,
   '.main__section--1': null
 };
-
-function actionsGet(requerio) {
-  return {
-    mainHide: () => {
-      requerio.$orgs['#main'].dispatchAction('css', ['display', 'none']);
-    },
-
-    mainShow: () => {
-      requerio.$orgs['#main'].dispatchAction('css', ['display', 'block']);
-    }
-  };
-}
-
-const requerio = new Requerio($, Redux, $organisms, actionsGet);
-requerio.init();
-const actions = actionsGet(requerio);
-
-/* Test */
-
-actions.mainHide();
-const hiddenDisplayStyle = requerio.$orgs['#main'].getState().style.display;
-assert.equal(hiddenDisplayStyle, 'none');
-
-actions.mainShow();
-const shownDisplayStyle = requerio.$orgs['#main'].getState().style.display;
-assert.equal(shownDisplayStyle, 'block');
-
-console.log('Tests passed');
 ```
 
-##### On the client, in HTML:
-
-```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
-<script src="requerio/dist/requerio.min.js"></script>
-```
-
-##### On the client, in JavaScript:
+##### Instantiate `requerio`:
 
 ```javascript
-var $organisms = {
-  'window': null,
-  'html': null,
-  'body': null,
-  '#main': null,
-  '.main__section--0': null,
-  '.main__section--1': null
-};
+const requerio = new Requerio($, Redux, $organisms);
+```
 
-function actionsGet(requerio) {
-  return {
-    mainHide: function () {
-      requerio.$orgs['#main'].dispatchAction('css', ['display', 'none']);
-    },
+##### Initialize `requerio`:
 
-    mainShow: function () {
-      requerio.$orgs['#main'].dispatchAction('css', ['display', 'block']);
-    }
-  };
-}
-
-var requerio = new window.Requerio($, Redux, $organisms, actionsGet);
+```javascript
 requerio.init();
-var actions = actionsGet(requerio);
+```
 
-// Immediately hide #main.
-actions.mainHide();
+##### Use:
 
-// Show #main after 1 second.
-setTimeout(function () {
-  actions.mainShow();
-}, 1000);
+```javascript
+// The null `$organisms['#main']` has undergone inception into Requerio organism `requerio.$org['#main']`
+// This organism has properties, methods, and a state.
+// As an example, we'll dispatch a `css` action to give it a `display:none` style property.
+requerio.$orgs['#main'].dispatchAction('css', ['display', 'none']);
+
+// That action will hide the organism in the browser.
+// We can observe its state after the dispatching of the action.
+const mainState = requerio.$orgs['#main'].getState();
+
+// In Node, we can test to make sure the action updated the state correctly.
+assert.equal(mainState.style.display, 'none');
 ```
 
 #### Methods supported:
@@ -115,12 +98,12 @@ setTimeout(function () {
 * [toggleClass](docs/README.md#toggleclassclasses-switch)
 * [attr](docs/README.md#attrattributename-value)
 * [css](docs/README.md#csspropertyname-value)
-* [setBoundingClientRect](docs/README.md#setboundingclientrectboundingclientrect)
 * [height](docs/README.md#heightvalue)
 * [html](docs/README.md#htmlhtmlstring)
-* [innerWidth](docs/README.md#innerwidthvalue)
 * [innerHeight](docs/README.md#innerheightvalue)
+* [innerWidth](docs/README.md#innerwidthvalue)
 * [scrollTop](docs/README.md#scrolltopvalue)
+* [setBoundingClientRect](docs/README.md#setboundingclientrectboundingclientrect)
 * [width](docs/README.md#widthvalue)
 
 #### See also the <a href="https://github.com/electric-eloquence/requerio/tree/master/examples" target="_blank">code examples</a>.

@@ -27,13 +27,8 @@ const $organismsBefore = {
   '.main__section--1': null
 };
 const $organismsAfter = Object.assign({}, $organismsBefore);
-
-function actionsGet() {
-  return {};
-}
-
 const Requerio = defineArgs[0]();
-const requerio = new Requerio($, Redux, $organismsAfter, actionsGet);
+const requerio = new Requerio($, Redux, $organismsAfter);
 
 describe('Requerio', function () {
   describe('via AMD', function () {
@@ -42,12 +37,10 @@ describe('Requerio', function () {
       expect(requerio).to.have.property('$');
       expect(requerio).to.have.property('Redux');
       expect(requerio).to.have.property('$orgs');
-      expect(requerio).to.have.property('actions');
       expect(requerio).to.have.property('init');
       expect(requerio.$).to.equal($);
       expect(requerio.Redux).to.equal(Redux);
       expect(requerio.$orgs).to.equal($organismsAfter);
-      expect(requerio.actions).to.be.an.instanceof(Object);
       expect(requerio.init).to.be.a('function');
     });
 

@@ -24,138 +24,133 @@ const $organismsBefore = {
 };
 const $organismsAfter = JSON.parse(JSON.stringify($organismsBefore));
 const $organisms = $organismsAfter;
+const requerio = new Requerio($, Redux, $organismsAfter);
+const actions = {
+  addClassString: () => {
+    requerio.$orgs['#main'].dispatchAction('addClass', 'add-class-string');
+  },
 
-function actionsGet(requerio) {
-  return {
-    addClassString: () => {
-      requerio.$orgs['#main'].dispatchAction('addClass', 'add-class-string');
-    },
+  addClassFunction: () => {
+    requerio.$orgs['#main'].dispatchAction('addClass', () => 'add-class-function');
+  },
 
-    addClassFunction: () => {
-      requerio.$orgs['#main'].dispatchAction('addClass', () => 'add-class-function');
-    },
+  addClass0: () => {
+    requerio.$orgs['.main__section'].dispatchAction('addClass', 'add-class-0', 0);
+  },
 
-    addClass0: () => {
-      requerio.$orgs['.main__section'].dispatchAction('addClass', 'add-class-0', 0);
-    },
+  addClass1: () => {
+    requerio.$orgs['.main__section'].dispatchAction('addClass', 'add-class-1', 1);
+  },
 
-    addClass1: () => {
-      requerio.$orgs['.main__section'].dispatchAction('addClass', 'add-class-1', 1);
-    },
+  addClass2: () => {
+    requerio.$orgs['.main__section'].dispatchAction('addClass', 'out-of-bounds', 2);
+  },
 
-    addClass2: () => {
-      requerio.$orgs['.main__section'].dispatchAction('addClass', 'out-of-bounds', 2);
-    },
+  removeClassString: () => {
+    requerio.$orgs['#main'].dispatchAction('removeClass', 'remove-class-string');
+  },
 
-    removeClassString: () => {
-      requerio.$orgs['#main'].dispatchAction('removeClass', 'remove-class-string');
-    },
+  removeClassFunction: () => {
+    requerio.$orgs['#main'].dispatchAction('removeClass', () => 'remove-class-function');
+  },
 
-    removeClassFunction: () => {
-      requerio.$orgs['#main'].dispatchAction('removeClass', () => 'remove-class-function');
-    },
+  toggleClassString: () => {
+    requerio.$orgs['#main'].dispatchAction('toggleClass', 'toggle-class-string');
+  },
 
-    toggleClassString: () => {
-      requerio.$orgs['#main'].dispatchAction('toggleClass', 'toggle-class-string');
-    },
+  toggleClassFunction: () => {
+    requerio.$orgs['#main'].dispatchAction('toggleClass', () => 'toggle-class-function');
+  },
 
-    toggleClassFunction: () => {
-      requerio.$orgs['#main'].dispatchAction('toggleClass', () => 'toggle-class-function');
-    },
+  toggleClassTrue: () => {
+    requerio.$orgs['#main'].dispatchAction('toggleClass', ['toggle-class-true', true]);
+  },
 
-    toggleClassTrue: () => {
-      requerio.$orgs['#main'].dispatchAction('toggleClass', ['toggle-class-true', true]);
-    },
+  toggleClassFalse: () => {
+    requerio.$orgs['#main'].dispatchAction('toggleClass', ['toggle-class-false', false]);
+  },
 
-    toggleClassFalse: () => {
-      requerio.$orgs['#main'].dispatchAction('toggleClass', ['toggle-class-false', false]);
-    },
+  attrArrayString: () => {
+    requerio.$orgs['#main'].dispatchAction('attr', ['data-test', 'testing12345']);
+  },
 
-    attrArrayString: () => {
-      requerio.$orgs['#main'].dispatchAction('attr', ['data-test', 'testing12345']);
-    },
+  attrArrayFunction: () => {
+    requerio.$orgs['#main'].dispatchAction('attr', ['data-test', () => 'testing67890']);
+  },
 
-    attrArrayFunction: () => {
-      requerio.$orgs['#main'].dispatchAction('attr', ['data-test', () => 'testing67890']);
-    },
+  cssArrayString: () => {
+    requerio.$orgs['#main'].dispatchAction('css', ['color', 'red']);
+  },
 
-    cssArrayString: () => {
-      requerio.$orgs['#main'].dispatchAction('css', ['color', 'red']);
-    },
+  cssArrayFunction: () => {
+    requerio.$orgs['#main'].dispatchAction('css', ['color', () => 'green']);
+  },
 
-    cssArrayFunction: () => {
-      requerio.$orgs['#main'].dispatchAction('css', ['color', () => 'green']);
-    },
+  cssObject: () => {
+    requerio.$orgs['#main'].dispatchAction('css', {color: 'blue'});
+  },
 
-    cssObject: () => {
-      requerio.$orgs['#main'].dispatchAction('css', {color: 'blue'});
-    },
+  getBoundingClientRect: () => {
+    requerio.$orgs['#main'].dispatchAction('getBoundingClientRect');
+  },
 
-    getBoundingClientRect: () => {
-      requerio.$orgs['#main'].dispatchAction('getBoundingClientRect');
-    },
+  setBoundingClientRect: () => {
+    requerio.$orgs['#main'].dispatchAction(
+      'setBoundingClientRect',
+      {
+        width: 1100,
+        height: 1100,
+        top: 110,
+        right: 1210,
+        bottom: 1210,
+        left: 110
+      }
+    );
+  },
 
-    setBoundingClientRect: () => {
-      requerio.$orgs['#main'].dispatchAction(
-        'setBoundingClientRect',
-        {
-          width: 1100,
-          height: 1100,
-          top: 110,
-          right: 1210,
-          bottom: 1210,
-          left: 110
-        }
-      );
-    },
+  setBoundingClientRect1: () => {
+    requerio.$orgs['.main__section'].dispatchAction(
+      'setBoundingClientRect',
+      {
+        width: 1100,
+        height: 1100,
+        top: 110,
+        right: 1210,
+        bottom: 1210,
+        left: 110
+      },
+      1
+    );
+  },
 
-    setBoundingClientRect1: () => {
-      requerio.$orgs['.main__section'].dispatchAction(
-        'setBoundingClientRect',
-        {
-          width: 1100,
-          height: 1100,
-          top: 110,
-          right: 1210,
-          bottom: 1210,
-          left: 110
-        },
-        1
-      );
-    },
+  height: () => {
+    requerio.$orgs['#main'].dispatchAction('height', 1000);
+  },
 
-    height: () => {
-      requerio.$orgs['#main'].dispatchAction('height', 1000);
-    },
+  htmlString: () => {
+    requerio.$orgs['#main'].dispatchAction('html', '<h2>Section 1</h2><p>Paragraph 1</p>');
+  },
 
-    htmlString: () => {
-      requerio.$orgs['#main'].dispatchAction('html', '<h2>Section 1</h2><p>Paragraph 1</p>');
-    },
+  htmlFunction: () => {
+    requerio.$orgs['#main'].dispatchAction('html', () => '<h2>Section 1</h2><p>Paragraph 1</p>');
+  },
 
-    htmlFunction: () => {
-      requerio.$orgs['#main'].dispatchAction('html', () => '<h2>Section 1</h2><p>Paragraph 1</p>');
-    },
+  innerWidth: () => {
+    requerio.$orgs['#main'].dispatchAction('innerWidth', 1000);
+  },
 
-    innerWidth: () => {
-      requerio.$orgs['#main'].dispatchAction('innerWidth', 1000);
-    },
+  innerHeight: () => {
+    requerio.$orgs['#main'].dispatchAction('innerHeight', 1000);
+  },
 
-    innerHeight: () => {
-      requerio.$orgs['#main'].dispatchAction('innerHeight', 1000);
-    },
+  scrollTop: () => {
+    requerio.$orgs['#main'].dispatchAction('scrollTop', 100);
+  },
 
-    scrollTop: () => {
-      requerio.$orgs['#main'].dispatchAction('scrollTop', 100);
-    },
-
-    width: () => {
-      requerio.$orgs['#main'].dispatchAction('width', 1000);
-    }
-  };
+  width: () => {
+    requerio.$orgs['#main'].dispatchAction('width', 1000);
+  }
 }
-
-const requerio = new Requerio($, Redux, $organismsAfter, actionsGet);
-const actions = requerio.actions;
 
 describe('Requerio', function () {
   describe('constructor', function () {
@@ -164,12 +159,10 @@ describe('Requerio', function () {
       expect(requerio).to.have.property('$');
       expect(requerio).to.have.property('Redux');
       expect(requerio).to.have.property('$orgs');
-      expect(requerio).to.have.property('actions');
       expect(requerio).to.have.property('init');
       expect(requerio.$).to.equal($);
       expect(requerio.Redux).to.equal(Redux);
       expect(requerio.$orgs).to.equal($organismsAfter);
-      expect(requerio.actions).to.be.an.instanceof(Object);
       expect(requerio.init).to.be.a('function');
     });
 

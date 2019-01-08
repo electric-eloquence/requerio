@@ -35,37 +35,32 @@ const $organismsBefore = {
 };
 const $organismsAfter = Object.assign({}, $organismsBefore);
 const $organisms = $organismsAfter;
+const requerio = new window.Requerio($, Redux, $organismsAfter);
+const actions = {
+  attrSet: () => {
+    requerio.$orgs['#main'].dispatchAction('attr', ['data-test', 'test']);
+  },
 
-function actionsGet(requerio) {
-  return {
-    attrSet: () => {
-      requerio.$orgs['#main'].dispatchAction('attr', ['data-test', 'test']);
-    },
+  attrSet1: () => {
+    requerio.$orgs['.main__section'].dispatchAction('attr', ['data-test', 'test'], 1);
+  },
 
-    attrSet1: () => {
-      requerio.$orgs['.main__section'].dispatchAction('attr', ['data-test', 'test'], 1);
-    },
+  attrGet: () => {
+    requerio.$orgs['#main'].dispatchAction('attr');
+  },
 
-    attrGet: () => {
-      requerio.$orgs['#main'].dispatchAction('attr');
-    },
+  attrGet1: () => {
+    requerio.$orgs['.main__section'].dispatchAction('attr', [], 1);
+  },
 
-    attrGet1: () => {
-      requerio.$orgs['.main__section'].dispatchAction('attr', [], 1);
-    },
+  innerWidthWindow: () => {
+    requerio.$orgs.window.dispatchAction('innerWidth', 1000);
+  },
 
-    innerWidthWindow: () => {
-      requerio.$orgs.window.dispatchAction('innerWidth', 1000);
-    },
-
-    innerHeightWindow: () => {
-      requerio.$orgs.window.dispatchAction('innerHeight', 1000);
-    }
-  };
+  innerHeightWindow: () => {
+    requerio.$orgs.window.dispatchAction('innerHeight', 1000);
+  }
 }
-
-const requerio = new window.Requerio($, Redux, $organismsAfter, actionsGet);
-const actions = requerio.actions;
 
 describe('Requerio', function () {
   describe('on the DOM', function () {
@@ -74,12 +69,10 @@ describe('Requerio', function () {
       expect(requerio).to.have.property('$');
       expect(requerio).to.have.property('Redux');
       expect(requerio).to.have.property('$orgs');
-      expect(requerio).to.have.property('actions');
       expect(requerio).to.have.property('init');
       expect(requerio.$).to.equal($);
       expect(requerio.Redux).to.equal(Redux);
       expect(requerio.$orgs).to.equal($organismsAfter);
-      expect(requerio.actions).to.be.an.instanceof(Object);
       expect(requerio.init).to.be.a('function');
     });
 

@@ -23,27 +23,27 @@ const $organisms = {
 function actionsGet(requerio) {
   return {
     mainHide: () => {
-      requerio.$orgs['#main'].dispatchAction('css', ['display', 'none']);
+      requerio.$orgs['.main__section--1'].dispatchAction('css', ['display', 'none']);
     },
 
     mainShow: () => {
-      requerio.$orgs['#main'].dispatchAction('css', ['display', 'block']);
+      requerio.$orgs['.main__section--1'].dispatchAction('css', ['display', 'block']);
     }
   };
 }
 
-const requerio = new Requerio($, Redux, $organisms, actionsGet);
+const requerio = new Requerio($, Redux, $organisms);
 requerio.init();
 const actions = actionsGet(requerio);
 
 /* Test */
 
 actions.mainHide();
-const hiddenDisplayStyle = requerio.$orgs['#main'].getState().style.display;
+const hiddenDisplayStyle = requerio.$orgs['.main__section--1'].getState().style.display;
 assert.equal(hiddenDisplayStyle, 'none');
 
 actions.mainShow();
-const shownDisplayStyle = requerio.$orgs['#main'].getState().style.display;
+const shownDisplayStyle = requerio.$orgs['.main__section--1'].getState().style.display;
 assert.equal(shownDisplayStyle, 'block');
 
 console.log('Tests passed'); // eslint-disable-line no-console

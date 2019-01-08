@@ -111,7 +111,7 @@ function stateBuild($org, state, action) {
     switch (action.method) {
       /**
 ## addClass(classes)
-For each submitted class, add that class to all matched elements which do not already have that class.
+For each submitted class, add that class to all matched elements which do not have that class.
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -309,39 +309,6 @@ Set one or more CSS properties for all matched elements.
       }
 
       /**
-## setBoundingClientRect(boundingClientRect)
-Copy properties of the `boundingClientRect` parameter over corresponding properties on `state.boundingClientRect`.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| boundingClientRect | `object` | An object of key-values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class, with the exception of `.x` and `.y` (as per compatibility with Microsoft browsers). |
-*/
-      case 'setBoundingClientRect': {
-        if (action.args[0] instanceof Object) {
-          const rectObj = JSON.parse(JSON.stringify(action.args[0]));
-
-          Object.assign(state.boundingClientRect, rectObj);
-
-          // If this is called on the server, we need to copy the rectObj to the state $members.
-          if (typeof global === 'object') {
-            if (
-              typeof action.memberIdx !== 'undefined' &&
-              typeof state.$members[action.memberIdx] !== 'undefined'
-            ) {
-              Object.assign(state.$members[action.memberIdx].boundingClientRect, rectObj);
-            }
-            else {
-              state.$members.forEach(($member) => {
-                Object.assign($member.boundingClientRect, rectObj);
-              });
-            }
-          }
-        }
-
-        break;
-      }
-
-      /**
 ## height(value)
 Set the height (not including padding, border, or margin) of all matched elements.
 
@@ -389,24 +356,6 @@ Set the innerHTML of all matched elements.
       }
 
       /**
-## innerWidth(value)
-Set the innerWidth (including padding, but not border or margin) of all matched elements.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
-*/
-      case 'innerWidth': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state.innerWidth = action.args[0];
-          }
-        }
-
-        break;
-      }
-
-      /**
 ## innerHeight(value)
 Set the innerHeight (including padding, but not border or margin) of all matched elements.
 
@@ -425,6 +374,24 @@ Set the innerHeight (including padding, but not border or margin) of all matched
       }
 
       /**
+## innerWidth(value)
+Set the innerWidth (including padding, but not border or margin) of all matched elements.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
+*/
+      case 'innerWidth': {
+        if (action.args.length === 1) {
+          if (typeof action.args[0] === 'number') {
+            state.innerWidth = action.args[0];
+          }
+        }
+
+        break;
+      }
+
+      /**
 ## scrollTop(value)
 Set the vertical scroll position (the number of CSS pixels that are hidden from view above the scrollable area) of all matched elements.
 
@@ -436,6 +403,39 @@ Set the vertical scroll position (the number of CSS pixels that are hidden from 
         if (action.args.length === 1) {
           if (typeof action.args[0] === 'number') {
             state.scrollTop = action.args[0];
+          }
+        }
+
+        break;
+      }
+
+      /**
+## setBoundingClientRect(boundingClientRect)
+Copy properties of the `boundingClientRect` parameter over corresponding properties on `state.boundingClientRect`.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| boundingClientRect | `object` | An object of key-values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class, with the exception of `.x` and `.y` (as per compatibility with Microsoft browsers). |
+*/
+      case 'setBoundingClientRect': {
+        if (action.args[0] instanceof Object) {
+          const rectObj = JSON.parse(JSON.stringify(action.args[0]));
+
+          Object.assign(state.boundingClientRect, rectObj);
+
+          // If this is called on the server, we need to copy the rectObj to the state $members.
+          if (typeof global === 'object') {
+            if (
+              typeof action.memberIdx !== 'undefined' &&
+              typeof state.$members[action.memberIdx] !== 'undefined'
+            ) {
+              Object.assign(state.$members[action.memberIdx].boundingClientRect, rectObj);
+            }
+            else {
+              state.$members.forEach(($member) => {
+                Object.assign($member.boundingClientRect, rectObj);
+              });
+            }
           }
         }
 

@@ -6,6 +6,7 @@
   "scripts": {
     "bundle": "rollup --config && node run/bundle-client.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "doc": "node run/doc.js",
     "lint": "eslint examples && eslint src && eslint test",
     "start": "npm run watch",
     "test": "nyc mocha --require @babel/register --exit test/tests",
@@ -13,7 +14,7 @@
   },
   "husky": {
     "hooks": {
-      "post-commit": "npm run bundle",
+      "post-commit": "npm run bundle && npm run doc",
       "pre-push": "npm run lint && npm test"
     }
   },

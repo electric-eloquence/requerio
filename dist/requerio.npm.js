@@ -641,7 +641,7 @@ function stateBuild($org, state, action) {
     switch (action.method) {
       /**
       ## addClass(classes)
-      For each submitted class, add that class to all matched elements which do not already have that class.
+      For each submitted class, add that class to all matched elements which do not have that class.
       | Param | Type | Description |
       | --- | --- | --- |
       | classes | `string` \| `function` | A space-separated string, or a function that returns a space-separated string. |
@@ -822,35 +822,6 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## setBoundingClientRect(boundingClientRect)
-      Copy properties of the `boundingClientRect` parameter over corresponding properties on `state.boundingClientRect`.
-      | Param | Type | Description |
-      | --- | --- | --- |
-      | boundingClientRect | `object` | An object of key-values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class, with the exception of `.x` and `.y` (as per compatibility with Microsoft browsers). |
-      */
-
-      case 'setBoundingClientRect':
-        {
-          if (action.args[0] instanceof Object) {
-            var _rectObj = JSON.parse(JSON.stringify(action.args[0]));
-
-            Object.assign(state.boundingClientRect, _rectObj); // If this is called on the server, we need to copy the rectObj to the state $members.
-
-            if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object') {
-              if (typeof action.memberIdx !== 'undefined' && typeof state.$members[action.memberIdx] !== 'undefined') {
-                Object.assign(state.$members[action.memberIdx].boundingClientRect, _rectObj);
-              } else {
-                state.$members.forEach(function ($member) {
-                  Object.assign($member.boundingClientRect, _rectObj);
-                });
-              }
-            }
-          }
-
-          break;
-        }
-
-      /**
       ## height(value)
       Set the height (not including padding, border, or margin) of all matched elements.
       | Param | Type | Description |
@@ -899,25 +870,6 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## innerWidth(value)
-      Set the innerWidth (including padding, but not border or margin) of all matched elements.
-      | Param | Type | Description |
-      | --- | --- | --- |
-      | value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
-      */
-
-      case 'innerWidth':
-        {
-          if (action.args.length === 1) {
-            if (typeof action.args[0] === 'number') {
-              state.innerWidth = action.args[0];
-            }
-          }
-
-          break;
-        }
-
-      /**
       ## innerHeight(value)
       Set the innerHeight (including padding, but not border or margin) of all matched elements.
       | Param | Type | Description |
@@ -937,6 +889,25 @@ function stateBuild($org, state, action) {
         }
 
       /**
+      ## innerWidth(value)
+      Set the innerWidth (including padding, but not border or margin) of all matched elements.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
+      */
+
+      case 'innerWidth':
+        {
+          if (action.args.length === 1) {
+            if (typeof action.args[0] === 'number') {
+              state.innerWidth = action.args[0];
+            }
+          }
+
+          break;
+        }
+
+      /**
       ## scrollTop(value)
       Set the vertical scroll position (the number of CSS pixels that are hidden from view above the scrollable area) of all matched elements.
       | Param | Type | Description |
@@ -949,6 +920,35 @@ function stateBuild($org, state, action) {
           if (action.args.length === 1) {
             if (typeof action.args[0] === 'number') {
               state.scrollTop = action.args[0];
+            }
+          }
+
+          break;
+        }
+
+      /**
+      ## setBoundingClientRect(boundingClientRect)
+      Copy properties of the `boundingClientRect` parameter over corresponding properties on `state.boundingClientRect`.
+      | Param | Type | Description |
+      | --- | --- | --- |
+      | boundingClientRect | `object` | An object of key-values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class, with the exception of `.x` and `.y` (as per compatibility with Microsoft browsers). |
+      */
+
+      case 'setBoundingClientRect':
+        {
+          if (action.args[0] instanceof Object) {
+            var _rectObj = JSON.parse(JSON.stringify(action.args[0]));
+
+            Object.assign(state.boundingClientRect, _rectObj); // If this is called on the server, we need to copy the rectObj to the state $members.
+
+            if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object') {
+              if (typeof action.memberIdx !== 'undefined' && typeof state.$members[action.memberIdx] !== 'undefined') {
+                Object.assign(state.$members[action.memberIdx].boundingClientRect, _rectObj);
+              } else {
+                state.$members.forEach(function ($member) {
+                  Object.assign($member.boundingClientRect, _rectObj);
+                });
+              }
             }
           }
 
@@ -1137,14 +1137,12 @@ var reducerGet = (function ($orgs, Redux) {
 var Requerio =
 /*#__PURE__*/
 function () {
-  function Requerio($, Redux, $organisms, actionsGet) {
+  function Requerio($, Redux, $organisms) {
     _classCallCheck(this, Requerio);
 
-    var root = (typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object' && window || (typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object' && global;
     this.$ = $;
     this.Redux = Redux;
     this.$orgs = $organisms;
-    this.actions = actionsGet(this, root);
   }
 
   _createClass(Requerio, [{

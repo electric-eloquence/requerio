@@ -3,13 +3,10 @@ import prototypeOverride from './prototype-override.js';
 import reducerGet from './reducer-get.js';
 
 class Requerio {
-  constructor($, Redux, $organisms, actionsGet) {
-    let root = (typeof window === 'object' && window) || (typeof global === 'object' && global);
-
+  constructor($, Redux, $organisms) {
     this.$ = $;
     this.Redux = Redux;
     this.$orgs = $organisms;
-    this.actions = actionsGet(this, root);
   }
 
   init() {

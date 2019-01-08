@@ -1,6 +1,6 @@
 
 ## addClass(classes)
-For each submitted class, add that class to all matched elements which do not already have that class.
+For each submitted class, add that class to all matched elements which do not have that class.
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -51,13 +51,6 @@ Set one or more CSS properties for all matched elements.
 | --- | --- | --- |
 | properties | `object` | An object of property-value pairs to set. |
 
-## setBoundingClientRect(boundingClientRect)
-Copy properties of the `boundingClientRect` parameter over corresponding properties on `state.boundingClientRect`.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| boundingClientRect | `object` | An object of key-values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class, with the exception of `.x` and `.y` (as per compatibility with Microsoft browsers). |
-
 ## height(value)
 Set the height (not including padding, border, or margin) of all matched elements.
 
@@ -72,15 +65,15 @@ Set the innerHTML of all matched elements.
 | --- | --- | --- |
 | htmlString | `string` \| `function` | A string of HTML or a function returning HTML. |
 
-## innerWidth(value)
-Set the innerWidth (including padding, but not border or margin) of all matched elements.
+## innerHeight(value)
+Set the innerHeight (including padding, but not border or margin) of all matched elements.
 
 | Param | Type | Description |
 | --- | --- | --- |
 | value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
 
-## innerHeight(value)
-Set the innerHeight (including padding, but not border or margin) of all matched elements.
+## innerWidth(value)
+Set the innerWidth (including padding, but not border or margin) of all matched elements.
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -92,6 +85,13 @@ Set the vertical scroll position (the number of CSS pixels that are hidden from 
 | Param | Type | Description |
 | --- | --- | --- |
 | value | `number` | The number to set the scroll position to. |
+
+## setBoundingClientRect(boundingClientRect)
+Copy properties of the `boundingClientRect` parameter over corresponding properties on `state.boundingClientRect`.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| boundingClientRect | `object` | An object of key-values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class, with the exception of `.x` and `.y` (as per compatibility with Microsoft browsers). |
 
 ## width(value)
 Set the width (not including padding, border, or margin) of all matched elements.
