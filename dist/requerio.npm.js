@@ -259,17 +259,17 @@ var prototypeOverride = (function ($, stateStore) {
   /* eslint-disable valid-jsdoc */
   $.prototype.$members = [];
   /**
-  ### .dispatchAction(method, args, [memberIdx])
+  ### .dispatchAction(method, [args], [memberIdx])
   A shorthand for dispatching state actions.
   1. Apply the jQuery or Cheerio method.
   2. Apply any additional changes.
   3. Call the Redux store.dispatch() method.
-  __Returns__: `object` - The new application state.
+  __Returns__: `object` - The dispatched action object.
   | Param | Type | Description |
   | --- | --- | --- |
-  | method | `string` | The name of the method native to the component's object prototype. |
-  | args | `*` | This param contains the values to be passed as arguments to `method`. `args` may be of type `array`, `string`, `number`, `object`, or `function`.  |
-  | [memberIdx] | `number` | Index of member if targeting a member. |
+  | method | `string` | The name of the method on the organism's object prototype. |
+  | [args] | `*` | This param contains the values to be passed as arguments to `method`. `null` or an empty `array` may be submitted if not passing arguments, but targeting a `memberIdx`. |
+  | [memberIdx] | `number` | The index of the organism member (if targeting a member). |
   */
 
   if (!$.prototype.dispatchAction) {
@@ -424,24 +424,23 @@ var prototypeOverride = (function ($, stateStore) {
         }
       }
 
-      var stateNew = stateStore.dispatch({
+      return stateStore.dispatch({
         type: '',
         selector: this.selector,
         $org: this,
-        memberIdx: memberIdx,
         method: method,
-        args: args
+        args: args,
+        memberIdx: memberIdx
       });
-      return stateNew;
     };
   }
   /**
   ### .getState([memberIdx])
-  A reference to Redux store.getState().
+  A reference to Redux `store.getState()`.
   __Returns__: `object` - The organism's state.
   | Param | Type | Description |
   | --- | --- | --- |
-  | [memberIdx] | `number` | Index of member if targeting a member. |
+  | [memberIdx] | `number` | The index of the organism member (if targeting a member). |
   */
 
 
@@ -475,7 +474,7 @@ var prototypeOverride = (function ($, stateStore) {
   }
   /**
   ### .getStore()
-  A reference to Redux store.
+  A reference to Redux `store`.
   __Returns__: `object` - This app's state store.
   */
 
@@ -512,12 +511,12 @@ var prototypeOverride = (function ($, stateStore) {
   }
   /**
   ### .setBoundingClientRect(rectObj, [memberIdx])
-  Give the ability to set boundingClientRect properties. Only for server-side testing.
+  Give the ability to set `boundingClientRect` properties. Only for server-side testing.
   __Returns__: `undefined`
   | Param | Type | Description |
   | --- | --- | --- |
-  | rectObj | `object` | Object of boundingClientRect measurements. Does not need to include all of them. |
-  | [memberIdx] | `number` | Index of member if child member. |
+  | rectObj | `object` | Object of `boundingClientRect` measurements. Does not need to include all of them. |
+  | [memberIdx] | `number` | The index of the organism member (if targeting a member). |
   */
 
 

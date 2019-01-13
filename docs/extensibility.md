@@ -28,6 +28,10 @@ function customReducer(state, action) {
 }
 ```
 
+When an action is dispatched via Requerio's [`.dispatchAction()`](README.md#dispatchactionmethod-args-memberidx) method, 
+Requerio's reducer will apply `action.method` on the `$` instance. Therefore, if it doesn't exist on the default 
+prototype, it must be added as demonstrated in the first example. 
+
 #### Requerio also accepts custom Redux middleware.
 
 `customMiddleware` is plugged into the Redux store upon creation of the store. It runs before the reducer. A common (and 
@@ -52,8 +56,8 @@ const customMiddleware = store => next => action => {
 };
 ```
 
-This middleware declares a `timebombExtensibility` method, which in turn dispatches the `killExtensibility` method 10 
-seconds later. Dispatching an action returns the action object. In this example, the promise is returned as the 
+This middleware declares a `timebombExtensibility` action, which in turn dispatches the `killExtensibility` action 10 
+seconds later. `.dispatchAction()` returns the `action` object. In this example, the promise is returned as the 
 `.promise` property.
 
 ```javascript
@@ -73,9 +77,9 @@ The action object passed into Requerio reducers and middleware comes with these 
 | type | `string` | Required by Redux. Always empty string in Requero. |
 | selector | `string` | The organism's identifying selector. |
 | $org | `object` | The organism instance. |
-| memberIdx | `number` \| `undefined` | The index of the targeted organism member (if any). |
-| method | `string` | The method being applied. |
-| args | `array` | The arguments being submitted to the method. |
+| method | `string` | The method being applied. The 1st param to `.dispatchAction()`. |
+| args | `array` | The arguments being submitted to the method. Built from the 2nd param to `.dispatchAction()`. |
+| memberIdx | `number`\|`undefined` | The index of the targeted organism member (if targeting a member). The 3rd param to `.dispatchAction()`. |
 
 The action object can be extended as demonstrated in the middleware example, wherein a `.promise` property was added.
 

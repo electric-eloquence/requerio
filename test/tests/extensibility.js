@@ -25,13 +25,13 @@ const $organisms = {
   '.main__section--1': null
 };
 $.prototype.addExtensibility = function () {
-  console.log('Extensibility added!'); // eslint-disable-line no-console
+  console.log('extensibility added! (jk)'); // eslint-disable-line no-console
 };
 $.prototype.handleExtensibility = function () {
-  console.log('Extensibility error handled!'); // eslint-disable-line no-console
+  console.log('extensibility handled! (jk)'); // eslint-disable-line no-console
 };
 $.prototype.removeExtensibility = function () {
-  console.log('Extensibility removed!'); // eslint-disable-line no-console
+  console.log('extensibility removed! (jk)'); // eslint-disable-line no-console
 };
 function customReducer(state, action) {
   switch (action.method) {
@@ -54,7 +54,7 @@ function customReducer(state, action) {
 const customMiddleware = () => next => action => {
   switch (action.method) {
     case 'deferExtensibility': {
-      console.log('Extensibility deferred!'); // eslint-disable-line no-console
+      console.log('extensibility deferred! (jk)'); // eslint-disable-line no-console
 
       const startTime = Date.now();
       action.promise = new Promise((resolve) => {
