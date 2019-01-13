@@ -9,7 +9,7 @@
     "doc": "node run/doc.js",
     "lint": "eslint examples && eslint src && eslint test",
     "start": "npm run watch",
-    "test": "nyc mocha --require @babel/register --exit test/tests",
+    "test": "nyc mocha --require @babel/register test/tests",
     "watch": "nodemon --watch src -e js --exec 'npm run bundle'"
   },
   "husky": {
@@ -54,6 +54,7 @@
     "coveralls": "^3.0.2",
     "eslint": "3.x",
     "husky": "^1.3.1",
+    "jsdoc-to-markdown": "^4.0.1",
     "jsdom": "^13.1.0",
     "mocha": "5.x",
     "nodemon": "^1.18.9",

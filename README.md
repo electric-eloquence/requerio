@@ -6,13 +6,13 @@
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![License][license-image]][license-url]
 
-##### Install:
+#### Install:
 
 ```bash
 npm install cheerio redux requerio
 ```
 
-##### Declare `$`:
+#### Declare `$`:
 
 ```html
 <script src="jquery.min.js"></script>
@@ -26,7 +26,7 @@ const html = fs.readFileSync('./index.html', 'utf8');
 const $ = global.$ = cheerio.load(html);
 ```
 
-##### Declare `Redux`:
+#### Declare `Redux`:
 
 ```html
 <script src="redux.min.js"></script>
@@ -38,7 +38,7 @@ const $ = global.$ = cheerio.load(html);
 const Redux = global.Redux = require('redux');
 ```
 
-##### Declare `Requerio`:
+#### Declare `Requerio`:
 
 ```html
 <script src="requerio.min.js"></script>
@@ -50,61 +50,64 @@ const Redux = global.Redux = require('redux');
 const Requerio = require('requerio');
 ```
 
-##### Declare `$organisms`: (Organism inception will occur as part of Requerio initialization.)
+#### Declare `$organisms`: (Organism inception will occur as part of Requerio initialization.)
 
 ```javascript
 const $organisms = {
-  'window': null,
   'html': null,
   'body': null,
-  '#main': null,
-  '.main__section--0': null,
-  '.main__section--1': null
+  '#main': null
 };
 ```
 
-##### Instantiate `requerio`:
+#### Instantiate `requerio`:
 
 ```javascript
 const requerio = new Requerio($, Redux, $organisms);
 ```
 
-##### Initialize `requerio`:
+#### Initialize `requerio`:
 
 ```javascript
 requerio.init();
 ```
 
-##### Use:
+#### Use:
 
 ```javascript
-// The null `$organisms['#main']` has undergone inception into Requerio organism `requerio.$org['#main']`
-// This organism has properties, methods, and a state.
-// As an example, we'll dispatch a `css` action to give it a `display:none` style property.
-requerio.$orgs['#main'].dispatchAction('css', ['display', 'none']);
+// The null `$organisms['#main']` has undergone inception into Requerio organism `requerio.$orgs['#main']`
+// This organism has properties, methods, and a state. It lives within larger organisms.
+// (A well-working application would want it to be a symbiont and not a parasite!)
+// To demonstrate that it is alive and stateful, we'll dispatch a `css` action to give it a
+// `color:green` style property.
+requerio.$orgs['#main'].dispatchAction('css', ['color', 'green']);
 
-// That action will hide the organism in the browser.
-// We can observe its state after the dispatching of the action.
+// This action will turn that organism's text green in the browser.
+// We can observe its state after dispatching the action.
 const mainState = requerio.$orgs['#main'].getState();
 
 // In Node, we can test to make sure the action updated the state correctly.
-assert.equal(mainState.style.display, 'none');
+assert.equal(mainState.style.color, 'green');
 ```
 
-#### Methods supported:
+[Why Requerio?](docs/why-requerio.md)
 
-* [addClass](docs/README.md#addclassclasses)
-* [removeClass](docs/README.md#removeclassclasses)
-* [toggleClass](docs/README.md#toggleclassclasses-switch)
-* [attr](docs/README.md#attrattributename-value)
-* [css](docs/README.md#csspropertyname-value)
-* [height](docs/README.md#heightvalue)
-* [html](docs/README.md#htmlhtmlstring)
-* [innerHeight](docs/README.md#innerheightvalue)
-* [innerWidth](docs/README.md#innerwidthvalue)
-* [scrollTop](docs/README.md#scrolltopvalue)
-* [setBoundingClientRect](docs/README.md#setboundingclientrectboundingclientrect)
-* [width](docs/README.md#widthvalue)
+### [API docs](docs/README.md)
+
+### Methods supported:
+
+* [addClass](docs/methods.md#addclassclasses)
+* [removeClass](docs/methods.md#removeclassclasses)
+* [toggleClass](docs/methods.md#toggleclassclasses-switch)
+* [attr](docs/methods.md#attrattributename-value)
+* [css](docs/methods.md#csspropertyname-value)
+* [height](docs/methods.md#heightvalue)
+* [html](docs/methods.md#htmlhtmlstring)
+* [innerHeight](docs/methods.md#innerheightvalue)
+* [innerWidth](docs/methods.md#innerwidthvalue)
+* [scrollTop](docs/methods.md#scrolltopvalue)
+* [setBoundingClientRect](docs/methods.md#setboundingclientrectboundingclientrect)
+* [width](docs/methods.md#widthvalue)
 
 #### See also the <a href="https://github.com/electric-eloquence/requerio/tree/master/examples" target="_blank">code examples</a>.
 

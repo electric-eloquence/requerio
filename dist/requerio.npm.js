@@ -76,8 +76,12 @@ var organismsIncept = (function ($orgs, $) {
     }
 
     if (i !== 'document' && i !== 'window') {
-      $org.$membersPopulate($org);
-    } // /////////////////////////////////////////////////////////////////////////
+      $org.$membersPopulate();
+    } // Indicate that the `$` object is an incepted organism. Nothing prevents anyone from using jQuery or Cheerio
+    // without Requerio within a Requerio app.
+
+
+    $org.hasRequerio = true; // /////////////////////////////////////////////////////////////////////////
     // Set methods that server-side tests are likely to depend on.
     // They need to be defined here and not in the prototype override because
     // `document` and `window` organisms are not Cheerio objects.
@@ -87,7 +91,6 @@ var organismsIncept = (function ($orgs, $) {
      * @param {number} [distance] - Distance.
      * @returns {number|undefined} Distance.
      */
-
 
     if (typeof $org.innerWidth === 'undefined') {
       $org.innerWidth = function (distance) {
@@ -176,17 +179,18 @@ function applyMethod($org, method, args, memberIdx, $member) {
 }
 /**
  * Create a stand-in for Element.getBoundingClientRect for the server.
- * Need this closure to return a function with $org and memberIdx baked in.
+ * Need this closure to return a function with the organism's selector and memberIdx baked in.
  *
- * @param {object} $org - Organism object.
+ * @param {string} orgSelector - The organism's selector.
  * @param {number} memberIdx - The index of the organism member.
+ * @param {object} stateStore - The application's Redux store.
  * @returns {function} The returned function returns an object with properties correspond to the properties of DOMRect.
  */
 
 
-function getBoundingClientRectClosure($org, memberIdx) {
+function getBoundingClientRectClosure(orgSelector, memberIdx, stateStore) {
   return function () {
-    var rectState = $org.getStore().getState()[$org.selector].$members[memberIdx].boundingClientRect;
+    var rectState = stateStore.getState()[orgSelector].$members[memberIdx].boundingClientRect;
 
     for (var i in rectState) {
       /* istanbul ignore if */
@@ -211,37 +215,35 @@ function getBoundingClientRectClosure($org, memberIdx) {
 }
 /**
  * Resets the organism's members as they are added or removed.
- * Executes the .$membersReset() method attached to the prototype. The reason for this private function is that outside
- * this file's scope, we don't want to query for the result of the entire selector, only its members.
+ * This is necessary because neither jQuery nor Cheerio dynamically updates its indexed items and length properties.
  *
  * @param {object} prototype - The `this` reference from the jQuery/Cheerio prototype.
+ * @param {object} stateStore - The application's Redux store.
  */
 
 
-function $membersReset(prototype) {
+function $membersReset(prototype, stateStore) {
   if (prototype.selector === 'document' || prototype.selector === 'window') {
     return;
   }
 
-  var $orgToReset = $(prototype.selector);
+  var $orgReset = $(prototype.selector);
 
-  if (prototype.length !== $orgToReset.length) {
-    for (var i in $orgToReset) {
-      if (!$orgToReset.hasOwnProperty(i)) {
-        continue;
-      }
-
-      prototype[i] = $orgToReset[i];
-
-      if (i === parseInt(i, 10).toString()) {
-        if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object') {
-          prototype[i].getBoundingClientRect = getBoundingClientRectClosure(prototype, i);
-        }
-      }
+  if (prototype.length !== $orgReset.length) {
+    for (var i = 0; i < prototype.length; i++) {
+      delete prototype[i];
     }
-  }
 
-  prototype.$membersPopulate($orgToReset);
+    prototype.length = $orgReset.length;
+    $orgReset.each(function (i, elem) {
+      prototype[i] = elem;
+
+      if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object' && typeof prototype[i].getBoundingClientRect === 'undefined') {
+        prototype[i].getBoundingClientRect = getBoundingClientRectClosure(prototype.selector, i, stateStore);
+      }
+    });
+    prototype.$membersPopulate();
+  }
 }
 /**
  * Override $.prototype with custom methods for dealing with state.
@@ -252,30 +254,23 @@ function $membersReset(prototype) {
 
 
 var prototypeOverride = (function ($, stateStore) {
-  if (!$.prototype.hasRequerio) {
-    $.prototype.hasRequerio = true;
-  }
-  /**
-   * A true Array of the selection's numerically-keyed properties.
-   * This is necessary for selection by class and tag, where results number more than one.
-   * Members of this array will be fully-incepted organisms.
-   */
+  /* eslint-disable max-len */
 
-
+  /* eslint-disable valid-jsdoc */
   $.prototype.$members = [];
   /**
-   * A shorthand for dispatching state actions.
-   *   1. Apply the jQuery or Cheerio method.
-   *   2. Apply any additional changes.
-   *   3. Call the Redux store.dispatch() method.
-   *
-   * @param {string} method - The name of the method native to the component's object prototype.
-   * @param {*} args_ - This param contains the values to be passed within the args array to this[method].apply()
-   *   If args_ is not an array, we want to preemptively limit the allowed types to string, number, and object.
-   *   If it is one of these types, it will get wrapped in an array and submitted.
-   * @param {number} [memberIdx] - Index of member if targeting a member.
-   * @returns {object} The new application state.
-   */
+  ### .dispatchAction(method, args, [memberIdx])
+  A shorthand for dispatching state actions.
+  1. Apply the jQuery or Cheerio method.
+  2. Apply any additional changes.
+  3. Call the Redux store.dispatch() method.
+  __Returns__: `object` - The new application state.
+  | Param | Type | Description |
+  | --- | --- | --- |
+  | method | `string` | The name of the method native to the component's object prototype. |
+  | args | `*` | This param contains the values to be passed as arguments to `method`. `args` may be of type `array`, `string`, `number`, `object`, or `function`.  |
+  | [memberIdx] | `number` | Index of member if targeting a member. |
+  */
 
   if (!$.prototype.dispatchAction) {
     $.prototype.dispatchAction = function (method, args_, memberIdx) {
@@ -287,9 +282,10 @@ var prototypeOverride = (function ($, stateStore) {
 
       if (Array.isArray(args_)) {
         args = args_;
-      } else if (typeof args_ === 'string' || typeof args_ === 'number' || args_ instanceof Object) {
-        args = [args_];
-      } // Submission of memberIdx indicates that the action is to be dispatched on the specific member of the CSS class.
+      } else if (typeof args_ === 'string' || typeof args_ === 'number' || args_ instanceof Object // Functions are also instances of Object.
+      ) {
+          args = [args_];
+        } // Submission of memberIdx indicates that the action is to be dispatched on the specific member of the CSS class.
 
 
       var $member;
@@ -371,11 +367,11 @@ var prototypeOverride = (function ($, stateStore) {
               }
 
               if (typeof $member === 'undefined') {
-                // Apply to $org.
-                args[0] = this[0][method].apply(this[0]);
+                // Since .getBoundingClientRect() is a DOM method (and not jQuery or Cheerio), apply on first DOM item.
+                args[0] = this[0][method].apply();
               } else {
-                // Apply to $member.
-                args[0] = this[memberIdx][method].apply(this[memberIdx]);
+                // Apply on indexed DOM item.
+                args[0] = this[memberIdx][method].apply();
               }
 
               break;
@@ -440,21 +436,23 @@ var prototypeOverride = (function ($, stateStore) {
     };
   }
   /**
-   * A reference to Redux store.getState().
-   *
-   * @param {number} [memberIdx] - If targeting a child of a selector, that child's index.
-   * @returns {object} The organism's state.
-   */
+  ### .getState([memberIdx])
+  A reference to Redux store.getState().
+  __Returns__: `object` - The organism's state.
+  | Param | Type | Description |
+  | --- | --- | --- |
+  | [memberIdx] | `number` | Index of member if targeting a member. |
+  */
 
 
   if (!$.prototype.getState) {
     $.prototype.getState = function (memberIdx) {
       // In order to return the latest, most accurate state, dispatch these actions to update their properties.
       // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data.
-      // Do not preemptively update .style property because we only want to keep track of styles dispatched through js.
-      $membersReset(this); // case state.attribs:
+      // Do not preemptively update .style property because we only want to track styles dispatched through Requerio.
+      $membersReset(this, stateStore); // case state.attribs:
 
-      this.dispatchAction('attr', [], memberIdx); // case state.getBoundingClientRect:
+      this.dispatchAction('attr', [], memberIdx); // case state.boundingClientRect:
 
       this.dispatchAction('getBoundingClientRect', [], memberIdx); // case state.innerWidth:
 
@@ -476,10 +474,10 @@ var prototypeOverride = (function ($, stateStore) {
     };
   }
   /**
-   * A reference to Redux store.
-   *
-   * @returns {object} This app's state store.
-   */
+  ### .getStore()
+  A reference to Redux store.
+  __Returns__: `object` - This app's state store.
+  */
 
 
   if (!$.prototype.getStore) {
@@ -488,50 +486,48 @@ var prototypeOverride = (function ($, stateStore) {
     };
   }
   /**
-   * Populate organism's members with child organisms.
-   *
-   * @param {object} $orgToPopulate - The parent to the child organisms.
-   */
+  ### .$membersPopulate()
+  (Re)populate an organism's `.$members` property with its (recalculated) members.
+  __Returns__: `undefined`
+  */
 
 
   if (!$.prototype.$membersPopulate) {
-    $.prototype.$membersPopulate = function ($orgToPopulate) {
+    $.prototype.$membersPopulate = function () {
       /* istanbul ignore if */
       if (this.selector === 'document' || this.selector === 'window') {
         return;
       }
 
-      this.$members = [];
       var $org = this;
-      $orgToPopulate.each(function () {
-        var $this = $(this);
-        $this.parentSelector = $org.selector;
-        $org.$members.push($this);
-      });
-
-      if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object') {
-        for (var i in this) {
-          if (i === parseInt(i, 10).toString()) {
-            this[i].getBoundingClientRect = getBoundingClientRectClosure(this, i);
-          }
+      $org.$members = [];
+      $org.each(function (i, elem) {
+        if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object' && typeof elem.getBoundingClientRect === 'undefined') {
+          elem.getBoundingClientRect = getBoundingClientRectClosure($org.selector, i, stateStore);
         }
-      }
+
+        $org.$members.push($(elem));
+      });
     };
   }
   /**
-   * Give the ability to set boundingClientRect properties. Only for server-side testing.
-   *
-   * @param {object} rectObj - Object of boundingClientRect measurements. Does not need to include all of them.
-   * @param {number} [memberIdx] - Index of member if child member.
-   */
+  ### .setBoundingClientRect(rectObj, [memberIdx])
+  Give the ability to set boundingClientRect properties. Only for server-side testing.
+  __Returns__: `undefined`
+  | Param | Type | Description |
+  | --- | --- | --- |
+  | rectObj | `object` | Object of boundingClientRect measurements. Does not need to include all of them. |
+  | [memberIdx] | `number` | Index of member if child member. |
+  */
 
 
   if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object') {
     $.prototype.setBoundingClientRect = function (rectObj, memberIdx) {
       this.dispatchAction('setBoundingClientRect', rectObj, memberIdx);
     };
-  }
-});
+  } // DO NOT REMOVE FOLLOWING COMMENT.
+
+}); // end export default ($, stateStore)
 
 /* eslint-disable lines-around-comment */
 
@@ -640,7 +636,7 @@ function stateBuild($org, state, action) {
 
     switch (action.method) {
       /**
-      ## addClass(classes)
+      ### addClass(classes)
       For each submitted class, add that class to all matched elements which do not have that class.
       | Param | Type | Description |
       | --- | --- | --- |
@@ -656,7 +652,7 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## removeClass(classes)
+      ### removeClass(classes)
       For each submitted class, remove that class from all matched elements which have that class.
       | Param | Type | Description |
       | --- | --- | --- |
@@ -673,7 +669,7 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## toggleClass(classes, [switch])
+      ### toggleClass(classes, [switch])
       For each submitted class, add or remove that class from all matched elements, depending on whether or not the element has that class, or depending on the value of the switch parameter.
       | Param | Type | Description |
       | --- | --- | --- |
@@ -718,13 +714,13 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## attr(attributeName, value)
+      ### attr(attributeName, value)
       Set an attribute for all matched elements.
       | Param | Type | Description |
       | --- | --- | --- |
       | attributeName | `string` | The name of the attribute to set. |
       | value | `string` \| `function` \| `null` | The value to set the attribute to. If `null`, the specified attribute will be removed. |
-      ## attr(attributes)
+      ### attr(attributes)
       Set one or more attributes for all matched elements.
       | Param | Type | Description |
       | --- | --- | --- |
@@ -760,13 +756,13 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## css(propertyName, value)
+      ### css(propertyName, value)
       Set a CSS property for all matched elements.
       | Param | Type | Description |
       | --- | --- | --- |
       | propertyName | `string` | The name of the property to set. |
       | value | `string` \| `function` | The value to set the property to. |
-      ## css(properties)
+      ### css(properties)
       Set one or more CSS properties for all matched elements.
       | Param | Type | Description |
       | --- | --- | --- |
@@ -805,7 +801,8 @@ function stateBuild($org, state, action) {
       case 'getBoundingClientRect':
         {
           if (action.args.length === 1) {
-            if (action.args[0] instanceof Object) {
+            if (_typeof(action.args[0]) === 'object' && // Exclude functions. Can't assume what its constructor is.
+            action.args[0] instanceof Object) {
               // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) in FF and Edge because in those
               // browsers, DOMRect properties are inherited, not "own" properties (as in hasOwnProperty).
               var rectObj = action.args[0];
@@ -822,7 +819,7 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## height(value)
+      ### height(value)
       Set the height (not including padding, border, or margin) of all matched elements.
       | Param | Type | Description |
       | --- | --- | --- |
@@ -845,7 +842,7 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## html(htmlString)
+      ### html(htmlString)
       Set the innerHTML of all matched elements.
       | Param | Type | Description |
       | --- | --- | --- |
@@ -870,7 +867,7 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## innerHeight(value)
+      ### innerHeight(value)
       Set the innerHeight (including padding, but not border or margin) of all matched elements.
       | Param | Type | Description |
       | --- | --- | --- |
@@ -889,7 +886,7 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## innerWidth(value)
+      ### innerWidth(value)
       Set the innerWidth (including padding, but not border or margin) of all matched elements.
       | Param | Type | Description |
       | --- | --- | --- |
@@ -908,7 +905,7 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## scrollTop(value)
+      ### scrollTop(value)
       Set the vertical scroll position (the number of CSS pixels that are hidden from view above the scrollable area) of all matched elements.
       | Param | Type | Description |
       | --- | --- | --- |
@@ -927,7 +924,7 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## setBoundingClientRect(boundingClientRect)
+      ### setBoundingClientRect(boundingClientRect)
       Copy properties of the `boundingClientRect` parameter over corresponding properties on `state.boundingClientRect`.
       | Param | Type | Description |
       | --- | --- | --- |
@@ -936,7 +933,8 @@ function stateBuild($org, state, action) {
 
       case 'setBoundingClientRect':
         {
-          if (action.args[0] instanceof Object) {
+          if (_typeof(action.args[0]) === 'object' && // Exclude functions. Can't assume the browser's constructor.
+          action.args[0] instanceof Object) {
             var _rectObj = JSON.parse(JSON.stringify(action.args[0]));
 
             Object.assign(state.boundingClientRect, _rectObj); // If this is called on the server, we need to copy the rectObj to the state $members.
@@ -956,7 +954,7 @@ function stateBuild($org, state, action) {
         }
 
       /**
-      ## width(value)
+      ### width(value)
       Set the width (not including padding, border, or margin) of all matched elements.
       | Param | Type | Description |
       | --- | --- | --- |
@@ -993,11 +991,12 @@ function stateBuild($org, state, action) {
  * Closure to generate reducers specific to organisms.
  *
  * @param {string} orgSelector - The organism's selector.
+ * @param {function|undefined} customReducer - A custom reducer most likely purposed for custom methods.
  * @returns {function} A function configured to work on the orgSelector.
  */
 
 
-function reducerClosure(orgSelector) {
+function reducerClosure(orgSelector, customReducer) {
   /**
    * Clone an old state, update the clone based on an action, and return the clone.
    *
@@ -1098,6 +1097,29 @@ function reducerClosure(orgSelector) {
         stateBuild($org.$members[action.memberIdx], state.$members[action.memberIdx], action);
       }
 
+      if (typeof customReducer === 'function') {
+        var customState = customReducer(state, action); // We need to validate customState because older versions of Requerio had the 4th constructor argument return an
+        // object of action functions. We now want the 4th argument to be an optional custom reducer.
+
+        if (_typeof(customState) === 'object' && // Don't want to check constructor because this is user submitted.
+        customState instanceof Object) {
+          for (var i in customState) {
+            /* istanbul ignore if */
+            if (!customState.hasOwnProperty(i)) {
+              continue;
+            }
+
+            if (typeof customState[i] === 'function') {
+              // The older Requerio versions would have functions as properties of this object.
+              // If this is the case, ignore the output of customReducer and return the state as built earlier.
+              return state;
+            }
+          }
+
+          return customState;
+        }
+      }
+
       return state;
     } // If this is not the reducer for the selected organism, return the unmutated state if submitted as a defined param.
     // Else return the default state.
@@ -1115,11 +1137,12 @@ function reducerClosure(orgSelector) {
  *
  * @param {object} $orgs - Organisms keyed by selector.
  * @param {object} Redux - Redux object.
+ * @param {function} customReducer - A custom reducer most likely purposed for custom methods.
  * @returns {object} Combined reducers
  */
 
 
-var reducerGet = (function ($orgs, Redux) {
+var reducerGet = (function ($orgs, Redux, customReducer) {
   var reducers = {};
 
   for (var i in $orgs) {
@@ -1128,7 +1151,7 @@ var reducerGet = (function ($orgs, Redux) {
       continue;
     }
 
-    reducers[i] = reducerClosure(i);
+    reducers[i] = reducerClosure(i, customReducer);
   }
 
   return Redux.combineReducers(reducers);
@@ -1137,19 +1160,30 @@ var reducerGet = (function ($orgs, Redux) {
 var Requerio =
 /*#__PURE__*/
 function () {
-  function Requerio($, Redux, $organisms) {
+  function Requerio($, Redux, $organisms, customReducer, customMiddleware) {
     _classCallCheck(this, Requerio);
 
     this.$ = $;
     this.Redux = Redux;
     this.$orgs = $organisms;
+    this.customReducer = customReducer;
+    this.customMiddleware = customMiddleware;
   }
 
   _createClass(Requerio, [{
     key: "init",
     value: function init() {
-      var reducer = reducerGet(this.$orgs, this.Redux);
-      var store = this.Redux.createStore(reducer);
+      var _this$Redux = this.Redux,
+          applyMiddleware = _this$Redux.applyMiddleware,
+          createStore = _this$Redux.createStore;
+      var reducer = reducerGet(this.$orgs, this.Redux, this.customReducer);
+      var enhancer;
+
+      if (typeof this.customMiddleware === 'function') {
+        enhancer = applyMiddleware(this.customMiddleware);
+      }
+
+      var store = createStore(reducer, enhancer);
       prototypeOverride(this.$, store);
       organismsIncept(this.$orgs, this.$);
     }

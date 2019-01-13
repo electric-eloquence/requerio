@@ -34,10 +34,6 @@ const actions = {
     requerio.$orgs['#main'].dispatchAction('addClass', () => 'add-class-function');
   },
 
-  addClass0: () => {
-    requerio.$orgs['.main__section'].dispatchAction('addClass', 'add-class-0', 0);
-  },
-
   addClass1: () => {
     requerio.$orgs['.main__section'].dispatchAction('addClass', 'add-class-1', 1);
   },
@@ -279,9 +275,10 @@ describe('Requerio', function () {
 
     it('should reset members and .$members when .getState() is called', function () {
       const $org = $organisms['.main__section'];
-      delete $org[0];
+      delete $org[0].getBoundingClientRect;
+      delete $org[1].getBoundingClientRect;
       delete $org[1];
-      $org.length = 0;
+      $org.length = 1;
       $org.$members = [];
       const membersLengthBefore = $org.length;
       const $membersLengthBefore = $org.$members.length;
@@ -292,10 +289,10 @@ describe('Requerio', function () {
       const membersLengthAfter = $org.length;
       const $membersLengthAfter = $members.length;
 
+      expect(membersLengthBefore).to.equal(1);
+      expect(membersLengthAfter).to.equal(2);
       expect($membersLengthBefore).to.equal(0);
       expect($membersLengthAfter).to.equal(2);
-      expect(membersLengthBefore).to.equal(0);
-      expect(membersLengthAfter).to.equal(2);
       expect($org[0]).to.not.be.undefined;
       expect($org[1]).to.not.be.undefined;
       expect($members[0][0].attribs.class).to.equal('main__section main__section--0');
@@ -318,7 +315,7 @@ describe('Requerio', function () {
       $org.$members = [];
       const $membersLengthBefore = $org.$members.length;
 
-      $org.$membersPopulate($org);
+      $org.$membersPopulate();
       const $members = $org.$members;
       const $membersLengthAfter = $members.length;
 
@@ -416,6 +413,31 @@ describe('Requerio', function () {
   });
 
   describe('reducer-get', function () {
+    it('should update the state $members if the $org $members increase in number', function () {
+      const $org = $organisms['.main__section'];
+      const stateMembersLengthBefore = $org.getState().$members.length;
+      const htmlSnippet = '<section class="main__section"><h2>Section</h2></section>';
+
+      $org.$members.push($(htmlSnippet));
+      const stateMembersLengthAfter = $org.getState().$members.length;
+
+      expect($org.$members.length).to.equal(3);
+      expect(stateMembersLengthBefore).to.equal(2);
+      expect(stateMembersLengthAfter).to.equal(3);
+    });
+
+    it('should update the state $members if the $org $members decrease in number', function () {
+      const $org = $organisms['.main__section'];
+      const stateMembersLengthBefore = $org.getState().$members.length;
+
+      $org.$members.pop();
+      const stateMembersLengthAfter = $org.getState().$members.length;
+
+      expect($org.$members.length).to.equal(2);
+      expect(stateMembersLengthBefore).to.equal(3);
+      expect(stateMembersLengthAfter).to.equal(2);
+    });
+
     it('should dispatch the "addClass" action with a string argument', function () {
       actions.addClassString();
       const state = $organisms['#main'].getState();
@@ -428,17 +450,6 @@ describe('Requerio', function () {
       const state = $organisms['#main'].getState();
 
       expect(state.attribs.class).to.have.string('add-class-function');
-    });
-
-    it('should dispatch the "addClass" action and reset $members', function () {
-      const $org = $organisms['.main__section'];
-      $org.$members.pop();
-      const $membersLengthBefore = $org.$members.length;
-      actions.addClass0();
-      const $membersLengthAfter = $org.getState().$members.length;
-
-      expect($membersLengthBefore).to.equal(1);
-      expect($membersLengthAfter).to.equal(2);
     });
 
     it('should dispatch the "addClass" action in a targeted manner', function () {

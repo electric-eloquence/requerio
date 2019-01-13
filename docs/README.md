@@ -1,101 +1,64 @@
+# Requerio API
 
-## addClass(classes)
-For each submitted class, add that class to all matched elements which do not have that class.
+## Organism Methods
 
-| Param | Type | Description |
-| --- | --- | --- |
-| classes | `string` \| `function` | A space-separated string, or a function that returns a space-separated string. |
+These methods are made available on organisms after inception. The organisms are members of Requerio's `$orgs` property 
+and are keyed by their selector. For example:
 
-## removeClass(classes)
-For each submitted class, remove that class from all matched elements which have that class.
+```javascript
+requerio.$orgs['#main'].dispatchAction('css', ['color', 'green']);
+```
 
-| Param | Type | Description |
-| --- | --- | --- |
-| classes | `string` \| `function` | A space-separated string, or a function that returns a space-separated string. |
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN `npm run doc` TO UPDATE -->
+<!-- START GENERATED API DOC -->
 
-## toggleClass(classes, [switch])
-For each submitted class, add or remove that class from all matched elements, depending on whether or not the element has that class, or depending on the value of the switch parameter.
 
-| Param | Type | Description |
-| --- | --- | --- |
-| classes | `string` \| `function` | A space-separated string, or a function that returns a space-separated string. |
-| switch | `boolean` | `true` means add, `false` means remove. |
+### .dispatchAction(method, args, [memberIdx])
+A shorthand for dispatching state actions.
+1. Apply the jQuery or Cheerio method.
+2. Apply any additional changes.
+3. Call the Redux store.dispatch() method.
 
-## attr(attributeName, value)
-Set an attribute for all matched elements.
+__Returns__: `object` - The new application state.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| attributeName | `string` | The name of the attribute to set. |
-| value | `string` \| `function` \| `null` | The value to set the attribute to. If `null`, the specified attribute will be removed. |
+| method | `string` | The name of the method native to the component's object prototype. |
+| args | `*` | This param contains the values to be passed as arguments to `method`. `args` may be of type `array`, `string`, `number`, `object`, or `function`.  |
+| [memberIdx] | `number` | Index of member if targeting a member. |
 
-## attr(attributes)
-Set one or more attributes for all matched elements.
+### .getState([memberIdx])
+A reference to Redux store.getState().
 
-| Param | Type | Description |
-| --- | --- | --- |
-| attributes | `object` | An object of attribute-value pairs to set. |
-
-## css(propertyName, value)
-Set a CSS property for all matched elements.
+__Returns__: `object` - The organism's state.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| propertyName | `string` | The name of the property to set. |
-| value | `string` \| `function` | The value to set the property to. |
+| [memberIdx] | `number` | Index of member if targeting a member. |
 
-## css(properties)
-Set one or more CSS properties for all matched elements.
+### .getStore()
+A reference to Redux store.
 
-| Param | Type | Description |
-| --- | --- | --- |
-| properties | `object` | An object of property-value pairs to set. |
+__Returns__: `object` - This app's state store.
 
-## height(value)
-Set the height (not including padding, border, or margin) of all matched elements.
+### .$membersPopulate()
+(Re)populate an organism's `.$members` property with its (recalculated) members.
 
-| Param | Type | Description |
-| --- | --- | --- |
-| value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
+__Returns__: `undefined`
 
-## html(htmlString)
-Set the innerHTML of all matched elements.
+### .setBoundingClientRect(rectObj, [memberIdx])
+Give the ability to set boundingClientRect properties. Only for server-side testing.
+
+__Returns__: `undefined`
 
 | Param | Type | Description |
 | --- | --- | --- |
-| htmlString | `string` \| `function` | A string of HTML or a function returning HTML. |
+| rectObj | `object` | Object of boundingClientRect measurements. Does not need to include all of them. |
+| [memberIdx] | `number` | Index of member if child member. |
+<!-- STOP GENERATED API DOC -->
 
-## innerHeight(value)
-Set the innerHeight (including padding, but not border or margin) of all matched elements.
+## Additional Documentation
 
-| Param | Type | Description |
-| --- | --- | --- |
-| value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
-
-## innerWidth(value)
-Set the innerWidth (including padding, but not border or margin) of all matched elements.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
-
-## scrollTop(value)
-Set the vertical scroll position (the number of CSS pixels that are hidden from view above the scrollable area) of all matched elements.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | `number` | The number to set the scroll position to. |
-
-## setBoundingClientRect(boundingClientRect)
-Copy properties of the `boundingClientRect` parameter over corresponding properties on `state.boundingClientRect`.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| boundingClientRect | `object` | An object of key-values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class, with the exception of `.x` and `.y` (as per compatibility with Microsoft browsers). |
-
-## width(value)
-Set the width (not including padding, border, or margin) of all matched elements.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | `number` \| `string` \| `function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
+* [Action Methods](methods.md)
+* [State Object Defaults](state-object-defaults.md)
+* [Extensibility](extensibility.md)

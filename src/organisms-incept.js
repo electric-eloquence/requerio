@@ -42,8 +42,12 @@ export default ($orgs, $) => {
     }
 
     if (i !== 'document' && i !== 'window') {
-      $org.$membersPopulate($org);
+      $org.$membersPopulate();
     }
+
+    // Indicate that the `$` object is an incepted organism. Nothing prevents anyone from using jQuery or Cheerio
+    // without Requerio within a Requerio app.
+    $org.hasRequerio = true;
 
     // /////////////////////////////////////////////////////////////////////////
     // Set methods that server-side tests are likely to depend on.

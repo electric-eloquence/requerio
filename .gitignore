@@ -3,4 +3,5 @@
 .DS_Store
 .coveralls.yml
 .nyc_output/
+/test/tests/test.js
 node_modules/

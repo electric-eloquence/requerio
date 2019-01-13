@@ -110,7 +110,7 @@ function stateBuild($org, state, action) {
 
     switch (action.method) {
       /**
-## addClass(classes)
+### addClass(classes)
 For each submitted class, add that class to all matched elements which do not have that class.
 
 | Param | Type | Description |
@@ -126,7 +126,7 @@ For each submitted class, add that class to all matched elements which do not ha
       }
 
       /**
-## removeClass(classes)
+### removeClass(classes)
 For each submitted class, remove that class from all matched elements which have that class.
 
 | Param | Type | Description |
@@ -142,7 +142,7 @@ For each submitted class, remove that class from all matched elements which have
       }
 
       /**
-## toggleClass(classes, [switch])
+### toggleClass(classes, [switch])
 For each submitted class, add or remove that class from all matched elements, depending on whether or not the element has that class, or depending on the value of the switch parameter.
 
 | Param | Type | Description |
@@ -192,7 +192,7 @@ For each submitted class, add or remove that class from all matched elements, de
       }
 
       /**
-## attr(attributeName, value)
+### attr(attributeName, value)
 Set an attribute for all matched elements.
 
 | Param | Type | Description |
@@ -200,7 +200,7 @@ Set an attribute for all matched elements.
 | attributeName | `string` | The name of the attribute to set. |
 | value | `string` \| `function` \| `null` | The value to set the attribute to. If `null`, the specified attribute will be removed. |
 
-## attr(attributes)
+### attr(attributes)
 Set one or more attributes for all matched elements.
 
 | Param | Type | Description |
@@ -240,7 +240,7 @@ Set one or more attributes for all matched elements.
       }
 
       /**
-## css(propertyName, value)
+### css(propertyName, value)
 Set a CSS property for all matched elements.
 
 | Param | Type | Description |
@@ -248,7 +248,7 @@ Set a CSS property for all matched elements.
 | propertyName | `string` | The name of the property to set. |
 | value | `string` \| `function` | The value to set the property to. |
 
-## css(properties)
+### css(properties)
 Set one or more CSS properties for all matched elements.
 
 | Param | Type | Description |
@@ -291,7 +291,10 @@ Set one or more CSS properties for all matched elements.
       // Internal. Do not document.
       case 'getBoundingClientRect': {
         if (action.args.length === 1) {
-          if (action.args[0] instanceof Object) {
+          if (
+            typeof action.args[0] === 'object' && // Exclude functions. Can't assume what its constructor is.
+            action.args[0] instanceof Object
+          ) {
 
             // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) in FF and Edge because in those
             // browsers, DOMRect properties are inherited, not "own" properties (as in hasOwnProperty).
@@ -309,7 +312,7 @@ Set one or more CSS properties for all matched elements.
       }
 
       /**
-## height(value)
+### height(value)
 Set the height (not including padding, border, or margin) of all matched elements.
 
 | Param | Type | Description |
@@ -331,7 +334,7 @@ Set the height (not including padding, border, or margin) of all matched element
       }
 
       /**
-## html(htmlString)
+### html(htmlString)
 Set the innerHTML of all matched elements.
 
 | Param | Type | Description |
@@ -356,7 +359,7 @@ Set the innerHTML of all matched elements.
       }
 
       /**
-## innerHeight(value)
+### innerHeight(value)
 Set the innerHeight (including padding, but not border or margin) of all matched elements.
 
 | Param | Type | Description |
@@ -374,7 +377,7 @@ Set the innerHeight (including padding, but not border or margin) of all matched
       }
 
       /**
-## innerWidth(value)
+### innerWidth(value)
 Set the innerWidth (including padding, but not border or margin) of all matched elements.
 
 | Param | Type | Description |
@@ -392,7 +395,7 @@ Set the innerWidth (including padding, but not border or margin) of all matched 
       }
 
       /**
-## scrollTop(value)
+### scrollTop(value)
 Set the vertical scroll position (the number of CSS pixels that are hidden from view above the scrollable area) of all matched elements.
 
 | Param | Type | Description |
@@ -410,7 +413,7 @@ Set the vertical scroll position (the number of CSS pixels that are hidden from 
       }
 
       /**
-## setBoundingClientRect(boundingClientRect)
+### setBoundingClientRect(boundingClientRect)
 Copy properties of the `boundingClientRect` parameter over corresponding properties on `state.boundingClientRect`.
 
 | Param | Type | Description |
@@ -418,7 +421,10 @@ Copy properties of the `boundingClientRect` parameter over corresponding propert
 | boundingClientRect | `object` | An object of key-values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class, with the exception of `.x` and `.y` (as per compatibility with Microsoft browsers). |
 */
       case 'setBoundingClientRect': {
-        if (action.args[0] instanceof Object) {
+        if (
+          typeof action.args[0] === 'object' && // Exclude functions. Can't assume the browser's constructor.
+          action.args[0] instanceof Object
+        ) {
           const rectObj = JSON.parse(JSON.stringify(action.args[0]));
 
           Object.assign(state.boundingClientRect, rectObj);
@@ -443,7 +449,7 @@ Copy properties of the `boundingClientRect` parameter over corresponding propert
       }
 
       /**
-## width(value)
+### width(value)
 Set the width (not including padding, border, or margin) of all matched elements.
 
 | Param | Type | Description |
@@ -478,9 +484,10 @@ Set the width (not including padding, border, or margin) of all matched elements
  * Closure to generate reducers specific to organisms.
  *
  * @param {string} orgSelector - The organism's selector.
+ * @param {function|undefined} customReducer - A custom reducer most likely purposed for custom methods.
  * @returns {function} A function configured to work on the orgSelector.
  */
-function reducerClosure(orgSelector) {
+function reducerClosure(orgSelector, customReducer) {
 
   /**
    * Clone an old state, update the clone based on an action, and return the clone.
@@ -595,6 +602,32 @@ function reducerClosure(orgSelector) {
         stateBuild($org.$members[action.memberIdx], state.$members[action.memberIdx], action);
       }
 
+      if (typeof customReducer === 'function') {
+        const customState = customReducer(state, action);
+
+        // We need to validate customState because older versions of Requerio had the 4th constructor argument return an
+        // object of action functions. We now want the 4th argument to be an optional custom reducer.
+        if (
+          typeof customState === 'object' && // Don't want to check constructor because this is user submitted.
+          customState instanceof Object
+        ) {
+          for (let i in customState) {
+            /* istanbul ignore if */
+            if (!customState.hasOwnProperty(i)) {
+              continue;
+            }
+
+            if (typeof customState[i] === 'function') {
+              // The older Requerio versions would have functions as properties of this object.
+              // If this is the case, ignore the output of customReducer and return the state as built earlier.
+              return state;
+            }
+          }
+
+          return customState;
+        }
+      }
+
       return state;
     }
 
@@ -616,9 +649,10 @@ function reducerClosure(orgSelector) {
  *
  * @param {object} $orgs - Organisms keyed by selector.
  * @param {object} Redux - Redux object.
+ * @param {function} customReducer - A custom reducer most likely purposed for custom methods.
  * @returns {object} Combined reducers
  */
-export default ($orgs, Redux) => {
+export default ($orgs, Redux, customReducer) => {
   const reducers = {};
 
   for (let i in $orgs) {
@@ -627,7 +661,7 @@ export default ($orgs, Redux) => {
       continue;
     }
 
-    reducers[i] = reducerClosure(i);
+    reducers[i] = reducerClosure(i, customReducer);
   }
 
   return Redux.combineReducers(reducers);
