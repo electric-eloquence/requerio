@@ -65,7 +65,7 @@ describe('Requerio', function () {
         expect($organism.dispatchAction).to.be.a('function');
         expect($organism.getState).to.be.a('function');
         expect($organism.getStore).to.be.a('function');
-        expect($organism.$membersPopulate).to.be.a('function');
+        expect($organism.populateMembers).to.be.a('function');
         expect($organism.setBoundingClientRect).to.be.a('function');
         expect($organism.scrollTop).to.be.a('function');
         expect($organism.width).to.be.a('function');

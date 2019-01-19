@@ -187,7 +187,7 @@ describe('Requerio', function () {
         expect($organism.dispatchAction).to.be.a('function');
         expect($organism.getState).to.be.a('function');
         expect($organism.getStore).to.be.a('function');
-        expect($organism.$membersPopulate).to.be.a('function');
+        expect($organism.populateMembers).to.be.a('function');
         expect($organism.setBoundingClientRect).to.be.a('function');
         expect($organism.scrollTop).to.be.a('function');
         expect($organism.width).to.be.a('function');
@@ -310,12 +310,12 @@ describe('Requerio', function () {
       expect(stateStore).to.have.property('replaceReducer');
     });
 
-    it('should reset .$members when .$membersPopulate() is called', function () {
+    it('should reset .$members when .populateMembers() is called', function () {
       const $org = $organisms['.main__section'];
       $org.$members = [];
       const $membersLengthBefore = $org.$members.length;
 
-      $org.$membersPopulate();
+      $org.populateMembers();
       const $members = $org.$members;
       const $membersLengthAfter = $members.length;
 
