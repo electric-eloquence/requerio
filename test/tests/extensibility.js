@@ -105,7 +105,7 @@ describe('Requerio', function () {
         expect(stateBefore.extensible).to.equal(false);
         expect(stateAfter.extensible).to.equal(true);
         expect(stateAfter.elapsed).to.be.a('number');
-        expect(stateAfter.elapsed).to.be.above(timeout);
+        expect(stateAfter.elapsed).to.not.be.below(timeout);
         done();
       });
     });
