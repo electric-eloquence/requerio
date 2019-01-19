@@ -2,8 +2,9 @@
 
 ## Organism Methods
 
-These methods are made available on organisms after inception. The organisms are members of Requerio's `$orgs` property 
-and are keyed by their selector. For example:
+These methods are made available on organisms after inception. The organisms are 
+members of Requerio's `$orgs` property and are keyed by their selector. For 
+example:
 
 ```javascript
 requerio.$orgs['#main'].dispatchAction('css', ['color', 'green']);
@@ -14,7 +15,7 @@ requerio.$orgs['#main'].dispatchAction('css', ['color', 'green']);
 
 
 ### .dispatchAction(method, [args], [memberIdx])
-A shorthand for dispatching state actions.
+Dispatches actions for reduction. Side-effects occur here (not in the reducer).
 1. Apply the jQuery or Cheerio method.
 2. Apply any additional changes.
 3. Call the Redux store.dispatch() method.
@@ -41,8 +42,9 @@ A reference to Redux `store`.
 
 __Returns__: `object` - This app's state store.
 
-### .$membersPopulate()
-(Re)populate an organism's `.$members` property with its (recalculated) members.
+### .populateMembers()
+(Re)populate an organism's `.$members` property with its (recalculated) members. `.$members` are jQuery/Cheerio objects,
+not fully incepted organisms.
 
 __Returns__: `undefined`
 

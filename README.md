@@ -78,8 +78,8 @@ requerio.init();
 // The null `$organisms['#main']` has undergone inception into Requerio organism `requerio.$orgs['#main']`
 // This organism has properties, methods, and a state. It lives within larger organisms.
 // (A well-working application would want it to be a symbiont and not a parasite!)
-// To demonstrate that it is alive and stateful, we'll dispatch a `css` action to give it a
-// `color:green` style property.
+// To demonstrate that it is alive and stateful, we'll dispatch a `css` action to give it a `color:green`
+// style property.
 requerio.$orgs['#main'].dispatchAction('css', ['color', 'green']);
 
 // This action will turn that organism's text green in the browser.

@@ -60,7 +60,7 @@ function getBoundingClientRectClosure(orgSelector, memberIdx, stateStore) {
  * @param {object} prototype - The `this` reference from the jQuery/Cheerio prototype.
  * @param {object} stateStore - The application's Redux store.
  */
-function $membersReset(prototype, stateStore) {
+function resetMembers(prototype, stateStore) {
   if (prototype.selector === 'document' || prototype.selector === 'window') {
     return;
   }
@@ -85,7 +85,7 @@ function $membersReset(prototype, stateStore) {
       }
     });
 
-    prototype.$membersPopulate();
+    prototype.populateMembers();
   }
 }
 
@@ -103,7 +103,7 @@ export default ($, stateStore) => {
 
   /**
 ### .dispatchAction(method, [args], [memberIdx])
-A shorthand for dispatching state actions.
+Dispatches actions for reduction. Side-effects occur here (not in the reducer).
 1. Apply the jQuery or Cheerio method.
 2. Apply any additional changes.
 3. Call the Redux store.dispatch() method.
@@ -229,11 +229,11 @@ __Returns__: `object` - The dispatched action object.
 
             if (typeof $member === 'undefined') {
               // Since .getBoundingClientRect() is a DOM method (and not jQuery or Cheerio), apply on first DOM item.
-              args[0] = this[0][method].apply();
+              args[0] = this[0][method].apply(this[0]);
             }
             else {
               // Apply on indexed DOM item.
-              args[0] = this[memberIdx][method].apply();
+              args[0] = this[memberIdx][method].apply(this[memberIdx]);
             }
 
             break;
@@ -313,7 +313,7 @@ __Returns__: `object` - The organism's state.
       // In order to return the latest, most accurate state, dispatch these actions to update their properties.
       // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data.
       // Do not preemptively update .style property because we only want to track styles dispatched through Requerio.
-      $membersReset(this, stateStore);
+      resetMembers(this, stateStore);
 
       // case state.attribs:
       this.dispatchAction('attr', [], memberIdx);
@@ -358,13 +358,14 @@ __Returns__: `object` - This app's state store.
   }
 
   /**
-### .$membersPopulate()
-(Re)populate an organism's `.$members` property with its (recalculated) members.
+### .populateMembers()
+(Re)populate an organism's `.$members` property with its (recalculated) members. `.$members` are jQuery/Cheerio objects,
+not fully incepted organisms.
 
 __Returns__: `undefined`
 */
-  if (!$.prototype.$membersPopulate) {
-    $.prototype.$membersPopulate = function () {
+  if (!$.prototype.populateMembers) {
+    $.prototype.populateMembers = function () {
       /* istanbul ignore if */
       if (this.selector === 'document' || this.selector === 'window') {
         return;

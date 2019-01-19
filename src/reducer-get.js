@@ -292,7 +292,7 @@ Set one or more CSS properties for all matched elements.
       case 'getBoundingClientRect': {
         if (action.args.length === 1) {
           if (
-            typeof action.args[0] === 'object' && // Exclude functions. Can't assume what its constructor is.
+            typeof action.args[0] === 'object' && // Exclude functions. Don't assume what its constructor is.
             action.args[0] instanceof Object
           ) {
 
@@ -422,7 +422,7 @@ Copy properties of the `boundingClientRect` parameter over corresponding propert
 */
       case 'setBoundingClientRect': {
         if (
-          typeof action.args[0] === 'object' && // Exclude functions. Can't assume the browser's constructor.
+          typeof action.args[0] === 'object' && // Exclude functions. Don't assume what its constructor is.
           action.args[0] instanceof Object
         ) {
           const rectObj = JSON.parse(JSON.stringify(action.args[0]));
@@ -500,21 +500,9 @@ function reducerClosure(orgSelector, customReducer) {
 
     /**
      * A contract for future states. Initial state contains empty values. Do not to let states bloat for no reason (as
-     *   it could with large innerHTML).
+     * it could with large innerHTML).
      *
-     * @property {object} attribs - Equivalent to the attribs property of a Cheerio object. This consists of simple
-     *   key-value pairs, and as such, is preferable to use for storing state than a replica of the much more complex
-     *   Element.attributes collection, as utilized by jQuery. The attribs property is not documented in the Cheerio
-     *   documentation, and may change without notice. However, this is unlikely, since it is derived from its
-     *   htmlparser2 dependency. The htmlparser2 package has had this property since its initial release.
-     * @property {object} boundingClientRect - Key-value copy of object returned by Element.getBoundingClientRect().
-     * @property {null|string} innerHTML - To DOM Element.innerHTML spec. null means the initial innerHTML state wasn't
-     *   modified. null has a completely different meaning than empty string.
-     * @property {null|number} scrollTop - Number of CSS pixels scrolled.
-     * @property {object} style - To DOM Element.style spec.
-     * @property {null|number} width - Width in number of CSS pixels.
-     * @property {null|number} height - Height in number of CSS pixels.
-     * @property {array} $members - jQuery/Cheerio object members belonging to selection.
+     * Be sure to update docs/state-object-defaults.md when updating any of these defaults.
      */
     const stateDefault = {
       attribs: {},

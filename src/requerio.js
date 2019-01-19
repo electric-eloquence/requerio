@@ -3,24 +3,29 @@ import prototypeOverride from './prototype-override.js';
 import reducerGet from './reducer-get.js';
 
 class Requerio {
-  constructor($, Redux, $organisms, customReducer, customMiddleware) {
+
+  /**
+   * @param {object} $ - jQuery or Cheerio.
+   * @param {object} Redux - Redux.
+   * @param {object} $organisms - Key-value pairs of selector names and null values.
+   * @param {function} [customReducer] - Custom Redux reducer for extending the built-in reducer.
+   * @param {function} [storeEnhancer] - A function to extend the Redux store with additional capabilities.
+   */
+  constructor($, Redux, $organisms, customReducer, storeEnhancer) {
     this.$ = $;
     this.Redux = Redux;
     this.$orgs = $organisms;
     this.customReducer = customReducer;
-    this.customMiddleware = customMiddleware;
+    this.storeEnhancer = storeEnhancer;
   }
 
+  /**
+   * A distinct initialization method allows end-users to extend this class and perform operations between instantiation
+   * and initialization if desired.
+   */
   init() {
-    const {applyMiddleware, createStore} = this.Redux;
     const reducer = reducerGet(this.$orgs, this.Redux, this.customReducer);
-    let enhancer;
-
-    if (typeof this.customMiddleware === 'function') {
-      enhancer = applyMiddleware(this.customMiddleware);
-    }
-
-    const store = createStore(reducer, enhancer);
+    const store = this.Redux.createStore(reducer, this.storeEnhancer);
 
     prototypeOverride(this.$, store);
     organismsIncept(this.$orgs, this.$);

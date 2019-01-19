@@ -73,13 +73,13 @@ const customMiddleware = () => next => action => {
   }
 };
 
-const requerioX = new Requerio($, Redux, $organisms, customReducer, customMiddleware);
-requerioX.init();
+const requerio = new Requerio($, Redux, $organisms, customReducer, Redux.applyMiddleware(customMiddleware));
+requerio.init();
 
 describe('Requerio', function () {
   describe('extensibility', function () {
     it('should accept a custom reducer', function () {
-      const $org = requerioX.$orgs['#main'];
+      const $org = requerio.$orgs['#main'];
       $org.dispatchAction('addExtensibility');
       const state = $org.getState();
 
@@ -87,7 +87,7 @@ describe('Requerio', function () {
     });
 
     it('should handle an incorrect state property type in a custom reducer', function () {
-      const $org = requerioX.$orgs['#main'];
+      const $org = requerio.$orgs['#main'];
       $org.dispatchAction('handleExtensibility');
       const state = $org.getState();
 
@@ -95,7 +95,7 @@ describe('Requerio', function () {
     });
 
     it('should accept custom middleware', function (done) {
-      const $org = requerioX.$orgs['#main'];
+      const $org = requerio.$orgs['#main'];
       $org.dispatchAction('removeExtensibility');
       const stateBefore = $org.getState();
 

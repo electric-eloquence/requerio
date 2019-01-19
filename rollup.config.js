@@ -8,15 +8,7 @@ export default {
   },
   plugins: [
     babel({
-      exclude: 'node_modules/**',
-      presets: [
-        [
-          '@babel/env',
-          {
-            modules: false
-          }
-        ]
-      ]
+      exclude: 'node_modules/**'
     })
   ]
 };

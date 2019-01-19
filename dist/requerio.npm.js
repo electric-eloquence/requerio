@@ -67,7 +67,7 @@ var organismsIncept = (function ($orgs, $) {
       $org = $("".concat(i));
     } // Cheerio doesn't have .selector property.
     // .selector property removed in jQuery 3.
-    // Needs to get set here and not in the prototype override because $org.$membersPopulate() depends on it and there
+    // Needs to get set here and not in the prototype override because $org.populateMembers() depends on it and there
     // doesn't seem to be an easy way to determine it from within the prototype.
 
 
@@ -76,7 +76,7 @@ var organismsIncept = (function ($orgs, $) {
     }
 
     if (i !== 'document' && i !== 'window') {
-      $org.$membersPopulate();
+      $org.populateMembers();
     } // Indicate that the `$` object is an incepted organism. Nothing prevents anyone from using jQuery or Cheerio
     // without Requerio within a Requerio app.
 
@@ -222,7 +222,7 @@ function getBoundingClientRectClosure(orgSelector, memberIdx, stateStore) {
  */
 
 
-function $membersReset(prototype, stateStore) {
+function resetMembers(prototype, stateStore) {
   if (prototype.selector === 'document' || prototype.selector === 'window') {
     return;
   }
@@ -242,7 +242,7 @@ function $membersReset(prototype, stateStore) {
         prototype[i].getBoundingClientRect = getBoundingClientRectClosure(prototype.selector, i, stateStore);
       }
     });
-    prototype.$membersPopulate();
+    prototype.populateMembers();
   }
 }
 /**
@@ -260,7 +260,7 @@ var prototypeOverride = (function ($, stateStore) {
   $.prototype.$members = [];
   /**
   ### .dispatchAction(method, [args], [memberIdx])
-  A shorthand for dispatching state actions.
+  Dispatches actions for reduction. Side-effects occur here (not in the reducer).
   1. Apply the jQuery or Cheerio method.
   2. Apply any additional changes.
   3. Call the Redux store.dispatch() method.
@@ -368,10 +368,10 @@ var prototypeOverride = (function ($, stateStore) {
 
               if (typeof $member === 'undefined') {
                 // Since .getBoundingClientRect() is a DOM method (and not jQuery or Cheerio), apply on first DOM item.
-                args[0] = this[0][method].apply();
+                args[0] = this[0][method].apply(this[0]);
               } else {
                 // Apply on indexed DOM item.
-                args[0] = this[memberIdx][method].apply();
+                args[0] = this[memberIdx][method].apply(this[memberIdx]);
               }
 
               break;
@@ -449,7 +449,7 @@ var prototypeOverride = (function ($, stateStore) {
       // In order to return the latest, most accurate state, dispatch these actions to update their properties.
       // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data.
       // Do not preemptively update .style property because we only want to track styles dispatched through Requerio.
-      $membersReset(this, stateStore); // case state.attribs:
+      resetMembers(this, stateStore); // case state.attribs:
 
       this.dispatchAction('attr', [], memberIdx); // case state.boundingClientRect:
 
@@ -485,14 +485,15 @@ var prototypeOverride = (function ($, stateStore) {
     };
   }
   /**
-  ### .$membersPopulate()
-  (Re)populate an organism's `.$members` property with its (recalculated) members.
+  ### .populateMembers()
+  (Re)populate an organism's `.$members` property with its (recalculated) members. `.$members` are jQuery/Cheerio objects,
+  not fully incepted organisms.
   __Returns__: `undefined`
   */
 
 
-  if (!$.prototype.$membersPopulate) {
-    $.prototype.$membersPopulate = function () {
+  if (!$.prototype.populateMembers) {
+    $.prototype.populateMembers = function () {
       /* istanbul ignore if */
       if (this.selector === 'document' || this.selector === 'window') {
         return;
@@ -800,7 +801,7 @@ function stateBuild($org, state, action) {
       case 'getBoundingClientRect':
         {
           if (action.args.length === 1) {
-            if (_typeof(action.args[0]) === 'object' && // Exclude functions. Can't assume what its constructor is.
+            if (_typeof(action.args[0]) === 'object' && // Exclude functions. Don't assume what its constructor is.
             action.args[0] instanceof Object) {
               // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) in FF and Edge because in those
               // browsers, DOMRect properties are inherited, not "own" properties (as in hasOwnProperty).
@@ -932,7 +933,7 @@ function stateBuild($org, state, action) {
 
       case 'setBoundingClientRect':
         {
-          if (_typeof(action.args[0]) === 'object' && // Exclude functions. Can't assume the browser's constructor.
+          if (_typeof(action.args[0]) === 'object' && // Exclude functions. Don't assume what its constructor is.
           action.args[0] instanceof Object) {
             var _rectObj = JSON.parse(JSON.stringify(action.args[0]));
 
@@ -1006,21 +1007,9 @@ function reducerClosure(orgSelector, customReducer) {
   return function (state_, action) {
     /**
      * A contract for future states. Initial state contains empty values. Do not to let states bloat for no reason (as
-     *   it could with large innerHTML).
+     * it could with large innerHTML).
      *
-     * @property {object} attribs - Equivalent to the attribs property of a Cheerio object. This consists of simple
-     *   key-value pairs, and as such, is preferable to use for storing state than a replica of the much more complex
-     *   Element.attributes collection, as utilized by jQuery. The attribs property is not documented in the Cheerio
-     *   documentation, and may change without notice. However, this is unlikely, since it is derived from its
-     *   htmlparser2 dependency. The htmlparser2 package has had this property since its initial release.
-     * @property {object} boundingClientRect - Key-value copy of object returned by Element.getBoundingClientRect().
-     * @property {null|string} innerHTML - To DOM Element.innerHTML spec. null means the initial innerHTML state wasn't
-     *   modified. null has a completely different meaning than empty string.
-     * @property {null|number} scrollTop - Number of CSS pixels scrolled.
-     * @property {object} style - To DOM Element.style spec.
-     * @property {null|number} width - Width in number of CSS pixels.
-     * @property {null|number} height - Height in number of CSS pixels.
-     * @property {array} $members - jQuery/Cheerio object members belonging to selection.
+     * Be sure to update docs/state-object-defaults.md when updating any of these defaults.
      */
     var stateDefault = {
       attribs: {},
@@ -1159,30 +1148,33 @@ var reducerGet = (function ($orgs, Redux, customReducer) {
 var Requerio =
 /*#__PURE__*/
 function () {
-  function Requerio($, Redux, $organisms, customReducer, customMiddleware) {
+  /**
+   * @param {object} $ - jQuery or Cheerio.
+   * @param {object} Redux - Redux.
+   * @param {object} $organisms - Key-value pairs of selector names and null values.
+   * @param {function} [customReducer] - Custom Redux reducer for extending the built-in reducer.
+   * @param {function} [storeEnhancer] - A function to extend the Redux store with additional capabilities.
+   */
+  function Requerio($, Redux, $organisms, customReducer, storeEnhancer) {
     _classCallCheck(this, Requerio);
 
     this.$ = $;
     this.Redux = Redux;
     this.$orgs = $organisms;
     this.customReducer = customReducer;
-    this.customMiddleware = customMiddleware;
+    this.storeEnhancer = storeEnhancer;
   }
+  /**
+   * A distinct initialization method allows end-users to extend this class and perform operations between instantiation
+   * and initialization if desired.
+   */
+
 
   _createClass(Requerio, [{
     key: "init",
     value: function init() {
-      var _this$Redux = this.Redux,
-          applyMiddleware = _this$Redux.applyMiddleware,
-          createStore = _this$Redux.createStore;
       var reducer = reducerGet(this.$orgs, this.Redux, this.customReducer);
-      var enhancer;
-
-      if (typeof this.customMiddleware === 'function') {
-        enhancer = applyMiddleware(this.customMiddleware);
-      }
-
-      var store = createStore(reducer, enhancer);
+      var store = this.Redux.createStore(reducer, this.storeEnhancer);
       prototypeOverride(this.$, store);
       organismsIncept(this.$orgs, this.$);
     }
