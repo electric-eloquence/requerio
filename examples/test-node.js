@@ -20,7 +20,7 @@ const $organisms = {
   '.main__section--1': null
 };
 
-function actionsGet(requerio) {
+function behaviorsGet(requerio) {
   return {
     mainHide: () => {
       requerio.$orgs['.main__section--1'].dispatchAction('css', ['display', 'none']);
@@ -34,15 +34,15 @@ function actionsGet(requerio) {
 
 const requerio = new Requerio($, Redux, $organisms);
 requerio.init();
-const actions = actionsGet(requerio);
+const behaviors = behaviorsGet(requerio);
 
 /* Test */
 
-actions.mainHide();
+behaviors.mainHide();
 const hiddenDisplayStyle = requerio.$orgs['.main__section--1'].getState().style.display;
 assert.equal(hiddenDisplayStyle, 'none');
 
-actions.mainShow();
+behaviors.mainShow();
 const shownDisplayStyle = requerio.$orgs['.main__section--1'].getState().style.display;
 assert.equal(shownDisplayStyle, 'block');
 

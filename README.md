@@ -50,13 +50,14 @@ const Redux = global.Redux = require('redux');
 const Requerio = require('requerio');
 ```
 
-#### Declare `$organisms`: (Organism inception will occur as part of Requerio initialization.)
+#### Declare `$organisms`:
+
+At declaration, organisms are just empty namespaces.
 
 ```javascript
 const $organisms = {
-  'html': null,
-  'body': null,
-  '#main': null
+  '#yoda': null,
+  '.midi-chlorian': null
 };
 ```
 
@@ -75,24 +76,26 @@ requerio.init();
 #### Use:
 
 ```javascript
-// The null `$organisms['#main']` has undergone inception into Requerio organism `requerio.$orgs['#main']`
-// This organism has properties, methods, and a state. It lives within larger organisms.
-// (A well-working application would want it to be a symbiont and not a parasite!)
-// To demonstrate that it is alive and stateful, we'll dispatch a `css` action to give it a `color:green`
-// style property.
-requerio.$orgs['#main'].dispatchAction('css', ['color', 'green']);
+// During initialization, the null `$organisms['#yoda']` underwent
+// inception into Requerio organism `requerio.$orgs['#yoda']`. This
+// organism has properties, methods, and state. It is home to the
+// `.midi-chlorian` organisms. (A well-working application would want them
+// to be symbionts and not parasites!) To demonstrate that `#yoda` is alive
+// and stateful, we'll dispatch a `css` action to give it a `color:green
+//`style property.
+requerio.$orgs['#yoda'].dispatchAction('css', ['color', 'green']);
 
-// This action will turn that organism's text green in the browser.
+// This action will turn the organism's text green in the browser.
 // We can observe its state after dispatching the action.
 const mainState = requerio.$orgs['#main'].getState();
 
-// In Node, we can test to make sure the action updated the state correctly.
+// In Node, we can test to ensure the action updated the state correctly.
 assert.equal(mainState.style.color, 'green');
 ```
 
-[Why Requerio?](docs/why-requerio.md)
+[__Why Requerio?__](docs/why-requerio.md)
 
-### [API docs](docs/README.md)
+[__API docs__](docs/README.md)
 
 ### Methods supported:
 

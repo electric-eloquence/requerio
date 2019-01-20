@@ -139,7 +139,7 @@ function aBehavior() {
     args
   };
 
-  $orgs['#logoBg'].animate(
+  $orgs['#cheshire-cat'].animate(
     args,
     {
       complete: () => $org.getStore().dispatch(action)
