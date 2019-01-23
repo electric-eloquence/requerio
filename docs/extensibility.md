@@ -107,7 +107,8 @@ store enhancer. Run it through Redux's`.applyMiddleware()` method prior to
 instantiation.
 
 ```javascript
-const requerio = new Requerio($, Redux, $organisms, customReducer, Redux.applyMiddleware(customMiddleware));
+const storeEnhancer = Redux.applyMiddleware(customMiddleware);
+const requerio = new Requerio($, Redux, $organisms, customReducer, storeEnhancer);
 requerio.init();
 requerio.$orgs['#main'].dispatchAction('killExtensibility');
 // Do it again 10 seconds later.
@@ -124,7 +125,7 @@ operations in greater functions. It is recommended to call these functions
 "behaviors" (in keeping with the "living thing" theme).
 
 ```javascript
-function aBehavior() {
+function forGreatJusticeBehavior() {
   const selector = '#main';
   const $org = $orgs[selector];
 
