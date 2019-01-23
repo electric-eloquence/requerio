@@ -109,8 +109,10 @@ instantiation.
 ```javascript
 const storeEnhancer = Redux.applyMiddleware(customMiddleware);
 const requerio = new Requerio($, Redux, $organisms, customReducer, storeEnhancer);
+
 requerio.init();
 requerio.$orgs['#main'].dispatchAction('killExtensibility');
+
 // Do it again 10 seconds later.
 requerio.$orgs['#main'].dispatchAction('timebombExtensibility').promise.then(
   res => {console.log(res);},
