@@ -81,7 +81,7 @@ requerio.init();
 // organism has properties, methods, and state. It is home to the
 // `.midi-chlorian` organisms. (A well-working application would want
 // them to be symbionts and not parasites!) To demonstrate that `#yoda`
-// is alive and stateful, we'll dispatch a `css` action to give it a
+// is alive and stateful, let's dispatch a `css` action to give it a
 // `color:green` style property.
 requerio.$orgs['#yoda'].dispatchAction('css', ['color', 'green']);
 
