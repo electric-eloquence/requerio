@@ -129,7 +129,7 @@ operations in greater functions. It is recommended to call these functions
 ```javascript
 function forGreatJusticeBehavior() {
   const selector = '#main';
-  const $org = $orgs[selector];
+  const $org = requerio.$orgs[selector];
 
   $org.dispatchAction('killExtensibility');
 
