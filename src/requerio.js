@@ -17,6 +17,7 @@ class Requerio {
     this.$orgs = $organisms;
     this.customReducer = customReducer;
     this.storeEnhancer = storeEnhancer;
+    this.store = null;
   }
 
   /**
@@ -25,10 +26,28 @@ class Requerio {
    */
   init() {
     const reducer = reducerGet(this.$orgs, this.Redux, this.customReducer);
-    const store = this.Redux.createStore(reducer, this.storeEnhancer);
+    const store = this.store = this.Redux.createStore(reducer, this.storeEnhancer);
 
     prototypeOverride(this.$, store);
     organismsIncept(this.$orgs, this.$);
+  }
+
+  /**
+   * @param {string} selector - A comma separated list of jQuery/Cheerio selectors.
+   */
+  incept() {
+    const $organisms = {};
+
+    for (let i = 0; i < arguments.length; i++) {
+      const selector = arguments[i];
+
+      if (typeof this.$orgs[selector] === 'undefined') {
+        $organisms[selector] = null;
+      }
+    }
+
+    organismsIncept($organisms, this.$);
+    Object.assign(this.$orgs, $organisms);
   }
 }
 

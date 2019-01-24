@@ -156,10 +156,13 @@ describe('Requerio', function () {
       expect(requerio).to.have.property('Redux');
       expect(requerio).to.have.property('$orgs');
       expect(requerio).to.have.property('init');
+      expect(requerio).to.have.property('incept');
+      expect(requerio).to.have.property('store');
       expect(requerio.$).to.equal($);
       expect(requerio.Redux).to.equal(Redux);
       expect(requerio.$orgs).to.equal($organismsAfter);
       expect(requerio.init).to.be.a('function');
+      expect(requerio.incept).to.be.a('function');
     });
 
     it('should initialize correctly', function () {
@@ -168,6 +171,12 @@ describe('Requerio', function () {
       delete global.document;
 
       requerio.init();
+
+      expect(requerio.store).to.be.an('object');
+      expect(requerio.store).to.have.property('dispatch');
+      expect(requerio.store).to.have.property('subscribe');
+      expect(requerio.store).to.have.property('getState');
+      expect(requerio.store).to.have.property('replaceReducer');
 
       Object.keys($organismsBefore).forEach((selector) => {
         expect($organismsBefore[selector]).to.be.null;
@@ -196,7 +205,20 @@ describe('Requerio', function () {
     });
   });
 
-  describe('non-prototype methods', function () {
+  describe('requerio instance after initialization', function () {
+    it('should incept addition organisms', function () {
+      requerio.incept('#yoda', '.midi-chlorian', '#cheshire-cat');
+
+      expect(requerio.$orgs['#yoda']).to.be.an.instanceof($);
+      expect(requerio.$orgs['.midi-chlorian']).to.be.an.instanceof($);
+      expect(requerio.$orgs['#cheshire-cat']).to.be.an.instanceof($);
+      expect(requerio.$orgs['#yoda'].hasRequerio).to.equal(true);
+      expect(requerio.$orgs['.midi-chlorian'].hasRequerio).to.equal(true);
+      expect(requerio.$orgs['#cheshire-cat'].hasRequerio).to.equal(true);
+    });
+  });
+
+  describe('organism non-prototype methods', function () {
     describe('scrollTop()', function () {
       it('should set a value on the server to mock the method call on the client', function () {
         Object.keys($organisms).forEach((selector) => {

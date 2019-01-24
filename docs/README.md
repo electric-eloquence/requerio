@@ -1,5 +1,20 @@
 # Requerio API
 
+## Additional Requerio Properties
+
+### requerio.store
+A reference to the Redux store for the Requerio instance.
+
+### requerio.incept(selector, [selector, ...])
+Incepts additional organisms after initialization. They will be added to the 
+`requerio.$orgs` object.
+
+__Returns__: `undefined`
+
+| Param | Type | Description |
+| --- | --- | --- |
+| ...selector | `string` | A comma separated list of selectors to incept into organisms. |
+
 ## Organism Methods
 
 These methods are made available on organisms after inception. The organisms are 
@@ -7,7 +22,7 @@ members of Requerio's `$orgs` property and are keyed by their selector. For
 example:
 
 ```javascript
-requerio.$orgs['#main'].dispatchAction('css', ['color', 'green']);
+requerio.$orgs['#yoda'].dispatchAction('css', ['color', 'green']);
 ```
 
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN `npm run doc` TO UPDATE -->
@@ -38,7 +53,7 @@ __Returns__: `object` - The organism's state.
 | [memberIdx] | `number` | The index of the organism member (if targeting a member). |
 
 ### .getStore()
-A reference to Redux `store`.
+A reference to the Redux `store`. The same reference as `requerio.store`.
 
 __Returns__: `object` - This app's state store.
 
