@@ -8,7 +8,7 @@
 
 #### Install:
 
-```bash
+```shell
 npm install cheerio redux requerio
 ```
 
