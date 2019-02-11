@@ -56,7 +56,7 @@
     "jsdoc-to-markdown": "^4.0.1",
     "jsdom": "^13.1.0",
     "mocha": "5.x",
-    "nodemon": "^1.18.9",
+    "nodemon": "^1.18.10",
     "nyc": "^13.1.0",
     "redux": "4.0.1",
     "rollup": "^1.0.1",
