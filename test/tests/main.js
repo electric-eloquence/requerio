@@ -379,46 +379,46 @@ describe('Requerio', function () {
 
     it(
       'should set .boundingClientRect properties on a specific $organism $member when .setBoundingClientRect() is called in a targeted manner',
-      function () {
-        const $org = $organisms['.main__section'];
-        const stateBefore0 = $org.getState(0);
-        const stateBefore1 = $org.getState(1);
+      function ()
+    {
+      const $org = $organisms['.main__section'];
+      const stateBefore0 = $org.getState(0);
+      const stateBefore1 = $org.getState(1);
 
-        $org.setBoundingClientRect(
-          {
-            width: 1000,
-            height: 1000,
-            top: 100,
-            right: 1100,
-            bottom: 1100,
-            left: 100
-          },
-          1
-        );
-        const stateAfter0 = $org.getState(0);
-        const stateAfter1 = $org.getState(1);
-        const boundingClientRectBefore0 = stateBefore0.boundingClientRect;
-        const boundingClientRectBefore1 = stateBefore1.boundingClientRect;
-        const boundingClientRectAfter0 = stateAfter0.boundingClientRect;
-        const boundingClientRectAfter1 = stateAfter1.boundingClientRect;
+      $org.setBoundingClientRect(
+        {
+          width: 1000,
+          height: 1000,
+          top: 100,
+          right: 1100,
+          bottom: 1100,
+          left: 100
+        },
+        1
+      );
+      const stateAfter0 = $org.getState(0);
+      const stateAfter1 = $org.getState(1);
+      const boundingClientRectBefore0 = stateBefore0.boundingClientRect;
+      const boundingClientRectBefore1 = stateBefore1.boundingClientRect;
+      const boundingClientRectAfter0 = stateAfter0.boundingClientRect;
+      const boundingClientRectAfter1 = stateAfter1.boundingClientRect;
 
-        Object.keys(boundingClientRectBefore0).forEach((i) => {
-          expect(boundingClientRectBefore0[i]).to.equal(null);
-        });
-        Object.keys(boundingClientRectBefore1).forEach((i) => {
-          expect(boundingClientRectBefore1[i]).to.equal(null);
-        });
-        Object.keys(boundingClientRectAfter0).forEach((i) => {
-          expect(boundingClientRectAfter0[i]).to.equal(null);
-        });
-        expect(boundingClientRectAfter1.width).to.equal(1000);
-        expect(boundingClientRectAfter1.height).to.equal(1000);
-        expect(boundingClientRectAfter1.top).to.equal(100);
-        expect(boundingClientRectAfter1.right).to.equal(1100);
-        expect(boundingClientRectAfter1.bottom).to.equal(1100);
-        expect(boundingClientRectAfter1.left).to.equal(100);
-      }
-    );
+      Object.keys(boundingClientRectBefore0).forEach((i) => {
+        expect(boundingClientRectBefore0[i]).to.equal(null);
+      });
+      Object.keys(boundingClientRectBefore1).forEach((i) => {
+        expect(boundingClientRectBefore1[i]).to.equal(null);
+      });
+      Object.keys(boundingClientRectAfter0).forEach((i) => {
+        expect(boundingClientRectAfter0[i]).to.equal(null);
+      });
+      expect(boundingClientRectAfter1.width).to.equal(1000);
+      expect(boundingClientRectAfter1.height).to.equal(1000);
+      expect(boundingClientRectAfter1.top).to.equal(100);
+      expect(boundingClientRectAfter1.right).to.equal(1100);
+      expect(boundingClientRectAfter1.bottom).to.equal(1100);
+      expect(boundingClientRectAfter1.left).to.equal(100);
+    });
 
     it('should get .boundingClientRect properties when .getBoundingClientRect() is called', function () {
       const $org = $organisms['#main'];
