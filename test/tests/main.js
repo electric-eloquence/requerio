@@ -377,10 +377,8 @@ describe('Requerio', function () {
       }
     );
 
-    it(
-      'should set .boundingClientRect properties on a specific $organism $member when .setBoundingClientRect() is called in a targeted manner',
-      function ()
-    {
+    it('should set .boundingClientRect properties on a specific $organism $member when .setBoundingClientRect() is \
+called in a targeted manner', function () {
       const $org = $organisms['.main__section'];
       const stateBefore0 = $org.getState(0);
       const stateBefore1 = $org.getState(1);
