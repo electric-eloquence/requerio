@@ -1182,7 +1182,7 @@ function () {
       organismsIncept(this.$orgs, this.$);
     }
     /**
-     * @param {string} selector - A comma separated list of jQuery/Cheerio selectors.
+     * @param {...string} selectors - jQuery/Cheerio selectors.
      */
 
   }, {
@@ -1191,7 +1191,7 @@ function () {
       var $organisms = {};
 
       for (var i = 0; i < arguments.length; i++) {
-        var selector = arguments[i];
+        var selector = i < 0 || arguments.length <= i ? undefined : arguments[i];
 
         if (typeof this.$orgs[selector] === 'undefined') {
           $organisms[selector] = null;

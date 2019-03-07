@@ -33,13 +33,13 @@ class Requerio {
   }
 
   /**
-   * @param {string} selector - A comma separated list of jQuery/Cheerio selectors.
+   * @param {...string} selectors - jQuery/Cheerio selectors.
    */
-  incept() {
+  incept(...selectors) {
     const $organisms = {};
 
-    for (let i = 0; i < arguments.length; i++) {
-      const selector = arguments[i];
+    for (let i = 0; i < selectors.length; i++) {
+      const selector = selectors[i];
 
       if (typeof this.$orgs[selector] === 'undefined') {
         $organisms[selector] = null;
