@@ -83,7 +83,7 @@ describe('Requerio', function () {
       $org.dispatchAction('addExtensibility');
       const state = $org.getState();
 
-      expect(state.extensible).to.equal(true);
+      expect(state.extensible).to.be.true;
     });
 
     it('should handle an incorrect state property type in a custom reducer', function () {
@@ -102,8 +102,8 @@ describe('Requerio', function () {
       $org.dispatchAction('deferExtensibility').promise.then(() => {
         const stateAfter = $org.getState();
 
-        expect(stateBefore.extensible).to.equal(false);
-        expect(stateAfter.extensible).to.equal(true);
+        expect(stateBefore.extensible).to.be.false;
+        expect(stateAfter.extensible).to.be.true;
         expect(stateAfter.elapsed).to.be.a('number');
         expect(stateAfter.elapsed).to.not.be.below(timeout);
         done();

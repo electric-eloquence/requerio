@@ -96,7 +96,7 @@ describe('Requerio', function () {
           return;
         }
 
-        expect($organism.hasRequerio).to.equal(true);
+        expect($organism.hasRequerio).to.be.true;
         expect($organism.$members).to.be.an('array');
         expect($organism.dispatchAction).to.be.a('function');
         expect($organism.getState).to.be.a('function');

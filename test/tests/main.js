@@ -191,7 +191,7 @@ describe('Requerio', function () {
           return;
         }
 
-        expect($organism.hasRequerio).to.equal(true);
+        expect($organism.hasRequerio).to.be.true;
         expect($organism.$members).to.be.an('array');
         expect($organism.dispatchAction).to.be.a('function');
         expect($organism.getState).to.be.a('function');
@@ -212,9 +212,9 @@ describe('Requerio', function () {
       expect(requerio.$orgs['#yoda']).to.be.an.instanceof($);
       expect(requerio.$orgs['.midi-chlorian']).to.be.an.instanceof($);
       expect(requerio.$orgs['#cheshire-cat']).to.be.an.instanceof($);
-      expect(requerio.$orgs['#yoda'].hasRequerio).to.equal(true);
-      expect(requerio.$orgs['.midi-chlorian'].hasRequerio).to.equal(true);
-      expect(requerio.$orgs['#cheshire-cat'].hasRequerio).to.equal(true);
+      expect(requerio.$orgs['#yoda'].hasRequerio).to.be.true;
+      expect(requerio.$orgs['.midi-chlorian'].hasRequerio).to.be.true;
+      expect(requerio.$orgs['#cheshire-cat'].hasRequerio).to.be.true;
     });
   });
 
@@ -366,7 +366,7 @@ describe('Requerio', function () {
         const boundingClientRectAfter = $org.getState().boundingClientRect;
 
         Object.keys(boundingClientRectBefore).forEach((i) => {
-          expect(boundingClientRectBefore[i]).to.equal(null);
+          expect(boundingClientRectBefore[i]).to.be.null;
         });
         expect(boundingClientRectAfter.width).to.equal(1000);
         expect(boundingClientRectAfter.height).to.equal(1000);
@@ -402,13 +402,13 @@ called in a targeted manner', function () {
       const boundingClientRectAfter1 = stateAfter1.boundingClientRect;
 
       Object.keys(boundingClientRectBefore0).forEach((i) => {
-        expect(boundingClientRectBefore0[i]).to.equal(null);
+        expect(boundingClientRectBefore0[i]).to.be.null;
       });
       Object.keys(boundingClientRectBefore1).forEach((i) => {
-        expect(boundingClientRectBefore1[i]).to.equal(null);
+        expect(boundingClientRectBefore1[i]).to.be.null;
       });
       Object.keys(boundingClientRectAfter0).forEach((i) => {
-        expect(boundingClientRectAfter0[i]).to.equal(null);
+        expect(boundingClientRectAfter0[i]).to.be.null;
       });
       expect(boundingClientRectAfter1.width).to.equal(1000);
       expect(boundingClientRectAfter1.height).to.equal(1000);
@@ -637,12 +637,12 @@ called in a targeted manner', function () {
       const state1 = $organisms['.main__section'].getState(1);
       const boundingClientRect1 = state1.boundingClientRect;
 
-      expect(boundingClientRect0.width).to.equal(null);
-      expect(boundingClientRect0.height).to.equal(null);
-      expect(boundingClientRect0.top).to.equal(null);
-      expect(boundingClientRect0.right).to.equal(null);
-      expect(boundingClientRect0.bottom).to.equal(null);
-      expect(boundingClientRect0.left).to.equal(null);
+      expect(boundingClientRect0.width).to.be.null;
+      expect(boundingClientRect0.height).to.be.null;
+      expect(boundingClientRect0.top).to.be.null;
+      expect(boundingClientRect0.right).to.be.null;
+      expect(boundingClientRect0.bottom).to.be.null;
+      expect(boundingClientRect0.left).to.be.null;
       expect(boundingClientRect1.width).to.equal(1100);
       expect(boundingClientRect1.height).to.equal(1100);
       expect(boundingClientRect1.top).to.equal(110);
