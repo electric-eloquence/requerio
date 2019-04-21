@@ -57,7 +57,7 @@
     "jsdom": "^13.1.0",
     "mocha": "6.x",
     "nodemon": "^1.18.10",
-    "nyc": "13.x",
+    "nyc": "14.x",
     "redux": "4.0.1",
     "rollup": "^1.0.1",
     "rollup-plugin-babel": "^4.2.0",
