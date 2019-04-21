@@ -558,7 +558,7 @@ function addClass(classesForReducedState, classParam, state) {
 
   classesToAdd.forEach(function (classToAdd) {
     if (classesForReducedState.indexOf(classToAdd) === -1) {
-      state.attribs.class += " ".concat(classToAdd);
+      state.attribs["class"] += " ".concat(classToAdd);
     }
   });
   state.classArray = classesToAdd;
@@ -601,7 +601,7 @@ function removeClass(classesForReducedState, classParam, classIdx_, state) {
       classesForReducedState.splice(classIdx, 1);
     }
   });
-  state.attribs.class = classesForReducedState.join(' ');
+  state.attribs["class"] = classesForReducedState.join(' ');
   state.classArray = classesForReducedState;
   state.classList = state.classArray;
 }
@@ -630,8 +630,8 @@ function stateBuild($org, state, action) {
 
     var classesForReducedState = [];
 
-    if (state.attribs && state.attribs.class) {
-      classesForReducedState = state.attribs.class.split(/\s+/);
+    if (state.attribs && state.attribs["class"]) {
+      classesForReducedState = state.attribs["class"].split(/\s+/);
       state.classArray = classesForReducedState;
       state.classList = state.classArray;
     }
@@ -1077,7 +1077,7 @@ function reducerClosure(orgSelector, customReducer) {
 
 
       if (state.attribs) {
-        state.attribs.class = $org.attr('class');
+        state.attribs["class"] = $org.attr('class');
       } // Build new state for organism.
 
 
