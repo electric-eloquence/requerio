@@ -178,7 +178,10 @@ __Returns__: `object` - The dispatched action object.
 
               // Cheerio objects have an .attribs property for member element attributes, which is undocumented and may
               // change without notice. However, this is unlikely, since it is derived from its htmlparser2 dependency.
-              // The htmlparser2 package has had this property since its initial release.
+              // The htmlparser2 package has had this property since its initial release and its public position is that
+              // this won't change.
+              // https://github.com/fb55/htmlparser2/issues/35
+              // https://github.com/cheeriojs/cheerio/issues/547
               if (this[0] && this[0].attribs) {
                 if (typeof memberIdx === 'undefined') {
                   args[0] = this[0].attribs;
