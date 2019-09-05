@@ -29,11 +29,11 @@
       function actionsGet(requerio) {
         return {
           mainHide: function () {
-            requerio.$orgs['.main__section--1'].dispatchAction('css', ['display', 'none']);
+            requerio.$orgs['.main__section--1'].dispatchAction('css', {display: 'none'});
           },
        
           mainShow: function () {
-            requerio.$orgs['.main__section--1'].dispatchAction('css', ['display', 'block']);
+            requerio.$orgs['.main__section--1'].dispatchAction('css', {display: 'block'});
           }
         };
       }

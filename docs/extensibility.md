@@ -64,11 +64,12 @@ const customMiddleware = store => next => action => {
 
 This middleware declares a `timebombExtensibility` action, which in turn 
 dispatches the `killExtensibility` action 10 seconds later. `.dispatchAction()` 
-returns the `action` object. In this example, the promise is returned as the 
-`.promise` property, to be resolved or rejected appropriately.
+returns the organism with a `.prevAction` property. In this example, the promise 
+is returned as the `.promise` property on `.prevAction`, to be resolved or 
+rejected appropriately.
 
 ```javascript
-requerio.$orgs['#main'].dispatchAction('timebombExtensibility').promise.then(
+requerio.$orgs['#main'].dispatchAction('timebombExtensibility').prevAction.promise.then(
   res => {console.log(res);},
   err => {console.error(err);}
 );

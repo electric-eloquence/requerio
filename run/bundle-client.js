@@ -2,6 +2,7 @@
 
 process.chdir(__dirname);
 
+const babelify = require('babelify');
 const browserify = require('browserify');
 const fs = require('fs');
 const uglifyES = require('uglify-es');
@@ -11,6 +12,7 @@ const bld = '../dist/requerio.min.js';
 const src = '../dist/requerio.npm.js';
 
 browserify(src)
+  .transform(babelify, {presets: ['@babel/preset-env']})
   .bundle((err, buf) => {
     if (err) {
       throw err;

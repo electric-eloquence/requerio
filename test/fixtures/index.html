@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
   </head>
   <body>
-    <main id="main">
+    <main id="main" class="has-child-test">
+      <input class="main__input" type="text">
       <section class="main__section main__section--0"></section>
-      <section class="main__section main__section--1"></section>
+      <section class="main__section main__section--1 has-parent-test"></section>
     </main>
-    <div id="yoda">
-      <span class="midi-clorian midi-clorian--0"></span>
-      <span class="midi-clorian midi-clorian--1"></span>
+    <div id="yoda" class="has-child-test">
+      <input id="yoda__input" type="text">
+      <span class="midi-chlorian midi-chlorian--0 has-parent-test"></span>
+      <span class="midi-chlorian midi-chlorian--1 has-sibling-test"></span>
     </div>
     <figure id="cheshire-cat"></figure>
   </body>

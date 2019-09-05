@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Populate $orgs values with jQuery or Cheerio components.
  *
@@ -2444,4 +2442,4 @@ else if (typeof window === 'object') {
   window.Requerio = Requerio;
 }
 
-module.exports = Requerio;
+export default Requerio;

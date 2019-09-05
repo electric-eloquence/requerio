@@ -3,8 +3,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const jsdoc2md = require('jsdoc-to-markdown');
-
 // Using IIFEs to scope vars and to return from false conditions.
 (() => {
   const delimitStrStart = 'switch \\(action.method\\) \\{';
@@ -19,8 +17,9 @@ const jsdoc2md = require('jsdoc-to-markdown');
     return;
   }
 
-  const methods = match[0];
-  const regexForComments = /\/\*\*[\S\s]*?\*\//g;
+  const postInception = fs.readFileSync(path.join(__dirname, '..', 'src', 'post-inception.js'), 'utf8');
+  const methods = match[0] + postInception;
+  const regexForComments = /\/\*\*\n###[\S\s]*?\*\//g;
   const comments = methods.match(regexForComments);
 
   let md = '# Action Methods\n';
@@ -37,8 +36,8 @@ const jsdoc2md = require('jsdoc-to-markdown');
 })();
 
 (() => {
-  const delimitReadStart = 'export default \\(\\$, stateStore\\) => \\{'
-  const delimitReadStop = 'end export default \\(\\$, stateStore\\)'
+  const delimitReadStart = 'export default \\(requerio\\) => \\{'
+  const delimitReadStop = 'end export default \\(requerio\\)'
   const delimitWriteStart = '<!-- START GENERATED API DOC -->';
   const delimitWriteStop = '<!-- STOP GENERATED API DOC -->';
   const regexReadStr = delimitReadStart + '[\\S\\s]*' + delimitReadStop;
@@ -54,7 +53,7 @@ const jsdoc2md = require('jsdoc-to-markdown');
   }
 
   const props = matchRead[0];
-  const regexForComments = /\/\*\*[\S\s]*?\*\//g;
+  const regexForComments = /\/\*\*\n###[\S\s]*?\*\//g;
   const comments = props.match(regexForComments);
 
   let md = '';

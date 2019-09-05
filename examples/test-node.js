@@ -23,11 +23,11 @@ const $organisms = {
 function behaviorsGet(requerio) {
   return {
     mainHide: () => {
-      requerio.$orgs['.main__section--1'].dispatchAction('css', ['display', 'none']);
+      requerio.$orgs['.main__section--1'].dispatchAction('css', {display: 'none'});
     },
 
     mainShow: () => {
-      requerio.$orgs['.main__section--1'].dispatchAction('css', ['display', 'block']);
+      requerio.$orgs['.main__section--1'].dispatchAction('css', {display: 'block'});
     }
   };
 }

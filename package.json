@@ -2,7 +2,7 @@
   "name": "requerio",
   "version": "0.4.4",
   "description": "Redux + jQuery + Cheerio = predictable client-side state + server-side testability",
-  "main": "dist/requerio.npm.js",
+  "main": "dist/requerio.npm",
   "scripts": {
     "bundle": "rollup --config && node run/bundle-client.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
@@ -43,10 +43,14 @@
     "url": "https://github.com/electric-eloquence/requerio/issues"
   },
   "homepage": "https://github.com/electric-eloquence/requerio#readme",
+  "engines": {
+    "node": ">=8.16.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
     "@babel/register": "^7.0.0",
+    "babelify": "^10.0.0",
     "browserify": "^16.2.3",
     "chai": "4.x",
     "cheerio": "1.0.0-rc.3",
@@ -60,7 +64,6 @@
     "nyc": "14.x",
     "redux": "4.0.1",
     "rollup": "^1.0.1",
-    "rollup-plugin-babel": "^4.2.0",
     "uglify-es": "3.3.9"
   }
 }

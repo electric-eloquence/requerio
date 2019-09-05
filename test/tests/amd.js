@@ -21,6 +21,7 @@ const $organismsBefore = {
   'document': null,
   'html': null,
   'body': null,
+  'input': null,
   '#main': null,
   '.main__section': null,
   '.main__section--0': null,
@@ -32,7 +33,7 @@ const requerio = new Requerio($, Redux, $organismsAfter);
 
 describe('Requerio', function () {
   describe('via AMD', function () {
-    it('should instantiate correctly', function () {
+    it('instantiates correctly', function () {
       expect(requerio).to.be.an.instanceof(Requerio);
       expect(requerio).to.have.property('$');
       expect(requerio).to.have.property('Redux');
@@ -44,7 +45,7 @@ describe('Requerio', function () {
       expect(requerio.init).to.be.a('function');
     });
 
-    it('should initialize correctly', function () {
+    it('initializes correctly', function () {
       requerio.init();
 
       Object.keys($organismsBefore).forEach((selector) => {

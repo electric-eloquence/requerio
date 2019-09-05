@@ -1,4 +1,6 @@
-delete global.window;
+/**
+ * This file needs to run after jsdom.js and main.js and so must be named accordingly alphabetically.
+ */
 
 import fs from 'fs';
 import path from 'path';
@@ -19,6 +21,7 @@ const $organisms = {
   'document': null,
   'html': null,
   'body': null,
+  'input': null,
   '#main': null,
   '.main__section': null,
   '.main__section--0': null,
@@ -37,7 +40,7 @@ function customReducer(state, action) {
   switch (action.method) {
     case 'addExtensibility':
       state.extensible = true;
-      state[action.args[0]] = action.args[1];
+      Object.assign(state, action.args[0]);
       break;
 
     case 'handleExtensibility':
@@ -59,7 +62,7 @@ const customMiddleware = () => next => action => {
       const startTime = Date.now();
       action.promise = new Promise((resolve) => {
         setTimeout(() => {
-          action.$org.dispatchAction('addExtensibility', ['elapsed', Date.now() - startTime]);
+          action.$org.dispatchAction('addExtensibility', {elapsed: Date.now() - startTime});
           resolve();
         }, timeout);
       });
@@ -78,7 +81,7 @@ requerio.init();
 
 describe('Requerio', function () {
   describe('extensibility', function () {
-    it('should accept a custom reducer', function () {
+    it('accepts a custom reducer', function () {
       const $org = requerio.$orgs['#main'];
       $org.dispatchAction('addExtensibility');
       const state = $org.getState();
@@ -86,7 +89,7 @@ describe('Requerio', function () {
       expect(state.extensible).to.be.true;
     });
 
-    it('should handle an incorrect state property type in a custom reducer', function () {
+    it('handles an incorrect state property type in a custom reducer', function () {
       const $org = requerio.$orgs['#main'];
       $org.dispatchAction('handleExtensibility');
       const state = $org.getState();
@@ -94,12 +97,12 @@ describe('Requerio', function () {
       expect(state.handle).to.be.undefined;
     });
 
-    it('should accept custom middleware', function (done) {
+    it('accepts custom middleware', function (done) {
       const $org = requerio.$orgs['#main'];
       $org.dispatchAction('removeExtensibility');
       const stateBefore = $org.getState();
 
-      $org.dispatchAction('deferExtensibility').promise.then(() => {
+      $org.dispatchAction('deferExtensibility').prevAction.promise.then(() => {
         const stateAfter = $org.getState();
 
         expect(stateBefore.extensible).to.be.false;
