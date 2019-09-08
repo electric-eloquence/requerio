@@ -294,7 +294,13 @@ organism, set the focused organism's selector as `state.activeOrganism`.
           }
         }
 
-        return store.getState()[orgSelector];
+        const state = store.getState()[orgSelector];
+
+        if (orgSelector === 'window' && typeof window === 'object') {
+          $org.updateMeasurements(state);
+        }
+
+        return state;
       };
     }
 

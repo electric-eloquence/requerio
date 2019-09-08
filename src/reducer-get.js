@@ -369,7 +369,20 @@ properties on `state.boundingClientRect`.
         ) {
           const rectObj = action.args[0];
 
-          Object.assign(state.boundingClientRect, rectObj);
+          // Must iterate through "own" properties and copy from rectObj. Shortcuts like Object.assign won't work
+          // because rectObj is not a plain object in browsers.
+          for (let measurement in state.boundingClientRect) {
+            if (!state.boundingClientRect.hasOwnProperty(measurement)) {
+              continue;
+            }
+
+            if (
+              state.boundingClientRect[measurement] !== action.args[0][measurement] &&
+              action.args[0][measurement] != null // eslint-disable-line eqeqeq
+            ) {
+              state.boundingClientRect[measurement] = action.args[0][measurement];
+            }
+          }
 
           // If this is dispatched on the server, we need to copy the rectObj to the state $members.
           if (typeof global === 'object') {

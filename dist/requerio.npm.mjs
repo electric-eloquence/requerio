@@ -409,7 +409,13 @@ organism, set the focused organism's selector as `state.activeOrganism`.
           }
         }
 
-        return store.getState()[orgSelector];
+        const state = store.getState()[orgSelector];
+
+        if (orgSelector === 'window' && typeof window === 'object') {
+          $org.updateMeasurements(state);
+        }
+
+        return state;
       };
     }
 
@@ -747,6 +753,16 @@ function applyData($org, args, $member) {
 }
 
 /**
+ * Convert camelCase "method" to CAPS_SNAKE_CASE "type".
+ *
+ * @param {string} method - The jQuery/Cheerio/Requerio "method" name.
+ * @returns {string} The Redux action "type" per Redux casing convention.
+ */
+function convertMethodToType(method) {
+  return method.replace(/([A-Z])/g, '_$1').toUpperCase();
+}
+
+/**
  * Convenience method for getting boundingClientRect whether on client or server.
  *
  * @param {object} $org - Organism object.
@@ -876,6 +892,15 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 */
   if (!$.prototype.dispatchAction) {
     $.prototype.dispatchAction = function (method, args_, memberIdx_) {
+      const type = convertMethodToType(method);
+
+      let args = [];
+
+      // eslint-disable-next-line eqeqeq
+      if (args_ != null) {
+        args = [args_];
+      }
+
       let memberIdx = memberIdx_;
       let membersLength = 0;
 
@@ -904,13 +929,6 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         }
 
         $member = $(this[memberIdx]);
-      }
-
-      let args = [];
-
-      // eslint-disable-next-line eqeqeq
-      if (args_ != null) {
-        args = [args_];
       }
 
       // Side-effects must happen here. store.dispatch() depends on this.
@@ -963,10 +981,10 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
                 // eslint-disable-next-line eqeqeq
                 if (!memberState || memberState.innerHTML == null) {
                   this.prevAction = store.dispatch({
-                    type: '',
+                    type,
                     selector: this.selector,
                     $org: this,
-                    method: 'html',
+                    method,
                     args: [$elem.html()],
                     memberIdx: memberIdx[idx]
                   });
@@ -980,10 +998,10 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
               if (!memberState || memberState.innerHTML == null) {
                 // Dispatch on $member.
                 this.prevAction = store.dispatch({
-                  type: '',
+                  type,
                   selector: this.selector,
                   $org: this,
-                  method: 'html',
+                  method,
                   args: [$member.html()],
                   memberIdx: memberIdx
                 });
@@ -994,10 +1012,10 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
               if (state.innerHTML == null) {
                 // Dispatch on $org.
                 this.prevAction = store.dispatch({
-                  type: '',
+                  type,
                   selector: this.selector,
                   $org: this,
-                  method: 'html',
+                  method,
                   args: [this.html()],
                   memberIdx: memberIdx
                 });
@@ -1069,9 +1087,6 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       if (membersLength < this.$members.length) {
         this.populateMembers();
       }
-
-      // Convert camelCase method to CAPS_SNAKE_CASE type.
-      const type = method.replace(/([A-Z])/g, '_$1').toUpperCase();
 
       this.prevAction = store.dispatch({
         type,
@@ -1205,8 +1220,13 @@ __Returns__: `object` - The organism's state.
 
       if (typeof memberIdx === 'number') {
         state = store.getState()[this.selector].$members[memberIdx];
+
+        if (!state) {
+          updateState = true;
+        }
       }
-      else {
+
+      if (!state) {
         state = store.getState()[this.selector];
       }
 
@@ -1219,7 +1239,7 @@ __Returns__: `object` - The organism's state.
 
       if (JSON.stringify(state.attribs) !== JSON.stringify(argsAttr[0])) {
         store.dispatch({
-          type: '',
+          type: 'ATTR',
           selector: this.selector,
           $org: this,
           method: 'attr',
@@ -1237,7 +1257,7 @@ __Returns__: `object` - The organism's state.
 
       if (JSON.stringify(state.data) !== JSON.stringify(argsData[0])) {
         store.dispatch({
-          type: '',
+          type: 'DATA',
           selector: this.selector,
           $org: this,
           method: 'data',
@@ -1269,7 +1289,7 @@ __Returns__: `object` - The organism's state.
 
         if (innerHTMLNew !== innerHTMLOld) {
           store.dispatch({
-            type: '',
+            type: 'HTML',
             selector: this.selector,
             $org: this,
             method: 'html',
@@ -1297,7 +1317,7 @@ __Returns__: `object` - The organism's state.
 
         if (valueNew !== valueOld) {
           store.dispatch({
-            type: '',
+            type: 'VAL',
             selector: this.selector,
             $org: this,
             method: 'val',
@@ -1687,7 +1707,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
 
       if (state[method] !== args[0]) {
         store.dispatch({
-          type: '',
+          type: convertMethodToType(method),
           selector: this.selector,
           $org: this,
           method,
@@ -1699,22 +1719,34 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
       }
     }
 
+    if (this.selector === 'window') {
+      return false;
+    }
+
     const args = [];
 
     // Dependent on dispatches of other measurements to populate members.
     getBoundingClientRect(this, args, memberIdx); // Mutates args.
 
-    if (JSON.stringify(state.boundingClientRect) !== JSON.stringify(args[0])) {
-      store.dispatch({
-        type: '',
-        selector: this.selector,
-        $org: this,
-        method: 'setBoundingClientRect',
-        args,
-        memberIdx
-      });
+    for (let measurement in state.boundingClientRect) {
+      if (!state.boundingClientRect.hasOwnProperty(measurement)) {
+        continue;
+      }
 
-      updateState = true;
+      if (state.boundingClientRect[measurement] !== args[0][measurement]) {
+        store.dispatch({
+          type: 'SET_BOUNDING_CLIENT_RECT',
+          selector: this.selector,
+          $org: this,
+          method: 'setBoundingClientRect',
+          args,
+          memberIdx
+        });
+
+        updateState = true;
+
+        break;
+      }
     }
 
     return updateState;
@@ -2094,7 +2126,20 @@ properties on `state.boundingClientRect`.
         ) {
           const rectObj = action.args[0];
 
-          Object.assign(state.boundingClientRect, rectObj);
+          // Must iterate through "own" properties and copy from rectObj. Shortcuts like Object.assign won't work
+          // because rectObj is not a plain object in browsers.
+          for (let measurement in state.boundingClientRect) {
+            if (!state.boundingClientRect.hasOwnProperty(measurement)) {
+              continue;
+            }
+
+            if (
+              state.boundingClientRect[measurement] !== action.args[0][measurement] &&
+              action.args[0][measurement] != null // eslint-disable-line eqeqeq
+            ) {
+              state.boundingClientRect[measurement] = action.args[0][measurement];
+            }
+          }
 
           // If this is dispatched on the server, we need to copy the rectObj to the state $members.
           if (typeof global === 'object') {
