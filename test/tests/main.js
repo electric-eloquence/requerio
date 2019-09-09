@@ -286,7 +286,8 @@ describe('Requerio', function () {
         });
 
         it('returns the organism when "getBoundingClientRect" is dispatched', function () {
-          const retVal = requerio.$orgs['.main__section'].exclude('.main__section--0').dispatchAction('getBoundingClientRect');
+          const retVal = requerio.$orgs['.main__section'].exclude('.main__section--0')
+            .dispatchAction('getBoundingClientRect');
 
           expect(retVal).to.equal(requerio.$orgs['.main__section']);
         });
@@ -853,7 +854,8 @@ describe('Requerio', function () {
         expect(displayStyle).to.equal('none');
       });
 
-      it('gets the state for a specific organism $member when .getState() is invoked in a targeted manner', function () {
+      it('gets the state for a specific organism $member when .getState() is invoked in a targeted manner\
+', function () {
         const $org = requerio.$orgs['.main__section'];
 
         $org.dispatchAction('css', {display: 'none'}, 1);
@@ -920,48 +922,47 @@ describe('Requerio', function () {
       });
 
       // eslint-ignore-next-line max-len
-      it('sets .boundingClientRect properties on a specific $organism $member when .setBoundingClientRect() is invoked in a targeted manner',
-        function () {
-          const $org = requerio.$orgs['.main__section'];
-          const stateBefore0 = $org.getState(0);
-          const stateBefore1 = $org.getState(1);
+      it('sets .boundingClientRect properties on a specific $organism $member when .setBoundingClientRect() is invoked \
+in a targeted manner', function () {
+        const $org = requerio.$orgs['.main__section'];
+        const stateBefore0 = $org.getState(0);
+        const stateBefore1 = $org.getState(1);
 
-          $org.setBoundingClientRect(
-            {
-              width: 1000,
-              height: 1000,
-              top: 100,
-              right: 1100,
-              bottom: 1100,
-              left: 100
-            },
-            1
-          );
+        $org.setBoundingClientRect(
+          {
+            width: 1000,
+            height: 1000,
+            top: 100,
+            right: 1100,
+            bottom: 1100,
+            left: 100
+          },
+          1
+        );
 
-          const stateAfter0 = $org.getState(0);
-          const stateAfter1 = $org.getState(1);
-          const boundingClientRectBefore0 = stateBefore0.boundingClientRect;
-          const boundingClientRectBefore1 = stateBefore1.boundingClientRect;
-          const boundingClientRectAfter0 = stateAfter0.boundingClientRect;
-          const boundingClientRectAfter1 = stateAfter1.boundingClientRect;
+        const stateAfter0 = $org.getState(0);
+        const stateAfter1 = $org.getState(1);
+        const boundingClientRectBefore0 = stateBefore0.boundingClientRect;
+        const boundingClientRectBefore1 = stateBefore1.boundingClientRect;
+        const boundingClientRectAfter0 = stateAfter0.boundingClientRect;
+        const boundingClientRectAfter1 = stateAfter1.boundingClientRect;
 
-          Object.keys(boundingClientRectBefore0).forEach((i) => {
-            expect(boundingClientRectBefore0[i]).to.be.null;
-          });
-          Object.keys(boundingClientRectBefore1).forEach((i) => {
-            expect(boundingClientRectBefore1[i]).to.be.null;
-          });
-          Object.keys(boundingClientRectAfter0).forEach((i) => {
-            expect(boundingClientRectAfter0[i]).to.be.null;
-          });
-          expect(boundingClientRectAfter1.width).to.equal(1000);
-          expect(boundingClientRectAfter1.height).to.equal(1000);
-          expect(boundingClientRectAfter1.top).to.equal(100);
-          expect(boundingClientRectAfter1.right).to.equal(1100);
-          expect(boundingClientRectAfter1.bottom).to.equal(1100);
-          expect(boundingClientRectAfter1.left).to.equal(100);
-        }
-      );
+        Object.keys(boundingClientRectBefore0).forEach((i) => {
+          expect(boundingClientRectBefore0[i]).to.be.null;
+        });
+        Object.keys(boundingClientRectBefore1).forEach((i) => {
+          expect(boundingClientRectBefore1[i]).to.be.null;
+        });
+        Object.keys(boundingClientRectAfter0).forEach((i) => {
+          expect(boundingClientRectAfter0[i]).to.be.null;
+        });
+        expect(boundingClientRectAfter1.width).to.equal(1000);
+        expect(boundingClientRectAfter1.height).to.equal(1000);
+        expect(boundingClientRectAfter1.top).to.equal(100);
+        expect(boundingClientRectAfter1.right).to.equal(1100);
+        expect(boundingClientRectAfter1.bottom).to.equal(1100);
+        expect(boundingClientRectAfter1.left).to.equal(100);
+      });
 
       it('gets .boundingClientRect properties when .getBoundingClientRect() is invoked', function () {
         const $org = requerio.$orgs['#main'];
@@ -1054,88 +1055,87 @@ describe('Requerio', function () {
         $org.height = heightOrig;
       });
 
-      it('.updateMeasurements() updates measurement properties on a specific $organism $member when invoked in a targeted manner',
-        function () {
-          const $org = requerio.$orgs['.main__section'];
+      it('.updateMeasurements() updates measurement properties on a specific $organism $member when invoked in a \
+targeted manner', function () {
+        const $org = requerio.$orgs['.main__section'];
 
-          const innerWidthOrig = $org.innerWidth;
-          const innerHeightOrig = $org.innerHeight;
-          const scrollTopOrig = $org.scrollTop;
-          const widthOrig = $org.width;
-          const heightOrig = $org.height;
+        const innerWidthOrig = $org.innerWidth;
+        const innerHeightOrig = $org.innerHeight;
+        const scrollTopOrig = $org.scrollTop;
+        const widthOrig = $org.width;
+        const heightOrig = $org.height;
 
-          $org.innerWidth = () => 0;
-          $org.innerHeight = () => 0;
-          $org.scrollTop = () => 0;
-          $org.width = () => 0;
-          $org.height = () => 0;
+        $org.innerWidth = () => 0;
+        $org.innerHeight = () => 0;
+        $org.scrollTop = () => 0;
+        $org.width = () => 0;
+        $org.height = () => 0;
 
-          $org.setBoundingClientRect(
-            {
-              width: 0,
-              height: 0,
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0
-            },
-            1
-          );
+        $org.setBoundingClientRect(
+          {
+            width: 0,
+            height: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0
+          },
+          1
+        );
 
-          const stateBefore = $org.getState(1);
+        const stateBefore = $org.getState(1);
 
-          $org.innerWidth = () => 1000;
-          $org.innerHeight = () => 1000;
-          $org.scrollTop = () => 100;
-          $org.width = () => 1000;
-          $org.height = () => 1000;
+        $org.innerWidth = () => 1000;
+        $org.innerHeight = () => 1000;
+        $org.scrollTop = () => 100;
+        $org.width = () => 1000;
+        $org.height = () => 1000;
 
-          $org.setBoundingClientRect(
-            {
-              width: 1000,
-              height: 1000,
-              top: 100,
-              right: 1100,
-              bottom: 1100,
-              left: 100
-            },
-            1
-          );
-          $org.updateMeasurements(stateBefore, $org, 1);
+        $org.setBoundingClientRect(
+          {
+            width: 1000,
+            height: 1000,
+            top: 100,
+            right: 1100,
+            bottom: 1100,
+            left: 100
+          },
+          1
+        );
+        $org.updateMeasurements(stateBefore, $org, 1);
 
-          const stateAfter = $org.getState(1);
+        const stateAfter = $org.getState(1);
 
-          expect(stateBefore.boundingClientRect.width).to.equal(0);
-          expect(stateBefore.boundingClientRect.height).to.equal(0);
-          expect(stateBefore.boundingClientRect.top).to.equal(0);
-          expect(stateBefore.boundingClientRect.right).to.equal(0);
-          expect(stateBefore.boundingClientRect.bottom).to.equal(0);
-          expect(stateBefore.boundingClientRect.left).to.equal(0);
-          expect(stateBefore.innerWidth).to.be.null;
-          expect(stateBefore.innerHeight).to.be.null;
-          expect(stateBefore.scrollTop).to.be.null;
-          expect(stateBefore.width).to.be.null;
-          expect(stateBefore.height).to.be.null;
+        expect(stateBefore.boundingClientRect.width).to.equal(0);
+        expect(stateBefore.boundingClientRect.height).to.equal(0);
+        expect(stateBefore.boundingClientRect.top).to.equal(0);
+        expect(stateBefore.boundingClientRect.right).to.equal(0);
+        expect(stateBefore.boundingClientRect.bottom).to.equal(0);
+        expect(stateBefore.boundingClientRect.left).to.equal(0);
+        expect(stateBefore.innerWidth).to.be.null;
+        expect(stateBefore.innerHeight).to.be.null;
+        expect(stateBefore.scrollTop).to.be.null;
+        expect(stateBefore.width).to.be.null;
+        expect(stateBefore.height).to.be.null;
 
-          expect(stateAfter.boundingClientRect.width).to.equal(1000);
-          expect(stateAfter.boundingClientRect.height).to.equal(1000);
-          expect(stateAfter.boundingClientRect.top).to.equal(100);
-          expect(stateAfter.boundingClientRect.right).to.equal(1100);
-          expect(stateAfter.boundingClientRect.bottom).to.equal(1100);
-          expect(stateAfter.boundingClientRect.left).to.equal(100);
-          expect(stateAfter.innerWidth).to.equal(1000);
-          expect(stateAfter.innerHeight).to.equal(1000);
-          expect(stateAfter.scrollTop).to.equal(100);
-          expect(stateAfter.width).to.equal(1000);
-          expect(stateAfter.height).to.equal(1000);
+        expect(stateAfter.boundingClientRect.width).to.equal(1000);
+        expect(stateAfter.boundingClientRect.height).to.equal(1000);
+        expect(stateAfter.boundingClientRect.top).to.equal(100);
+        expect(stateAfter.boundingClientRect.right).to.equal(1100);
+        expect(stateAfter.boundingClientRect.bottom).to.equal(1100);
+        expect(stateAfter.boundingClientRect.left).to.equal(100);
+        expect(stateAfter.innerWidth).to.equal(1000);
+        expect(stateAfter.innerHeight).to.equal(1000);
+        expect(stateAfter.scrollTop).to.equal(100);
+        expect(stateAfter.width).to.equal(1000);
+        expect(stateAfter.height).to.equal(1000);
 
-          $org.innerWidth = innerWidthOrig;
-          $org.innerHeight = innerHeightOrig;
-          $org.scrollTop = scrollTopOrig;
-          $org.width = widthOrig;
-          $org.height = heightOrig;
-        }
-      );
+        $org.innerWidth = innerWidthOrig;
+        $org.innerHeight = innerHeightOrig;
+        $org.scrollTop = scrollTopOrig;
+        $org.width = widthOrig;
+        $org.height = heightOrig;
+      });
     });
   });
 
@@ -1561,67 +1561,59 @@ describe('Requerio', function () {
       expect(state1.style['background-color']).to.equal('cyan');
     });
 
-    it(
-      'dispatches the "css" action to update the state with a single string property argument on a single target',
-      function () {
-        requerio.$orgs['.main__section'].css({color: 'yellow'});
-        requerio.$orgs['.main__section'].dispatchAction('css', 'color', 1);
+    it('dispatches the "css" action to update the state with a single string property argument on a single target\
+', function () {
+      requerio.$orgs['.main__section'].css({color: 'yellow'});
+      requerio.$orgs['.main__section'].dispatchAction('css', 'color', 1);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+      const state0 = requerio.$orgs['.main__section'].getState(0);
+      const state1 = requerio.$orgs['.main__section'].getState(1);
 
-        expect(state0.style.color).to.not.equal(state1.style.color);
-        expect(state1.style.color).to.equal('yellow');
-      }
-    );
+      expect(state0.style.color).to.not.equal(state1.style.color);
+      expect(state1.style.color).to.equal('yellow');
+    });
 
-    it(
-      'dispatches the "css" action to update the state with a single string property argument on multiple targets',
-      function () {
-        requerio.$orgs['.main__section'].css({color: 'magenta'});
-        requerio.$orgs['.main__section'].dispatchAction('css', 'color', [0, 1]);
+    it('dispatches the "css" action to update the state with a single string property argument on multiple targets\
+', function () {
+      requerio.$orgs['.main__section'].css({color: 'magenta'});
+      requerio.$orgs['.main__section'].dispatchAction('css', 'color', [0, 1]);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+      const state0 = requerio.$orgs['.main__section'].getState(0);
+      const state1 = requerio.$orgs['.main__section'].getState(1);
 
-        expect(state0.style.color).to.equal('magenta');
-        expect(state1.style.color).to.equal('magenta');
-      }
-    );
+      expect(state0.style.color).to.equal('magenta');
+      expect(state1.style.color).to.equal('magenta');
+    });
 
-    it(
-      'dispatches the "css" action to update the state with a multiple string properties argument on a single target',
-      function () {
-        requerio.$orgs['.main__section'].css({color: 'black'});
-        requerio.$orgs['.main__section'].css({'background-color': 'black'});
-        requerio.$orgs['.main__section'].dispatchAction('css', ['color', 'background-color'], 1);
+    it('dispatches the "css" action to update the state with a multiple string properties argument on a single target\
+', function () {
+      requerio.$orgs['.main__section'].css({color: 'black'});
+      requerio.$orgs['.main__section'].css({'background-color': 'black'});
+      requerio.$orgs['.main__section'].dispatchAction('css', ['color', 'background-color'], 1);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+      const state0 = requerio.$orgs['.main__section'].getState(0);
+      const state1 = requerio.$orgs['.main__section'].getState(1);
 
-        expect(state0.style.color).to.not.equal(state1.style.color);
-        expect(state0.style['background-color']).to.not.equal(state1.style['background-color']);
-        expect(state1.style.color).to.equal('black');
-        expect(state1.style['background-color']).to.equal('black');
-      }
-    );
+      expect(state0.style.color).to.not.equal(state1.style.color);
+      expect(state0.style['background-color']).to.not.equal(state1.style['background-color']);
+      expect(state1.style.color).to.equal('black');
+      expect(state1.style['background-color']).to.equal('black');
+    });
 
-    it(
-      'dispatches the "css" action to update the state with a multiple string properties argument on multiple targets',
-      function () {
-        requerio.$orgs['.main__section'].css({color: 'white'});
-        requerio.$orgs['.main__section'].css({'background-color': 'white'});
-        requerio.$orgs['.main__section'].dispatchAction('css', ['color', 'background-color'], [0, 1]);
+    it('dispatches the "css" action to update the state with a multiple string properties argument on multiple targets\
+', function () {
+      requerio.$orgs['.main__section'].css({color: 'white'});
+      requerio.$orgs['.main__section'].css({'background-color': 'white'});
+      requerio.$orgs['.main__section'].dispatchAction('css', ['color', 'background-color'], [0, 1]);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+      const state0 = requerio.$orgs['.main__section'].getState(0);
+      const state1 = requerio.$orgs['.main__section'].getState(1);
 
-        expect(state0.style.color).to.equal('white');
-        expect(state0.style['background-color']).to.equal('white');
-        expect(state1.style.color).to.equal('white');
-        expect(state1.style['background-color']).to.equal('white');
-      }
-    );
+      expect(state0.style.color).to.equal('white');
+      expect(state0.style['background-color']).to.equal('white');
+      expect(state1.style.color).to.equal('white');
+      expect(state1.style['background-color']).to.equal('white');
+    });
 
     it('dispatches the "data" action with a single string value argument', function () {
       requerio.$orgs['#main'].dispatchAction('data', {test: 'testing12345'});
@@ -1903,7 +1895,8 @@ describe('Requerio', function () {
     });
 
     it('after() updates the innerHTML of the parent organism', function () {
-      requerio.$orgs['.main__section--1'].dispatchAction('after', '\n<section class="main__section main__section--1.5"></section>');
+      requerio.$orgs['.main__section--1']
+        .dispatchAction('after', '\n<section class="main__section main__section--1.5"></section>');
 
       const state = requerio.$orgs['#main'].getState();
 
@@ -1914,7 +1907,8 @@ describe('Requerio', function () {
     });
 
     it('after() updates the innerHTML of the parent organism in a targeted manner', function () {
-      requerio.$orgs['.main__section'].dispatchAction('after', '\n<section class="main__section main__section--1.5"></section>', 1);
+      requerio.$orgs['.main__section']
+        .dispatchAction('after', '\n<section class="main__section main__section--1.5"></section>', 1);
 
       const state = requerio.$orgs['#main'].getState();
 
@@ -1925,7 +1919,8 @@ describe('Requerio', function () {
     });
 
     it('append() updates the innerHTML of the organism', function () {
-      requerio.$orgs['#main'].dispatchAction('append', '\n<section class="main__section main__section--1.5"></section>');
+      requerio.$orgs['#main']
+        .dispatchAction('append', '\n<section class="main__section main__section--1.5"></section>');
 
       const state = requerio.$orgs['#main'].getState();
 
@@ -1945,7 +1940,8 @@ describe('Requerio', function () {
     });
 
     it('before() updates the innerHTML of the parent organism', function () {
-      requerio.$orgs['.main__section--1'].dispatchAction('before', '<section class="main__section main__section--0.5"></section>\n');
+      requerio.$orgs['.main__section--1']
+        .dispatchAction('before', '<section class="main__section main__section--0.5"></section>\n');
 
       const state = requerio.$orgs['#main'].getState();
 
@@ -1956,7 +1952,8 @@ describe('Requerio', function () {
     });
 
     it('before() updates the innerHTML of the parent organism in a targeted manner', function () {
-      requerio.$orgs['.main__section'].dispatchAction('before', '<section class="main__section main__section--0.5"></section>\n', 1);
+      requerio.$orgs['.main__section']
+        .dispatchAction('before', '<section class="main__section main__section--0.5"></section>\n', 1);
 
       const state = requerio.$orgs['#main'].getState();
 
@@ -1967,7 +1964,8 @@ describe('Requerio', function () {
     });
 
     it('prepend() updates the innerHTML of the organism', function () {
-      requerio.$orgs['#main'].dispatchAction('prepend', '<section class="main__section main__section---0.5"></section>\n');
+      requerio.$orgs['#main']
+        .dispatchAction('prepend', '<section class="main__section main__section---0.5"></section>\n');
 
       const state = requerio.$orgs['#main'].getState();
 
