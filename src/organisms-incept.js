@@ -11,6 +11,7 @@ export default ($orgs, $) => {
       continue;
     }
 
+    /* istanbul ignore if */
     if ($orgs[i] && $orgs[i].hasRequerio) {
       continue;
     }

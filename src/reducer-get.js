@@ -372,6 +372,7 @@ properties on `state.boundingClientRect`.
           // Must iterate through "own" properties and copy from rectObj. Shortcuts like Object.assign won't work
           // because rectObj is not a plain object in browsers.
           for (let measurement in state.boundingClientRect) {
+            /* istanbul ignore if */
             if (!state.boundingClientRect.hasOwnProperty(measurement)) {
               continue;
             }

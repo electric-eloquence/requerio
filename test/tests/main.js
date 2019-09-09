@@ -163,7 +163,7 @@ describe('Requerio', function () {
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .exclude()', function () {
+        it('resets members array when .dispatchAction() is invoked after .exclude()', function () {
           $orgDuring.dispatchAction('addClass', 'not');
 
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
@@ -204,7 +204,7 @@ describe('Requerio', function () {
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .exclude()', function () {
+        it('resets members array when .dispatchAction() is invoked after .exclude()', function () {
           $orgDuring.dispatchAction('addClass', 'not');
 
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
@@ -238,6 +238,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['.main__section'].exclude(excludeMainSection0);
         });
 
         after(function () {
@@ -245,17 +247,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .exclude() is invoked', function () {
-          $orgDuring = requerio.$orgs['.main__section'].exclude(excludeMainSection0);
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .exclude()', function () {
+        it('resets members array when .dispatchAction() is invoked after .exclude()', function () {
           $orgDuring.dispatchAction('attr', {test: 'test'});
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -332,6 +333,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['.has-child-test'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['.has-child-test'].hasChild('#yoda__input');
         });
 
         after(function () {
@@ -339,17 +342,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .hasChild() is invoked', function () {
-          $orgDuring = requerio.$orgs['.has-child-test'].hasChild('#yoda__input');
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .hasChild()', function () {
+        it('resets members array when .dispatchAction() is invoked after .hasChild()', function () {
           $orgDuring.dispatchAction('addClass', 'hasChild');
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -373,6 +375,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['.has-child-test'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['.has-child-test'].hasChild(yodaInputEl);
         });
 
         after(function () {
@@ -380,17 +384,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .hasChild() is invoked', function () {
-          $orgDuring = requerio.$orgs['.has-child-test'].hasChild(yodaInputEl);
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .hasChild()', function () {
+        it('resets members array when .dispatchAction() is invoked after .hasChild()', function () {
           $orgDuring.dispatchAction('addClass', 'hasChild');
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -417,6 +420,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['.main__section'].hasElement(mainSection00);
         });
 
         after(function () {
@@ -424,17 +429,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .hasElement() is invoked', function () {
-          $orgDuring = requerio.$orgs['.main__section'].hasElement(mainSection00);
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .hasElement()', function () {
+        it('resets members array when .dispatchAction() is invoked after .hasElement()', function () {
           $orgDuring.dispatchAction('addClass', 'hasElement');
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -460,6 +464,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['.main__section'].hasNext('.main__section--1');
         });
 
         after(function () {
@@ -467,17 +473,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .hasNext() is invoked', function () {
-          $orgDuring = requerio.$orgs['.main__section'].hasNext('.main__section--1');
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .hasNext()', function () {
+        it('resets members array when .dispatchAction() is invoked after .hasNext()', function () {
           $orgDuring.dispatchAction('addClass', 'hasNext');
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -501,6 +506,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['.main__section'].hasNext(mainSection10);
         });
 
         after(function () {
@@ -508,17 +515,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .hasNext() is invoked', function () {
-          $orgDuring = requerio.$orgs['.main__section'].hasNext(mainSection10);
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .hasNext()', function () {
+        it('resets members array when .dispatchAction() is invoked after .hasNext()', function () {
           $orgDuring.dispatchAction('addClass', 'hasNext');
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -544,6 +550,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['.has-parent-test'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['.has-parent-test'].hasParent('#yoda');
         });
 
         after(function () {
@@ -551,17 +559,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .hasParent() is invoked', function () {
-          $orgDuring = requerio.$orgs['.has-parent-test'].hasParent('#yoda');
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .hasParent()', function () {
+        it('resets members array when .dispatchAction() is invoked after .hasParent()', function () {
           $orgDuring.dispatchAction('addClass', 'hasParent');
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -585,6 +592,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['.has-parent-test'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['.has-parent-test'].hasParent(yodaEl);
         });
 
         after(function () {
@@ -592,17 +601,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .hasParent() is invoked', function () {
-          $orgDuring = requerio.$orgs['.has-parent-test'].hasParent(yodaEl);
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .hasParent()', function () {
+        it('resets members array when .dispatchAction() is invoked after .hasParent()', function () {
           $orgDuring.dispatchAction('addClass', 'hasParent');
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -628,6 +636,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['.main__section'].hasPrev('.main__section--0');
         });
 
         after(function () {
@@ -635,17 +645,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .hasPrev() is invoked', function () {
-          $orgDuring = requerio.$orgs['.main__section'].hasPrev('.main__section--0');
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .hasPrev()', function () {
+        it('resets members array when .dispatchAction() is invoked after .hasPrev()', function () {
           $orgDuring.dispatchAction('addClass', 'hasPrev');
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -669,6 +678,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['.main__section'].hasPrev(mainSection00);
         });
 
         after(function () {
@@ -676,17 +687,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .hasPrev() is invoked', function () {
-          $orgDuring = requerio.$orgs['.main__section'].hasPrev(mainSection00);
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .hasPrev()', function () {
+        it('resets members array when .dispatchAction() is invoked after .hasPrev()', function () {
           $orgDuring.dispatchAction('addClass', 'hasPrev');
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -712,6 +722,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['.main__section'].hasSelector('.main__section--0');
         });
 
         after(function () {
@@ -719,17 +731,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .hasSelector() is invoked', function () {
-          $orgDuring = requerio.$orgs['.main__section'].hasSelector('.main__section--0');
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .hasSelector()', function () {
+        it('resets members array when .dispatchAction() is invoked after .hasSelector()', function () {
           $orgDuring.dispatchAction('addClass', 'hasSelector');
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -755,6 +766,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['.midi-chlorian'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['.midi-chlorian'].hasSibling('.has-sibling-test');
         });
 
         after(function () {
@@ -762,17 +775,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .hasSibling() is invoked', function () {
-          $orgDuring = requerio.$orgs['.midi-chlorian'].hasSibling('.has-sibling-test');
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .hasSibling()', function () {
+        it('resets members array when .dispatchAction() is invoked after .hasSibling()', function () {
           $orgDuring.dispatchAction('addClass', 'hasSibling');
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -796,6 +808,8 @@ describe('Requerio', function () {
 
         before(function () {
           requerio.$orgs['input'].$members.forEach(() => $membersLengthBefore++);
+
+          $orgDuring = requerio.$orgs['input'].hasSibling(hasSiblingTest);
         });
 
         after(function () {
@@ -803,17 +817,16 @@ describe('Requerio', function () {
         });
 
         it('excludes elements from members array when .hasSibling() is invoked', function () {
-          $orgDuring = requerio.$orgs['input'].hasSibling(hasSiblingTest);
-
           $orgDuring.$members.forEach(() => $membersLengthDuring++);
+
           expect($membersLengthBefore).to.equal(2);
           expect($membersLengthDuring).to.equal(1);
         });
 
-        it('resets members array when .dispatchAction is invoked after .hasSibling()', function () {
+        it('resets members array when .dispatchAction() is invoked after .hasSibling()', function () {
           $orgDuring.dispatchAction('addClass', 'hasSibling');
-
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
+
           expect($membersLengthDuring).to.equal(1);
           expect($membersLengthAfter).to.equal(2);
         });
@@ -834,15 +847,17 @@ describe('Requerio', function () {
         const $org = requerio.$orgs['#main'];
 
         $org.dispatchAction('css', {display: 'none'});
+
         const displayStyle = $org.getState().style.display;
 
         expect(displayStyle).to.equal('none');
       });
 
-      it('gets the state for a specific organism $member when .getState() is called in a targeted manner', function () {
+      it('gets the state for a specific organism $member when .getState() is invoked in a targeted manner', function () {
         const $org = requerio.$orgs['.main__section'];
 
         $org.dispatchAction('css', {display: 'none'}, 1);
+
         const displayStyle0 = $org.getState(0).style.display;
         const displayStyle1 = $org.getState(1).style.display;
 
@@ -850,9 +865,8 @@ describe('Requerio', function () {
         expect(displayStyle1).to.equal('none');
       });
 
-      it('gets the Redux store when .getStore() is called', function () {
+      it('gets the Redux store when .getStore() is invoked', function () {
         const $org = requerio.$orgs['#main'];
-
         const stateStore = $org.getStore();
 
         expect(stateStore).to.have.property('dispatch');
@@ -861,7 +875,7 @@ describe('Requerio', function () {
         expect(stateStore).to.have.property('replaceReducer');
       });
 
-      it('resets .$members when .populateMembers() is called', function () {
+      it('resets .$members when .populateMembers() is invoked', function () {
         const $org = requerio.$orgs['.main__section'];
         $org.$members = [];
         const $membersLengthBefore = $org.$members.length;
@@ -877,7 +891,7 @@ describe('Requerio', function () {
         expect($members[1][0].attribs.class).to.equal('main__section main__section--1 has-parent-test');
       });
 
-      it('sets .boundingClientRect properties when .setBoundingClientRect() is called', function () {
+      it('sets .boundingClientRect properties when .setBoundingClientRect() is invoked', function () {
         const $org = requerio.$orgs['#main'];
         const boundingClientRectBefore = $org.getState().boundingClientRect;
 
@@ -891,6 +905,7 @@ describe('Requerio', function () {
             left: 100
           }
         );
+
         const boundingClientRectAfter = $org.getState().boundingClientRect;
 
         Object.keys(boundingClientRectBefore).forEach((i) => {
@@ -904,50 +919,52 @@ describe('Requerio', function () {
         expect(boundingClientRectAfter.left).to.equal(100);
       });
 
-      it('sets .boundingClientRect properties on a specific $organism $member when .setBoundingClientRect() is \
-  called in a targeted manner', function () {
-        const $org = requerio.$orgs['.main__section'];
-        const stateBefore0 = $org.getState(0);
-        const stateBefore1 = $org.getState(1);
+      // eslint-ignore-next-line max-len
+      it('sets .boundingClientRect properties on a specific $organism $member when .setBoundingClientRect() is invoked in a targeted manner',
+        function () {
+          const $org = requerio.$orgs['.main__section'];
+          const stateBefore0 = $org.getState(0);
+          const stateBefore1 = $org.getState(1);
 
-        $org.setBoundingClientRect(
-          {
-            width: 1000,
-            height: 1000,
-            top: 100,
-            right: 1100,
-            bottom: 1100,
-            left: 100
-          },
-          1
-        );
-        const stateAfter0 = $org.getState(0);
-        const stateAfter1 = $org.getState(1);
-        const boundingClientRectBefore0 = stateBefore0.boundingClientRect;
-        const boundingClientRectBefore1 = stateBefore1.boundingClientRect;
-        const boundingClientRectAfter0 = stateAfter0.boundingClientRect;
-        const boundingClientRectAfter1 = stateAfter1.boundingClientRect;
+          $org.setBoundingClientRect(
+            {
+              width: 1000,
+              height: 1000,
+              top: 100,
+              right: 1100,
+              bottom: 1100,
+              left: 100
+            },
+            1
+          );
 
-        Object.keys(boundingClientRectBefore0).forEach((i) => {
-          expect(boundingClientRectBefore0[i]).to.be.null;
-        });
-        Object.keys(boundingClientRectBefore1).forEach((i) => {
-          expect(boundingClientRectBefore1[i]).to.be.null;
-        });
-        Object.keys(boundingClientRectAfter0).forEach((i) => {
-          expect(boundingClientRectAfter0[i]).to.be.null;
-        });
-        expect(boundingClientRectAfter1.width).to.equal(1000);
-        expect(boundingClientRectAfter1.height).to.equal(1000);
-        expect(boundingClientRectAfter1.top).to.equal(100);
-        expect(boundingClientRectAfter1.right).to.equal(1100);
-        expect(boundingClientRectAfter1.bottom).to.equal(1100);
-        expect(boundingClientRectAfter1.left).to.equal(100);
-      });
+          const stateAfter0 = $org.getState(0);
+          const stateAfter1 = $org.getState(1);
+          const boundingClientRectBefore0 = stateBefore0.boundingClientRect;
+          const boundingClientRectBefore1 = stateBefore1.boundingClientRect;
+          const boundingClientRectAfter0 = stateAfter0.boundingClientRect;
+          const boundingClientRectAfter1 = stateAfter1.boundingClientRect;
 
-      it('gets .boundingClientRect properties when .getBoundingClientRect() is called', function () {
+          Object.keys(boundingClientRectBefore0).forEach((i) => {
+            expect(boundingClientRectBefore0[i]).to.be.null;
+          });
+          Object.keys(boundingClientRectBefore1).forEach((i) => {
+            expect(boundingClientRectBefore1[i]).to.be.null;
+          });
+          Object.keys(boundingClientRectAfter0).forEach((i) => {
+            expect(boundingClientRectAfter0[i]).to.be.null;
+          });
+          expect(boundingClientRectAfter1.width).to.equal(1000);
+          expect(boundingClientRectAfter1.height).to.equal(1000);
+          expect(boundingClientRectAfter1.top).to.equal(100);
+          expect(boundingClientRectAfter1.right).to.equal(1100);
+          expect(boundingClientRectAfter1.bottom).to.equal(1100);
+          expect(boundingClientRectAfter1.left).to.equal(100);
+        }
+      );
+
+      it('gets .boundingClientRect properties when .getBoundingClientRect() is invoked', function () {
         const $org = requerio.$orgs['#main'];
-
         const boundingClientRect = $org.getBoundingClientRect();
 
         expect(boundingClientRect.width).to.equal(1000);
@@ -957,6 +974,168 @@ describe('Requerio', function () {
         expect(boundingClientRect.bottom).to.equal(1100);
         expect(boundingClientRect.left).to.equal(100);
       });
+
+      it('.updateMeasurements() updates measurement properties', function () {
+        const $org = requerio.$orgs['#main'];
+
+        const innerWidthOrig = $org.innerWidth;
+        const innerHeightOrig = $org.innerHeight;
+        const scrollTopOrig = $org.scrollTop;
+        const widthOrig = $org.width;
+        const heightOrig = $org.height;
+
+        $org.innerWidth = () => 0;
+        $org.innerHeight = () => 0;
+        $org.scrollTop = () => 0;
+        $org.width = () => 0;
+        $org.height = () => 0;
+
+        $org.setBoundingClientRect(
+          {
+            width: 0,
+            height: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0
+          }
+        );
+
+        const stateBefore = $org.getState();
+
+        $org.innerWidth = () => 1000;
+        $org.innerHeight = () => 1000;
+        $org.scrollTop = () => 100;
+        $org.width = () => 1000;
+        $org.height = () => 1000;
+
+        $org.setBoundingClientRect(
+          {
+            width: 1000,
+            height: 1000,
+            top: 100,
+            right: 1100,
+            bottom: 1100,
+            left: 100
+          }
+        );
+        $org.updateMeasurements(stateBefore);
+
+        const stateAfter = $org.getState();
+
+        expect(stateBefore.boundingClientRect.width).to.equal(0);
+        expect(stateBefore.boundingClientRect.height).to.equal(0);
+        expect(stateBefore.boundingClientRect.top).to.equal(0);
+        expect(stateBefore.boundingClientRect.right).to.equal(0);
+        expect(stateBefore.boundingClientRect.bottom).to.equal(0);
+        expect(stateBefore.boundingClientRect.left).to.equal(0);
+        expect(stateBefore.innerWidth).to.equal(0);
+        expect(stateBefore.innerHeight).to.equal(0);
+        expect(stateBefore.scrollTop).to.equal(0);
+        expect(stateBefore.width).to.equal(0);
+        expect(stateBefore.height).to.equal(0);
+
+        expect(stateAfter.boundingClientRect.width).to.equal(1000);
+        expect(stateAfter.boundingClientRect.height).to.equal(1000);
+        expect(stateAfter.boundingClientRect.top).to.equal(100);
+        expect(stateAfter.boundingClientRect.right).to.equal(1100);
+        expect(stateAfter.boundingClientRect.bottom).to.equal(1100);
+        expect(stateAfter.boundingClientRect.left).to.equal(100);
+        expect(stateAfter.innerWidth).to.equal(1000);
+        expect(stateAfter.innerHeight).to.equal(1000);
+        expect(stateAfter.scrollTop).to.equal(100);
+        expect(stateAfter.width).to.equal(1000);
+        expect(stateAfter.height).to.equal(1000);
+
+        $org.innerWidth = innerWidthOrig;
+        $org.innerHeight = innerHeightOrig;
+        $org.scrollTop = scrollTopOrig;
+        $org.width = widthOrig;
+        $org.height = heightOrig;
+      });
+
+      it('.updateMeasurements() updates measurement properties on a specific $organism $member when invoked in a targeted manner',
+        function () {
+          const $org = requerio.$orgs['.main__section'];
+
+          const innerWidthOrig = $org.innerWidth;
+          const innerHeightOrig = $org.innerHeight;
+          const scrollTopOrig = $org.scrollTop;
+          const widthOrig = $org.width;
+          const heightOrig = $org.height;
+
+          $org.innerWidth = () => 0;
+          $org.innerHeight = () => 0;
+          $org.scrollTop = () => 0;
+          $org.width = () => 0;
+          $org.height = () => 0;
+
+          $org.setBoundingClientRect(
+            {
+              width: 0,
+              height: 0,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0
+            },
+            1
+          );
+
+          const stateBefore = $org.getState(1);
+
+          $org.innerWidth = () => 1000;
+          $org.innerHeight = () => 1000;
+          $org.scrollTop = () => 100;
+          $org.width = () => 1000;
+          $org.height = () => 1000;
+
+          $org.setBoundingClientRect(
+            {
+              width: 1000,
+              height: 1000,
+              top: 100,
+              right: 1100,
+              bottom: 1100,
+              left: 100
+            },
+            1
+          );
+          $org.updateMeasurements(stateBefore, $org, 1);
+
+          const stateAfter = $org.getState(1);
+
+          expect(stateBefore.boundingClientRect.width).to.equal(0);
+          expect(stateBefore.boundingClientRect.height).to.equal(0);
+          expect(stateBefore.boundingClientRect.top).to.equal(0);
+          expect(stateBefore.boundingClientRect.right).to.equal(0);
+          expect(stateBefore.boundingClientRect.bottom).to.equal(0);
+          expect(stateBefore.boundingClientRect.left).to.equal(0);
+          expect(stateBefore.innerWidth).to.be.null;
+          expect(stateBefore.innerHeight).to.be.null;
+          expect(stateBefore.scrollTop).to.be.null;
+          expect(stateBefore.width).to.be.null;
+          expect(stateBefore.height).to.be.null;
+
+          expect(stateAfter.boundingClientRect.width).to.equal(1000);
+          expect(stateAfter.boundingClientRect.height).to.equal(1000);
+          expect(stateAfter.boundingClientRect.top).to.equal(100);
+          expect(stateAfter.boundingClientRect.right).to.equal(1100);
+          expect(stateAfter.boundingClientRect.bottom).to.equal(1100);
+          expect(stateAfter.boundingClientRect.left).to.equal(100);
+          expect(stateAfter.innerWidth).to.equal(1000);
+          expect(stateAfter.innerHeight).to.equal(1000);
+          expect(stateAfter.scrollTop).to.equal(100);
+          expect(stateAfter.width).to.equal(1000);
+          expect(stateAfter.height).to.equal(1000);
+
+          $org.innerWidth = innerWidthOrig;
+          $org.innerHeight = innerHeightOrig;
+          $org.scrollTop = scrollTopOrig;
+          $org.width = widthOrig;
+          $org.height = heightOrig;
+        }
+      );
     });
   });
 
@@ -965,7 +1144,6 @@ describe('Requerio', function () {
       it('sets a value on the server to mock the method call on the client', function () {
         Object.keys(requerio.$orgs).forEach((selector) => {
           const $organism = requerio.$orgs[selector];
-
           const scrollTopVal = $organism.scrollTop(1);
 
           expect(scrollTopVal).to.equal(1);
@@ -986,7 +1164,6 @@ describe('Requerio', function () {
       it('accepts a value and return the same value on the server to mock the method call on the client', function () {
         Object.keys(requerio.$orgs).forEach((selector) => {
           const $organism = requerio.$orgs[selector];
-
           const widthVal = $organism.width(1);
 
           expect(widthVal).to.equal(1);
@@ -998,7 +1175,6 @@ describe('Requerio', function () {
       it('accepts a value and return the same value on the server to mock the method call on the client', function () {
         Object.keys(requerio.$orgs).forEach((selector) => {
           const $organism = requerio.$orgs[selector];
-
           const heightVal = $organism.height(1);
 
           expect(heightVal).to.equal(1);
@@ -1014,6 +1190,7 @@ describe('Requerio', function () {
       const htmlSnippet = '<section class="main__section"><h2>Section</h2></section>';
 
       $org.$members.push($(htmlSnippet));
+
       const stateMembersLengthAfter = $org.getState().$members.length;
 
       expect($org.$members.length).to.equal(3);
@@ -1026,6 +1203,7 @@ describe('Requerio', function () {
       const stateMembersLengthBefore = $org.getState().$members.length;
 
       $org.$members.pop();
+
       const stateMembersLengthAfter = $org.getState().$members.length;
 
       expect($org.$members.length).to.equal(2);

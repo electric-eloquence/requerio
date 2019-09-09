@@ -713,6 +713,7 @@ __Returns__: `object` - The organism's state.
       if (typeof memberIdx === 'number') {
         state = store.getState()[this.selector].$members[memberIdx];
 
+        /* istanbul ignore if */
         if (!state) {
           updateState = true;
         }
@@ -1221,6 +1222,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     getBoundingClientRect(this, args, memberIdx); // Mutates args.
 
     for (let measurement in state.boundingClientRect) {
+      /* istanbul ignore if */
       if (!state.boundingClientRect.hasOwnProperty(measurement)) {
         continue;
       }
