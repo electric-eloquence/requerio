@@ -5,12 +5,7 @@
  * @param {object} $ - jQuery component.
  */
 export default ($orgs, $) => {
-  for (let i in $orgs) {
-    /* istanbul ignore if */
-    if (!$orgs.hasOwnProperty(i)) {
-      continue;
-    }
-
+  for (let i of Object.keys($orgs)) {
     /* istanbul ignore if */
     if ($orgs[i] && $orgs[i].hasRequerio) {
       continue;

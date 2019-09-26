@@ -35,12 +35,7 @@ function getActiveOrganism($orgs, lastActiveOrganism) {
     }
   }
 
-  for (let orgSelector in $orgs) {
-    /* istanbul ignore next */
-    if (!$orgs.hasOwnProperty(orgSelector)) {
-      continue;
-    }
-
+  for (let orgSelector of Object.keys($orgs)) {
     const $org = $orgs[orgSelector];
 
     for (let i = 0; i < $org.length; i++) {
@@ -77,12 +72,7 @@ function getActiveOrganism($orgs, lastActiveOrganism) {
 export default (requerio) => {
   const {$orgs, store} = requerio;
 
-  for (let orgSelector in $orgs) {
-    /* istanbul ignore next */
-    if (!$orgs.hasOwnProperty(orgSelector)) {
-      continue;
-    }
-
+  for (let orgSelector of Object.keys($orgs)) {
     if ($orgs[orgSelector] && $orgs[orgSelector].hasRequerio) {
       continue;
     }
@@ -105,12 +95,7 @@ export default (requerio) => {
       const $parent = $org.parent();
 
       if (arguments.length) {
-        for (let orgSelector1 in $orgs) {
-          /* istanbul ignore next */
-          if (!$orgs.hasOwnProperty(orgSelector1)) {
-            continue;
-          }
-
+        for (let orgSelector1 of Object.keys($orgs)) {
           const $org1 = $orgs[orgSelector1];
 
           // Iterate through organisms and check if the parent of this organism (dispatching the 'after' action)
@@ -150,12 +135,7 @@ export default (requerio) => {
       const descendantsToReset = [];
 
       if (arguments.length) {
-        for (let orgSelector1 in $orgs) {
-          /* istanbul ignore next */
-          if (!$orgs.hasOwnProperty(orgSelector1)) {
-            continue;
-          }
-
+        for (let orgSelector1 of Object.keys($orgs)) {
           const $org1 = $orgs[orgSelector1];
 
           // Iterate through organisms and check if this organism (dispatching the 'append' action) is an ancestor.
@@ -191,12 +171,7 @@ export default (requerio) => {
       const $parent = $org.parent();
 
       if (arguments.length) {
-        for (let orgSelector1 in $orgs) {
-          /* istanbul ignore next */
-          if (!$orgs.hasOwnProperty(orgSelector1)) {
-            continue;
-          }
-
+        for (let orgSelector1 of Object.keys($orgs)) {
           const $org1 = $orgs[orgSelector1];
 
           // Iterate through organisms and check if the parent of this organism (dispatching the 'before' action)
@@ -315,12 +290,7 @@ organism, set the focused organism's selector as `state.activeOrganism`.
       const descendantsToReset = [];
 
       if (arguments.length) {
-        for (let orgSelector1 in $orgs) {
-          /* istanbul ignore next */
-          if (!$orgs.hasOwnProperty(orgSelector1)) {
-            continue;
-          }
-
+        for (let orgSelector1 of Object.keys($orgs)) {
           const $org1 = $orgs[orgSelector1];
 
           // Iterate through organisms and check if this organism (dispatching the 'html' action) is an ancestor.
@@ -356,12 +326,7 @@ organism, set the focused organism's selector as `state.activeOrganism`.
       const $parent = $org.parent();
 
       if (arguments.length) {
-        for (let orgSelector1 in $orgs) {
-          /* istanbul ignore next */
-          if (!$orgs.hasOwnProperty(orgSelector1)) {
-            continue;
-          }
-
+        for (let orgSelector1 of Object.keys($orgs)) {
           const $org1 = $orgs[orgSelector1];
 
           // Iterate through organisms and check if this organism (dispatching the 'prepend' action) is an ancestor.

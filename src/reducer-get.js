@@ -371,12 +371,7 @@ properties on `state.boundingClientRect`.
 
           // Must iterate through "own" properties and copy from rectObj. Shortcuts like Object.assign won't work
           // because rectObj is not a plain object in browsers.
-          for (let measurement in state.boundingClientRect) {
-            /* istanbul ignore if */
-            if (!state.boundingClientRect.hasOwnProperty(measurement)) {
-              continue;
-            }
-
+          for (let measurement of Object.keys(state.boundingClientRect)) {
             if (
               state.boundingClientRect[measurement] !== action.args[0][measurement] &&
               action.args[0][measurement] != null // eslint-disable-line eqeqeq
@@ -612,12 +607,7 @@ function reducerClosure(orgSelector, customReducer) {
           typeof customState === 'object' && // Don't want to check constructor because this is user submitted.
           customState instanceof Object
         ) {
-          for (let i in customState) {
-            /* istanbul ignore if */
-            if (!customState.hasOwnProperty(i)) {
-              continue;
-            }
-
+          for (let i of Object.keys(customState)) {
             if (typeof customState[i] === 'function') {
               // The older Requerio versions would have functions as properties of this object.
               // If this is the case, ignore the output of customReducer and return the state as built earlier.
@@ -656,12 +646,7 @@ function reducerClosure(orgSelector, customReducer) {
 export default ($orgs, Redux, customReducer) => {
   const reducers = {};
 
-  for (let i in $orgs) {
-    /* istanbul ignore if */
-    if (!$orgs.hasOwnProperty(i)) {
-      continue;
-    }
-
+  for (let i of Object.keys($orgs)) {
     reducers[i] = reducerClosure(i, customReducer);
   }
 

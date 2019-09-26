@@ -55,7 +55,7 @@
     "chai": "4.x",
     "cheerio": "1.0.0-rc.3",
     "coveralls": "3.x",
-    "eslint": "5.x",
+    "eslint": "6.x",
     "husky": "1.x",
     "jsdoc-to-markdown": "^5.0.0",
     "jsdom": "^15.1.1",

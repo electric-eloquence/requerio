@@ -672,12 +672,7 @@ A server-side stand-in for client-side `.focus()`.
         rectState = store.getState()[this.selector].boundingClientRect;
       }
 
-      for (let i in rectState) {
-        /* istanbul ignore if */
-        if (!rectState.hasOwnProperty(i)) {
-          continue;
-        }
-
+      for (let i of Object.keys(rectState)) {
         if (rectState[i] !== null) {
           return rectState;
         }
@@ -1221,12 +1216,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     // Dependent on dispatches of other measurements to populate members.
     getBoundingClientRect(this, args, memberIdx); // Mutates args.
 
-    for (let measurement in state.boundingClientRect) {
-      /* istanbul ignore if */
-      if (!state.boundingClientRect.hasOwnProperty(measurement)) {
-        continue;
-      }
-
+    for (let measurement of Object.keys(state.boundingClientRect)) {
       if (state.boundingClientRect[measurement] !== args[0][measurement]) {
         store.dispatch({
           type: 'SET_BOUNDING_CLIENT_RECT',
