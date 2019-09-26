@@ -5,12 +5,7 @@
  * @param {object} $ - jQuery component.
  */
 var organismsIncept = ($orgs, $) => {
-  for (let i in $orgs) {
-    /* istanbul ignore if */
-    if (!$orgs.hasOwnProperty(i)) {
-      continue;
-    }
-
+  for (let i of Object.keys($orgs)) {
     /* istanbul ignore if */
     if ($orgs[i] && $orgs[i].hasRequerio) {
       continue;
@@ -151,12 +146,7 @@ function getActiveOrganism($orgs, lastActiveOrganism) {
     }
   }
 
-  for (let orgSelector in $orgs) {
-    /* istanbul ignore next */
-    if (!$orgs.hasOwnProperty(orgSelector)) {
-      continue;
-    }
-
+  for (let orgSelector of Object.keys($orgs)) {
     const $org = $orgs[orgSelector];
 
     for (let i = 0; i < $org.length; i++) {
@@ -193,12 +183,7 @@ function getActiveOrganism($orgs, lastActiveOrganism) {
 var postInception = (requerio) => {
   const {$orgs, store} = requerio;
 
-  for (let orgSelector in $orgs) {
-    /* istanbul ignore next */
-    if (!$orgs.hasOwnProperty(orgSelector)) {
-      continue;
-    }
-
+  for (let orgSelector of Object.keys($orgs)) {
     if ($orgs[orgSelector] && $orgs[orgSelector].hasRequerio) {
       continue;
     }
@@ -221,12 +206,7 @@ var postInception = (requerio) => {
       const $parent = $org.parent();
 
       if (arguments.length) {
-        for (let orgSelector1 in $orgs) {
-          /* istanbul ignore next */
-          if (!$orgs.hasOwnProperty(orgSelector1)) {
-            continue;
-          }
-
+        for (let orgSelector1 of Object.keys($orgs)) {
           const $org1 = $orgs[orgSelector1];
 
           // Iterate through organisms and check if the parent of this organism (dispatching the 'after' action)
@@ -266,12 +246,7 @@ var postInception = (requerio) => {
       const descendantsToReset = [];
 
       if (arguments.length) {
-        for (let orgSelector1 in $orgs) {
-          /* istanbul ignore next */
-          if (!$orgs.hasOwnProperty(orgSelector1)) {
-            continue;
-          }
-
+        for (let orgSelector1 of Object.keys($orgs)) {
           const $org1 = $orgs[orgSelector1];
 
           // Iterate through organisms and check if this organism (dispatching the 'append' action) is an ancestor.
@@ -307,12 +282,7 @@ var postInception = (requerio) => {
       const $parent = $org.parent();
 
       if (arguments.length) {
-        for (let orgSelector1 in $orgs) {
-          /* istanbul ignore next */
-          if (!$orgs.hasOwnProperty(orgSelector1)) {
-            continue;
-          }
-
+        for (let orgSelector1 of Object.keys($orgs)) {
           const $org1 = $orgs[orgSelector1];
 
           // Iterate through organisms and check if the parent of this organism (dispatching the 'before' action)
@@ -431,12 +401,7 @@ organism, set the focused organism's selector as `state.activeOrganism`.
       const descendantsToReset = [];
 
       if (arguments.length) {
-        for (let orgSelector1 in $orgs) {
-          /* istanbul ignore next */
-          if (!$orgs.hasOwnProperty(orgSelector1)) {
-            continue;
-          }
-
+        for (let orgSelector1 of Object.keys($orgs)) {
           const $org1 = $orgs[orgSelector1];
 
           // Iterate through organisms and check if this organism (dispatching the 'html' action) is an ancestor.
@@ -472,12 +437,7 @@ organism, set the focused organism's selector as `state.activeOrganism`.
       const $parent = $org.parent();
 
       if (arguments.length) {
-        for (let orgSelector1 in $orgs) {
-          /* istanbul ignore next */
-          if (!$orgs.hasOwnProperty(orgSelector1)) {
-            continue;
-          }
-
+        for (let orgSelector1 of Object.keys($orgs)) {
           const $org1 = $orgs[orgSelector1];
 
           // Iterate through organisms and check if this organism (dispatching the 'prepend' action) is an ancestor.
@@ -1181,12 +1141,7 @@ A server-side stand-in for client-side `.focus()`.
         rectState = store.getState()[this.selector].boundingClientRect;
       }
 
-      for (let i in rectState) {
-        /* istanbul ignore if */
-        if (!rectState.hasOwnProperty(i)) {
-          continue;
-        }
-
+      for (let i of Object.keys(rectState)) {
         if (rectState[i] !== null) {
           return rectState;
         }
@@ -1730,12 +1685,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     // Dependent on dispatches of other measurements to populate members.
     getBoundingClientRect(this, args, memberIdx); // Mutates args.
 
-    for (let measurement in state.boundingClientRect) {
-      /* istanbul ignore if */
-      if (!state.boundingClientRect.hasOwnProperty(measurement)) {
-        continue;
-      }
-
+    for (let measurement of Object.keys(state.boundingClientRect)) {
       if (state.boundingClientRect[measurement] !== args[0][measurement]) {
         store.dispatch({
           type: 'SET_BOUNDING_CLIENT_RECT',
@@ -2131,12 +2081,7 @@ properties on `state.boundingClientRect`.
 
           // Must iterate through "own" properties and copy from rectObj. Shortcuts like Object.assign won't work
           // because rectObj is not a plain object in browsers.
-          for (let measurement in state.boundingClientRect) {
-            /* istanbul ignore if */
-            if (!state.boundingClientRect.hasOwnProperty(measurement)) {
-              continue;
-            }
-
+          for (let measurement of Object.keys(state.boundingClientRect)) {
             if (
               state.boundingClientRect[measurement] !== action.args[0][measurement] &&
               action.args[0][measurement] != null // eslint-disable-line eqeqeq
@@ -2372,12 +2317,7 @@ function reducerClosure(orgSelector, customReducer) {
           typeof customState === 'object' && // Don't want to check constructor because this is user submitted.
           customState instanceof Object
         ) {
-          for (let i in customState) {
-            /* istanbul ignore if */
-            if (!customState.hasOwnProperty(i)) {
-              continue;
-            }
-
+          for (let i of Object.keys(customState)) {
             if (typeof customState[i] === 'function') {
               // The older Requerio versions would have functions as properties of this object.
               // If this is the case, ignore the output of customReducer and return the state as built earlier.
@@ -2416,12 +2356,7 @@ function reducerClosure(orgSelector, customReducer) {
 var reducerGet = ($orgs, Redux, customReducer) => {
   const reducers = {};
 
-  for (let i in $orgs) {
-    /* istanbul ignore if */
-    if (!$orgs.hasOwnProperty(i)) {
-      continue;
-    }
-
+  for (let i of Object.keys($orgs)) {
     reducers[i] = reducerClosure(i, customReducer);
   }
 
