@@ -209,8 +209,8 @@ describe('Requerio', function () {
 
         const stateAfter = requerio.$orgs.window.getState();
 
-        expect(JSON.stringify(stateBefore)).to.equal('{"scrollTop":null,"width":null,"height":null}');
-        expect(JSON.stringify(stateAfter)).to.equal('{"scrollTop":null,"width":null,"height":null}');
+        expect(JSON.stringify(stateBefore)).to.equal('{"data":null,"scrollTop":null,"width":null,"height":null}');
+        expect(JSON.stringify(stateAfter)).to.equal('{"data":null,"scrollTop":null,"width":null,"height":null}');
       });
 
       it('dispatches the "innerWidth" action on the "window" organism', function () {
