@@ -2322,7 +2322,7 @@ function reducerClosure(orgSelector, customReducer) {
       }
 
       if (typeof customReducer === 'function') {
-        const customState = customReducer(state, action, prevState);
+        const customState = customReducer(state, action, $org, prevState);
 
         // We need to validate customState because older versions of Requerio had the 4th constructor argument return an
         // object of action functions. We now want the 4th argument to be an optional custom reducer.

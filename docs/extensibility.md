@@ -26,7 +26,7 @@ reduction case, no method is applied on the organism. Just be sure not to enact
 side-effects in the reducer.
 
 ```javascript
-function customReducer(state, action, prevState) {
+function customReducer(state, action, $organism, prevState) {
   switch (action.method) {
     case 'killExtensibility':
       state.extensible = false;
