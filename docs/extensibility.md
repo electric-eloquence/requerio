@@ -15,7 +15,8 @@ management, it is crucial that new states are copied from, and dereferenced
 from, old states in the process of reduction. But this is not necessary in the 
 `customReducer` function. The state, as submitted to `customReducer`, is a work 
 in progress. It has already been dereferenced from the old state earlier, and 
-will be submitted to Redux as the new state after this function returns.
+will be submitted to Redux as the new state after this function returns. The old 
+state can be referenced from the `prevState` argument.
 
 In Requerio, reduction is normally keyed off of `action.method`, not 
 `action.type`. `dispatchAction()` will apply this method on the organism, 
@@ -25,7 +26,7 @@ reduction case, no method is applied on the organism. Just be sure not to enact
 side-effects in the reducer.
 
 ```javascript
-function customReducer(state, action) {
+function customReducer(state, action, prevState) {
   switch (action.method) {
     case 'killExtensibility':
       state.extensible = false;
