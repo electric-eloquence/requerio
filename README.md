@@ -138,10 +138,10 @@ assert.equal(mainState.style.color, 'green');
 [snyk-image]: https://snyk.io/test/github/electric-eloquence/requerio/master/badge.svg
 [snyk-url]: https://snyk.io/test/github/electric-eloquence/requerio/master
 
-[travis-image]: https://img.shields.io/travis/electric-eloquence/requerio.svg?label=mac%20%26%20linux
+[travis-image]: https://img.shields.io/travis/electric-eloquence/requerio/master.svg?label=mac%20%26%20linux
 [travis-url]: https://travis-ci.org/electric-eloquence/requerio
 
-[appveyor-image]: https://img.shields.io/appveyor/ci/e2tha-e/requerio.svg?label=windows
+[appveyor-image]: https://img.shields.io/appveyor/ci/e2tha-e/requerio/master.svg?label=windows
 [appveyor-url]: https://ci.appveyor.com/project/e2tha-e/requerio
 
 [coveralls-image]: https://img.shields.io/coveralls/electric-eloquence/requerio/master.svg
