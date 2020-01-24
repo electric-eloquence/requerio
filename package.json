@@ -43,9 +43,6 @@
     "url": "https://github.com/electric-eloquence/requerio/issues"
   },
   "homepage": "https://github.com/electric-eloquence/requerio#readme",
-  "engines": {
-    "node": ">=8.16.0"
-  },
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
