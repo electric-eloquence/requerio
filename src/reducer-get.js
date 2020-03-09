@@ -210,7 +210,8 @@ Set the height (not including padding, border, or margin) of all matches.
           if (typeof action.args[0] === 'number') {
             state.height = action.args[0];
 
-            if (typeof global === 'object') {
+            // If using Cheerio.
+            if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
               state.boundingClientRect.height = action.args[0];
             }
           }
@@ -453,7 +454,8 @@ Set the width (not including padding, border, or margin) of all matches.
           if (typeof action.args[0] === 'number') {
             state.width = action.args[0];
 
-            if (typeof global === 'object') {
+            // If using Cheerio.
+            if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
               state.boundingClientRect.width = action.args[0];
             }
           }

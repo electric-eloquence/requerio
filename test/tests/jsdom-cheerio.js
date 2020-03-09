@@ -40,7 +40,7 @@ const $organismsAfter = Object.assign({}, $organismsBefore);
 const requerio = new window.Requerio($, Redux, $organismsAfter);
 
 describe('Requerio', function () {
-  describe('on the DOM', function () {
+  describe('with JSDOM and Cheerio', function () {
     describe('instantiation and initialization', function () {
       it('instantiates correctly', function () {
         expect(requerio).to.be.an.instanceof(window.Requerio);
