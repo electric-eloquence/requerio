@@ -18,19 +18,24 @@ restricted to
 [prepend](docs/methods.md#prependcontent), and 
 [toggleClass](docs/methods.md#toggleclassclasses).
 
+While Requerio was named with Cheerio in mind, Cheerio is optional and can be 
+replaced by jQuery on the server via JSDOM, or any other DOM emulator. Cheerio 
+is significantly lighter than jQuery + JSDOM, but it is difficult to predict the 
+quality of Cheerio's future maintenance.
+
 #### Install:
 
 ```shell
-npm install cheerio redux requerio
-```
-
-#### Declare `$`:
-
-```html
-<script src="jquery.min.js"></script>
+npm install requerio redux cheerio
 ```
 
 ##### - or -
+
+```shell
+npm install requerio redux jquery jsdom
+```
+
+#### Declare `$`:
 
 ```javascript
 const cheerio = require('cheerio');
@@ -38,28 +43,45 @@ const html = fs.readFileSync('./index.html', 'utf8');
 const $ = global.$ = cheerio.load(html);
 ```
 
-#### Declare `Redux`:
+##### - or -
 
-```html
-<script src="redux.min.js"></script>
+```javascript
+const {JSDOM} = require('jsdom');
+const html = fs.readFileSync('./index.html'), 'utf8');
+const {window} = new JSDOM(html);
+global.window = window;
+global.document = window.document;
+const $ = global.$ = global.jQuery = require('jquery');
 ```
 
 ##### - or -
+
+```html
+<script src="jquery.min.js"></script>
+```
+
+#### Declare `Redux`:
 
 ```javascript
 const Redux = global.Redux = require('redux');
 ```
 
-#### Declare `Requerio`:
+##### - or -
 
 ```html
-<script src="requerio.min.js"></script>
+<script src="redux.min.js"></script>
+```
+
+#### Declare `Requerio`:
+
+```javascript
+const Requerio = require('requerio');
 ```
 
 ##### - or -
 
-```javascript
-const Requerio = require('requerio');
+```html
+<script src="requerio.min.js"></script>
 ```
 
 #### Declare `$organisms`:

@@ -155,7 +155,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery/Cheerio components. |
+| selector | `string` | A selector string. |
 
 ### .populateMembers()
 (Re)populate an organism's `.$members` array with its (recalculated) members.

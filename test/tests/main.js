@@ -759,87 +759,43 @@ describe('Requerio', function () {
 
     // .hasSibling() must be tested before manipulating the DOM because these test expect an unmanipulated DOM.
     describe('.hasSibling()', function () {
-      describe('with a string argument', function () {
-        let $membersLengthBefore = 0;
-        let $membersLengthDuring = 0;
-        let $membersLengthAfter = 0;
-        let $orgDuring;
+      let $membersLengthBefore = 0;
+      let $membersLengthDuring = 0;
+      let $membersLengthAfter = 0;
+      let $orgDuring;
 
-        before(function () {
-          requerio.$orgs['.midi-chlorian'].$members.forEach(() => $membersLengthBefore++);
+      before(function () {
+        requerio.$orgs['.midi-chlorian'].$members.forEach(() => $membersLengthBefore++);
 
-          $orgDuring = requerio.$orgs['.midi-chlorian'].hasSibling('.has-sibling-test');
-        });
-
-        after(function () {
-          requerio.$orgs['.midi-chlorian'].dispatchAction('removeClass', 'hasSibling');
-        });
-
-        it('excludes elements from members array when .hasSibling() is invoked', function () {
-          $orgDuring.$members.forEach(() => $membersLengthDuring++);
-
-          expect($membersLengthBefore).to.equal(2);
-          expect($membersLengthDuring).to.equal(1);
-        });
-
-        it('resets members array when .dispatchAction() is invoked after .hasSibling()', function () {
-          $orgDuring.dispatchAction('addClass', 'hasSibling');
-          $orgDuring.$members.forEach(() => $membersLengthAfter++);
-
-          expect($membersLengthDuring).to.equal(1);
-          expect($membersLengthAfter).to.equal(2);
-        });
-
-        it('dispatches the action on the element filtered by .hasSibling()', function () {
-          const $org = requerio.$orgs['.midi-chlorian'];
-          const classList0 = $org.getState(0).classList;
-          const classList1 = $org.getState(1).classList;
-
-          expect(classList0).to.include('hasSibling');
-          expect(classList1).to.not.include('hasSibling');
-        });
+        $orgDuring = requerio.$orgs['.midi-chlorian'].hasSibling('.has-sibling-test');
       });
 
-      describe('with a DOM element argument', function () {
-        const hasSiblingTest = $('.has-sibling-test')[0];
-        let $membersLengthBefore = 0;
-        let $membersLengthDuring = 0;
-        let $membersLengthAfter = 0;
-        let $orgDuring;
+      after(function () {
+        requerio.$orgs['.midi-chlorian'].dispatchAction('removeClass', 'hasSibling');
+      });
 
-        before(function () {
-          requerio.$orgs['input'].$members.forEach(() => $membersLengthBefore++);
+      it('excludes elements from members array when .hasSibling() is invoked', function () {
+        $orgDuring.$members.forEach(() => $membersLengthDuring++);
 
-          $orgDuring = requerio.$orgs['input'].hasSibling(hasSiblingTest);
-        });
+        expect($membersLengthBefore).to.equal(2);
+        expect($membersLengthDuring).to.equal(1);
+      });
 
-        after(function () {
-          requerio.$orgs['input'].dispatchAction('removeClass', 'hasSibling');
-        });
+      it('resets members array when .dispatchAction() is invoked after .hasSibling()', function () {
+        $orgDuring.dispatchAction('addClass', 'hasSibling');
+        $orgDuring.$members.forEach(() => $membersLengthAfter++);
 
-        it('excludes elements from members array when .hasSibling() is invoked', function () {
-          $orgDuring.$members.forEach(() => $membersLengthDuring++);
+        expect($membersLengthDuring).to.equal(1);
+        expect($membersLengthAfter).to.equal(2);
+      });
 
-          expect($membersLengthBefore).to.equal(2);
-          expect($membersLengthDuring).to.equal(1);
-        });
+      it('dispatches the action on the element filtered by .hasSibling()', function () {
+        const $org = requerio.$orgs['.midi-chlorian'];
+        const classList0 = $org.getState(0).classList;
+        const classList1 = $org.getState(1).classList;
 
-        it('resets members array when .dispatchAction() is invoked after .hasSibling()', function () {
-          $orgDuring.dispatchAction('addClass', 'hasSibling');
-          $orgDuring.$members.forEach(() => $membersLengthAfter++);
-
-          expect($membersLengthDuring).to.equal(1);
-          expect($membersLengthAfter).to.equal(2);
-        });
-
-        it('dispatches the action on the element filtered by .hasSibling()', function () {
-          const $org = requerio.$orgs['input'];
-          const classList0 = $org.getState(0).classList;
-          const classList1 = $org.getState(1).classList;
-
-          expect(classList0).to.not.include('hasSibling');
-          expect(classList1).to.include('hasSibling');
-        });
+        expect(classList0).to.include('hasSibling');
+        expect(classList1).to.not.include('hasSibling');
       });
     });
 

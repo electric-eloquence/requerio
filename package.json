@@ -9,7 +9,7 @@
     "doc": "node run/doc.js",
     "lint": "eslint examples && eslint src && eslint test",
     "start": "npm run watch",
-    "test": "nyc mocha --require @babel/register test/tests",
+    "test": "mocha --require @babel/register test/tests-jquery && nyc mocha --require @babel/register test/tests",
     "watch": "nodemon --watch src -e js --exec 'npm run bundle'"
   },
   "husky": {
@@ -54,12 +54,13 @@
     "coveralls": "3.x",
     "eslint": "6.x",
     "husky": "4.x",
+    "jquery": "^3.4.1",
     "jsdoc-to-markdown": "^5.0.0",
-    "jsdom": "^15.1.1",
+    "jsdom": "^16.2.0",
     "mocha": "7.x",
     "nodemon": "^1.18.10",
     "nyc": "15.x",
-    "redux": "4.0.1",
+    "redux": "^4.0.5",
     "rollup": "^1.0.1",
     "uglify-es": "3.3.9"
   }

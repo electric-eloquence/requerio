@@ -1064,27 +1064,18 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery/Cheerio components. |
+| selector | `string` | A selector string. |
 */
   $.prototype.hasSibling = function (selector) {
-    const $selection = $(selector);
-
     for (let i = 0; i < this.$members.length; i++) {
       /* istanbul ignore if */
       if (!this.$members[i]) {
         continue;
       }
 
-      let hasSibling = false;
-
-      for (let j = 0; j < $selection.length; j++) {
-        // Hack a mismatch between length and number of array elements to signal to repopulate members.
-        const $siblings = this.$members[i].siblings($selection[j]);
-
-        if ($siblings.length) {
-          hasSibling = true;
-        }
-      }
+      // Hack a mismatch between length and number of array elements to signal to repopulate members.
+      const $siblings = this.$members[i].siblings(selector);
+      const hasSibling = $siblings.length ? true : false;
 
       if (!hasSibling) {
         delete this.$members[i];
