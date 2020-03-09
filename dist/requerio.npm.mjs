@@ -154,8 +154,12 @@ function getActiveOrganism($orgs, lastActiveOrganism) {
 
       // If using Cheerio and JSDOM.
       /* istanbul ignore else */
-      if (typeof global === 'object' && typeof document === 'object') {
-        if (document.activeElement.tagName.toLowerCase() !== elem.name.toLowerCase()) {
+      if (typeof global === 'object' && typeof document === 'object' && global.$._root && global.$._root.attribs) {
+        if (
+          !document.activeElement.tagName ||
+          !elem.name ||
+          document.activeElement.tagName.toLowerCase() !== elem.name.toLowerCase()
+        ) {
           continue;
         }
 
@@ -326,11 +330,9 @@ If there is a 'document' organism and it has `state.activeOrganism` set, unset t
       $org.blur = () => {
         blurOrig.call($org);
 
-        if (typeof global === 'object') {
-          // If using Cheerio and JSDOM.
-          if (document && document.querySelector) {
-            document.querySelector($org.selector).blur();
-          }
+        // If using JSDOM.
+        if (typeof global === 'object' && document && document.querySelector) {
+          document.querySelector($org.selector).blur();
         }
 
         if (requerio.store.getState()['document'].activeOrganism === $org.selector) {
@@ -354,11 +356,9 @@ organism, set the focused organism's selector as `state.activeOrganism`.
       $org.focus = () => {
         focusOrig.call($org);
 
-        if (typeof global === 'object') {
-          // If using Cheerio and JSDOM.
-          if (document && document.querySelector) {
-            document.querySelector($org.selector).focus();
-          }
+        // If using JSDOM.
+        if (typeof global === 'object' && document && document.querySelector) {
+          document.querySelector($org.selector).focus();
         }
 
         $orgs.document.dispatchAction('setActiveOrganism', $org.selector);
@@ -1925,7 +1925,8 @@ Set the height (not including padding, border, or margin) of all matches.
           if (typeof action.args[0] === 'number') {
             state.height = action.args[0];
 
-            if (typeof global === 'object') {
+            // If using Cheerio.
+            if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
               state.boundingClientRect.height = action.args[0];
             }
           }
@@ -2168,7 +2169,8 @@ Set the width (not including padding, border, or margin) of all matches.
           if (typeof action.args[0] === 'number') {
             state.width = action.args[0];
 
-            if (typeof global === 'object') {
+            // If using Cheerio.
+            if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
               state.boundingClientRect.width = action.args[0];
             }
           }
