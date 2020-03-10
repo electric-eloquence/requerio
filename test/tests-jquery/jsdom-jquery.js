@@ -13,7 +13,7 @@ const {window} = new JSDOM(html);
 
 global.window = window;
 global.document = window.document;
-const $ = global.$ = global.jQuery = require('jquery');
+const $ = global.$ = require('jquery');
 
 const requerioPath = '../../src/requerio';
 delete require.cache[require.resolve(requerioPath)];

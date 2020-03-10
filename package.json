@@ -9,7 +9,9 @@
     "doc": "node run/doc.js",
     "lint": "eslint examples && eslint src && eslint test",
     "start": "npm run watch",
-    "test": "mocha --require @babel/register test/tests-jquery && nyc mocha --require @babel/register test/tests",
+    "test:cheerio": "mocha --require @babel/register test/tests",
+    "test:jquery": "mocha --require @babel/register test/tests-jquery",
+    "test": "npm run test:jquery && nyc mocha --require @babel/register test/tests",
     "watch": "nodemon --watch src -e js --exec 'npm run bundle'"
   },
   "husky": {

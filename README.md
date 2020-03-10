@@ -6,8 +6,6 @@
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![License][license-image]][license-url]
 
-### BREAKING CHANGE!
-
 As of [v0.5.0](https://github.com/electric-eloquence/requerio/releases/tag/v0.5.0),
 Requerio is far more strict about accepting arrays as the 2nd parameter for 
 `.dispatchAction()`. Only a few action methods allow such arrays. They are 
@@ -18,10 +16,11 @@ restricted to
 [prepend](docs/methods.md#prependcontent), and 
 [toggleClass](docs/methods.md#toggleclassclasses).
 
-While Requerio was named with Cheerio in mind, Cheerio is optional and can be 
-replaced by jQuery on the server via JSDOM, or any other DOM emulator. Cheerio 
-is significantly lighter than jQuery + JSDOM, but it is difficult to predict the 
-quality of Cheerio's future maintenance.
+Also, while Requerio was named with 
+<a href="https://www.npmjs.com/package/cheerio" target="_blank">Cheerio</a> in 
+mind, Cheerio is optional and can be replaced by jQuery on the server via JSDOM, 
+or any other DOM emulator. Cheerio is significantly lighter than jQuery + JSDOM, 
+but it is difficult to predict the quality of Cheerio's future maintenance.
 
 #### Install:
 
@@ -51,7 +50,7 @@ const html = fs.readFileSync('./index.html'), 'utf8');
 const {window} = new JSDOM(html);
 global.window = window;
 global.document = window.document;
-const $ = global.$ = global.jQuery = require('jquery');
+const $ = global.$ = require('jquery');
 ```
 
 ##### - or -
