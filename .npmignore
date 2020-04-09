@@ -1,5 +1,4 @@
 .*
-appveyor.yml
 rollup.config.js
 run/
 test/
