@@ -231,6 +231,41 @@ If there is a 'document' organism and it has `state.activeOrganism` set, unset t
     }
 
     /**
+     * Must redefine .empty() because we may need to reset the elements and members of descendent organisms.
+     * Same params as jQuery/Cheerio .empty().
+     * Do not document.
+     */
+    const emptyFnOrig = $org.empty;
+
+    $org.empty = function () {
+      const descendantsToReset = [];
+
+      for (let orgSelector1 of Object.keys($orgs)) {
+        const $org1 = $orgs[orgSelector1];
+
+        // Iterate through organisms and check if this organism (dispatching the 'empty' action) is an ancestor.
+        // This is much more efficient than searching through branches of descendants.
+        for (let i = 0; i < $org.length; i++) {
+          if ($org1.parents($org[i]).length) {
+            descendantsToReset.push($org1);
+
+            break;
+          }
+        }
+      }
+
+      const retVal = emptyFnOrig.apply($org);
+
+      $org.resetElementsAndMembers();
+
+      for (let descendantToReset of descendantsToReset) {
+        descendantToReset.resetElementsAndMembers();
+      }
+
+      return retVal;
+    };
+
+    /**
 ### focus()
 Set focus on the specified element, if that element can take focus. If it can take focus, and if there is a 'document'
 organism, set the focused organism's selector as `state.activeOrganism`.

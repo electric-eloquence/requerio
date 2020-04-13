@@ -81,6 +81,9 @@ DOM.
 | --- | --- | --- |
 | keyValues | `object` | An object of key:value pairs. |
 
+### empty(keyValues)
+Empty innerHTML of all matches.
+
 ### height(value)
 Set the height (not including padding, border, or margin) of all matches.
 

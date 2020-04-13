@@ -321,14 +321,14 @@ function getBoundingClientRect($org, args, memberIdx) {
 function getMeasurement($org, method, args, $member) {
   if (Array.isArray($member)) {
     // Apply on first valid iteration of $member array.
-    $member.forEach(($elem) => {
+    for (let $elem of $member) {
       /* istanbul ignore if */
       if (typeof $elem[method] === 'function') {
         args[0] = $elem[method].apply($elem);
 
-        return;
+        break;
       }
-    });
+    }
   }
   else if ($member) {
     // Apply to $member.
@@ -382,216 +382,214 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 | [args] | `*` | This param contains the values to be passed as arguments to the method. null or an empty array may be submitted if not passing arguments, but targeting a memberIdx. |
 | [memberIdx] | `number`\|`number[]` | The index, or array of indices, of the organism member(s), if targeting one or more members. |
 */
-  if (!$.prototype.dispatchAction) {
-    $.prototype.dispatchAction = function (method, args_, memberIdx_) {
-      const type = convertMethodToType(method);
+  $.prototype.dispatchAction = function (method, args_, memberIdx_) {
+    const type = convertMethodToType(method);
 
-      let args = [];
+    let args = [];
 
-      // eslint-disable-next-line eqeqeq
-      if (args_ != null) {
-        args = [args_];
+    // eslint-disable-next-line eqeqeq
+    if (args_ != null) {
+      args = [args_];
+    }
+
+    let memberIdx = memberIdx_;
+    let membersLength = 0;
+
+    this.$members.forEach(() => membersLength++);
+
+    if (membersLength < this.$members.length) {
+      memberIdx = [];
+
+      this.$members.forEach(($member, idx) => memberIdx.push(idx));
+    }
+
+    // Submission of memberIdx indicates that the action is to be dispatched on the specific member of the CSS class.
+    let $member;
+
+    if (Array.isArray(memberIdx)) {
+      $member = [];
+
+      for (let idx of memberIdx) {
+        $member.push($(this[idx]));
+      }
+    }
+    else if (typeof memberIdx === 'number') {
+      // Exit if the memberIdx points to nothing.
+      if (typeof this[memberIdx] === 'undefined') {
+        return;
       }
 
-      let memberIdx = memberIdx_;
-      let membersLength = 0;
+      $member = $(this[memberIdx]);
+    }
 
-      this.$members.forEach(() => membersLength++);
+    // Side-effects must happen here. store.dispatch() depends on this.
+    switch (method) {
 
-      if (membersLength < this.$members.length) {
-        memberIdx = [];
+      case 'attr': {
+        applyAttr(this, args, $member, memberIdx); // Mutates args.
 
-        this.$members.forEach(($member, idx) => memberIdx.push(idx));
+        break;
       }
 
-      // Submission of memberIdx indicates that the action is to be dispatched on the specific member of the CSS class.
-      let $member;
+      // Dispatching 'css' with a property (or properties) but no value will write the existing property and value to
+      // the .style property on the state.
+      case 'css': {
+        applyCss(this, args, $member); // Mutates args.
 
-      if (Array.isArray(memberIdx)) {
-        $member = [];
-
-        for (let idx of memberIdx) {
-          $member.push($(this[idx]));
-        }
-      }
-      else if (typeof memberIdx === 'number') {
-        // Exit if the memberIdx points to nothing.
-        if (typeof this[memberIdx] === 'undefined') {
-          return;
-        }
-
-        $member = $(this[memberIdx]);
+        break;
       }
 
-      // Side-effects must happen here. store.dispatch() depends on this.
-      switch (method) {
+      case 'data': {
+        applyData(this, args, $member); // Mutates args.
 
-        case 'attr': {
-          applyAttr(this, args, $member, memberIdx); // Mutates args.
+        break;
+      }
 
+      // getBoundingClientRect takes measurements and updates state. This never accepts an argument.
+      // On the client, it has to operate on the DOM Element member of the jQuery component.
+      case 'getBoundingClientRect': {
+        if (this.selector === 'document' || this.selector === 'window') {
           break;
         }
 
-        // Dispatching 'css' with a property (or properties) but no value will write the existing property and value to
-        // the .style property on the state.
-        case 'css': {
-          applyCss(this, args, $member); // Mutates args.
+        getBoundingClientRect(this, args, memberIdx);
 
-          break;
-        }
+        break;
+      }
 
-        case 'data': {
-          applyData(this, args, $member); // Mutates args.
+      case 'html': {
+        // If the 'html' action is dispatched without an arg, or with a null arg, and the .innerHTML property on the
+        // state is unset, we want to set the .innerHTML property.
+        // eslint-disable-next-line eqeqeq
+        if (args[0] == null) {
+          const state = store.getState()[this.selector];
 
-          break;
-        }
-
-        // getBoundingClientRect takes measurements and updates state. This never accepts an argument.
-        // On the client, it has to operate on the DOM Element member of the jQuery component.
-        case 'getBoundingClientRect': {
-          if (this.selector === 'document' || this.selector === 'window') {
-            break;
-          }
-
-          getBoundingClientRect(this, args, memberIdx);
-
-          break;
-        }
-
-        case 'html': {
-          // If the 'html' action is dispatched without an arg, or with a null arg, and the .innerHTML property on the
-          // state is unset, we want to set the .innerHTML property.
-          // eslint-disable-next-line eqeqeq
-          if (args[0] == null) {
-            const state = store.getState()[this.selector];
-
-            if (Array.isArray($member) && Array.isArray(memberIdx)) {
-              // Dispatch on each iteration of $member array.
-              $member.forEach(($elem, idx) => {
-                const memberState = state.$members[memberIdx[idx]];
-
-                // eslint-disable-next-line eqeqeq
-                if (!memberState || memberState.innerHTML == null) {
-                  this.prevAction = store.dispatch({
-                    type,
-                    selector: this.selector,
-                    $org: this,
-                    method,
-                    args: [$elem.html()],
-                    memberIdx: memberIdx[idx]
-                  });
-                }
-              });
-            }
-            else if ($member && typeof memberIdx === 'number') {
-              const memberState = state.$members[memberIdx];
+          if (Array.isArray($member) && Array.isArray(memberIdx)) {
+            // Dispatch on each iteration of $member array.
+            $member.forEach(($elem, idx) => {
+              const memberState = state.$members[memberIdx[idx]];
 
               // eslint-disable-next-line eqeqeq
               if (!memberState || memberState.innerHTML == null) {
-                // Dispatch on $member.
                 this.prevAction = store.dispatch({
                   type,
                   selector: this.selector,
                   $org: this,
                   method,
-                  args: [$member.html()],
-                  memberIdx: memberIdx
+                  args: [$elem.html()],
+                  memberIdx: memberIdx[idx]
                 });
               }
-            }
-            else {
-              // eslint-disable-next-line eqeqeq
-              if (state.innerHTML == null) {
-                // Dispatch on $org.
-                this.prevAction = store.dispatch({
-                  type,
-                  selector: this.selector,
-                  $org: this,
-                  method,
-                  args: [this.html()],
-                  memberIdx: memberIdx
-                });
-              }
-            }
-
-            // Return because we don't want to invoke the default dispatch.
-            return this;
+            });
           }
+          else if ($member && typeof memberIdx === 'number') {
+            const memberState = state.$members[memberIdx];
 
-          applyMethod(this, method, args, $member);
-
-          break;
-        }
-
-        // If innerWidth and innerHeight methods are applied to the `window` object, copy the respective property to the
-        // state.
-        case 'innerWidth':
-        case 'innerHeight': {
-          /* istanbul ignore if */
-          if (this.selector === 'window' && typeof window === 'object') {
-            this[method] = window[method];
-            args[0] = window[method];
-
-            break;
-          }
-        }
-
-        // innerWidth, innerHeight, scrollTop, width, and height methods with no args take measurements and update
-        // state. innerWidth and innerHeight, when not applied to window, run the jQuery method.
-        case 'innerWidth':
-        case 'innerHeight':
-        case 'scrollTop':
-        case 'width':
-        case 'height': {
-          if (args.length) {
-            applyMethod(this, method, args, $member);
+            // eslint-disable-next-line eqeqeq
+            if (!memberState || memberState.innerHTML == null) {
+              // Dispatch on $member.
+              this.prevAction = store.dispatch({
+                type,
+                selector: this.selector,
+                $org: this,
+                method,
+                args: [$member.html()],
+                memberIdx: memberIdx
+              });
+            }
           }
           else {
-            getMeasurement(this, method, args, $member); // Mutates args.
+            // eslint-disable-next-line eqeqeq
+            if (state.innerHTML == null) {
+              // Dispatch on $org.
+              this.prevAction = store.dispatch({
+                type,
+                selector: this.selector,
+                $org: this,
+                method,
+                args: [this.html()],
+                memberIdx: memberIdx
+              });
+            }
           }
 
-          break;
+          // Return because we don't want to invoke the default dispatch.
+          return this;
         }
 
-        case 'setActiveOrganism': {
+        applyMethod(this, method, args, $member);
+
+        break;
+      }
+
+      // If innerWidth and innerHeight methods are applied to the `window` object, copy the respective property to the
+      // state.
+      case 'innerWidth':
+      case 'innerHeight': {
+        /* istanbul ignore if */
+        if (this.selector === 'window' && typeof window === 'object') {
+          this[method] = window[method];
+          args[0] = window[method];
+
           break;
-        }
-
-        case 'setBoundingClientRect': {
-          break;
-        }
-
-        case 'toggleClass': {
-          if (Array.isArray(args[0])) {
-            args = args[0];
-          }
-          applyMethod(this, method, args, $member);
-
-          break;
-        }
-
-        // Method applications for other methods.
-        default: {
-          applyMethod(this, method, args, $member);
         }
       }
 
-      if (membersLength < this.$members.length) {
-        this.populateMembers();
+      // innerWidth, innerHeight, scrollTop, width, and height methods with no args take measurements and update
+      // state. innerWidth and innerHeight, when not applied to window, run the jQuery method.
+      case 'innerWidth':
+      case 'innerHeight':
+      case 'scrollTop':
+      case 'width':
+      case 'height': {
+        if (args.length) {
+          applyMethod(this, method, args, $member);
+        }
+        else {
+          getMeasurement(this, method, args, $member); // Mutates args.
+        }
+
+        break;
       }
 
-      this.prevAction = store.dispatch({
-        type,
-        selector: this.selector,
-        $org: this,
-        method,
-        args,
-        memberIdx
-      });
+      case 'setActiveOrganism': {
+        break;
+      }
 
-      return this;
-    };
-  }
+      case 'setBoundingClientRect': {
+        break;
+      }
+
+      case 'toggleClass': {
+        if (Array.isArray(args[0])) {
+          args = args[0];
+        }
+        applyMethod(this, method, args, $member);
+
+        break;
+      }
+
+      // Method applications for other methods.
+      default: {
+        applyMethod(this, method, args, $member);
+      }
+    }
+
+    if (membersLength < this.$members.length) {
+      this.populateMembers();
+    }
+
+    this.prevAction = store.dispatch({
+      type,
+      selector: this.selector,
+      $org: this,
+      method,
+      args,
+      memberIdx
+    });
+
+    return this;
+  };
 
   /**
 ### .exclude(selector)
@@ -661,15 +659,18 @@ A server-side stand-in for client-side `.focus()`.
    *
    * @param {number} [memberIdx] - The index of the organism member (if targeting a member).
    */
-  if (!$.prototype.getBoundingClientRect && typeof global === 'object') {
+  if (typeof global === 'object') {
     $.prototype.getBoundingClientRect = function (memberIdx) {
-      let rectState;
+      const state = store.getState()[this.selector];
+      let rectState = {};
 
       if (typeof memberIdx === 'number') {
-        rectState = store.getState()[this.selector].$members[memberIdx].boundingClientRect;
+        if (state.$members[memberIdx] && state.$members[memberIdx].boundingClientRect) {
+          rectState = state.$members[memberIdx].boundingClientRect;
+        }
       }
       else {
-        rectState = store.getState()[this.selector].boundingClientRect;
+        rectState = state.boundingClientRect;
       }
 
       for (let i of Object.keys(rectState)) {
@@ -699,141 +700,154 @@ __Returns__: `object` - The organism's state.
 | --- | --- | --- |
 | [memberIdx] | `number` | The index of the organism member (if targeting a member). |
 */
-  if (!$.prototype.getState) {
-    $.prototype.getState = function (memberIdx) {
-      const $member = this.$members[memberIdx];
-      let state;
-      let updateState = false;
+  $.prototype.getState = function (memberIdx) {
+    const $member = this.$members[memberIdx];
+    let state;
+    let updateState = false;
 
-      if (typeof memberIdx === 'number') {
-        state = store.getState()[this.selector].$members[memberIdx];
+    if (typeof memberIdx === 'number') {
+      state = store.getState()[this.selector].$members[memberIdx];
 
-        /* istanbul ignore if */
-        if (!state) {
-          updateState = true;
-        }
-      }
-
+      /* istanbul ignore if */
       if (!state) {
-        state = store.getState()[this.selector];
+        updateState = true;
       }
+    }
 
-      // Do not preemptively update .style property because we only want to track styles dispatched through Requerio.
+    if (!state) {
+      state = store.getState()[this.selector];
+    }
 
-      // Do update .attribs property if an attribute was changed by user interaction, e.g., `checked` attribute.
-      const argsAttr = [];
+    // Do not preemptively update .style property because we only want to track styles dispatched through Requerio.
 
-      applyAttr(this, argsAttr, $member, memberIdx); // Mutates argsAttr.
+    // Do update .attribs property if an attribute was changed by user interaction, e.g., `checked` attribute.
+    const argsAttr = [];
 
-      if (JSON.stringify(state.attribs) !== JSON.stringify(argsAttr[0])) {
+    applyAttr(this, argsAttr, $member, memberIdx); // Mutates argsAttr.
+
+    if (JSON.stringify(state.attribs) !== JSON.stringify(argsAttr[0])) {
+      store.dispatch({
+        type: 'ATTR',
+        selector: this.selector,
+        $org: this,
+        method: 'attr',
+        args: argsAttr,
+        memberIdx
+      });
+
+      updateState = true;
+    }
+
+    // Do update .data property if data were updated on a data attribute, i.e., not by a 'data' action.
+    // As per jQuery documentation, the 'data' action will only read data from data attributes once. Further changes
+    // to data attributes will not be read by the 'data' action.
+    // https://api.jquery.com/data/#data-html5
+    if (!state.data) {
+      const argsData = [];
+
+      applyData(this, argsData, $member); // Mutates argsData.
+
+      if (JSON.stringify(state.data) !== JSON.stringify(argsData[0])) {
         store.dispatch({
-          type: 'ATTR',
+          type: 'DATA',
           selector: this.selector,
           $org: this,
-          method: 'attr',
-          args: argsAttr,
+          method: 'data',
+          args: argsData,
           memberIdx
         });
 
         updateState = true;
       }
+    }
 
-      // Do update .data property if data were updated on a data attribute, i.e., not by a 'data' action.
-      // As per jQuery documentation, the 'data' action will only read data from data attributes once. Further changes
-      // to data attributes will not be read by the 'data' action.
-      // https://api.jquery.com/data/#data-html5
-      if (!state.data) {
-        const argsData = [];
-
-        applyData(this, argsData, $member); // Mutates argsData.
-
-        if (JSON.stringify(state.data) !== JSON.stringify(argsData[0])) {
-          store.dispatch({
-            type: 'DATA',
-            selector: this.selector,
-            $org: this,
-            method: 'data',
-            args: argsData,
-            memberIdx
-          });
-
-          updateState = true;
+    // Do update length of state.$members array to match length of this.$members.
+    if (Array.isArray(this.$members) && Array.isArray(state.$members)) {
+      if (this.$members.length < state.$members.length) {
+        while (this.$members.length < state.$members.length) {
+          state.$members.pop();
         }
+
+        updateState = true;
       }
 
-      // Do update measurements if changed by user interaction, e.g., resizing viewport.
-      updateState = this.updateMeasurements(state, $member, memberIdx);
+      else if (this.$members.length > state.$members.length) {
+        updateState = this.updateMeasurements(state, $member, state.$members.length);
+      }
+    }
 
-      // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data,
-      // nor do we want to preform unnecessary .html() reads.
-      // Therefore, only proceed with an 'html' action if innerHTML is already set.
-      const innerHTMLOld = state.innerHTML;
+    // Do update measurements if changed by user interaction, e.g., resizing viewport.
+    updateState = this.updateMeasurements(state, $member, memberIdx) || updateState;
 
-      // eslint-disable-next-line eqeqeq
-      if (innerHTMLOld != null) {
-        let innerHTMLNew;
+    // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data,
+    // nor do we want to preform unnecessary .html() reads.
+    // Therefore, only proceed with an 'html' action if innerHTML is already set.
+    const innerHTMLOld = state.innerHTML;
 
-        if (typeof memberIdx === 'number') {
-          innerHTMLNew = $member.html();
-        }
-        else {
-          innerHTMLNew = this.html();
-        }
+    // eslint-disable-next-line eqeqeq
+    if (innerHTMLOld != null) {
+      let innerHTMLNew;
 
-        if (innerHTMLNew !== innerHTMLOld) {
-          store.dispatch({
-            type: 'HTML',
-            selector: this.selector,
-            $org: this,
-            method: 'html',
-            args: [innerHTMLNew],
-            memberIdx
-          });
-
-          updateState = true;
-        }
+      if (typeof memberIdx === 'number') {
+        innerHTMLNew = $member.html();
+      }
+      else {
+        innerHTMLNew = this.html();
       }
 
-      // Do update form field values if they were changed by user interaction.
-      const valueOld = state.value;
+      if (innerHTMLNew !== innerHTMLOld) {
+        store.dispatch({
+          type: 'HTML',
+          selector: this.selector,
+          $org: this,
+          method: 'html',
+          args: [innerHTMLNew],
+          memberIdx
+        });
 
-      // eslint-disable-next-line eqeqeq
-      if (valueOld != null) {
-        let valueNew;
+        updateState = true;
+      }
+    }
 
-        if (typeof memberIdx === 'number') {
-          valueNew = $member.val();
-        }
-        else {
-          valueNew = this.val();
-        }
+    // Do update form field values if they were changed by user interaction.
+    const valueOld = state.value;
 
-        if (valueNew !== valueOld) {
-          store.dispatch({
-            type: 'VAL',
-            selector: this.selector,
-            $org: this,
-            method: 'val',
-            args: [valueNew],
-            memberIdx
-          });
+    // eslint-disable-next-line eqeqeq
+    if (valueOld != null) {
+      let valueNew;
 
-          updateState = true;
-        }
+      if (typeof memberIdx === 'number') {
+        valueNew = $member.val();
+      }
+      else {
+        valueNew = this.val();
       }
 
-      if (updateState) {
-        if (typeof memberIdx === 'number') {
-          state = store.getState()[this.selector].$members[memberIdx];
-        }
-        else {
-          state = store.getState()[this.selector];
-        }
-      }
+      if (valueNew !== valueOld) {
+        store.dispatch({
+          type: 'VAL',
+          selector: this.selector,
+          $org: this,
+          method: 'val',
+          args: [valueNew],
+          memberIdx
+        });
 
-      return state;
-    };
-  }
+        updateState = true;
+      }
+    }
+
+    if (updateState) {
+      if (typeof memberIdx === 'number') {
+        state = store.getState()[this.selector].$members[memberIdx];
+      }
+      else {
+        state = store.getState()[this.selector];
+      }
+    }
+
+    return state;
+  };
 
   /**
 ### .getStore()
@@ -841,11 +855,9 @@ A reference to the Redux `store`. The same reference as `requerio.store`.
 
 __Returns__: `object` - This app's state store.
 */
-  if (!$.prototype.getStore) {
-    $.prototype.getStore = function () {
-      return store;
-    };
-  }
+  $.prototype.getStore = function () {
+    return store;
+  };
 
   /**
 ### .hasChild(selector)
@@ -1090,21 +1102,19 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 (Re)populate an organism's `.$members` array with its (recalculated) members.
 `.$members` are jQuery/Cheerio components, not fully incepted organisms.
 */
-  if (!$.prototype.populateMembers) {
-    $.prototype.populateMembers = function () {
-      /* istanbul ignore if */
-      if (this.selector === 'document' || this.selector === 'window') {
-        return;
-      }
+  $.prototype.populateMembers = function () {
+    /* istanbul ignore if */
+    if (this.selector === 'document' || this.selector === 'window') {
+      return;
+    }
 
-      const $org = this;
-      $org.$members = [];
+    const $org = this;
+    $org.$members = [];
 
-      $org.each((i, elem) => {
-        $org.$members.push($(elem));
-      });
-    };
-  }
+    $org.each((i, elem) => {
+      $org.$members.push($(elem));
+    });
+  };
 
   /**
 ### .resetElementsAndMembers()
@@ -1112,39 +1122,37 @@ Reset the organism's elements and members as they are added or removed. This is
 necessary because neither jQuery nor Cheerio dynamically updates the indexed
 elements or length properties on a saved jQuery or Cheerio component.
 */
-  if (!$.prototype.resetElementsAndMembers) {
-    $.prototype.resetElementsAndMembers = function () {
-      const $orgReset = $(this.selector);
-      let reset = false;
+  $.prototype.resetElementsAndMembers = function () {
+    const $orgReset = $(this.selector);
+    let reset = false;
 
-      if (this.length !== $orgReset.length) {
-        reset = true;
-      }
-      else {
-        for (let i = 0; i < this.length; i++) {
-          if (this[i] !== $orgReset[i]) {
-            reset = true;
+    if (this.length !== $orgReset.length) {
+      reset = true;
+    }
+    else {
+      for (let i = 0; i < this.length; i++) {
+        if (this[i] !== $orgReset[i]) {
+          reset = true;
 
-            break;
-          }
+          break;
         }
       }
+    }
 
-      if (reset) {
-        for (let i = 0; i < this.length; i++) {
-          delete this[i];
-        }
-
-        this.length = $orgReset.length;
-
-        $orgReset.each((i, elem) => {
-          this[i] = elem;
-        });
-
-        this.populateMembers();
+    if (reset) {
+      for (let i = 0; i < this.length; i++) {
+        delete this[i];
       }
-    };
-  }
+
+      this.length = $orgReset.length;
+
+      $orgReset.each((i, elem) => {
+        this[i] = elem;
+      });
+
+      this.populateMembers();
+    }
+  };
 
   /**
 ### .setBoundingClientRect(rectObj, [memberIdx])

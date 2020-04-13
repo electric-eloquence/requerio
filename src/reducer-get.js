@@ -174,6 +174,16 @@ DOM.
         break;
       }
 
+      /**
+### empty(keyValues)
+Empty innerHTML of all matches.
+*/
+      case 'empty': {
+        // Handled by running the method as a side-effect. Will reset elements and members of affected organisms.
+        // Will not automatically update any state's .innerHTML.
+        break;
+      }
+
       // Internal. Do not document.
       case 'getBoundingClientRect': {
         if (action.args.length === 1) {
@@ -386,7 +396,7 @@ properties on `state.boundingClientRect`.
           }
 
           // If this is dispatched on the server, we need to copy the rectObj to the state $members.
-          if (typeof global === 'object') {
+          if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
             if (
               typeof memberIdx === 'number' &&
               state.$members[memberIdx]

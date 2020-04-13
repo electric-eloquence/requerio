@@ -20,8 +20,7 @@ restricted to
 Also, while Requerio was named with 
 <a href="https://www.npmjs.com/package/cheerio" target="_blank">Cheerio</a> in 
 mind, Cheerio is optional and can be replaced by jQuery on the server via JSDOM, 
-or any other DOM emulator. Cheerio is significantly lighter than jQuery + JSDOM, 
-but it is difficult to predict the quality of Cheerio's future maintenance.
+or any other DOM emulator.
 
 #### Install:
 

@@ -36,6 +36,12 @@ const $organismsBefore = {
 };
 const $organismsAfter = Object.assign({}, $organismsBefore);
 const requerio = new window.Requerio($, Redux, $organismsAfter);
+let width = 0;
+let height = 0;
+let top = 0;
+let right = 0;
+let bottom = 0;
+let left = 0;
 
 describe('Requerio', function () {
   describe('with JSDOM and jQuery', function () {
@@ -188,7 +194,7 @@ describe('Requerio', function () {
           });
         });
 
-        describe('with a Cheerio argument', function () {
+        describe('with a jQuery argument', function () {
           const $mainSection0 = $('.main__section--0');
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
@@ -860,14 +866,21 @@ describe('Requerio', function () {
           const $org = requerio.$orgs['#main'];
           const boundingClientRectBefore = $org.getState().boundingClientRect;
 
+          width++;
+          height++;
+          top++;
+          right++;
+          bottom++;
+          left++;
+
           $org.setBoundingClientRect(
             {
-              width: 1000,
-              height: 1000,
-              top: 100,
-              right: 1100,
-              bottom: 1100,
-              left: 100
+              width,
+              height,
+              top,
+              right,
+              bottom,
+              left
             }
           );
 
@@ -876,12 +889,12 @@ describe('Requerio', function () {
           Object.keys(boundingClientRectBefore).forEach((i) => {
             expect(boundingClientRectBefore[i]).to.be.null;
           });
-          expect(boundingClientRectAfter.width).to.equal(1000);
-          expect(boundingClientRectAfter.height).to.equal(1000);
-          expect(boundingClientRectAfter.top).to.equal(100);
-          expect(boundingClientRectAfter.right).to.equal(1100);
-          expect(boundingClientRectAfter.bottom).to.equal(1100);
-          expect(boundingClientRectAfter.left).to.equal(100);
+          expect(boundingClientRectAfter.width).to.equal(width);
+          expect(boundingClientRectAfter.height).to.equal(height);
+          expect(boundingClientRectAfter.top).to.equal(top);
+          expect(boundingClientRectAfter.right).to.equal(right);
+          expect(boundingClientRectAfter.bottom).to.equal(bottom);
+          expect(boundingClientRectAfter.left).to.equal(left);
         });
 
         // eslint-ignore-next-line max-len
@@ -891,14 +904,21 @@ invoked in a targeted manner', function () {
           const stateBefore0 = $org.getState(0);
           const stateBefore1 = $org.getState(1);
 
+          width++;
+          height++;
+          top++;
+          right++;
+          bottom++;
+          left++;
+
           $org.setBoundingClientRect(
             {
-              width: 1000,
-              height: 1000,
-              top: 100,
-              right: 1100,
-              bottom: 1100,
-              left: 100
+              width,
+              height,
+              top,
+              right,
+              bottom,
+              left
             },
             1
           );
@@ -919,173 +939,271 @@ invoked in a targeted manner', function () {
           Object.keys(boundingClientRectAfter0).forEach((i) => {
             expect(boundingClientRectAfter0[i]).to.be.null;
           });
-          expect(boundingClientRectAfter1.width).to.equal(1000);
-          expect(boundingClientRectAfter1.height).to.equal(1000);
-          expect(boundingClientRectAfter1.top).to.equal(100);
-          expect(boundingClientRectAfter1.right).to.equal(1100);
-          expect(boundingClientRectAfter1.bottom).to.equal(1100);
-          expect(boundingClientRectAfter1.left).to.equal(100);
+          expect(boundingClientRectAfter1.width).to.equal(width);
+          expect(boundingClientRectAfter1.height).to.equal(height);
+          expect(boundingClientRectAfter1.top).to.equal(top);
+          expect(boundingClientRectAfter1.right).to.equal(right);
+          expect(boundingClientRectAfter1.bottom).to.equal(bottom);
+          expect(boundingClientRectAfter1.left).to.equal(left);
         });
 
         it('gets .boundingClientRect properties when .getBoundingClientRect() is invoked', function () {
           const $org = requerio.$orgs['#main'];
           const boundingClientRect = $org.getBoundingClientRect();
 
-          expect(boundingClientRect.width).to.equal(1000);
-          expect(boundingClientRect.height).to.equal(1000);
-          expect(boundingClientRect.top).to.equal(100);
-          expect(boundingClientRect.right).to.equal(1100);
-          expect(boundingClientRect.bottom).to.equal(1100);
-          expect(boundingClientRect.left).to.equal(100);
+          expect(boundingClientRect.width).to.equal(1);
+          expect(boundingClientRect.height).to.equal(1);
+          expect(boundingClientRect.top).to.equal(1);
+          expect(boundingClientRect.right).to.equal(1);
+          expect(boundingClientRect.bottom).to.equal(1);
+          expect(boundingClientRect.left).to.equal(1);
         });
 
         it('.updateMeasurements() updates measurement properties', function () {
           const $org = requerio.$orgs['#main'];
-
-          const innerWidthOrig = $org.innerWidth;
-          const innerHeightOrig = $org.innerHeight;
-          const scrollTopOrig = $org.scrollTop;
-          const widthOrig = $org.width;
-          const heightOrig = $org.height;
-
-          $org.setBoundingClientRect(
-            {
-              width: 0,
-              height: 0,
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0
-            }
-          );
-
           const stateBefore = $org.getState();
 
-          $org.innerWidth(1000);
-          $org.innerHeight(1000);
-          $org.scrollTop(100);
-          $org.width(1000);
-          $org.height(1000);
+          width++;
+          height++;
+          top++;
+          right++;
+          bottom++;
+          left++;
 
           $org.setBoundingClientRect(
             {
-              width: 1000,
-              height: 1000,
-              top: 100,
-              right: 1100,
-              bottom: 1100,
-              left: 100
+              width,
+              height,
+              top,
+              right,
+              bottom,
+              left
             }
           );
+          $org.innerWidth(width);
+          $org.innerHeight(height);
+          $org.scrollTop(top);
+          $org.width(width);
+          $org.height(height);
           $org.updateMeasurements(stateBefore);
 
           const stateAfter = $org.getState();
 
-          expect(stateBefore.boundingClientRect.width).to.equal(0);
-          expect(stateBefore.boundingClientRect.height).to.equal(0);
-          expect(stateBefore.boundingClientRect.top).to.equal(0);
-          expect(stateBefore.boundingClientRect.right).to.equal(0);
-          expect(stateBefore.boundingClientRect.bottom).to.equal(0);
-          expect(stateBefore.boundingClientRect.left).to.equal(0);
-          expect(stateBefore.innerWidth).to.equal(0);
-          expect(stateBefore.innerHeight).to.equal(0);
-          expect(stateBefore.scrollTop).to.equal(0);
-          expect(stateBefore.width).to.equal(0);
-          expect(stateBefore.height).to.equal(0);
+          expect(stateBefore.boundingClientRect.width).to.not.equal(stateAfter.boundingClientRect.width);
+          expect(stateBefore.boundingClientRect.height).to.not.equal(stateAfter.boundingClientRect.height);
+          expect(stateBefore.boundingClientRect.top).to.not.equal(stateAfter.boundingClientRect.top);
+          expect(stateBefore.boundingClientRect.right).to.not.equal(stateAfter.boundingClientRect.right);
+          expect(stateBefore.boundingClientRect.bottom).to.not.equal(stateAfter.boundingClientRect.bottom);
+          expect(stateBefore.boundingClientRect.left).to.not.equal(stateAfter.boundingClientRect.left);
+          expect(stateBefore.innerWidth).to.not.equal(stateAfter.innerWidth);
+          expect(stateBefore.innerHeight).to.not.equal(stateAfter.innerHeight);
+          expect(stateBefore.scrollTop).to.not.equal(stateAfter.scrollTop);
+          expect(stateBefore.width).to.not.equal(stateAfter.width);
+          expect(stateBefore.height).to.not.equal(stateAfter.height);
 
-          expect(stateAfter.boundingClientRect.width).to.equal(1000);
-          expect(stateAfter.boundingClientRect.height).to.equal(1000);
-          expect(stateAfter.boundingClientRect.top).to.equal(100);
-          expect(stateAfter.boundingClientRect.right).to.equal(1100);
-          expect(stateAfter.boundingClientRect.bottom).to.equal(1100);
-          expect(stateAfter.boundingClientRect.left).to.equal(100);
-          expect(stateAfter.innerWidth).to.equal(1000);
-          expect(stateAfter.innerHeight).to.equal(1000);
-          expect(stateAfter.scrollTop).to.equal(100);
-          expect(stateAfter.width).to.equal(1000);
-          expect(stateAfter.height).to.equal(1000);
-
-          $org.innerWidth = innerWidthOrig;
-          $org.innerHeight = innerHeightOrig;
-          $org.scrollTop = scrollTopOrig;
-          $org.width = widthOrig;
-          $org.height = heightOrig;
+          expect(stateAfter.boundingClientRect.width).to.equal(width);
+          expect(stateAfter.boundingClientRect.height).to.equal(height);
+          expect(stateAfter.boundingClientRect.top).to.equal(top);
+          expect(stateAfter.boundingClientRect.right).to.equal(right);
+          expect(stateAfter.boundingClientRect.bottom).to.equal(bottom);
+          expect(stateAfter.boundingClientRect.left).to.equal(left);
+          expect(stateAfter.innerWidth).to.equal(width);
+          expect(stateAfter.innerHeight).to.equal(height);
+          expect(stateAfter.scrollTop).to.equal(top);
+          expect(stateAfter.width).to.equal(width);
+          expect(stateAfter.height).to.equal(height);
         });
 
         it('.updateMeasurements() updates measurement properties on a specific $organism $member when invoked in a \
 targeted manner', function () {
           const $org = requerio.$orgs['.main__section'];
+          const stateBefore1 = $org.getState(1);
 
-          const innerWidthOrig = $org.innerWidth;
-          const innerHeightOrig = $org.innerHeight;
-          const scrollTopOrig = $org.scrollTop;
-          const widthOrig = $org.width;
-          const heightOrig = $org.height;
+          width++;
+          height++;
+          top++;
+          right++;
+          bottom++;
+          left++;
 
+          $org.last().innerWidth(width);
+          $org.last().innerHeight(height);
+          $org.last().scrollTop(top);
+          $org.last().width(width);
+          $org.last().height(height);
           $org.setBoundingClientRect(
             {
-              width: 0,
-              height: 0,
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0
+              width,
+              height,
+              top,
+              right,
+              bottom,
+              left
             },
             1
           );
+          $org.updateMeasurements(stateBefore1, $org, 1);
 
-          const stateBefore = $org.getState(1);
+          const stateAfter0 = $org.getState(0);
+          const stateAfter1 = $org.getState(1);
 
-          $org.innerWidth(1000);
-          $org.innerHeight(1000);
-          $org.scrollTop(100);
-          $org.width(1000);
-          $org.height(1000);
+          expect(stateAfter1.boundingClientRect.width).to.not.equal(stateBefore1.boundingClientRect.width);
+          expect(stateAfter1.boundingClientRect.height).to.not.equal(stateBefore1.boundingClientRect.height);
+          expect(stateAfter1.boundingClientRect.top).to.not.equal(stateBefore1.boundingClientRect.top);
+          expect(stateAfter1.boundingClientRect.right).to.not.equal(stateBefore1.boundingClientRect.right);
+          expect(stateAfter1.boundingClientRect.bottom).to.not.equal(stateBefore1.boundingClientRect.bottom);
+          expect(stateAfter1.boundingClientRect.left).to.not.equal(stateBefore1.boundingClientRect.left);
+          expect(stateAfter1.innerWidth).to.not.equal(stateBefore1.innerWidth);
+          expect(stateAfter1.innerHeight).to.not.equal(stateBefore1.innerHeight);
+          expect(stateAfter1.scrollTop).to.not.equal(stateBefore1.scrollTop);
+          expect(stateAfter1.width).to.not.equal(stateBefore1.width);
+          expect(stateAfter1.height).to.not.equal(stateBefore1.height);
 
-          $org.setBoundingClientRect(
-            {
-              width: 1000,
-              height: 1000,
-              top: 100,
-              right: 1100,
-              bottom: 1100,
-              left: 100
-            },
-            1
-          );
-          $org.updateMeasurements(stateBefore, $org, 1);
+          expect(stateAfter1.boundingClientRect.width).to.not.equal(stateAfter0.boundingClientRect.width);
+          expect(stateAfter1.boundingClientRect.height).to.not.equal(stateAfter0.boundingClientRect.height);
+          expect(stateAfter1.boundingClientRect.top).to.not.equal(stateAfter0.boundingClientRect.top);
+          expect(stateAfter1.boundingClientRect.right).to.not.equal(stateAfter0.boundingClientRect.right);
+          expect(stateAfter1.boundingClientRect.bottom).to.not.equal(stateAfter0.boundingClientRect.bottom);
+          expect(stateAfter1.boundingClientRect.left).to.not.equal(stateAfter0.boundingClientRect.left);
+          expect(stateAfter1.innerWidth).to.not.equal(stateAfter0.innerWidth);
+          expect(stateAfter1.innerHeight).to.not.equal(stateAfter0.innerHeight);
+          expect(stateAfter1.scrollTop).to.not.equal(stateAfter0.scrollTop);
+          expect(stateAfter1.width).to.not.equal(stateAfter0.width);
+          expect(stateAfter1.height).to.not.equal(stateAfter0.height);
 
-          const stateAfter = $org.getState(1);
+          expect(stateAfter1.boundingClientRect.width).to.equal(width);
+          expect(stateAfter1.boundingClientRect.height).to.equal(height);
+          expect(stateAfter1.boundingClientRect.top).to.equal(top);
+          expect(stateAfter1.boundingClientRect.right).to.equal(right);
+          expect(stateAfter1.boundingClientRect.bottom).to.equal(bottom);
+          expect(stateAfter1.boundingClientRect.left).to.equal(left);
+          expect(stateAfter1.innerWidth).to.equal(width);
+          expect(stateAfter1.innerHeight).to.equal(height);
+          expect(stateAfter1.scrollTop).to.equal(top);
+          expect(stateAfter1.width).to.equal(width);
+          expect(stateAfter1.height).to.equal(height);
+        });
+      });
+    });
 
-          expect(stateBefore.boundingClientRect.width).to.equal(0);
-          expect(stateBefore.boundingClientRect.height).to.equal(0);
-          expect(stateBefore.boundingClientRect.top).to.equal(0);
-          expect(stateBefore.boundingClientRect.right).to.equal(0);
-          expect(stateBefore.boundingClientRect.bottom).to.equal(0);
-          expect(stateBefore.boundingClientRect.left).to.equal(0);
-          expect(stateBefore.innerWidth).to.equal(0);
-          expect(stateBefore.innerHeight).to.equal(0);
-          expect(stateBefore.scrollTop).to.equal(0);
-          expect(stateBefore.width).to.equal(0);
-          expect(stateBefore.height).to.equal(0);
+    describe('organism non-prototype methods', function () {
+      describe('scrollTop()', function () {
+        it('sets a value on the server to mock the method call on the client', function () {
+          Object.keys(requerio.$orgs).forEach((selector) => {
+            let $organism;
+            let scrollTopVal;
 
-          expect(stateAfter.boundingClientRect.width).to.equal(1000);
-          expect(stateAfter.boundingClientRect.height).to.equal(1000);
-          expect(stateAfter.boundingClientRect.top).to.equal(100);
-          expect(stateAfter.boundingClientRect.right).to.equal(1100);
-          expect(stateAfter.boundingClientRect.bottom).to.equal(1100);
-          expect(stateAfter.boundingClientRect.left).to.equal(100);
-          expect(stateAfter.innerWidth).to.equal(1000);
-          expect(stateAfter.innerHeight).to.equal(1000);
-          expect(stateAfter.scrollTop).to.equal(100);
-          expect(stateAfter.width).to.equal(1000);
-          expect(stateAfter.height).to.equal(1000);
+            switch (selector) {
+              case 'window':
+              case 'document':
+                return;
 
-          $org.innerWidth = innerWidthOrig;
-          $org.innerHeight = innerHeightOrig;
-          $org.scrollTop = scrollTopOrig;
-          $org.width = widthOrig;
-          $org.height = heightOrig;
+              default:
+                $organism = requerio.$orgs[selector];
+                scrollTopVal = $organism.scrollTop(1);
+
+                expect(scrollTopVal).to.equal($organism);
+            }
+          });
+        });
+
+        it('gets the previously set value', function () {
+          Object.keys(requerio.$orgs).forEach((selector) => {
+            let $organism;
+            let scrollTopVal;
+
+            switch (selector) {
+              case 'window':
+              case 'document':
+                return;
+
+              default:
+                $organism = requerio.$orgs[selector];
+                scrollTopVal = $organism.scrollTop();
+
+                expect(scrollTopVal).to.equal(1);
+            }
+          });
+        });
+      });
+
+      describe('width()', function () {
+        it('sets a value on the server to mock the method call on the client', function () {
+          Object.keys(requerio.$orgs).forEach((selector) => {
+            let $organism;
+            let widthVal;
+
+            switch (selector) {
+              case 'window':
+              case 'document':
+                return;
+
+              default:
+                $organism = requerio.$orgs[selector];
+                widthVal = $organism.width(1);
+
+                expect(widthVal).to.equal($organism);
+            }
+          });
+        });
+
+        it('gets the previously set value', function () {
+          Object.keys(requerio.$orgs).forEach((selector) => {
+            let $organism;
+            let widthVal;
+
+            switch (selector) {
+              case 'window':
+              case 'document':
+                return;
+
+              default:
+                $organism = requerio.$orgs[selector];
+                widthVal = $organism.width();
+
+                expect(widthVal).to.equal(1);
+            }
+          });
+        });
+      });
+
+      describe('height()', function () {
+        it('sets a value on the server to mock the method call on the client', function () {
+          Object.keys(requerio.$orgs).forEach((selector) => {
+            let $organism;
+            let heightVal;
+
+            switch (selector) {
+              case 'window':
+              case 'document':
+                return;
+
+              default:
+                $organism = requerio.$orgs[selector];
+                heightVal = $organism.height(1);
+
+                expect(heightVal).to.equal($organism);
+            }
+          });
+        });
+
+        it('gets the previously set value', function () {
+          Object.keys(requerio.$orgs).forEach((selector) => {
+            let $organism;
+            let heightVal;
+
+            switch (selector) {
+              case 'window':
+              case 'document':
+                return;
+
+              default:
+                $organism = requerio.$orgs[selector];
+                heightVal = $organism.height();
+
+                expect(heightVal).to.equal(1);
+            }
+          });
         });
       });
     });
