@@ -618,8 +618,6 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         if (Array.isArray($member) && Array.isArray(memberIdx)) {
           // Dispatch on each iteration of $member array.
           $member.forEach(($elem, idx) => {
-            const memberState = state.$members[memberIdx[idx]];
-
             this.prevAction = store.dispatch({
               type: 'TEXT',
               selector: this.selector,
@@ -631,8 +629,6 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
           });
         }
         else if ($member && typeof memberIdx === 'number') {
-          const memberState = state.$members[memberIdx];
-
           // Dispatch on $member.
           this.prevAction = store.dispatch({
             type: 'TEXT',
