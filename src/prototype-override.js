@@ -228,19 +228,26 @@ function applyData($org, args, $member) {
     applyMethod($org, method, args, $member);
   }
 
+  // Might need to use Object.assign because apparently, as of jQuery 3.5.0, data objects have a null prototype.
   if (Array.isArray($member)) {
     // Get all data to submit for updating state. Only iterate once.
     for (let $elem of $member) {
-      args[0] = $elem[method].apply($elem);
+      const data = $elem[method].apply($elem);
+      // eslint-disable-next-line eqeqeq
+      args[0] = data.constructor == null ? Object.assign({}, data) : data;
 
       break;
     }
   }
   else if ($member) {
-    args[0] = $member[method].apply($member);
+    const data = $member[method].apply($member);
+    // eslint-disable-next-line eqeqeq
+    args[0] = data.constructor == null ? Object.assign({}, data) : data;
   }
   else {
-    args[0] = $org[method].apply($org);
+    const data = $org[method].apply($org);
+    // eslint-disable-next-line eqeqeq
+    args[0] = data.constructor == null ? Object.assign({}, data) : data;
   }
 }
 
@@ -416,8 +423,12 @@ export default (requerio) => {
 
         // Iterate through organisms and check if this organism (dispatching the 'append' action) is an ancestor.
         // This is much more efficient than searching through branches of descendants.
-        if ($org1.parents(this).length) {
-          descendantsToReset.push($org1);
+        for (let i = 0; i < this.length; i++) {
+          if ($org1.parents(this[i]).length) {
+            descendantsToReset.push($org1);
+
+            break;
+          }
         }
       }
     }
