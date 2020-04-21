@@ -6,7 +6,6 @@ import {JSDOM} from 'jsdom';
 
 import $organismsBefore from './fixtures/organisms';
 import Requerio from '../src/requerio';
-//import tests from './tests/t.tmp';
 import tests from './tests/main';
 
 const html = fs.readFileSync(path.join(__dirname, 'fixtures', 'index.html'), 'utf8');
