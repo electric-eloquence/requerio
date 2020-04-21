@@ -4,11 +4,19 @@
     <meta charset="UTF-8">
   </head>
   <body>
-    <main id="main" class="has-child-test">
+    <main id="main" class="has-child-test" data-from-attribute="hyphen-delimited to camelCase">
       <input class="main__input" type="text">
-      <section class="main__section main__section--0"></section>
-      <section class="main__section main__section--1 has-parent-test"></section>
+      <section class="main__section main__section--0">Foo</section>
+      <section class="main__section main__section--1 has-parent-test">Bar</section>
     </main>
+    <div id="next">
+      <section class="next__section next__section--0">Foo</section>
+      <section class="next__section next__section--1">Bar</section>
+      <section class="next__section next__section--2">Foo</section>
+      <section class="next__section next__section--3">Bar</section>
+      <section class="next__section next__section--4">Foo</section>
+      <section class="next__section next__section--5">Bar</section>
+    <div>
     <div id="yoda" class="has-child-test">
       <input id="yoda__input" type="text">
       <span class="midi-chlorian midi-chlorian--0 has-parent-test"></span>

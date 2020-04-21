@@ -81,7 +81,10 @@ DOM.
 | --- | --- | --- |
 | keyValues | `object` | An object of key:value pairs. |
 
-### empty(keyValues)
+### detach()
+Remove all matches from the DOM, but keep in memory in case they need to be reattached.
+
+### empty()
 Empty innerHTML of all matches.
 
 ### height(value)
@@ -138,6 +141,9 @@ Prepend HTML content to the innerHTML of all matches.
 | --- | --- | --- |
 | content | `function` | A function that returns an HTML string. |
 
+### remove()
+Remove all matches from the DOM, and from memory.
+
 ### removeClass(classes)
 For each submitted class, remove that class from all matches which have that
 class.
@@ -171,6 +177,23 @@ properties on `state.boundingClientRect`.
 | Param | Type | Description |
 | --- | --- | --- |
 | boundingClientRect | `object` | An object of key:values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class, with the exception of `.x` and `.y` (as per compatibility with Microsoft browsers). |
+
+### text(text)
+Set the textContent of all matches. This is a safer way to change text on the DOM than dispatching an 'html' action.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| text | `string` | A string of text. Functions are not supported. |
+
+### text()
+Dispatching a 'text' action without a parameter will set `state.textContent` to
+the string value of the textContent of the actual element. Prior to that,
+`state.textContent` will be null. Simply invoking `.getState()` where
+`state.textContent` is null will not update `state.textContent`. However, once
+`state.textContent` has been set to a string, subsequent invocations of
+`.getState()` will update `state.textContent`. Set `state.textContent` only when
+necessary, since very large text strings across many organisms with many members
+can add up to a large amount of data.
 
 ### toggleClass(classes)
 For each submitted class, add or remove that class from all matches, depending

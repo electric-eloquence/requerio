@@ -1,7 +1,3 @@
-/**
- * This file needs to run after jsdom.js and main.js and so must be named accordingly alphabetically.
- */
-
 import fs from 'fs';
 import path from 'path';
 
@@ -9,24 +5,14 @@ import * as Redux from 'redux';
 import cheerio from 'cheerio';
 import {expect} from 'chai';
 
-import Requerio from '../../src/requerio';
+import $organisms from './fixtures/organisms';
+import Requerio from '../src/requerio';
 
-const html = fs.readFileSync(path.join(__dirname, '..', 'fixtures', 'index.html'), 'utf8');
+const html = fs.readFileSync(path.join(__dirname, 'fixtures', 'index.html'), 'utf8');
 const $ = global.$ = cheerio.load(html);
 
 const timeout = 100;
 
-const $organisms = {
-  'window': null,
-  'document': null,
-  'html': null,
-  'body': null,
-  'input': null,
-  '#main': null,
-  '.main__section': null,
-  '.main__section--0': null,
-  '.main__section--1': null
-};
 $.prototype.addExtensibility = function () {
   console.log('extensibility added! (jk)'); // eslint-disable-line no-console
 };
@@ -79,38 +65,36 @@ const customMiddleware = () => next => action => {
 const requerio = new Requerio($, Redux, $organisms, customReducer, Redux.applyMiddleware(customMiddleware));
 requerio.init();
 
-describe('Requerio', function () {
-  describe('extensibility', function () {
-    it('accepts a custom reducer', function () {
-      const $org = requerio.$orgs['#main'];
-      $org.dispatchAction('addExtensibility');
-      const state = $org.getState();
+describe('Requerio extensibility', function () {
+  it('accepts a custom reducer', function () {
+    const $org = requerio.$orgs['#main'];
+    $org.dispatchAction('addExtensibility');
+    const state = $org.getState();
 
-      expect(state.extensible).to.be.true;
-    });
+    expect(state.extensible).to.be.true;
+  });
 
-    it('handles an incorrect state property type in a custom reducer', function () {
-      const $org = requerio.$orgs['#main'];
-      $org.dispatchAction('handleExtensibility');
-      const state = $org.getState();
+  it('handles an incorrect state property type in a custom reducer', function () {
+    const $org = requerio.$orgs['#main'];
+    $org.dispatchAction('handleExtensibility');
+    const state = $org.getState();
 
-      expect(state.handle).to.be.undefined;
-    });
+    expect(state.handle).to.be.undefined;
+  });
 
-    it('accepts custom middleware', function (done) {
-      const $org = requerio.$orgs['#main'];
-      $org.dispatchAction('removeExtensibility');
-      const stateBefore = $org.getState();
+  it('accepts custom middleware', function (done) {
+    const $org = requerio.$orgs['#main'];
+    $org.dispatchAction('removeExtensibility');
+    const stateBefore = $org.getState();
 
-      $org.dispatchAction('deferExtensibility').prevAction.promise.then(() => {
-        const stateAfter = $org.getState();
+    $org.dispatchAction('deferExtensibility').prevAction.promise.then(() => {
+      const stateAfter = $org.getState();
 
-        expect(stateBefore.extensible).to.be.false;
-        expect(stateAfter.extensible).to.be.true;
-        expect(stateAfter.elapsed).to.be.a('number');
-        expect(stateAfter.elapsed).to.not.be.below(timeout);
-        done();
-      });
+      expect(stateBefore.extensible).to.be.false;
+      expect(stateAfter.extensible).to.be.true;
+      expect(stateAfter.elapsed).to.be.a('number');
+      expect(stateAfter.elapsed).to.not.be.below(timeout);
+      done();
     });
   });
 });

@@ -89,7 +89,6 @@ Append HTML content to the innerHTML of all matches.
 */
       case 'append': {
         // Handled by running the method as a side-effect. Will reset elements and members of affected organisms.
-        // Will not automatically update any state's .innerHTML.
         break;
       }
 
@@ -175,7 +174,17 @@ DOM.
       }
 
       /**
-### empty(keyValues)
+### detach()
+Remove all matches from the DOM, but keep in memory in case they need to be reattached.
+*/
+      case 'detach': {
+        // Handled by running the method as a side-effect. Will reset elements and members of affected parents.
+        // Will not automatically update any state's .innerHTML.
+        break;
+      }
+
+      /**
+### empty()
 Empty innerHTML of all matches.
 */
       case 'empty': {
@@ -311,6 +320,15 @@ Prepend HTML content to the innerHTML of all matches.
 */
       case 'prepend': {
         // Handled by running the method as a side-effect. Will reset elements and members of affected organisms.
+        break;
+      }
+
+      /**
+### remove()
+Remove all matches from the DOM, and from memory.
+*/
+      case 'remove': {
+        // Handled by running the method as a side-effect. Will reset elements and members of affected parents.
         // Will not automatically update any state's .innerHTML.
         break;
       }
@@ -415,6 +433,32 @@ properties on `state.boundingClientRect`.
       }
 
       /**
+### text(text)
+Set the textContent of all matches. This is a safer way to change text on the DOM than dispatching an 'html' action.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| text | `string` | A string of text. Functions are not supported. |
+
+### text()
+Dispatching a 'text' action without a parameter will set `state.textContent` to
+the string value of the textContent of the actual element. Prior to that,
+`state.textContent` will be null. Simply invoking `.getState()` where
+`state.textContent` is null will not update `state.textContent`. However, once
+`state.textContent` has been set to a string, subsequent invocations of
+`.getState()` will update `state.textContent`. Set `state.textContent` only when
+necessary, since very large text strings across many organisms with many members
+can add up to a large amount of data.
+*/
+      case 'text': {
+        if (action.args.length === 1) {
+          state.textContent = action.args[0];
+        }
+
+        break;
+      }
+
+      /**
 ### toggleClass(classes)
 For each submitted class, add or remove that class from all matches, depending
 on whether or not the member has that class.
@@ -504,7 +548,7 @@ function reducerClosure(orgSelector, customReducer) {
 
     /**
      * Contracts for future states. Initial states contain empty values.
-     * Do not to let states bloat for no reason (as it could with large .innerHTML).
+     * Do not to let states bloat for no reason (as it could with large .innerHTML or .textContent).
      *
      * Be sure to update docs/state-object-defaults.md when updating any of these defaults.
      */
@@ -543,6 +587,7 @@ function reducerClosure(orgSelector, customReducer) {
         innerHeight: null,
         scrollTop: null,
         style: {},
+        textContent: null,
         width: null,
         height: null,
         $members: []

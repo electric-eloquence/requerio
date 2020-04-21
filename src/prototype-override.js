@@ -356,8 +356,125 @@ export default (requerio) => {
   /* eslint-disable max-len */
   /* eslint-disable valid-jsdoc */
 
-  const {$, store} = requerio;
+  const {$, $orgs, store} = requerio;
   $.prototype.$members = [];
+
+  /**
+   * Must redefine .after() because we may need to reset the elements and members of sibling and descendent organisms.
+   * Same params as jQuery/Cheerio .after().
+   * Do not document.
+   */
+  const afterFnOrig = $.prototype.after;
+
+  $.prototype.after = function () {
+    const descendantsToReset = [];
+    const $parent = this.parent();
+
+    if (arguments.length) {
+      for (let orgSelector1 of Object.keys($orgs)) {
+        const $org1 = $orgs[orgSelector1];
+
+        // Iterate through organisms and check if the parent of this organism (dispatching the 'after' action)
+        // is an ancestor.
+        // This is much more efficient than searching through branches of descendants.
+        for (let i = 0; i < $parent.length; i++) {
+          if ($org1.parents($parent[i]).length) {
+            descendantsToReset.push($org1);
+
+            break;
+          }
+        }
+      }
+    }
+
+    const retVal = afterFnOrig.apply(this, arguments);
+
+    if (arguments.length) {
+      this.resetElementsAndMembers();
+
+      for (let descendantToReset of descendantsToReset) {
+        descendantToReset.resetElementsAndMembers();
+      }
+    }
+
+    return retVal;
+  };
+
+  /**
+   * Must redefine .append() because we may need to reset the elements and members of descendent organisms.
+   * Same params as jQuery/Cheerio .append().
+   * Do not document.
+   */
+  const appendFnOrig = $.prototype.append;
+
+  $.prototype.append = function () {
+    const descendantsToReset = [];
+
+    if (arguments.length) {
+      for (let orgSelector1 of Object.keys($orgs)) {
+        const $org1 = $orgs[orgSelector1];
+
+        // Iterate through organisms and check if this organism (dispatching the 'append' action) is an ancestor.
+        // This is much more efficient than searching through branches of descendants.
+        if ($org1.parents(this).length) {
+          descendantsToReset.push($org1);
+        }
+      }
+    }
+
+    const retVal = appendFnOrig.apply(this, arguments);
+
+    if (arguments.length) {
+      this.resetElementsAndMembers();
+
+      for (let descendantToReset of descendantsToReset) {
+        descendantToReset.resetElementsAndMembers();
+      }
+    }
+
+    return retVal;
+  };
+
+  /**
+   * Must redefine .before() because we may need to reset the elements and members of sibling and descendent organisms
+   * Same params as jQuery/Cheerio .before().
+   * Do not document.
+   */
+  const beforeFnOrig = $.prototype.before;
+
+  $.prototype.before = function () {
+    const descendantsToReset = [];
+    const $parent = this.parent();
+
+    if (arguments.length) {
+      for (let orgSelector1 of Object.keys($orgs)) {
+        const $org1 = $orgs[orgSelector1];
+
+        // Iterate through organisms and check if the parent of this organism (dispatching the 'before' action)
+        // is an ancestor.
+        // This is much more efficient than searching through branches of descendants.
+        for (let i = 0; i < $parent.length; i++) {
+          if ($org1.parents($parent[i]).length) {
+            descendantsToReset.push($org1);
+
+            break;
+          }
+        }
+      }
+    }
+
+    const retVal = beforeFnOrig.apply(this, arguments);
+
+    if (arguments.length) {
+      this.resetElementsAndMembers();
+
+      for (let descendantToReset of descendantsToReset) {
+        descendantToReset.resetElementsAndMembers();
+      }
+    }
+
+    return retVal;
+  };
 
   /**
 ### .blur()
@@ -366,6 +483,41 @@ A server-side stand-in for client-side `.blur()`.
   if (!$.prototype.blur) {
     $.prototype.blur = function () {};
   }
+
+  /**
+   * Must redefine .detach() because we need to reset the elements and members of parent organisms.
+   * Same params as jQuery .detach().
+   * Do not document.
+   */
+  const detachFnOrig = $.prototype.detach;
+
+  $.prototype.detach = function () {
+    const parentsToReset = [];
+
+    for (let orgSelector1 of Object.keys($orgs)) {
+      for (let i = 0; i < this.$members.length; i++) {
+        if (this.$members[i].parent(orgSelector1).length) {
+          parentsToReset.push($orgs[orgSelector1]);
+
+          break;
+        }
+      }
+    }
+
+    if (typeof detachFnOrig === 'function') {
+      detachFnOrig.apply(this);
+    }
+    else {
+      // We can just use .remove() in Cheerio since there are no additional data to retain.
+      this.remove();
+    }
+
+    for (let parentToReset of parentsToReset) {
+      parentToReset.resetElementsAndMembers();
+    }
+
+    return this;
+  };
 
   /**
 ### .dispatchAction(method, [args], [memberIdx])
@@ -457,13 +609,57 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         break;
       }
 
-      case 'html': {
+      case 'html':
+      case 'append':
+      case 'prepend':
+      case 'text': {
+        const state = store.getState()[this.selector];
+
+        if (Array.isArray($member) && Array.isArray(memberIdx)) {
+          // Dispatch on each iteration of $member array.
+          $member.forEach(($elem, idx) => {
+            const memberState = state.$members[memberIdx[idx]];
+
+            this.prevAction = store.dispatch({
+              type: 'TEXT',
+              selector: this.selector,
+              $org: this,
+              method: 'text',
+              args: [$elem.text()],
+              memberIdx: memberIdx[idx]
+            });
+          });
+        }
+        else if ($member && typeof memberIdx === 'number') {
+          const memberState = state.$members[memberIdx];
+
+          // Dispatch on $member.
+          this.prevAction = store.dispatch({
+            type: 'TEXT',
+            selector: this.selector,
+            $org: this,
+            method: 'text',
+            args: [$member.text()],
+            memberIdx: memberIdx
+          });
+        }
+        else {
+          // Dispatch on $org.
+          this.prevAction = store.dispatch({
+            type: 'TEXT',
+            selector: this.selector,
+            $org: this,
+            method: 'text',
+            args: [this.text()],
+            memberIdx: memberIdx
+          });
+        }
+
         // If the 'html' action is dispatched without an arg, or with a null arg, and the .innerHTML property on the
         // state is unset, we want to set the .innerHTML property.
+        // Same goes for 'append' and 'prepend' irrespective of arg.
         // eslint-disable-next-line eqeqeq
-        if (args[0] == null) {
-          const state = store.getState()[this.selector];
-
+        if (method !== 'html' || args[0] == null) {
           if (Array.isArray($member) && Array.isArray(memberIdx)) {
             // Dispatch on each iteration of $member array.
             $member.forEach(($elem, idx) => {
@@ -472,10 +668,10 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
               // eslint-disable-next-line eqeqeq
               if (!memberState || memberState.innerHTML == null) {
                 this.prevAction = store.dispatch({
-                  type,
+                  type: 'HTML',
                   selector: this.selector,
                   $org: this,
-                  method,
+                  method: 'html',
                   args: [$elem.html()],
                   memberIdx: memberIdx[idx]
                 });
@@ -487,12 +683,11 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 
             // eslint-disable-next-line eqeqeq
             if (!memberState || memberState.innerHTML == null) {
-              // Dispatch on $member.
               this.prevAction = store.dispatch({
-                type,
+                type: 'HTML',
                 selector: this.selector,
                 $org: this,
-                method,
+                method: 'html',
                 args: [$member.html()],
                 memberIdx: memberIdx
               });
@@ -501,20 +696,21 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
           else {
             // eslint-disable-next-line eqeqeq
             if (state.innerHTML == null) {
-              // Dispatch on $org.
               this.prevAction = store.dispatch({
-                type,
+                type: 'HTML',
                 selector: this.selector,
                 $org: this,
-                method,
+                method: 'html',
                 args: [this.html()],
                 memberIdx: memberIdx
               });
             }
           }
 
-          // Return because we don't want to invoke the default dispatch.
-          return this;
+          // Return because we don't want to invoke the default 'html' dispatch for the 'html' method.
+          if (method === 'html') {
+            return this;
+          }
         }
 
         applyMethod(this, method, args, $member);
@@ -590,6 +786,43 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 
     return this;
   };
+
+  /**
+   * Must redefine .empty() because we may need to reset the elements and members of descendent organisms.
+   * Same params as jQuery/Cheerio .empty().
+   * Do not document.
+   */
+
+  const emptyFnOrig = $.prototype.empty;
+
+  $.prototype.empty = function () {
+    const descendantsToReset = [];
+
+    for (let orgSelector1 of Object.keys($orgs)) {
+      const $org1 = $orgs[orgSelector1];
+
+      // Iterate through organisms and check if this organism (dispatching the 'empty' action) is an ancestor.
+      // This is much more efficient than searching through branches of descendants.
+      for (let i = 0; i < this.length; i++) {
+        if ($org1.parents(this[i]).length) {
+          descendantsToReset.push($org1);
+
+          break;
+        }
+      }
+    }
+
+    const retVal = emptyFnOrig.apply(this);
+
+    this.resetElementsAndMembers();
+
+    for (let descendantToReset of descendantsToReset) {
+      descendantToReset.resetElementsAndMembers();
+    }
+
+    return retVal;
+  };
+
 
   /**
 ### .exclude(selector)
@@ -780,7 +1013,7 @@ __Returns__: `object` - The organism's state.
     updateState = this.updateMeasurements(state, $member, memberIdx) || updateState;
 
     // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data,
-    // nor do we want to preform unnecessary .html() reads.
+    // nor do we want to perform unnecessary .html() reads.
     // Therefore, only proceed with an 'html' action if innerHTML is already set.
     const innerHTMLOld = state.innerHTML;
 
@@ -802,6 +1035,36 @@ __Returns__: `object` - The organism's state.
           $org: this,
           method: 'html',
           args: [innerHTMLNew],
+          memberIdx
+        });
+
+        updateState = true;
+      }
+    }
+
+    // Do not preemptively update .textContent property because we don't want to bloat the app with too much data,
+    // nor do we want to perform unnecessary .text() reads.
+    // Therefore, only proceed with a 'text' action if textContent is already set.
+    const textContentOld = state.textContent;
+
+    // eslint-disable-next-line eqeqeq
+    if (textContentOld != null) {
+      let textContentNew;
+
+      if (typeof memberIdx === 'number') {
+        textContentNew = $member.text();
+      }
+      else {
+        textContentNew = this.text();
+      }
+
+      if (textContentNew !== textContentOld) {
+        store.dispatch({
+          type: 'TEXT',
+          selector: this.selector,
+          $org: this,
+          method: 'text',
+          args: [textContentNew],
           memberIdx
         });
 
@@ -1098,6 +1361,45 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
   };
 
   /**
+   * Must redefine .html() because we may need to reset the elements and members of descendent organisms.
+   * Same params as jQuery/Cheerio .html(). However, unlike jQuery, does not accept function params.
+   * Do not document.
+   */
+  const htmlFnOrig = $.prototype.html;
+
+  $.prototype.html = function () {
+    const descendantsToReset = [];
+
+    if (arguments.length) {
+      for (let orgSelector1 of Object.keys($orgs)) {
+        const $org1 = $orgs[orgSelector1];
+
+        // Iterate through organisms and check if this organism (dispatching the 'html' action) is an ancestor.
+        // This is much more efficient than searching through branches of descendants.
+        for (let i = 0; i < this.length; i++) {
+          if ($org1.parents(this[i]).length) {
+            descendantsToReset.push($org1);
+
+            break;
+          }
+        }
+      }
+    }
+
+    const retVal = htmlFnOrig.apply(this, arguments);
+
+    if (arguments.length) {
+      this.resetElementsAndMembers();
+
+      for (let descendantToReset of descendantsToReset) {
+        descendantToReset.resetElementsAndMembers();
+      }
+    }
+
+    return retVal;
+  };
+
+  /**
 ### .populateMembers()
 (Re)populate an organism's `.$members` array with its (recalculated) members.
 `.$members` are jQuery/Cheerio components, not fully incepted organisms.
@@ -1117,12 +1419,85 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
   };
 
   /**
+   * Must redefine .prepend() because we may need to reset the elements and members of descendent organisms.
+   * Same params as jQuery/Cheerio .prepend().
+   * Do not document.
+   */
+  const prependFnOrig = $.prototype.prepend;
+
+  $.prototype.prepend = function () {
+    const descendantsToReset = [];
+    const $parent = this.parent();
+
+    if (arguments.length) {
+      for (let orgSelector1 of Object.keys($orgs)) {
+        const $org1 = $orgs[orgSelector1];
+
+        // Iterate through organisms and check if this organism (dispatching the 'prepend' action) is an ancestor.
+        // This is much more efficient than searching through branches of descendants.
+        for (let i = 0; i < $parent.length; i++) {
+          if ($org1.parents($parent[i]).length) {
+            descendantsToReset.push($org1);
+
+            break;
+          }
+        }
+      }
+    }
+
+    const retVal = prependFnOrig.apply(this, arguments);
+
+    if (arguments.length) {
+      this.resetElementsAndMembers();
+
+      for (let descendantToReset of descendantsToReset) {
+        descendantToReset.resetElementsAndMembers();
+      }
+    }
+
+    return retVal;
+  };
+
+  /**
+   * Must redefine .remove() because we need to reset the elements and members of parent organisms.
+   * Same params as jQuery .remove().
+   * Do not document.
+   */
+  const removeFnOrig = $.prototype.remove;
+
+  $.prototype.remove = function () {
+    const parentsToReset = [];
+
+    for (let orgSelector1 of Object.keys($orgs)) {
+      for (let i = 0; i < this.$members.length; i++) {
+        if (this.$members[i].parent(orgSelector1).length) {
+          parentsToReset.push($orgs[orgSelector1]);
+
+          break;
+        }
+      }
+    }
+
+    removeFnOrig.apply(this);
+
+    for (let parentToReset of parentsToReset) {
+      parentToReset.resetElementsAndMembers();
+    }
+
+    return this;
+  };
+
+  /**
 ### .resetElementsAndMembers()
 Reset the organism's elements and members as they are added or removed. This is
 necessary because neither jQuery nor Cheerio dynamically updates the indexed
 elements or length properties on a saved jQuery or Cheerio component.
 */
   $.prototype.resetElementsAndMembers = function () {
+    if (!this.selector) {
+      return;
+    }
+
     const $orgReset = $(this.selector);
     let reset = false;
 
@@ -1169,6 +1544,45 @@ testing.
       this.dispatchAction('setBoundingClientRect', rectObj, memberIdx);
     };
   }
+
+  /**
+   * Must redefine .text() because we may need to reset the elements and members of descendent organisms.
+   * Same params as jQuery/Cheerio .text(). However, unlike jQuery, does not accept function params.
+   * Do not document.
+   */
+  const textFnOrig = $.prototype.text;
+
+  $.prototype.text = function () {
+    const descendantsToReset = [];
+
+    if (arguments.length) {
+      for (let orgSelector1 of Object.keys($orgs)) {
+        const $org1 = $orgs[orgSelector1];
+
+        // Iterate through organisms and check if this organism (dispatching the 'text' action) is an ancestor.
+        // This is much more efficient than searching through branches of descendants.
+        for (let i = 0; i < this.length; i++) {
+          if ($org1.parents(this[i]).length) {
+            descendantsToReset.push($org1);
+
+            break;
+          }
+        }
+      }
+    }
+
+    const retVal = textFnOrig.apply(this, arguments);
+
+    if (arguments.length) {
+      this.resetElementsAndMembers();
+
+      for (let descendantToReset of descendantsToReset) {
+        descendantToReset.resetElementsAndMembers();
+      }
+    }
+
+    return retVal;
+  };
 
   /**
 ### .updateMeasurements()
