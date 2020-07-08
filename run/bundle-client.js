@@ -43,9 +43,8 @@ new Promise(
 
         resolve();
       });
-  }
-).then(
-  () => {
+  })
+  .then(() => {
     const begin = Date.now();
     const mjs = fs.readFileSync(prefix + srcMjs, 'utf8');
     const uglifiedMjs = uglifyES.minify(mjs);
@@ -63,9 +62,7 @@ new Promise(
     console.log('\x1b[1m\x1b[36m' + srcMjs + '\x1b[0m\x1b[36m → \x1b[1m' + bldMjs + '\x1b[0m\x1b[36m' + '...' + '\x1b[0m');
     console.log('\x1b[32m' + 'created ' + `\x1b[1m${bldMjs} ` + '\x1b[0m\x1b[32m' + 'in \x1b[1m' + `${elapsed}ms` +
       '\x1b[0m');
-  }
-).catch(
-  (err) => {
+  })
+  .catch((err) => {
     throw err;
-  }
-);
+  });
