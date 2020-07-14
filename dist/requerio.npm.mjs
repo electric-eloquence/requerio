@@ -17,11 +17,21 @@ var organismsIncept = ($orgs, $) => {
       if (typeof document === 'object') {
         $org = $(document);
       }
+      else {
+        $org = $(i);
+
+        $org.$members.push({});
+      }
     }
 
     if (i === 'window') {
       if (typeof window === 'object') {
         $org = $(window);
+      }
+      else {
+        $org = $(i);
+
+        $org.$members.push({});
       }
     }
 
