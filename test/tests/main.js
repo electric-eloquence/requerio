@@ -100,15 +100,15 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.exclude__w-string-argument'].$members.forEach(() => $membersLengthBefore++);
           });
 
           after(function () {
-            requerio.$orgs['.main__section'].dispatchAction('removeClass', 'not');
+            requerio.$orgs['.exclude__w-string-argument'].dispatchAction('removeClass', 'not');
           });
 
           it('excludes elements from members array when .exclude() is invoked', function () {
-            $orgDuring = requerio.$orgs['.main__section'].exclude('.main__section--0');
+            $orgDuring = requerio.$orgs['.exclude__w-string-argument'].exclude('.exclude__w-string-argument--0');
 
             $orgDuring.$members.forEach(() => $membersLengthDuring++);
             expect($membersLengthBefore).to.equal(2);
@@ -124,7 +124,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('does not dispatch the action on the element specified by .exclude()', function () {
-            const $org = requerio.$orgs['.main__section'];
+            const $org = requerio.$orgs['.exclude__w-string-argument'];
             const classList0 = $org.getState(0).classList;
             const classList1 = $org.getState(1).classList;
 
@@ -134,22 +134,22 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         });
 
         describe('with a DOM element argument', function () {
-          const mainSection00 = $('.main__section--0')[0];
+          const mainSpan00 = $('.exclude__w-dom-element-argument--0')[0];
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
           let $membersLengthAfter = 0;
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.exclude__w-dom-element-argument'].$members.forEach(() => $membersLengthBefore++);
           });
 
           after(function () {
-            requerio.$orgs['.main__section'].dispatchAction('removeClass', 'not');
+            requerio.$orgs['.exclude__w-dom-element-argument'].dispatchAction('removeClass', 'not');
           });
 
           it('excludes elements from members array when .exclude() is invoked', function () {
-            $orgDuring = requerio.$orgs['.main__section'].exclude(mainSection00);
+            $orgDuring = requerio.$orgs['.exclude__w-dom-element-argument'].exclude(mainSpan00);
 
             $orgDuring.$members.forEach(() => $membersLengthDuring++);
             expect($membersLengthBefore).to.equal(2);
@@ -165,7 +165,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('does not dispatch the action on the element specified by .exclude()', function () {
-            const $org = requerio.$orgs['.main__section'];
+            const $org = requerio.$orgs['.exclude__w-dom-element-argument'];
             const classList0 = $org.getState(0).classList;
             const classList1 = $org.getState(1).classList;
 
@@ -175,22 +175,22 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         });
 
         describe('with a Cheerio/jQuery object argument', function () {
-          const $mainSection0 = $('.main__section--0');
+          const $mainSpan0 = $('.exclude__w-cheerio-jquery-argument--0');
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
           let $membersLengthAfter = 0;
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.exclude__w-cheerio-jquery-argument'].$members.forEach(() => $membersLengthBefore++);
           });
 
           after(function () {
-            requerio.$orgs['.main__section'].dispatchAction('removeClass', 'not');
+            requerio.$orgs['.exclude__w-cheerio-jquery-argument'].dispatchAction('removeClass', 'not');
           });
 
           it('excludes elements from members array when .exclude() is invoked', function () {
-            $orgDuring = requerio.$orgs['.main__section'].exclude($mainSection0);
+            $orgDuring = requerio.$orgs['.exclude__w-cheerio-jquery-argument'].exclude($mainSpan0);
 
             $orgDuring.$members.forEach(() => $membersLengthDuring++);
             expect($membersLengthBefore).to.equal(2);
@@ -206,7 +206,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('does not dispatch the action on the element specified by .exclude()', function () {
-            const $org = requerio.$orgs['.main__section'];
+            const $org = requerio.$orgs['.exclude__w-cheerio-jquery-argument'];
             const classList0 = $org.getState(0).classList;
             const classList1 = $org.getState(1).classList;
 
@@ -221,22 +221,22 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           let $membersLengthAfter = 0;
           let $orgDuring;
 
-          function excludeMainSection0(i, elem) {
-            const classToExclude = 'main__section--0';
+          function excludeMainSpan0(i, elem) {
+            const classToExclude = 'exclude__w-function-argument--0';
 
             return $(this).hasClass(classToExclude) &&
               $(elem).hasClass(classToExclude) &&
-              $(requerio.$orgs['.main__section'].get(i)).hasClass(classToExclude);
+              $(requerio.$orgs['.exclude__w-function-argument'].get(i)).hasClass(classToExclude);
           }
 
           before(function () {
-            requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.exclude__w-function-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.main__section'].exclude(excludeMainSection0);
+            $orgDuring = requerio.$orgs['.exclude__w-function-argument'].exclude(excludeMainSpan0);
           });
 
           after(function () {
-            requerio.$orgs['.main__section'].dispatchAction('attr', {test: null});
+            requerio.$orgs['.exclude__w-function-argument'].dispatchAction('attr', {test: null});
           });
 
           it('excludes elements from members array when .exclude() is invoked', function () {
@@ -255,7 +255,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('does not dispatch the action on the element specified by .exclude()', function () {
-            const $org = requerio.$orgs['.main__section'];
+            const $org = requerio.$orgs['.exclude__w-function-argument'];
             const attribs0 = $org.getState(0).attribs;
             const attribs1 = $org.getState(1).attribs;
 
@@ -267,52 +267,59 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
         describe('with no argument', function () {
           it('returns the organism when "attr" is dispatched', function () {
-            const retVal = requerio.$orgs['.main__section'].exclude('.main__section--0').dispatchAction('attr');
+            const retVal =
+              requerio.$orgs['.exclude__w-no-argument'].exclude('.exclude__w-no-argument--0').dispatchAction('attr');
 
-            expect(retVal).to.equal(requerio.$orgs['.main__section']);
+            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
           });
 
           it('returns the organism when "data" is dispatched', function () {
-            const retVal = requerio.$orgs['.main__section'].exclude('.main__section--0').dispatchAction('data');
+            const retVal =
+              requerio.$orgs['.exclude__w-no-argument'].exclude('.exclude__w-no-argument--0').dispatchAction('data');
 
-            expect(retVal).to.equal(requerio.$orgs['.main__section']);
+            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
           });
 
           it('returns the organism when "getBoundingClientRect" is dispatched', function () {
-            const retVal = requerio.$orgs['.main__section'].exclude('.main__section--0')
+            const retVal = requerio.$orgs['.exclude__w-no-argument'].exclude('.exclude__w-no-argument--0')
               .dispatchAction('getBoundingClientRect');
 
-            expect(retVal).to.equal(requerio.$orgs['.main__section']);
+            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
           });
 
           it('returns the organism when "innerWidth" is dispatched', function () {
-            const retVal = requerio.$orgs['.main__section'].exclude('.main__section--0').dispatchAction('innerWidth');
+            const retVal = requerio.$orgs['.exclude__w-no-argument']
+              .exclude('.exclude__w-no-argument--0').dispatchAction('innerWidth');
 
-            expect(retVal).to.equal(requerio.$orgs['.main__section']);
+            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
           });
 
           it('returns the organism when "innerHeight" is dispatched', function () {
-            const retVal = requerio.$orgs['.main__section'].exclude('.main__section--0').dispatchAction('innerHeight');
+            const retVal = requerio.$orgs['.exclude__w-no-argument']
+              .exclude('.exclude__w-no-argument--0').dispatchAction('innerHeight');
 
-            expect(retVal).to.equal(requerio.$orgs['.main__section']);
+            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
           });
 
           it('returns the organism when "scrollTop" is dispatched', function () {
-            const retVal = requerio.$orgs['.main__section'].exclude('.main__section--0').dispatchAction('scrollTop');
+            const retVal = requerio.$orgs['.exclude__w-no-argument']
+              .exclude('.exclude__w-no-argument--0').dispatchAction('scrollTop');
 
-            expect(retVal).to.equal(requerio.$orgs['.main__section']);
+            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
           });
 
           it('returns the organism when "width" is dispatched', function () {
-            const retVal = requerio.$orgs['.main__section'].exclude('.main__section--0').dispatchAction('width');
+            const retVal =
+              requerio.$orgs['.exclude__w-no-argument'].exclude('.exclude__w-no-argument--0').dispatchAction('width');
 
-            expect(retVal).to.equal(requerio.$orgs['.main__section']);
+            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
           });
 
           it('returns the organism when "height" is dispatched', function () {
-            const retVal = requerio.$orgs['.main__section'].exclude('.main__section--0').dispatchAction('height');
+            const retVal =
+              requerio.$orgs['.exclude__w-no-argument'].exclude('.exclude__w-no-argument--0').dispatchAction('height');
 
-            expect(retVal).to.equal(requerio.$orgs['.main__section']);
+            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
           });
         });
       });
@@ -406,20 +413,20 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
       // .hasElement() must be tested before manipulating the DOM because these test expect an unmanipulated DOM.
       describe('.hasElement()', function () {
         describe('with a DOM element argument', function () {
-          const mainSection00 = $('.main__section--0')[0];
+          const mainSpan00 = $('.hasElement__w-dom-element-argument--0')[0];
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
           let $membersLengthAfter = 0;
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.hasElement__w-dom-element-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.main__section'].hasElement(mainSection00);
+            $orgDuring = requerio.$orgs['.hasElement__w-dom-element-argument'].hasElement(mainSpan00);
           });
 
           after(function () {
-            requerio.$orgs['.main__section'].dispatchAction('removeClass', 'hasElement');
+            requerio.$orgs['.hasElement__w-dom-element-argument'].dispatchAction('removeClass', 'hasElement');
           });
 
           it('excludes elements from members array when .hasElement() is invoked', function () {
@@ -438,7 +445,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('dispatches the action on the element filtered by .hasElement()', function () {
-            const $org = requerio.$orgs['.main__section'];
+            const $org = requerio.$orgs['.hasElement__w-dom-element-argument'];
             const classList0 = $org.getState(0).classList;
             const classList1 = $org.getState(1).classList;
 
@@ -457,13 +464,13 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.hasNext__w-string-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.main__section'].hasNext('.main__section--1');
+            $orgDuring = requerio.$orgs['.hasNext__w-string-argument'].hasNext('.hasNext__w-string-argument--1');
           });
 
           after(function () {
-            requerio.$orgs['.main__section'].dispatchAction('removeClass', 'hasNext');
+            requerio.$orgs['.hasNext__w-string-argument'].dispatchAction('removeClass', 'hasNext');
           });
 
           it('excludes elements from members array when .hasNext() is invoked', function () {
@@ -482,7 +489,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('dispatches the action on the element filtered by .hasNext()', function () {
-            const $org = requerio.$orgs['.main__section'];
+            const $org = requerio.$orgs['.hasNext__w-string-argument'];
             const classList0 = $org.getState(0).classList;
             const classList1 = $org.getState(1).classList;
 
@@ -492,20 +499,20 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         });
 
         describe('with a DOM element argument', function () {
-          const mainSection10 = $('.main__section--1')[0];
+          const mainSpan10 = $('.hasNext__w-dom-element-argument--1')[0];
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
           let $membersLengthAfter = 0;
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.hasNext__w-dom-element-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.main__section'].hasNext(mainSection10);
+            $orgDuring = requerio.$orgs['.hasNext__w-dom-element-argument'].hasNext(mainSpan10);
           });
 
           after(function () {
-            requerio.$orgs['.main__section'].dispatchAction('removeClass', 'hasNext');
+            requerio.$orgs['.hasNext__w-dom-element-argument'].dispatchAction('removeClass', 'hasNext');
           });
 
           it('excludes elements from members array when .hasNext() is invoked', function () {
@@ -524,7 +531,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('dispatches the action on the element filtered by .hasNext()', function () {
-            const $org = requerio.$orgs['.main__section'];
+            const $org = requerio.$orgs['.hasNext__w-dom-element-argument'];
             const classList0 = $org.getState(0).classList;
             const classList1 = $org.getState(1).classList;
 
@@ -629,13 +636,13 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.hasPrev__w-string-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.main__section'].hasPrev('.main__section--0');
+            $orgDuring = requerio.$orgs['.hasPrev__w-string-argument'].hasPrev('.hasPrev__w-string-argument--0');
           });
 
           after(function () {
-            requerio.$orgs['.main__section'].dispatchAction('removeClass', 'hasPrev');
+            requerio.$orgs['.hasPrev__w-string-argument'].dispatchAction('removeClass', 'hasPrev');
           });
 
           it('excludes elements from members array when .hasPrev() is invoked', function () {
@@ -654,7 +661,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('dispatches the action on the element filtered by .hasPrev()', function () {
-            const $org = requerio.$orgs['.main__section'];
+            const $org = requerio.$orgs['.hasPrev__w-string-argument'];
             const classList0 = $org.getState(0).classList;
             const classList1 = $org.getState(1).classList;
 
@@ -664,20 +671,20 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         });
 
         describe('with a DOM element argument', function () {
-          const mainSection00 = $('.main__section--0')[0];
+          const mainSpan00 = $('.hasPrev__w-dom-element-argument--0')[0];
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
           let $membersLengthAfter = 0;
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.hasPrev__w-dom-element-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.main__section'].hasPrev(mainSection00);
+            $orgDuring = requerio.$orgs['.hasPrev__w-dom-element-argument'].hasPrev(mainSpan00);
           });
 
           after(function () {
-            requerio.$orgs['.main__section'].dispatchAction('removeClass', 'hasPrev');
+            requerio.$orgs['.hasPrev__w-dom-element-argument'].dispatchAction('removeClass', 'hasPrev');
           });
 
           it('excludes elements from members array when .hasPrev() is invoked', function () {
@@ -696,7 +703,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('dispatches the action on the element filtered by .hasPrev()', function () {
-            const $org = requerio.$orgs['.main__section'];
+            const $org = requerio.$orgs['.hasPrev__w-dom-element-argument'];
             const classList0 = $org.getState(0).classList;
             const classList1 = $org.getState(1).classList;
 
@@ -715,13 +722,14 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.main__section'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.hasSelector__w-string-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.main__section'].hasSelector('.main__section--0');
+            $orgDuring =
+              requerio.$orgs['.hasSelector__w-string-argument'].hasSelector('.hasSelector__w-string-argument--0');
           });
 
           after(function () {
-            requerio.$orgs['.main__section'].dispatchAction('removeClass', 'hasSelector');
+            requerio.$orgs['.hasSelector__w-string-argument'].dispatchAction('removeClass', 'hasSelector');
           });
 
           it('excludes elements from members array when .hasSelector() is invoked', function () {
@@ -740,7 +748,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('dispatches the action on the element filtered by .hasSelector()', function () {
-            const $org = requerio.$orgs['.main__section'];
+            const $org = requerio.$orgs['.hasSelector__w-string-argument'];
             const classList0 = $org.getState(0).classList;
             const classList1 = $org.getState(1).classList;
 
@@ -793,22 +801,8 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
       });
 
       describe('getting and setting state', function () {
-        let mainHtml;
-
-        before(function () {
-          requerio.$orgs['#main'].dispatchAction('html');
-          requerio.$orgs['.main__section'].dispatchAction('html', null, 0);
-          requerio.$orgs['.main__section'].dispatchAction('html', null, [1]);
-
-          mainHtml = requerio.$orgs['#main'].getState().innerHTML;
-        });
-
-        afterEach(function () {
-          requerio.$orgs['#main'].dispatchAction('html', mainHtml);
-        });
-
         it('invokes .dispatchAction() to change state which should be retrievable by .getState()', function () {
-          const $org = requerio.$orgs['#main'];
+          const $org = requerio.$orgs['.dispatchAction__css--0'];
 
           $org.dispatchAction('css', {display: 'none'});
 
@@ -819,15 +813,15 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
         it('gets the state for a specific organism $member when .getState() is invoked in a targeted manner\
 ', function () {
-          const $org = requerio.$orgs['.main__section'];
+          const $org = requerio.$orgs['.dispatchAction__css'];
 
           $org.dispatchAction('css', {display: 'none'}, 1);
 
-          const displayStyle0 = $org.getState(0).style.display;
           const displayStyle1 = $org.getState(1).style.display;
+          const displayStyle2 = $org.getState(2).style.display;
 
-          expect(displayStyle0).to.be.undefined;
           expect(displayStyle1).to.equal('none');
+          expect(displayStyle2).to.be.undefined;
         });
 
         it('gets the Redux store when .getStore() is invoked', function () {
@@ -841,7 +835,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         });
 
         it('resets .$members when .populateMembers() is invoked', function () {
-          const $org = requerio.$orgs['.main__section'];
+          const $org = requerio.$orgs['.populateMembers'];
           $org.$members = [];
           const $membersLengthBefore = $org.$members.length;
 
@@ -855,18 +849,18 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
           // Cheerio.
           if ($._root && $._root.attribs) {
-            expect($members[0][0].attribs.class).to.equal('main__section main__section--0');
-            expect($members[1][0].attribs.class).to.equal('main__section main__section--1 has-parent-test');
+            expect($members[0][0].attribs.class).to.equal('populateMembers populateMembers--0');
+            expect($members[1][0].attribs.class).to.equal('populateMembers populateMembers--1');
           }
           // jQuery.
           else {
-            expect($members[0][0].className).to.equal('main__section main__section--0');
-            expect($members[1][0].className).to.equal('main__section main__section--1 has-parent-test');
+            expect($members[0][0].className).to.equal('populateMembers populateMembers--0');
+            expect($members[1][0].className).to.equal('populateMembers populateMembers--1');
           }
         });
 
         it('sets .boundingClientRect properties when .setBoundingClientRect() is invoked', function () {
-          const $org = requerio.$orgs['#main'];
+          const $org = requerio.$orgs['.setBoundingClientRect--0'];
           const boundingClientRectBefore = $org.getState().boundingClientRect;
 
           width++;
@@ -902,7 +896,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
         it('sets .boundingClientRect properties on a specific $organism $member when .setBoundingClientRect() is \
 invoked in a targeted manner', function () {
-          const $org = requerio.$orgs['.main__section'];
+          const $org = requerio.$orgs['.setBoundingClientRect'];
           const stateBefore0 = $org.getState(0);
           const stateBefore1 = $org.getState(1);
 
@@ -950,7 +944,7 @@ invoked in a targeted manner', function () {
         });
 
         it('gets .boundingClientRect properties when .getBoundingClientRect() is invoked', function () {
-          const $org = requerio.$orgs['#main'];
+          const $org = requerio.$orgs['.setBoundingClientRect--0'];
           const boundingClientRect = $org.getBoundingClientRect();
 
           expect(boundingClientRect.width).to.equal(1);
@@ -962,7 +956,7 @@ invoked in a targeted manner', function () {
         });
 
         it('.updateMeasurements() updates measurement properties', function () {
-          const $org = requerio.$orgs['#main'];
+          const $org = requerio.$orgs['#main']; // Necessary to set #main for the .reducer-get tests.
           const stateBefore = $org.getState();
 
           width++;
@@ -1018,7 +1012,7 @@ invoked in a targeted manner', function () {
 
         it('.updateMeasurements() updates measurement properties on a specific $organism $member when invoked in a \
 targeted manner', function () {
-          const $org = requerio.$orgs['.main__section'];
+          const $org = requerio.$orgs['.main__span']; // Necessary to set .main__span for the .reducer-get tests.
           const stateBefore1 = $org.getState(1);
 
           width++;
@@ -1141,19 +1135,13 @@ targeted manner', function () {
       });
 
       describe('width()', function () {
-        let mainHtml;
-
-        before(function () {
-          mainHtml = requerio.$orgs['#main'].html();
-        });
-
-        afterEach(function () {
-          requerio.$orgs['#main'].dispatchAction('html', mainHtml);
-        });
-
         it('accepts a value and returns the same value on the server to mock the method call on the client\
 ', function () {
           Object.keys(requerio.$orgs).forEach((selector) => {
+            if (selector.includes('augmented')) {
+              return;
+            }
+
             const $organism = requerio.$orgs[selector];
             // Sets boundingClientRect.width returned by "getBoundingClientRect" action test.
             const widthRetVal = $organism.width(3);
@@ -1164,19 +1152,13 @@ targeted manner', function () {
       });
 
       describe('height()', function () {
-        let mainHtml;
-
-        before(function () {
-          mainHtml = requerio.$orgs['#main'].html();
-        });
-
-        afterEach(function () {
-          requerio.$orgs['#main'].dispatchAction('html', mainHtml);
-        });
-
         it('accepts a value and returns the same value on the server to mock the method call on the client\
 ', function () {
           Object.keys(requerio.$orgs).forEach((selector) => {
+            if (selector.includes('augmented')) {
+              return;
+            }
+
             const $organism = requerio.$orgs[selector];
             // Sets boundingClientRect.height returned by "getBoundingClientRect" action test.
             const heightRetVal = $organism.height(3);
@@ -1188,20 +1170,10 @@ targeted manner', function () {
     });
 
     describe('reducer-get', function () {
-      let mainHtml;
-
-      before(function () {
-        mainHtml = requerio.$orgs['#main'].html();
-      });
-
-      afterEach(function () {
-        requerio.$orgs['#main'].dispatchAction('html', mainHtml);
-      });
-
       it('updates the state $members if the $org $members increase in number', function () {
-        const $org = requerio.$orgs['.main__section'];
+        const $org = requerio.$orgs['.main__span'];
         const stateMembersLengthBefore = $org.getState().$members.length;
-        const htmlSnippet = '<section class="main__section"><h2>Section</h2></section>';
+        const htmlSnippet = '<span class="main__span"><h2>Span</h2></span>';
 
         $org.$members.push($(htmlSnippet));
 
@@ -1213,16 +1185,16 @@ targeted manner', function () {
       });
 
       it('updates the state $members if the $org $members decrease in number', function () {
-        const $org = requerio.$orgs['.main__section'];
+        const $org = requerio.$orgs['.main__span'];
         const stateMembersLengthBefore = $org.getState().$members.length;
 
         $org.$members.pop();
 
         const stateMembersLengthAfter = $org.getState().$members.length;
 
-        expect($org.$members.length).to.equal(1);
-        expect(stateMembersLengthBefore).to.equal(2);
-        expect(stateMembersLengthAfter).to.equal(1);
+        expect($org.$members.length).to.equal(2);
+        expect(stateMembersLengthBefore).to.equal(3);
+        expect(stateMembersLengthAfter).to.equal(2);
       });
 
       it('dispatches the "addClass" action with a string argument', function () {
@@ -1246,10 +1218,10 @@ targeted manner', function () {
       });
 
       it('dispatches the "addClass" action in a targeted manner', function () {
-        requerio.$orgs['.main__section'].dispatchAction('addClass', 'add-class-1', 1);
+        requerio.$orgs['.main__span'].dispatchAction('addClass', 'add-class-1', 1);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
         expect(state0.attribs.class).to.not.have.string('add-class-1');
         expect(state0.classArray).to.not.include('add-class-1');
@@ -1260,10 +1232,10 @@ targeted manner', function () {
       });
 
       it('does not dispatch the "addClass" action if the target is out-of-bounds', function () {
-        requerio.$orgs['.main__section'].dispatchAction('addClass', 'out-of-bounds', 2);
+        requerio.$orgs['.main__span'].dispatchAction('addClass', 'out-of-bounds', 2);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
         expect(state0.attribs.class).to.not.have.string('out-of-bounds');
         expect(state0.classArray).to.not.include('out-of-bounds');
@@ -1352,15 +1324,15 @@ targeted manner', function () {
       });
 
       it('dispatches the "toggleClass" action with a function argument in a targeted manner', function () {
-        const state0 = requerio.$orgs['.main__section'].getState();
+        const state0 = requerio.$orgs['.main__span'].getState();
 
-        requerio.$orgs['.main__section'].dispatchAction('toggleClass', () => 'toggle-class-function-1', 1);
+        requerio.$orgs['.main__span'].dispatchAction('toggleClass', () => 'toggle-class-function-1', 1);
 
-        const state1 = requerio.$orgs['.main__section'].getState();
+        const state1 = requerio.$orgs['.main__span'].getState();
 
-        requerio.$orgs['.main__section'].dispatchAction('toggleClass', () => 'toggle-class-function-1', 1);
+        requerio.$orgs['.main__span'].dispatchAction('toggleClass', () => 'toggle-class-function-1', 1);
 
-        const state2 = requerio.$orgs['.main__section'].getState();
+        const state2 = requerio.$orgs['.main__span'].getState();
 
         expect(state0.$members[1].attribs.class).to.not.have.string('toggle-class-function-1');
         expect(state0.$members[1].classArray).to.not.include('toggle-class-function-1');
@@ -1428,48 +1400,48 @@ targeted manner', function () {
       });
 
       it('dispatches the "attr" action with a multiple string value argument', function () {
-        requerio.$orgs['#main'].dispatchAction('attr', {test: 'testing67890', taste: 'tasting12345'});
+        requerio.$orgs['#main'].dispatchAction('attr', {taste: 'tasting12345', test: 'testing67890'});
 
         const state = requerio.$orgs['#main'].getState();
 
-        expect(state.attribs.test).to.equal('testing67890');
         expect(state.attribs.taste).to.equal('tasting12345');
+        expect(state.attribs.test).to.equal('testing67890');
       });
 
       it('dispatches the "attr" action with a single string value argument on a single target', function () {
-        requerio.$orgs['.main__section'].dispatchAction('attr', {test: 'testing12345'}, 1);
+        requerio.$orgs['.main__span'].dispatchAction('attr', {test: 'testing12345'}, 1);
 
-        const state = requerio.$orgs['.main__section'].getState(1);
+        const state = requerio.$orgs['.main__span'].getState(1);
 
         expect(state.attribs.test).to.equal('testing12345');
       });
 
       it('dispatches the "attr" action with a multiple string value argument on a single target', function () {
-        requerio.$orgs['.main__section']
-          .dispatchAction('attr', {test: 'testing67890', taste: 'tasting12345'}, 1);
+        requerio.$orgs['.main__span']
+          .dispatchAction('attr', {taste: 'tasting12345', test: 'testing67890'}, 1);
 
-        const state = requerio.$orgs['.main__section'].getState(1);
+        const state = requerio.$orgs['.main__span'].getState(1);
 
-        expect(state.attribs.test).to.equal('testing67890');
         expect(state.attribs.taste).to.equal('tasting12345');
+        expect(state.attribs.test).to.equal('testing67890');
       });
 
       it('dispatches the "attr" action with a single string value argument on multiple targets', function () {
-        requerio.$orgs['.main__section'].dispatchAction('attr', {twist: 'twisting12345'}, [0, 1]);
+        requerio.$orgs['.main__span'].dispatchAction('attr', {twist: 'twisting12345'}, [0, 1]);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
         expect(state0.attribs.twist).to.equal('twisting12345');
         expect(state1.attribs.twist).to.equal('twisting12345');
       });
 
       it('dispatches the "attr" action with a multiple string value argument on multiple targets', function () {
-        requerio.$orgs['.main__section']
+        requerio.$orgs['.main__span']
           .dispatchAction('attr', {taste: 'tasting67890', twist: 'twisting67890'}, [0, 1]);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
         expect(state0.attribs.taste).to.equal('tasting67890');
         expect(state0.attribs.twist).to.equal('twisting67890');
@@ -1532,30 +1504,30 @@ targeted manner', function () {
       });
 
       it('dispatches the "css" action with a single string value argument on a single target', function () {
-        requerio.$orgs['.main__section'].dispatchAction('css', {color: 'red'}, 1);
+        requerio.$orgs['.main__span'].dispatchAction('css', {color: 'red'}, 1);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
         expect(state0.style.color).to.not.equal(state1.style.color);
         expect(state1.style.color).to.equal('red');
       });
 
       it('dispatches the "css" action with a single string value argument on multiple targets', function () {
-        requerio.$orgs['.main__section'].dispatchAction('css', {color: 'green'}, [0, 1]);
+        requerio.$orgs['.main__span'].dispatchAction('css', {color: 'green'}, [0, 1]);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
         expect(state0.style.color).to.equal('green');
         expect(state1.style.color).to.equal('green');
       });
 
       it('dispatches the "css" action with a multiple string value argument on a single target', function () {
-        requerio.$orgs['.main__section'].dispatchAction('css', {'color': 'blue', 'background-color': 'blue'}, 1);
+        requerio.$orgs['.main__span'].dispatchAction('css', {'color': 'blue', 'background-color': 'blue'}, 1);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
         expect(state0.style.color).to.not.equal(state1.style.color);
         expect(state0.style['background-color']).to.not.equal(state1.style['background-color']);
@@ -1564,10 +1536,10 @@ targeted manner', function () {
       });
 
       it('dispatches the "css" action with a multiple string value argument on multiple targets', function () {
-        requerio.$orgs['.main__section'].dispatchAction('css', {'color': 'cyan', 'background-color': 'cyan'}, [0, 1]);
+        requerio.$orgs['.main__span'].dispatchAction('css', {'color': 'cyan', 'background-color': 'cyan'}, [0, 1]);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
         expect(state0.style.color).to.equal('cyan');
         expect(state0.style['background-color']).to.equal('cyan');
@@ -1577,11 +1549,11 @@ targeted manner', function () {
 
       it('dispatches the "css" action to update the state with a single string property argument on a single target\
 ', function () {
-        requerio.$orgs['.main__section'].css({color: 'yellow'});
-        requerio.$orgs['.main__section'].dispatchAction('css', 'color', 1);
+        requerio.$orgs['.main__span'].css({color: 'yellow'});
+        requerio.$orgs['.main__span'].dispatchAction('css', 'color', 1);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
         expect(state0.style.color).to.not.equal(state1.style.color);
         expect(state1.style.color).to.equal('yellow');
@@ -1589,11 +1561,11 @@ targeted manner', function () {
 
       it('dispatches the "css" action to update the state with a single string property argument on multiple targets\
 ', function () {
-        requerio.$orgs['.main__section'].css({color: 'magenta'});
-        requerio.$orgs['.main__section'].dispatchAction('css', 'color', [0, 1]);
+        requerio.$orgs['.main__span'].css({color: 'magenta'});
+        requerio.$orgs['.main__span'].dispatchAction('css', 'color', [0, 1]);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
         expect(state0.style.color).to.equal('magenta');
         expect(state1.style.color).to.equal('magenta');
@@ -1601,12 +1573,12 @@ targeted manner', function () {
 
       it('dispatches the "css" action to update the state with a multiple string properties argument on a single target\
 ', function () {
-        requerio.$orgs['.main__section'].css({color: 'black'});
-        requerio.$orgs['.main__section'].css({'background-color': 'black'});
-        requerio.$orgs['.main__section'].dispatchAction('css', ['color', 'background-color'], 1);
+        requerio.$orgs['.main__span'].css({color: 'black'});
+        requerio.$orgs['.main__span'].css({'background-color': 'black'});
+        requerio.$orgs['.main__span'].dispatchAction('css', ['color', 'background-color'], 1);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
         expect(state0.style.color).to.not.equal(state1.style.color);
         expect(state0.style['background-color']).to.not.equal(state1.style['background-color']);
@@ -1616,12 +1588,12 @@ targeted manner', function () {
 
       it('dispatches the "css" action to update the state with a multiple string properties argument on multiple \
 targets', function () {
-        requerio.$orgs['.main__section'].css({color: 'white'});
-        requerio.$orgs['.main__section'].css({'background-color': 'white'});
-        requerio.$orgs['.main__section'].dispatchAction('css', ['color', 'background-color'], [0, 1]);
+        requerio.$orgs['.main__span'].css({color: 'white'});
+        requerio.$orgs['.main__span'].css({'background-color': 'white'});
+        requerio.$orgs['.main__span'].dispatchAction('css', ['color', 'background-color'], [0, 1]);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
         expect(state0.style.color).to.equal('white');
         expect(state0.style['background-color']).to.equal('white');
@@ -1629,7 +1601,7 @@ targets', function () {
         expect(state1.style['background-color']).to.equal('white');
       });
 
-      it('"data" action updates state with data from a data attribute', function () {
+      it('dispatches the "data" action to update state with data from a data attribute', function () {
         requerio.$orgs['#main'].dispatchAction('data');
 
         const state = requerio.$orgs['#main'].getState();
@@ -1646,53 +1618,58 @@ targets', function () {
       });
 
       it('dispatches the "data" action with a multiple string value argument', function () {
-        requerio.$orgs['#main'].dispatchAction('data', {test: 'testing67890', taste: 'tasting12345'});
+        requerio.$orgs['#main'].dispatchAction(
+          'data', {taste: 'tasting12345', twist: 'twisting12345', toast: 'toasting12345', trust: 'trusting12345'});
 
         const state = requerio.$orgs['#main'].getState();
 
-        expect(state.data.test).to.equal('testing67890');
         expect(state.data.taste).to.equal('tasting12345');
+        expect(state.data.twist).to.equal('twisting12345');
+        expect(state.data.toast).to.equal('toasting12345');
+        expect(state.data.trust).to.equal('trusting12345');
       });
 
       it('dispatches the "data" action with a single string value argument on a single target', function () {
-        requerio.$orgs['.main__section'].dispatchAction('data', {test: 'testing12345'}, 1);
+        requerio.$orgs['.main__span'].dispatchAction('data', {test: 'testing12345'}, 1);
 
-        const state = requerio.$orgs['.main__section'].getState(1);
+        const state = requerio.$orgs['.main__span'].getState(1);
 
         expect(state.data.test).to.equal('testing12345');
       });
 
       it('dispatches the "data" action with a multiple string value argument on a single target', function () {
-        requerio.$orgs['.main__section']
-          .dispatchAction('data', {test: 'testing67890', taste: 'tasting12345'}, 1);
+        requerio.$orgs['.main__span'].dispatchAction(
+          'data', {taste: 'tasting12345', twist: 'twisting12345', toast: 'toasting12345', trust: 'trusting12345'}, 1);
 
-        const state = requerio.$orgs['.main__section'].getState(1);
+        const state = requerio.$orgs['.main__span'].getState(1);
 
-        expect(state.data.test).to.equal('testing67890');
         expect(state.data.taste).to.equal('tasting12345');
+        expect(state.data.twist).to.equal('twisting12345');
+        expect(state.data.toast).to.equal('toasting12345');
+        expect(state.data.trust).to.equal('trusting12345');
       });
 
       it('dispatches the "data" action with a single string value argument on multiple targets', function () {
-        requerio.$orgs['.main__section'].dispatchAction('data', {twist: 'twisting12345'}, [0, 1]);
+        requerio.$orgs['.main__span'].dispatchAction('data', {taste: 'tasting67890'}, [0, 1]);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
-        expect(state0.data.twist).to.equal('twisting12345');
-        expect(state1.data.twist).to.equal('twisting12345');
+        expect(state0.data.taste).to.equal('tasting67890');
+        expect(state1.data.taste).to.equal('tasting67890');
       });
 
       it('dispatches the "data" action with a multiple string value argument on multiple targets', function () {
-        requerio.$orgs['.main__section']
-          .dispatchAction('data', {taste: 'tasting67890', twist: 'twisting67890'}, [0, 1]);
+        requerio.$orgs['.main__span']
+          .dispatchAction('data', {twist: 'twisting67890', toast: 'toasting67890'}, [0, 1]);
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
 
-        expect(state0.data.taste).to.equal('tasting67890');
         expect(state0.data.twist).to.equal('twisting67890');
-        expect(state1.data.taste).to.equal('tasting67890');
+        expect(state0.data.toast).to.equal('toasting67890');
         expect(state1.data.twist).to.equal('twisting67890');
+        expect(state1.data.toast).to.equal('toasting67890');
       });
 
       it('dispatches the "getBoundingClientRect" action', function () {
@@ -1707,6 +1684,192 @@ targets', function () {
         expect(boundingClientRect.right).to.equal(3);
         expect(boundingClientRect.bottom).to.equal(3);
         expect(boundingClientRect.left).to.equal(3);
+      });
+
+      it('dispatches the "height" action', function () {
+        requerio.$orgs['#main'].dispatchAction('height', 1000);
+
+        const state = requerio.$orgs['#main'].getState();
+
+        expect(state.height).to.equal(1000);
+      });
+
+      it('dispatches the "html" action with a string argument', function () {
+        const mainInputStateBefore = requerio.$orgs['.main__input'].getState();
+        const mainStateBefore = requerio.$orgs['#main'].getState();
+
+        requerio.$orgs['#main'].dispatchAction(
+          'html',
+          `<input class="main__input html-string" type="text">
+<span class="main__span main__span--0">Foot</span>
+<span class="main__span main__span--1">Barf</span>`
+        );
+
+        const mainInputStateAfter = requerio.$orgs['.main__input'].getState();
+        const mainStateAfter = requerio.$orgs['#main'].getState();
+
+        expect(mainStateBefore.innerHTML).to.not.equal(mainStateAfter.innerHTML);
+        expect(mainStateBefore.textContent).to.not.equal(mainStateAfter.textContent);
+        expect(mainStateAfter.innerHTML).to.equal(`<input class="main__input html-string" type="text">
+<span class="main__span main__span--0">Foot</span>
+<span class="main__span main__span--1">Barf</span>`);
+        expect(mainStateAfter.textContent).to.equal('\nFoot\nBarf');
+        expect(mainInputStateBefore.classList).to.not.include('html-string');
+        expect(mainInputStateAfter.classList).to.include('html-string');
+      });
+
+      it('dispatches the "html" action with a string argument in a targeted manner', function () {
+        const mainSpan1StateBefore = requerio.$orgs['.main__span'].getState(1);
+
+        requerio.$orgs['.main__span'].dispatchAction(
+          'html',
+          '<span>htmlString</span>',
+          1
+        );
+
+        const mainSpan1StateAfter = requerio.$orgs['.main__span'].getState(1);
+
+        expect(mainSpan1StateBefore.innerHTML).to.not.equal(mainSpan1StateAfter.innerHTML);
+        expect(mainSpan1StateBefore.textContent).to.not.equal(mainSpan1StateAfter.textContent);
+        expect(mainSpan1StateAfter.innerHTML).to.equal('<span>htmlString</span>');
+        expect(mainSpan1StateAfter.textContent).to.equal('htmlString');
+      });
+
+      it('dispatches the "html" action with a differing number of members among its descendants', function () {
+        const mainSpanStateBefore = requerio.$orgs['.main__span'].getState();
+        const mainStateBefore = requerio.$orgs['#main'].getState();
+
+        requerio.$orgs['#main'].dispatchAction(
+          'html',
+          `<input class="main__input" type="text">
+<span class="main__span main__span--0">Foo</span>
+<span class="main__span main__span--1">Bar</span>
+<span class="main__span main__span--2">Baz</span>`
+        );
+
+        const mainSpanStateAfter = requerio.$orgs['.main__span'].getState();
+        const mainStateAfter = requerio.$orgs['#main'].getState();
+
+        expect(mainStateBefore.innerHTML).to.not.equal(mainStateAfter.innerHTML);
+        expect(mainStateBefore.textContent).to.not.equal(mainStateAfter.textContent);
+        expect(mainStateAfter.innerHTML).to.equal(`<input class="main__input" type="text">
+<span class="main__span main__span--0">Foo</span>
+<span class="main__span main__span--1">Bar</span>
+<span class="main__span main__span--2">Baz</span>`);
+        expect(mainStateAfter.textContent).to.equal('\nFoo\nBar\nBaz');
+        expect(mainSpanStateBefore.$members.length).to.equal(2);
+        expect(mainSpanStateAfter.$members.length).to.equal(3);
+      });
+
+      it('dispatches the "innerWidth" action', function () {
+        requerio.$orgs['#main'].dispatchAction('innerWidth', 1000);
+
+        const state = requerio.$orgs['#main'].getState();
+
+        expect(state.innerWidth).to.equal(1000);
+      });
+
+      it('dispatches the "innerHeight" action', function () {
+        requerio.$orgs['#main'].dispatchAction('innerHeight', 1000);
+
+        const state = requerio.$orgs['#main'].getState();
+
+        expect(state.innerHeight).to.equal(1000);
+      });
+
+      it('dispatches the "removeData" action to delete data from the state but not a corresponding data attribute\
+', function () {
+        const stateBefore = requerio.$orgs['#main'].getState();
+
+        requerio.$orgs['#main'].dispatchAction('removeData', 'fromAttribute');
+
+        const stateAfter = requerio.$orgs['#main'].getState();
+
+        expect(stateBefore.data.fromAttribute).to.equal('hyphen-delimited to camelCase');
+        expect(stateAfter.data.fromAttribute).to.be.undefined;
+        expect(stateAfter.attribs['data-from-attribute']).to.equal(stateBefore.attribs['data-from-attribute']);
+      });
+
+      it('dispatches the "removeData" action with a single string value argument', function () {
+        const stateBefore = requerio.$orgs['#main'].getState();
+
+        requerio.$orgs['#main'].dispatchAction('removeData', 'test');
+
+        const stateAfter = requerio.$orgs['#main'].getState();
+
+        expect(stateBefore.data.test).to.equal('testing12345');
+        expect(stateAfter.data.test).to.be.undefined;
+      });
+
+      it('dispatches the "removeData" action with a multiple string value argument', function () {
+        const stateBefore = requerio.$orgs['#main'].getState();
+
+        requerio.$orgs['#main'].dispatchAction('removeData', 'taste twist');
+
+        const stateAfter = requerio.$orgs['#main'].getState();
+
+        expect(stateBefore.data.taste).to.equal('tasting12345');
+        expect(stateBefore.data.twist).to.equal('twisting12345');
+        expect(stateAfter.data.taste).to.be.undefined;
+        expect(stateAfter.data.twist).to.be.undefined;
+      });
+
+      it('dispatches the "removeData" action with an array argument', function () {
+        const stateBefore = requerio.$orgs['#main'].getState();
+
+        requerio.$orgs['#main'].dispatchAction('removeData', ['toast', 'trust']);
+
+        const stateAfter = requerio.$orgs['#main'].getState();
+
+        expect(stateBefore.data.toast).to.equal('toasting12345');
+        expect(stateBefore.data.trust).to.equal('trusting12345');
+        expect(stateAfter.data.toast).to.be.undefined;
+        expect(stateAfter.data.trust).to.be.undefined;
+      });
+
+      it('dispatches the "removeData" action with a single string value argument on a single target', function () {
+        const stateBefore = requerio.$orgs['.main__span'].getState(1);
+
+        requerio.$orgs['.main__span'].dispatchAction('removeData', 'test', 1);
+
+        const stateAfter = requerio.$orgs['.main__span'].getState(1);
+
+        expect(stateBefore.data.test).to.equal('testing12345');
+        expect(stateAfter.data.test).to.be.undefined;
+      });
+
+      it('dispatches the "removeData" action with a multiple string value argument on a single target', function () {
+        const stateBefore = requerio.$orgs['.main__span'].getState(1);
+
+        requerio.$orgs['.main__span'].dispatchAction('removeData', 'taste twist', 1);
+
+        const stateAfter = requerio.$orgs['.main__span'].getState();
+
+        expect(stateBefore.data.taste).to.equal('tasting67890');
+        expect(stateBefore.data.twist).to.equal('twisting67890');
+        expect(stateAfter.data.taste).to.be.undefined;
+        expect(stateAfter.data.twist).to.be.undefined;
+      });
+
+      it('dispatches the "removeData" action with an array argument on a single target', function () {
+        const stateBefore = requerio.$orgs['.main__span'].getState(1);
+
+        requerio.$orgs['.main__span'].dispatchAction('removeData', ['toast', 'trust']);
+
+        const stateAfter = requerio.$orgs['.main__span'].getState();
+
+        expect(stateBefore.data.toast).to.equal('toasting67890');
+        expect(stateBefore.data.trust).to.equal('trusting12345');
+        expect(stateAfter.data.toast).to.be.undefined;
+        expect(stateAfter.data.trust).to.be.undefined;
+      });
+
+      it('dispatches the "scrollTop" action', function () {
+        requerio.$orgs['#main'].dispatchAction('scrollTop', 100);
+
+        const state = requerio.$orgs['#main'].getState();
+
+        expect(state.scrollTop).to.equal(100);
       });
 
       it('dispatches the "setBoundingClientRect" action', function () {
@@ -1741,7 +1904,7 @@ targets', function () {
         bottom++;
         left++;
 
-        requerio.$orgs['.main__section'].dispatchAction(
+        requerio.$orgs['.main__span'].dispatchAction(
           'setBoundingClientRect',
           {
             width,
@@ -1754,9 +1917,9 @@ targets', function () {
           1
         );
 
-        const state0 = requerio.$orgs['.main__section'].getState(0);
+        const state0 = requerio.$orgs['.main__span'].getState(0);
         const boundingClientRect0 = state0.boundingClientRect;
-        const state1 = requerio.$orgs['.main__section'].getState(1);
+        const state1 = requerio.$orgs['.main__span'].getState(1);
         const boundingClientRect1 = state1.boundingClientRect;
 
         expect(boundingClientRect0.width).to.not.equal(boundingClientRect1.width);
@@ -1772,105 +1935,6 @@ targets', function () {
         expect(boundingClientRect1.right).to.equal(5);
         expect(boundingClientRect1.bottom).to.equal(5);
         expect(boundingClientRect1.left).to.equal(5);
-      });
-
-      it('dispatches the "height" action', function () {
-        requerio.$orgs['#main'].dispatchAction('height', 1000);
-
-        const state = requerio.$orgs['#main'].getState();
-
-        expect(state.height).to.equal(1000);
-      });
-
-      it('dispatches the "html" action with a string argument', function () {
-        const mainInputStateBefore = requerio.$orgs['.main__input'].getState();
-        const mainStateBefore = requerio.$orgs['#main'].getState();
-
-        requerio.$orgs['#main'].dispatchAction(
-          'html',
-          `<input class="main__input html-string" type="text">
-<section class="main__section main__section--0">Foot</section>
-<section class="main__section main__section--1">Barf</section>`
-        );
-
-        const mainInputStateAfter = requerio.$orgs['.main__input'].getState();
-        const mainStateAfter = requerio.$orgs['#main'].getState();
-
-        expect(mainStateBefore.innerHTML).to.not.equal(mainStateAfter.innerHTML);
-        expect(mainStateBefore.textContent).to.not.equal(mainStateAfter.textContent);
-        expect(mainStateAfter.innerHTML).to.equal(`<input class="main__input html-string" type="text">
-<section class="main__section main__section--0">Foot</section>
-<section class="main__section main__section--1">Barf</section>`);
-        expect(mainStateAfter.textContent).to.equal('\nFoot\nBarf');
-        expect(mainInputStateBefore.classList).to.not.include('html-string');
-        expect(mainInputStateAfter.classList).to.include('html-string');
-      });
-
-      it('dispatches the "html" action with a string argument in a targeted manner', function () {
-        const mainSection1StateBefore = requerio.$orgs['.main__section'].getState(1);
-
-        requerio.$orgs['.main__section'].dispatchAction(
-          'html',
-          '<span>htmlString</span>',
-          1
-        );
-
-        const mainSection1StateAfter = requerio.$orgs['.main__section'].getState(1);
-
-        expect(mainSection1StateBefore.innerHTML).to.not.equal(mainSection1StateAfter.innerHTML);
-        expect(mainSection1StateBefore.textContent).to.not.equal(mainSection1StateAfter.textContent);
-        expect(mainSection1StateAfter.innerHTML).to.equal('<span>htmlString</span>');
-        expect(mainSection1StateAfter.textContent).to.equal('htmlString');
-      });
-
-      it('dispatches the "html" action with a differing number of members among its descendants', function () {
-        const mainSectionStateBefore = requerio.$orgs['.main__section'].getState();
-        const mainStateBefore = requerio.$orgs['#main'].getState();
-
-        requerio.$orgs['#main'].dispatchAction(
-          'html',
-          `<input class="main__input" type="text">
-<section class="main__section main__section--0">Foo</section>
-<section class="main__section main__section--1">Bar</section>
-<section class="main__section main__section--2">Baz</section>`
-        );
-
-        const mainSectionStateAfter = requerio.$orgs['.main__section'].getState();
-        const mainStateAfter = requerio.$orgs['#main'].getState();
-
-        expect(mainStateBefore.innerHTML).to.not.equal(mainStateAfter.innerHTML);
-        expect(mainStateBefore.textContent).to.not.equal(mainStateAfter.textContent);
-        expect(mainStateAfter.innerHTML).to.equal(`<input class="main__input" type="text">
-<section class="main__section main__section--0">Foo</section>
-<section class="main__section main__section--1">Bar</section>
-<section class="main__section main__section--2">Baz</section>`);
-        expect(mainStateAfter.textContent).to.equal('\nFoo\nBar\nBaz');
-        expect(mainSectionStateBefore.$members.length).to.equal(2);
-        expect(mainSectionStateAfter.$members.length).to.equal(3);
-      });
-
-      it('dispatches the "innerWidth" action', function () {
-        requerio.$orgs['#main'].dispatchAction('innerWidth', 1000);
-
-        const state = requerio.$orgs['#main'].getState();
-
-        expect(state.innerWidth).to.equal(1000);
-      });
-
-      it('dispatches the "innerHeight" action', function () {
-        requerio.$orgs['#main'].dispatchAction('innerHeight', 1000);
-
-        const state = requerio.$orgs['#main'].getState();
-
-        expect(state.innerHeight).to.equal(1000);
-      });
-
-      it('dispatches the "scrollTop" action', function () {
-        requerio.$orgs['#main'].dispatchAction('scrollTop', 100);
-
-        const state = requerio.$orgs['#main'].getState();
-
-        expect(state.scrollTop).to.equal(100);
       });
 
       it('dispatches the "val" action', function () {
@@ -1907,54 +1971,54 @@ targets', function () {
     });
 
     describe('augmented organism prototype methods', function () {
-      let mainHtml;
+      let augmentedHtml;
 
       before(function () {
-        mainHtml = requerio.$orgs['#main'].html();
+        requerio.$orgs['#augmented'].dispatchAction('html');
+
+        augmentedHtml = requerio.$orgs['#augmented'].getState().innerHTML;
       });
 
       afterEach(function () {
-        requerio.$orgs['#main'].dispatchAction('html', mainHtml);
+        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
       });
 
       it('after() updates the innerHTML of the parent organism', function () {
-        requerio.$orgs['.main__section--1']
-          .dispatchAction('after', '\n<section class="main__section main__section--1.1"></section>');
+        requerio.$orgs['.augmented__span--1']
+          .dispatchAction('after', '\n<span class="augmented__span augmented__span--1.1"></span>');
 
-        const state = requerio.$orgs['#main'].getState();
+        const state = requerio.$orgs['#augmented'].getState();
 
         expect(state.innerHTML).to.equal(`
-      <input class="main__input" type="text">
-      <section class="main__section main__section--0">Foo</section>
-      <section class="main__section main__section--1 has-parent-test">Bar</section>
-<section class="main__section main__section--1.1"></section>
+      <span class="augmented__span augmented__span--0">Foo</span>
+      <span class="augmented__span augmented__span--1">Bar</span>
+<span class="augmented__span augmented__span--1.1"></span>
     `);
       });
 
       it('after() updates the innerHTML of the parent organism in a targeted manner', function () {
-        requerio.$orgs['.main__section']
-          .dispatchAction('after', '\n<section class="main__section main__section--1.2"></section>', 1);
+        requerio.$orgs['.augmented__span']
+          .dispatchAction('after', '\n<span class="augmented__span augmented__span--1.2"></span>', 1);
 
-        const state = requerio.$orgs['#main'].getState();
+        const state = requerio.$orgs['#augmented'].getState();
 
         expect(state.innerHTML).to.equal(`
-      <input class="main__input" type="text">
-      <section class="main__section main__section--0">Foo</section>
-      <section class="main__section main__section--1 has-parent-test">Bar</section>
-<section class="main__section main__section--1.2"></section>
+      <span class="augmented__span augmented__span--0">Foo</span>
+      <span class="augmented__span augmented__span--1">Bar</span>
+<span class="augmented__span augmented__span--1.2"></span>
     `);
       });
 
       it('append() updates the innerHTML of the organism', function () {
-        const stateBefore = requerio.$orgs['.next__section--0'].getState();
+        const stateBefore = requerio.$orgs['.next__span--0'].getState();
 
-        requerio.$orgs['.next__section--0'].dispatchAction('append', '<span>Goo</span>');
+        requerio.$orgs['.next__span--0'].dispatchAction('append', '<span>Goo</span>');
 
-        const stateAfter = requerio.$orgs['.next__section--0'].getState();
+        const stateAfter = requerio.$orgs['.next__span--0'].getState();
 
-        requerio.$orgs['.next__section--0'].dispatchAction('append', '<span>Hoo</span>');
+        requerio.$orgs['.next__span--0'].dispatchAction('append', '<span>Hoo</span>');
 
-        const stateAfterAgain = requerio.$orgs['.next__section--0'].getState();
+        const stateAfterAgain = requerio.$orgs['.next__span--0'].getState();
 
         expect(stateBefore.innerHTML).to.be.null;
         expect(stateBefore.textContent).to.be.null;
@@ -1965,15 +2029,15 @@ targets', function () {
       });
 
       it('append() updates the innerHTML of the organism in a targeted manner', function () {
-        const stateBefore = requerio.$orgs['.next__section'].getState(1);
+        const stateBefore = requerio.$orgs['.next__span'].getState(1);
 
-        requerio.$orgs['.next__section'].dispatchAction('append', '<span>Car</span>', 1);
+        requerio.$orgs['.next__span'].dispatchAction('append', '<span>Car</span>', 1);
 
-        const stateAfter = requerio.$orgs['.next__section'].getState(1);
+        const stateAfter = requerio.$orgs['.next__span'].getState(1);
 
-        requerio.$orgs['.next__section'].dispatchAction('append', '<span>Dar</span>', 1);
+        requerio.$orgs['.next__span'].dispatchAction('append', '<span>Dar</span>', 1);
 
-        const stateAfterAgain = requerio.$orgs['.next__section'].getState(1);
+        const stateAfterAgain = requerio.$orgs['.next__span'].getState(1);
 
         expect(stateBefore.innerHTML).to.be.null;
         expect(stateBefore.textContent).to.be.null;
@@ -1984,122 +2048,120 @@ targets', function () {
       });
 
       it('before() updates the innerHTML of the parent organism', function () {
-        requerio.$orgs['.main__section--1']
-          .dispatchAction('before', '<section class="main__section main__section--0.1"></section>\n');
+        requerio.$orgs['.augmented__span--1']
+          .dispatchAction('before', '<span class="augmented__span augmented__span--0.1"></span>\n');
 
-        const state = requerio.$orgs['#main'].getState();
+        const state = requerio.$orgs['#augmented'].getState();
 
         expect(state.innerHTML).to.equal(`
-      <input class="main__input" type="text">
-      <section class="main__section main__section--0">Foo</section>
-      <section class="main__section main__section--0.1"></section>
-<section class="main__section main__section--1 has-parent-test">Bar</section>
+      <span class="augmented__span augmented__span--0">Foo</span>
+      <span class="augmented__span augmented__span--0.1"></span>
+<span class="augmented__span augmented__span--1">Bar</span>
     `);
       });
 
       it('before() updates the innerHTML of the parent organism in a targeted manner', function () {
-        requerio.$orgs['.main__section']
-          .dispatchAction('before', '<section class="main__section main__section--0.2"></section>\n', 1);
+        requerio.$orgs['.augmented__span']
+          .dispatchAction('before', '<span class="augmented__span augmented__span--0.2"></span>\n', 1);
 
-        const state = requerio.$orgs['#main'].getState();
+        const state = requerio.$orgs['#augmented'].getState();
 
         expect(state.innerHTML).to.equal(`
-      <input class="main__input" type="text">
-      <section class="main__section main__section--0">Foo</section>
-      <section class="main__section main__section--0.2"></section>
-<section class="main__section main__section--1 has-parent-test">Bar</section>
+      <span class="augmented__span augmented__span--0">Foo</span>
+      <span class="augmented__span augmented__span--0.2"></span>
+<span class="augmented__span augmented__span--1">Bar</span>
     `);
       });
 
       it('detach() removes the organism from the DOM', function () {
-        const mainHtml = requerio.$orgs['#main'].html();
-        const mainSectionHtml = requerio.$orgs['.main__section--0'].html();
+        const augmentedHtml = requerio.$orgs['#augmented'].html();
+        const augmentedSpanHtml = requerio.$orgs['.augmented__span--0'].html();
 
-        requerio.$orgs['#main'].dispatchAction('html', mainHtml);
+        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
 
-        const stateBefore = requerio.$orgs['#main'].getState();
+        const stateBefore = requerio.$orgs['#augmented'].getState();
 
-        requerio.$orgs['.main__section--0'].dispatchAction('detach');
+        requerio.$orgs['.augmented__span--0'].dispatchAction('detach');
 
-        const stateAfter = requerio.$orgs['#main'].getState();
+        const stateAfter = requerio.$orgs['#augmented'].getState();
 
-        expect(stateBefore.innerHTML).to.include(mainSectionHtml);
-        expect(stateAfter.innerHTML).to.not.include(mainSectionHtml);
+        expect(stateBefore.innerHTML).to.include(augmentedSpanHtml);
+        expect(stateAfter.innerHTML).to.not.include(augmentedSpanHtml);
 
-        requerio.$orgs['#main'].dispatchAction('html', mainHtml);
+        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
       });
 
       it('detach() removes the organism from the DOM in a targeted manner', function () {
-        const mainHtml = requerio.$orgs['#main'].html();
-        const mainSectionHtml0 = requerio.$orgs['.main__section--0'].html();
-        const mainSectionHtml1 = requerio.$orgs['.main__section--1'].html();
+        const augmentedHtml = requerio.$orgs['#augmented'].html();
+        const augmentedSpanHtml0 = requerio.$orgs['.augmented__span--0'].html();
+        const augmentedSpanHtml1 = requerio.$orgs['.augmented__span--1'].html();
 
-        requerio.$orgs['#main'].dispatchAction('html', mainHtml);
+        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
 
-        const stateBefore = requerio.$orgs['#main'].getState();
+        const stateBefore = requerio.$orgs['#augmented'].getState();
 
-        requerio.$orgs['.main__section'].dispatchAction('detach', null, 1);
+        requerio.$orgs['.augmented__span'].dispatchAction('detach', null, 1);
 
-        const stateAfter = requerio.$orgs['#main'].getState();
+        const stateAfter = requerio.$orgs['#augmented'].getState();
 
-        expect(stateBefore.innerHTML).to.include(mainSectionHtml0);
-        expect(stateBefore.innerHTML).to.include(mainSectionHtml1);
-        expect(stateAfter.innerHTML).to.include(mainSectionHtml0);
-        expect(stateAfter.innerHTML).to.not.include(mainSectionHtml1);
+        expect(stateBefore.innerHTML).to.include(augmentedSpanHtml0);
+        expect(stateBefore.innerHTML).to.include(augmentedSpanHtml1);
+        expect(stateAfter.innerHTML).to.include(augmentedSpanHtml0);
+        expect(stateAfter.innerHTML).to.not.include(augmentedSpanHtml1);
 
-        requerio.$orgs['#main'].dispatchAction('html', mainHtml);
+        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
       });
 
       it('empty() deletes the innerHTML from the organism', function () {
-        const mainSectionHtml = requerio.$orgs['.main__section--0'].html();
+        const augmentedSpanHtml = requerio.$orgs['.augmented__span--0'].html();
 
-        requerio.$orgs['.main__section--0'].dispatchAction('html', mainSectionHtml);
+        requerio.$orgs['.augmented__span--0'].dispatchAction('html', augmentedSpanHtml);
 
-        const stateBefore = requerio.$orgs['.main__section--0'].getState();
+        const stateBefore = requerio.$orgs['.augmented__span--0'].getState();
 
-        requerio.$orgs['.main__section--0'].dispatchAction('empty');
+        requerio.$orgs['.augmented__span--0'].dispatchAction('empty');
 
-        const stateAfter = requerio.$orgs['.main__section--0'].getState();
+        const stateAfter = requerio.$orgs['.augmented__span--0'].getState();
 
-        expect(stateBefore.innerHTML).to.equal(mainSectionHtml);
+        expect(stateBefore.innerHTML).to.equal(augmentedSpanHtml);
         expect(stateAfter.innerHTML).to.equal('');
 
-        requerio.$orgs['.main__section--0'].dispatchAction('html', mainSectionHtml);
+        requerio.$orgs['.augmented__span--0'].dispatchAction('html', augmentedSpanHtml);
       });
 
       it('empty() deletes the innerHTML from the organism in a targeted manner', function () {
-        const mainSectionHtml0 = requerio.$orgs['.main__section--0'].html();
-        const mainSectionHtml1 = requerio.$orgs['.main__section--1'].html();
+        const augmentedSpanHtml0 = requerio.$orgs['.augmented__span--0'].html();
+        const augmentedSpanHtml1 = requerio.$orgs['.augmented__span--1'].html();
 
-        requerio.$orgs['.main__section'].dispatchAction('html', mainSectionHtml0, 0);
-        requerio.$orgs['.main__section'].dispatchAction('html', mainSectionHtml1, 1);
+        requerio.$orgs['.augmented__span'].dispatchAction('html', augmentedSpanHtml0, 0);
+        requerio.$orgs['.augmented__span'].dispatchAction('html', augmentedSpanHtml1, 1);
 
-        const stateBefore0 = requerio.$orgs['.main__section'].getState(0);
-        const stateBefore1 = requerio.$orgs['.main__section'].getState(1);
+        const stateBefore0 = requerio.$orgs['.augmented__span'].getState(0);
+        const stateBefore1 = requerio.$orgs['.augmented__span'].getState(1);
 
-        requerio.$orgs['.main__section'].dispatchAction('empty', null, 1);
+        requerio.$orgs['.augmented__span'].dispatchAction('empty', null, 1);
 
-        const stateAfter0 = requerio.$orgs['.main__section'].getState(0);
-        const stateAfter1 = requerio.$orgs['.main__section'].getState(1);
+        const stateAfter0 = requerio.$orgs['.augmented__span'].getState(0);
+        const stateAfter1 = requerio.$orgs['.augmented__span'].getState(1);
 
-        expect(stateBefore0.innerHTML).to.equal(mainSectionHtml0);
-        expect(stateBefore1.innerHTML).to.equal(mainSectionHtml1);
-        expect(stateAfter0.innerHTML).to.equal(mainSectionHtml0);
+        expect(stateBefore0.innerHTML).to.equal(augmentedSpanHtml0);
+        expect(stateBefore1.innerHTML).to.equal(augmentedSpanHtml1);
+        expect(stateAfter0.innerHTML).to.equal(augmentedSpanHtml0);
         expect(stateAfter1.innerHTML).to.equal('');
 
-        requerio.$orgs['.main__section'].dispatchAction('html', mainSectionHtml1, 1);
+        requerio.$orgs['.augmented__span'].dispatchAction('html', augmentedSpanHtml1, 1);
       });
 
       it('prepend() updates the innerHTML of the organism', function () {
-        const stateBefore = requerio.$orgs['.next__section--2'].getState();
+        const stateBefore = requerio.$orgs['.next__span--2'].getState();
 
-        requerio.$orgs['.next__section--2'].dispatchAction('prepend', '<span>Eoo</span>');
+        requerio.$orgs['.next__span--2'].dispatchAction('prepend', '<span>Eoo</span>');
 
-        const stateAfter = requerio.$orgs['.next__section--2'].getState();
+        const stateAfter = requerio.$orgs['.next__span--2'].getState();
 
-        requerio.$orgs['.next__section--2'].dispatchAction('prepend', '<span>Doo</span>');
+        requerio.$orgs['.next__span--2'].dispatchAction('prepend', '<span>Doo</span>');
 
-        const stateAfterAgain = requerio.$orgs['.next__section--2'].getState();
+        const stateAfterAgain = requerio.$orgs['.next__span--2'].getState();
 
         expect(stateBefore.innerHTML).to.be.null;
         expect(stateBefore.textContent).to.be.null;
@@ -2110,15 +2172,15 @@ targets', function () {
       });
 
       it('prepend() updates the innerHTML of the organism in a targeted manner', function () {
-        const stateBefore = requerio.$orgs['.next__section'].getState(3);
+        const stateBefore = requerio.$orgs['.next__span'].getState(3);
 
-        requerio.$orgs['.next__section'].dispatchAction('prepend', '<span>Aar</span>', 3);
+        requerio.$orgs['.next__span'].dispatchAction('prepend', '<span>Aar</span>', 3);
 
-        const stateAfter = requerio.$orgs['.next__section'].getState(3);
+        const stateAfter = requerio.$orgs['.next__span'].getState(3);
 
-        requerio.$orgs['.next__section'].dispatchAction('prepend', '<span>Zar</span>', 3);
+        requerio.$orgs['.next__span'].dispatchAction('prepend', '<span>Zar</span>', 3);
 
-        const stateAfterAgain = requerio.$orgs['.next__section'].getState(3);
+        const stateAfterAgain = requerio.$orgs['.next__span'].getState(3);
 
         expect(stateBefore.innerHTML).to.be.null;
         expect(stateBefore.textContent).to.be.null;
@@ -2128,55 +2190,55 @@ targets', function () {
         expect(stateAfterAgain.textContent).to.equal('ZarAarBar');
       });
 
-      it('remove() deletes the organism\'s data from the DOM', function () {
-        const mainHtml = requerio.$orgs['#main'].html();
-        const mainSectionHtml = requerio.$orgs['.main__section--0'].html();
+      it('remove() deletes the organism from the DOM', function () {
+        const augmentedHtml = requerio.$orgs['#augmented'].html();
+        const augmentedSpanHtml = requerio.$orgs['.augmented__span--0'].html();
 
-        requerio.$orgs['#main'].dispatchAction('html', mainHtml);
+        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
 
-        const stateBefore = requerio.$orgs['#main'].getState();
+        const stateBefore = requerio.$orgs['#augmented'].getState();
 
-        requerio.$orgs['.main__section--0'].dispatchAction('remove');
+        requerio.$orgs['.augmented__span--0'].dispatchAction('remove');
 
-        const stateAfter = requerio.$orgs['#main'].getState();
+        const stateAfter = requerio.$orgs['#augmented'].getState();
 
-        expect(stateBefore.innerHTML).to.include(mainSectionHtml);
-        expect(stateAfter.innerHTML).to.not.include(mainSectionHtml);
+        expect(stateBefore.innerHTML).to.include(augmentedSpanHtml);
+        expect(stateAfter.innerHTML).to.not.include(augmentedSpanHtml);
 
-        requerio.$orgs['#main'].dispatchAction('html', mainHtml);
+        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
       });
 
-      it('remove() deletes the organism\'s data from the DOM in a targeted manner', function () {
-        const mainHtml = requerio.$orgs['#main'].html();
-        const mainSectionHtml0 = requerio.$orgs['.main__section--0'].html();
-        const mainSectionHtml1 = requerio.$orgs['.main__section--1'].html();
+      it('remove() deletes the organism from the DOM in a targeted manner', function () {
+        const augmentedHtml = requerio.$orgs['#augmented'].html();
+        const augmentedSpanHtml0 = requerio.$orgs['.augmented__span--0'].html();
+        const augmentedSpanHtml1 = requerio.$orgs['.augmented__span--1'].html();
 
-        requerio.$orgs['#main'].dispatchAction('html', mainHtml);
+        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
 
-        const stateBefore = requerio.$orgs['#main'].getState();
+        const stateBefore = requerio.$orgs['#augmented'].getState();
 
-        requerio.$orgs['.main__section'].dispatchAction('remove', null, 1);
+        requerio.$orgs['.augmented__span'].dispatchAction('remove', null, 1);
 
-        const stateAfter = requerio.$orgs['#main'].getState();
+        const stateAfter = requerio.$orgs['#augmented'].getState();
 
-        expect(stateBefore.innerHTML).to.include(mainSectionHtml0);
-        expect(stateBefore.innerHTML).to.include(mainSectionHtml1);
-        expect(stateAfter.innerHTML).to.include(mainSectionHtml0);
-        expect(stateAfter.innerHTML).to.not.include(mainSectionHtml1);
+        expect(stateBefore.innerHTML).to.include(augmentedSpanHtml0);
+        expect(stateBefore.innerHTML).to.include(augmentedSpanHtml1);
+        expect(stateAfter.innerHTML).to.include(augmentedSpanHtml0);
+        expect(stateAfter.innerHTML).to.not.include(augmentedSpanHtml1);
 
-        requerio.$orgs['#main'].dispatchAction('html', mainHtml);
+        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
       });
 
       it('text() safely updates text in the DOM', function () {
-        const stateBefore = requerio.$orgs['.next__section--4'].getState();
+        const stateBefore = requerio.$orgs['.next__span--4'].getState();
 
-        requerio.$orgs['.next__section--4'].dispatchAction('text', '\n<span>Foof\n</span>');
+        requerio.$orgs['.next__span--4'].dispatchAction('text', '\n<span>Foof\n</span>');
 
-        const stateAfter = requerio.$orgs['.next__section--4'].getState();
+        const stateAfter = requerio.$orgs['.next__span--4'].getState();
 
-        requerio.$orgs['.next__section--4'].dispatchAction('text', '\n<span>Foot\n</span>');
+        requerio.$orgs['.next__span--4'].dispatchAction('text', '\n<span>Foot\n</span>');
 
-        const stateAfterAgain = requerio.$orgs['.next__section--4'].getState();
+        const stateAfterAgain = requerio.$orgs['.next__span--4'].getState();
 
         expect(stateBefore.innerHTML).to.be.null;
         expect(stateBefore.textContent).to.be.null;
@@ -2187,15 +2249,15 @@ targets', function () {
       });
 
       it('text() safely updates text in the DOM in a targeted manner', function () {
-        const stateBefore = requerio.$orgs['.next__section'].getState(5);
+        const stateBefore = requerio.$orgs['.next__span'].getState(5);
 
-        requerio.$orgs['.next__section'].dispatchAction('text', '<span>Barf</span>', 5);
+        requerio.$orgs['.next__span'].dispatchAction('text', '<span>Barf</span>', 5);
 
-        const stateAfter = requerio.$orgs['.next__section'].getState(5);
+        const stateAfter = requerio.$orgs['.next__span'].getState(5);
 
-        requerio.$orgs['.next__section'].dispatchAction('text', '<span>Bart</span>', 5);
+        requerio.$orgs['.next__span'].dispatchAction('text', '<span>Bart</span>', 5);
 
-        const stateAfterAgain = requerio.$orgs['.next__section'].getState(5);
+        const stateAfterAgain = requerio.$orgs['.next__span'].getState(5);
 
         expect(stateBefore.innerHTML).to.be.null;
         expect(stateBefore.textContent).to.be.null;

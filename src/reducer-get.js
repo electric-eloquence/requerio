@@ -349,6 +349,43 @@ class.
       }
 
       /**
+### removeData(name)
+Remove a previously-stored piece of data. Does not affect HTML attributes in the
+DOM.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | `string` | A string naming the piece of data to delete. |
+
+### removeData(list)
+Remove previously-stored pieces of data. Does not affect HTML attributes in the
+DOM.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| list | `array`\|`string` | An array or space-separated string naming the pieces of data to delete. |
+*/
+      case 'removeData': {
+        if (typeof action.args[0] === 'string') {
+          if (action.args[0].includes(' ')) {
+            action.args[0].split(' ').forEach((key) => {
+              delete state.data[key];
+            });
+          }
+          else {
+            delete state.data[action.args[0]];
+          }
+        }
+        else if (Array.isArray(action.args[0])) {
+          action.args[0].forEach((key) => {
+            delete state.data[key];
+          });
+        }
+
+        break;
+      }
+
+      /**
 ### scrollTop(value)
 Set the vertical scroll position (the number of CSS pixels that are hidden from
 view above the scrollable area) of the match.
@@ -422,9 +459,9 @@ properties on `state.boundingClientRect`.
               Object.assign(state.$members[memberIdx].boundingClientRect, rectObj);
             }
             else {
-              state.$members.forEach(($member) => {
+              for (let $member of state.$members) {
                 Object.assign($member.boundingClientRect, rectObj);
-              });
+              }
             }
           }
         }
