@@ -2406,7 +2406,7 @@ DOM.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| list | `array`\|`string` | An array or space-separated string naming the pieces of data to delete. |
+| list | `string`\|`array` | A space-separated string or an array naming the pieces of data to delete. |
 */
       case 'removeData': {
         if (typeof action.args[0] === 'string') {
