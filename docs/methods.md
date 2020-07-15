@@ -152,6 +152,22 @@ class.
 | --- | --- | --- |
 | classes | `string`\|`function` | A space-separated string, or a function that returns a space-separated string. |
 
+### removeData(name)
+Remove a previously-stored piece of data. Does not affect HTML attributes in the
+DOM.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | `string` | A string naming the piece of data to delete. |
+
+### removeData(list)
+Remove previously-stored pieces of data. Does not affect HTML attributes in the
+DOM.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| list | `array`\|`string` | An array or space-separated string naming the pieces of data to delete. |
+
 ### scrollTop(value)
 Set the vertical scroll position (the number of CSS pixels that are hidden from
 view above the scrollable area) of the match.
