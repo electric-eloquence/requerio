@@ -646,7 +646,6 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       case 'text': {
         const state = store.getState()[this.selector];
 
-//if (method !== 'text') {
         if (Array.isArray($member) && Array.isArray(memberIdx)) {
           // Dispatch on each iteration of $member array.
           $member.forEach(($elem, idx) => {
@@ -682,7 +681,6 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
             memberIdx: memberIdx
           });
         }
-//}
 
         // If the 'html' action is dispatched without an arg, or with a null arg, and the .innerHTML property on the
         // state is unset, we want to set the .innerHTML property.
@@ -1047,28 +1045,10 @@ __Returns__: `object` - The organism's state.
     // nor do we want to perform unnecessary .text() reads.
     // Therefore, only proceed with a 'text' action if textContent is already set.
     const textContentOld = state.textContent;
-    let updateInnerHTML = true;
 
     // eslint-disable-next-line eqeqeq
     if (textContentOld != null) {
-      /*
-      let textContentNew;
-
-      if (typeof memberIdx === 'number') {
-        textContentNew = $member ? $member.text() : textContentOld;
-      }
-      else {
-        */
-        const textContentNew = this.text();
-/*
-        // An untargeted .text() invocation concatenates the textContents of the members. Since an untargted .html() 
-        // will get the innerHTML of just the first member, we need to flag alsoUpdateInnerHTML = true to update the
-        // innerHTML of the member states.
-        if (textContentNew !== textContentOld) {
-          alsoUpdateInnerHTML = true;
-        }
-      }
-        */
+      const textContentNew = this.text();
 
       if (textContentNew !== textContentOld) {
         if (typeof memberIdx === 'number') {
@@ -1111,7 +1091,6 @@ __Returns__: `object` - The organism's state.
           args: [textContentNew]
         });
 
-        //updateInnerHTML = false;
         updateState = true;
       }
     }
@@ -1123,8 +1102,6 @@ __Returns__: `object` - The organism's state.
 
     // eslint-disable-next-line eqeqeq
     if (innerHTMLOld != null) {
-    //if (updateInnerHTML && innerHTMLOld != null) {
-
       if (typeof memberIdx === 'number') {
         const innerHTMLNew = $member ? $member.html() : innerHTMLOld;
 
@@ -1135,43 +1112,35 @@ __Returns__: `object` - The organism's state.
             $org: this,
             method: 'html',
             args: [innerHTMLNew],
-            memberIdx: memberIdx || void(0) // So memberIdx 0's innerHTML goes as the organism's innerHTML.
+            memberIdx: memberIdx || void 0 // So memberIdx 0's innerHTML goes as the organism's innerHTML.
           });
 
           updateState = true;
         }
-        else {
-        }
       }
       else {
-
         let innerHTMLZero;
 
         for (let i = 0; i < membersLength; i++) {
           const innerHTMLOld = state.$members[i].innerHTML;
+          const innerHTMLNew = this.$members[i].html();
 
-          // eslint-disable-next-line eqeqeq
-//          if (innerHTMLOld != null) {
-            const innerHTMLNew = this.$members[i].html();
-              if (i === 0) {
-                innerHTMLZero = innerHTMLNew;
-              }
+          if (i === 0) {
+            innerHTMLZero = innerHTMLNew;
+          }
 
-            if (innerHTMLNew !== innerHTMLOld) {
+          if (innerHTMLNew !== innerHTMLOld) {
+            store.dispatch({
+              type: 'HTML',
+              selector: this.selector,
+              $org: this,
+              method: 'html',
+              args: [innerHTMLNew],
+              memberIdx: i
+            });
 
-
-              store.dispatch({
-                type: 'HTML',
-                selector: this.selector,
-                $org: this,
-                method: 'html',
-                args: [innerHTMLNew],
-                memberIdx: i
-              });
-
-              updateState = true;
-            }
-//          }
+            updateState = true;
+          }
         }
 
         if (typeof innerHTMLZero === 'string' && innerHTMLZero !== innerHTMLOld) {

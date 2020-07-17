@@ -258,8 +258,9 @@ necessary, since very large innerHTML strings across many organisms with many
 members can add up to a large amount of data.
 */
       case 'html': {
-        // Only perform this update if targeting member 0 or no member.
-        //if (action.args.length === 1 && !memberIdx) {
+        // Only perform this update IF
+        // there is an argument AND
+        // this action is untargeted OR is targeted and is the member action (not the organism action).
         if (action.args.length === 1 && (typeof memberIdx === 'undefined' || !state.$members.length)) {
           state.innerHTML = action.args[0];
         }
@@ -490,9 +491,9 @@ necessary, since very large text strings across many organisms with many members
 can add up to a large amount of data.
 */
       case 'text': {
-        // Only perform this update if targeting member 0 or no member.
-        //if (action.args.length === 1 && !memberIdx) {
-        //if (action.args.length === 1) {
+        // Only perform this update IF
+        // there is an argument AND
+        // this action is untargeted OR is targeted and is the member action (not the organism action).
         if (action.args.length === 1 && (typeof memberIdx === 'undefined' || !state.$members.length)) {
           state.textContent = action.args[0];
         }
