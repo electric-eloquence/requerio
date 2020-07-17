@@ -2167,6 +2167,8 @@ targets', function () {
       });
 
       it('html(), by adding HTML elements, can increase the number of members among descendants', function () {
+        requerio.$orgs['.html'].dispatchAction('html', null, 4); // For coverage.
+
         const membersStateBefore = requerio.$orgs['.html'].getState();
 
         requerio.$orgs['#html'].dispatchAction(
@@ -2186,6 +2188,8 @@ targets', function () {
       });
 
       it('html(), by removing HTML elements, can decrease the number of members among descendants', function () {
+        requerio.$orgs['.html'].dispatchAction('html', null, [4, 5]); // For coverage.
+
         const membersStateBefore = requerio.$orgs['.html'].getState();
 
         requerio.$orgs['#html'].dispatchAction(

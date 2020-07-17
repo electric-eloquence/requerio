@@ -863,20 +863,11 @@ A server-side stand-in for client-side `.blur()`.
     const parentsToReset = [];
 
     for (let orgSelector1 of Object.keys($orgs)) {
-      // An $org has a defined selector property.
-      if (this.selector) {
-        for (let i = 0; i < this.$members.length; i++) {
-          if (this.$members[i].parent(orgSelector1).length) {
-            parentsToReset.push($orgs[orgSelector1]);
-
-            break;
-          }
-        }
-      }
-      // A $member does not.
-      else {
-        if (this.parent(orgSelector1).length) {
+      for (let i = 0; i < this.$members.length; i++) {
+        if (this.$members[i].parent(orgSelector1).length) {
           parentsToReset.push($orgs[orgSelector1]);
+
+          break;
         }
       }
     }
@@ -1911,20 +1902,11 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
     const parentsToReset = [];
 
     for (let orgSelector1 of Object.keys($orgs)) {
-      // An $org has a defined selector property.
-      if (this.selector) {
-        for (let i = 0; i < this.$members.length; i++) {
-          if (this.$members[i].parent(orgSelector1).length) {
-            parentsToReset.push($orgs[orgSelector1]);
-
-            break;
-          }
-        }
-      }
-      // A $member does not.
-      else {
-        if (this.parent(orgSelector1).length) {
+      for (let i = 0; i < this.$members.length; i++) {
+        if (this.$members[i].parent(orgSelector1).length) {
           parentsToReset.push($orgs[orgSelector1]);
+
+          break;
         }
       }
     }
