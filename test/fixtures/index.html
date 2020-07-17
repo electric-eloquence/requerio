@@ -5,57 +5,99 @@
   </head>
   <body>
     <section id="prototype-override">
-      <span class="exclude__w-string-argument exclude__w-string-argument--0"></span>
-      <span class="exclude__w-string-argument exclude__w-string-argument--1"></span>
-      <span class="exclude__w-dom-element-argument exclude__w-dom-element-argument--0"></span>
-      <span class="exclude__w-dom-element-argument exclude__w-dom-element-argument--1"></span>
-      <span class="exclude__w-cheerio-jquery-argument exclude__w-cheerio-jquery-argument--0"></span>
-      <span class="exclude__w-cheerio-jquery-argument exclude_cheerio-jquery_w--argument--1"></span>
-      <span class="exclude__w-function-argument exclude__w-function-argument--0"></span>
-      <span class="exclude__w-function-argument exclude__w-function--argument--1"></span>
-      <span class="exclude__w-no-argument exclude__w-no-argument--0"></span>
-      <span class="exclude__w-no-argument exclude__w-no-argument--1"></span>
-      <span class="hasElement__w-dom-element-argument hasElement__w-dom-element-argument--0"></span>
-      <span class="hasElement__w-dom-element-argument hasElement__w-dom-element-argument--1"></span>
-      <span class="hasNext__w-string-argument hasNext__w-string-argument--0"></span>
-      <span class="hasNext__w-string-argument hasNext__w-string-argument--1"></span>
-      <span class="hasNext__w-dom-element-argument hasNext__w-dom-element-argument--0"></span>
-      <span class="hasNext__w-dom-element-argument hasNext__w-dom-element-argument--1"></span>
-      <span class="hasPrev__w-string-argument hasPrev__w-string-argument--0"></span>
-      <span class="hasPrev__w-string-argument hasPrev__w-string-argument--1"></span>
-      <span class="hasPrev__w-dom-element-argument hasPrev__w-dom-element-argument--0"></span>
-      <span class="hasPrev__w-dom-element-argument hasPrev__w-dom-element-argument--1"></span>
-      <span class="hasSelector__w-string-argument hasSelector__w-string-argument--0"></span>
-      <span class="hasSelector__w-string-argument hasSelector__w-string-argument--1"></span>
-      <span class="dispatchAction__css dispatchAction__css--0"></span>
-      <span class="dispatchAction__css dispatchAction__css--1"></span>
-      <span class="dispatchAction__css dispatchAction__css--2"></span>
-      <span class="populateMembers populateMembers--0"></span>
-      <span class="populateMembers populateMembers--1"></span>
-      <span class="setBoundingClientRect setBoundingClientRect--0"></span>
-      <span class="setBoundingClientRect setBoundingClientRect--1"></span>
+      <div class="exclude__w-string-argument exclude__w-string-argument--0"></div>
+      <div class="exclude__w-string-argument exclude__w-string-argument--1"></div>
+      <div class="exclude__w-dom-element-argument exclude__w-dom-element-argument--0"></div>
+      <div class="exclude__w-dom-element-argument exclude__w-dom-element-argument--1"></div>
+      <div class="exclude__w-cheerio-jquery-argument exclude__w-cheerio-jquery-argument--0"></div>
+      <div class="exclude__w-cheerio-jquery-argument exclude_cheerio-jquery_w--argument--1"></div>
+      <div class="exclude__w-function-argument exclude__w-function-argument--0"></div>
+      <div class="exclude__w-function-argument exclude__w-function--argument--1"></div>
+      <div class="exclude__w-no-argument exclude__w-no-argument--0"></div>
+      <div class="exclude__w-no-argument exclude__w-no-argument--1"></div>
+      <div class="hasChild__w-string-argument"><span></span></div>
+      <div class="hasChild__w-string-argument"><span class="child"></span></div>
+      <div class="hasChild__w-dom-element-argument"><span></span></div>
+      <div class="hasChild__w-dom-element-argument"><span class="child"></span></div>
+      <div class="hasElement__w-dom-element-argument hasElement__w-dom-element-argument--0"></div>
+      <div class="hasElement__w-dom-element-argument hasElement__w-dom-element-argument--1"></div>
+      <div class="hasNext__w-string-argument hasNext__w-string-argument--0"></div>
+      <div class="hasNext__w-string-argument hasNext__w-string-argument--1"></div>
+      <div class="hasNext__w-dom-element-argument hasNext__w-dom-element-argument--0"></div>
+      <div class="hasNext__w-dom-element-argument hasNext__w-dom-element-argument--1"></div>
+      <div><span class="hasParent__w-string-argument"></span></div>
+      <div class="parent"><span class="hasParent__w-string-argument"></span></div>
+      <div><span class="hasParent__w-dom-element-argument"></span></div>
+      <div class="parent"><span class="hasParent__w-dom-element-argument"></span></div>
+      <div class="hasPrev__w-string-argument hasPrev__w-string-argument--0"></div>
+      <div class="hasPrev__w-string-argument hasPrev__w-string-argument--1"></div>
+      <div class="hasPrev__w-dom-element-argument hasPrev__w-dom-element-argument--0"></div>
+      <div class="hasPrev__w-dom-element-argument hasPrev__w-dom-element-argument--1"></div>
+      <div class="hasSelector__w-string-argument hasSelector__w-string-argument--0"></div>
+      <div class="hasSelector__w-string-argument hasSelector__w-string-argument--1"></div>
+      <div><span class="hasSibling hasSibling--0"></span></div>
+      <div><span class="hasSibling hasSibling--1"></span><span class="sibling"></span></div>
+      <div class="dispatchAction__css dispatchAction__css--0"></div>
+      <div class="dispatchAction__css dispatchAction__css--1"></div>
+      <div class="dispatchAction__css dispatchAction__css--2"></div>
+      <div class="populateMembers populateMembers--0"></div>
+      <div class="populateMembers populateMembers--1"></div>
+      <div class="setBoundingClientRect setBoundingClientRect--0"></div>
+      <div class="setBoundingClientRect setBoundingClientRect--1"></div>
     </section>
-    <main id="main" class="has-child-test" data-from-attribute="hyphen-delimited to camelCase">
+    <main id="main" data-from-attribute="hyphen-delimited to camelCase">
       <input class="main__input" type="text">
-      <span class="main__span main__span--0">Foo</span>
-      <span class="main__span main__span--1 has-parent-test">Bar</span>
+      <div class="main__div main__div--0">Foo</div>
+      <div class="main__div main__div--1">Bar</div>
     </main>
     <section id="augmented">
-      <span class="augmented__span augmented__span--0">Foo</span>
-      <span class="augmented__span augmented__span--1">Bar</span>
+      <div id="after">
+        <span class="after after--0"></span>
+        <span class="after after--1"></span>
+      </div>
+      <div class="append append--0">
+        <span>Foo</span>
+      </div>
+      <div class="append append--1">
+        <span>Foo</span>
+      </div>
+      <div id="before">
+        <span class="before before--0"></span>
+        <span class="before before--1"></span>
+      </div>
+      <div id="detach">
+        <span class="detach detach--0"></span>
+        <span class="detach detach--1"></span>
+      </div>
+      <div class="empty empty--0"><span></span></div>
+      <div class="empty empty--1"><span></span></div>
+      <div class="empty empty--2"><span></span></div>
+      <div class="empty empty--3"><span></span></div>
+      <div id="html">
+        <span class="html html--0"></span>
+        <span class="html html--1"><span>Foo</span></span>
+        <span class="html html--2"><span>Foo</span></span>
+        <span class="html html--3"><span>Foo</span></span>
+      </div>
+      <div class="prepend prepend--0">
+        <span>Bar</span>
+      </div>
+      <div class="prepend prepend--1">
+        <span>Bar</span>
+      </div>
+      <div id="remove">
+        <span class="remove remove--0"></span>
+        <span class="remove remove--1"></span>
+      </div>
+      <div class="text text--0"></div>
+      <div class="text text--1"><span>Foo</span></div>
+      <div class="text text--2"><span>Foo</span></div>
+      <div class="text text--3"><span>Foo</span></div>
     </section>
-    <section id="next">
-      <span class="next__span next__span--0">Foo</span>
-      <span class="next__span next__span--1">Bar</span>
-      <span class="next__span next__span--2">Foo</span>
-      <span class="next__span next__span--3">Bar</span>
-      <span class="next__span next__span--4">Foo</span>
-      <span class="next__span next__span--5">Bar</span>
-    <section>
-    <section id="yoda" class="has-child-test">
+    <section id="yoda">
       <input id="yoda__input" type="text">
-      <span class="midi-chlorian midi-chlorian--0 has-parent-test"></span>
-      <span class="midi-chlorian midi-chlorian--1 has-sibling-test"></span>
+      <div class="midi-chlorian midi-chlorian--0"></div>
+      <div class="midi-chlorian midi-chlorian--1"></div>
     </section>
     <figure id="cheshire-cat"></figure>
   </body>

@@ -125,16 +125,16 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
           it('does not dispatch the action on the element specified by .exclude()', function () {
             const $org = requerio.$orgs['.exclude__w-string-argument'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.not.include('not');
-            expect(classList1).to.include('not');
+            expect(classArray0).to.not.include('not');
+            expect(classArray1).to.include('not');
           });
         });
 
         describe('with a DOM element argument', function () {
-          const mainSpan00 = $('.exclude__w-dom-element-argument--0')[0];
+          const domEl = $('.exclude__w-dom-element-argument--0')[0];
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
           let $membersLengthAfter = 0;
@@ -149,7 +149,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('excludes elements from members array when .exclude() is invoked', function () {
-            $orgDuring = requerio.$orgs['.exclude__w-dom-element-argument'].exclude(mainSpan00);
+            $orgDuring = requerio.$orgs['.exclude__w-dom-element-argument'].exclude(domEl);
 
             $orgDuring.$members.forEach(() => $membersLengthDuring++);
             expect($membersLengthBefore).to.equal(2);
@@ -166,16 +166,16 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
           it('does not dispatch the action on the element specified by .exclude()', function () {
             const $org = requerio.$orgs['.exclude__w-dom-element-argument'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.not.include('not');
-            expect(classList1).to.include('not');
+            expect(classArray0).to.not.include('not');
+            expect(classArray1).to.include('not');
           });
         });
 
         describe('with a Cheerio/jQuery object argument', function () {
-          const $mainSpan0 = $('.exclude__w-cheerio-jquery-argument--0');
+          const $mainDiv0 = $('.exclude__w-cheerio-jquery-argument--0');
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
           let $membersLengthAfter = 0;
@@ -190,7 +190,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('excludes elements from members array when .exclude() is invoked', function () {
-            $orgDuring = requerio.$orgs['.exclude__w-cheerio-jquery-argument'].exclude($mainSpan0);
+            $orgDuring = requerio.$orgs['.exclude__w-cheerio-jquery-argument'].exclude($mainDiv0);
 
             $orgDuring.$members.forEach(() => $membersLengthDuring++);
             expect($membersLengthBefore).to.equal(2);
@@ -207,11 +207,11 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
           it('does not dispatch the action on the element specified by .exclude()', function () {
             const $org = requerio.$orgs['.exclude__w-cheerio-jquery-argument'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.not.include('not');
-            expect(classList1).to.include('not');
+            expect(classArray0).to.not.include('not');
+            expect(classArray1).to.include('not');
           });
         });
 
@@ -221,7 +221,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           let $membersLengthAfter = 0;
           let $orgDuring;
 
-          function excludeMainSpan0(i, elem) {
+          function excludeMainDiv0(i, elem) {
             const classToExclude = 'exclude__w-function-argument--0';
 
             return $(this).hasClass(classToExclude) &&
@@ -232,7 +232,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           before(function () {
             requerio.$orgs['.exclude__w-function-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.exclude__w-function-argument'].exclude(excludeMainSpan0);
+            $orgDuring = requerio.$orgs['.exclude__w-function-argument'].exclude(excludeMainDiv0);
           });
 
           after(function () {
@@ -333,13 +333,13 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.has-child-test'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.hasChild__w-string-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.has-child-test'].hasChild('#yoda__input');
+            $orgDuring = requerio.$orgs['.hasChild__w-string-argument'].hasChild('.child');
           });
 
           after(function () {
-            requerio.$orgs['.has-child-test'].dispatchAction('removeClass', 'hasChild');
+            requerio.$orgs['.hasChild__w-string-argument'].dispatchAction('removeClass', 'has-child');
           });
 
           it('excludes elements from members array when .hasChild() is invoked', function () {
@@ -350,7 +350,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('resets members array when .dispatchAction() is invoked after .hasChild()', function () {
-            $orgDuring.dispatchAction('addClass', 'hasChild');
+            $orgDuring.dispatchAction('addClass', 'has-child');
             $orgDuring.$members.forEach(() => $membersLengthAfter++);
 
             expect($membersLengthDuring).to.equal(1);
@@ -358,30 +358,30 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('dispatches the action on the element filtered by .hasChild()', function () {
-            const $org = requerio.$orgs['.has-child-test'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const $org = requerio.$orgs['.hasChild__w-string-argument'];
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.not.include('hasChild');
-            expect(classList1).to.include('hasChild');
+            expect(classArray0).to.not.include('has-child');
+            expect(classArray1).to.include('has-child');
           });
         });
 
         describe('with a DOM element argument', function () {
-          const yodaInputEl = $('#yoda__input')[0];
+          const domEl = $('.hasChild__w-dom-element-argument').children('.child')[0];
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
           let $membersLengthAfter = 0;
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.has-child-test'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.hasChild__w-dom-element-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.has-child-test'].hasChild(yodaInputEl);
+            $orgDuring = requerio.$orgs['.hasChild__w-dom-element-argument'].hasChild(domEl);
           });
 
           after(function () {
-            requerio.$orgs['.has-child-test'].dispatchAction('removeClass', 'hasChild');
+            requerio.$orgs['.hasChild__w-dom-element-argument'].dispatchAction('removeClass', 'has-child');
           });
 
           it('excludes elements from members array when .hasChild() is invoked', function () {
@@ -392,7 +392,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('resets members array when .dispatchAction() is invoked after .hasChild()', function () {
-            $orgDuring.dispatchAction('addClass', 'hasChild');
+            $orgDuring.dispatchAction('addClass', 'has-child');
             $orgDuring.$members.forEach(() => $membersLengthAfter++);
 
             expect($membersLengthDuring).to.equal(1);
@@ -400,12 +400,12 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('dispatches the action on the element filtered by .hasChild()', function () {
-            const $org = requerio.$orgs['.has-child-test'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const $org = requerio.$orgs['.hasChild__w-dom-element-argument'];
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.not.include('hasChild');
-            expect(classList1).to.include('hasChild');
+            expect(classArray0).to.not.include('has-child');
+            expect(classArray1).to.include('has-child');
           });
         });
       });
@@ -413,7 +413,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
       // .hasElement() must be tested before manipulating the DOM because these test expect an unmanipulated DOM.
       describe('.hasElement()', function () {
         describe('with a DOM element argument', function () {
-          const mainSpan00 = $('.hasElement__w-dom-element-argument--0')[0];
+          const domEl = $('.hasElement__w-dom-element-argument--0')[0];
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
           let $membersLengthAfter = 0;
@@ -422,7 +422,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           before(function () {
             requerio.$orgs['.hasElement__w-dom-element-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.hasElement__w-dom-element-argument'].hasElement(mainSpan00);
+            $orgDuring = requerio.$orgs['.hasElement__w-dom-element-argument'].hasElement(domEl);
           });
 
           after(function () {
@@ -446,11 +446,11 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
           it('dispatches the action on the element filtered by .hasElement()', function () {
             const $org = requerio.$orgs['.hasElement__w-dom-element-argument'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.include('hasElement');
-            expect(classList1).to.not.include('hasElement');
+            expect(classArray0).to.include('hasElement');
+            expect(classArray1).to.not.include('hasElement');
           });
         });
       });
@@ -490,16 +490,16 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
           it('dispatches the action on the element filtered by .hasNext()', function () {
             const $org = requerio.$orgs['.hasNext__w-string-argument'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.include('hasNext');
-            expect(classList1).to.not.include('hasNext');
+            expect(classArray0).to.include('hasNext');
+            expect(classArray1).to.not.include('hasNext');
           });
         });
 
         describe('with a DOM element argument', function () {
-          const mainSpan10 = $('.hasNext__w-dom-element-argument--1')[0];
+          const mainDiv10 = $('.hasNext__w-dom-element-argument--1')[0];
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
           let $membersLengthAfter = 0;
@@ -508,7 +508,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           before(function () {
             requerio.$orgs['.hasNext__w-dom-element-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.hasNext__w-dom-element-argument'].hasNext(mainSpan10);
+            $orgDuring = requerio.$orgs['.hasNext__w-dom-element-argument'].hasNext(mainDiv10);
           });
 
           after(function () {
@@ -532,16 +532,15 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
           it('dispatches the action on the element filtered by .hasNext()', function () {
             const $org = requerio.$orgs['.hasNext__w-dom-element-argument'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.include('hasNext');
-            expect(classList1).to.not.include('hasNext');
+            expect(classArray0).to.include('hasNext');
+            expect(classArray1).to.not.include('hasNext');
           });
         });
       });
 
-      // .hasParent() must be tested before manipulating the DOM because these test expect an unmanipulated DOM.
       describe('.hasParent()', function () {
         describe('with a string argument', function () {
           let $membersLengthBefore = 0;
@@ -550,13 +549,13 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.has-parent-test'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.hasParent__w-string-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.has-parent-test'].hasParent('#yoda');
+            $orgDuring = requerio.$orgs['.hasParent__w-string-argument'].hasParent('.parent');
           });
 
           after(function () {
-            requerio.$orgs['.has-parent-test'].dispatchAction('removeClass', 'hasParent');
+            requerio.$orgs['.hasParent__w-string-argument'].dispatchAction('removeClass', 'has-parent');
           });
 
           it('excludes elements from members array when .hasParent() is invoked', function () {
@@ -567,7 +566,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('resets members array when .dispatchAction() is invoked after .hasParent()', function () {
-            $orgDuring.dispatchAction('addClass', 'hasParent');
+            $orgDuring.dispatchAction('addClass', 'has-parent');
             $orgDuring.$members.forEach(() => $membersLengthAfter++);
 
             expect($membersLengthDuring).to.equal(1);
@@ -575,30 +574,30 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('dispatches the action on the element filtered by .hasParent()', function () {
-            const $org = requerio.$orgs['.has-parent-test'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const $org = requerio.$orgs['.hasParent__w-string-argument'];
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.not.include('hasParent');
-            expect(classList1).to.include('hasParent');
+            expect(classArray0).to.not.include('has-parent');
+            expect(classArray1).to.include('has-parent');
           });
         });
 
         describe('with a DOM element argument', function () {
-          const yodaEl = $('#yoda')[0];
+          const domEl = $('.hasParent__w-dom-element-argument').parent('.parent')[0];
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
           let $membersLengthAfter = 0;
           let $orgDuring;
 
           before(function () {
-            requerio.$orgs['.has-parent-test'].$members.forEach(() => $membersLengthBefore++);
+            requerio.$orgs['.hasParent__w-dom-element-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.has-parent-test'].hasParent(yodaEl);
+            $orgDuring = requerio.$orgs['.hasParent__w-dom-element-argument'].hasParent(domEl);
           });
 
           after(function () {
-            requerio.$orgs['.has-parent-test'].dispatchAction('removeClass', 'hasParent');
+            requerio.$orgs['.hasParent__w-dom-element-argument'].dispatchAction('removeClass', 'has-parent');
           });
 
           it('excludes elements from members array when .hasParent() is invoked', function () {
@@ -609,7 +608,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('resets members array when .dispatchAction() is invoked after .hasParent()', function () {
-            $orgDuring.dispatchAction('addClass', 'hasParent');
+            $orgDuring.dispatchAction('addClass', 'has-parent');
             $orgDuring.$members.forEach(() => $membersLengthAfter++);
 
             expect($membersLengthDuring).to.equal(1);
@@ -617,12 +616,12 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           });
 
           it('dispatches the action on the element filtered by .hasParent()', function () {
-            const $org = requerio.$orgs['.has-parent-test'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const $org = requerio.$orgs['.hasParent__w-dom-element-argument'];
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.not.include('hasParent');
-            expect(classList1).to.include('hasParent');
+            expect(classArray0).to.not.include('has-parent');
+            expect(classArray1).to.include('has-parent');
           });
         });
       });
@@ -662,16 +661,16 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
           it('dispatches the action on the element filtered by .hasPrev()', function () {
             const $org = requerio.$orgs['.hasPrev__w-string-argument'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.not.include('hasPrev');
-            expect(classList1).to.include('hasPrev');
+            expect(classArray0).to.not.include('hasPrev');
+            expect(classArray1).to.include('hasPrev');
           });
         });
 
         describe('with a DOM element argument', function () {
-          const mainSpan00 = $('.hasPrev__w-dom-element-argument--0')[0];
+          const domEl = $('.hasPrev__w-dom-element-argument--0')[0];
           let $membersLengthBefore = 0;
           let $membersLengthDuring = 0;
           let $membersLengthAfter = 0;
@@ -680,7 +679,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           before(function () {
             requerio.$orgs['.hasPrev__w-dom-element-argument'].$members.forEach(() => $membersLengthBefore++);
 
-            $orgDuring = requerio.$orgs['.hasPrev__w-dom-element-argument'].hasPrev(mainSpan00);
+            $orgDuring = requerio.$orgs['.hasPrev__w-dom-element-argument'].hasPrev(domEl);
           });
 
           after(function () {
@@ -704,11 +703,11 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
           it('dispatches the action on the element filtered by .hasPrev()', function () {
             const $org = requerio.$orgs['.hasPrev__w-dom-element-argument'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.not.include('hasPrev');
-            expect(classList1).to.include('hasPrev');
+            expect(classArray0).to.not.include('hasPrev');
+            expect(classArray1).to.include('hasPrev');
           });
         });
       });
@@ -749,16 +748,15 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
           it('dispatches the action on the element filtered by .hasSelector()', function () {
             const $org = requerio.$orgs['.hasSelector__w-string-argument'];
-            const classList0 = $org.getState(0).classList;
-            const classList1 = $org.getState(1).classList;
+            const classArray0 = $org.getState(0).classArray;
+            const classArray1 = $org.getState(1).classArray;
 
-            expect(classList0).to.include('hasSelector');
-            expect(classList1).to.not.include('hasSelector');
+            expect(classArray0).to.include('hasSelector');
+            expect(classArray1).to.not.include('hasSelector');
           });
         });
       });
 
-      // .hasSibling() must be tested before manipulating the DOM because these test expect an unmanipulated DOM.
       describe('.hasSibling()', function () {
         let $membersLengthBefore = 0;
         let $membersLengthDuring = 0;
@@ -766,13 +764,13 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         let $orgDuring;
 
         before(function () {
-          requerio.$orgs['.midi-chlorian'].$members.forEach(() => $membersLengthBefore++);
+          requerio.$orgs['.hasSibling'].$members.forEach(() => $membersLengthBefore++);
 
-          $orgDuring = requerio.$orgs['.midi-chlorian'].hasSibling('.has-sibling-test');
+          $orgDuring = requerio.$orgs['.hasSibling'].hasSibling('.sibling');
         });
 
         after(function () {
-          requerio.$orgs['.midi-chlorian'].dispatchAction('removeClass', 'hasSibling');
+          requerio.$orgs['.hasSibling'].dispatchAction('removeClass', 'has-sibling');
         });
 
         it('excludes elements from members array when .hasSibling() is invoked', function () {
@@ -783,7 +781,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         });
 
         it('resets members array when .dispatchAction() is invoked after .hasSibling()', function () {
-          $orgDuring.dispatchAction('addClass', 'hasSibling');
+          $orgDuring.dispatchAction('addClass', 'has-sibling');
           $orgDuring.$members.forEach(() => $membersLengthAfter++);
 
           expect($membersLengthDuring).to.equal(1);
@@ -791,12 +789,12 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         });
 
         it('dispatches the action on the element filtered by .hasSibling()', function () {
-          const $org = requerio.$orgs['.midi-chlorian'];
-          const classList0 = $org.getState(0).classList;
-          const classList1 = $org.getState(1).classList;
+          const $org = requerio.$orgs['.hasSibling'];
+          const classArray0 = $org.getState(0).classArray;
+          const classArray1 = $org.getState(1).classArray;
 
-          expect(classList0).to.include('hasSibling');
-          expect(classList1).to.not.include('hasSibling');
+          expect(classArray0).to.not.include('has-sibling');
+          expect(classArray1).to.include('has-sibling');
         });
       });
 
@@ -1012,7 +1010,7 @@ invoked in a targeted manner', function () {
 
         it('.updateMeasurements() updates measurement properties on a specific $organism $member when invoked in a \
 targeted manner', function () {
-          const $org = requerio.$orgs['.main__span']; // Necessary to set .main__span for the .reducer-get tests.
+          const $org = requerio.$orgs['.main__div']; // Necessary to set .main__div for the .reducer-get tests.
           const stateBefore1 = $org.getState(1);
 
           width++;
@@ -1138,7 +1136,8 @@ targeted manner', function () {
         it('accepts a value and returns the same value on the server to mock the method call on the client\
 ', function () {
           Object.keys(requerio.$orgs).forEach((selector) => {
-            if (selector.includes('augmented')) {
+            // Arbitrary condition. Can't operate on all organisms because it will mess with later tests.
+            if (!selector.includes('.exclude__')) {
               return;
             }
 
@@ -1155,7 +1154,8 @@ targeted manner', function () {
         it('accepts a value and returns the same value on the server to mock the method call on the client\
 ', function () {
           Object.keys(requerio.$orgs).forEach((selector) => {
-            if (selector.includes('augmented')) {
+            // Arbitrary condition. Can't operate on all organisms because it will mess with later tests.
+            if (!selector.includes('.exclude__')) {
               return;
             }
 
@@ -1171,9 +1171,9 @@ targeted manner', function () {
 
     describe('reducer-get', function () {
       it('updates the state $members if the $org $members increase in number', function () {
-        const $org = requerio.$orgs['.main__span'];
+        const $org = requerio.$orgs['.main__div'];
         const stateMembersLengthBefore = $org.getState().$members.length;
-        const htmlSnippet = '<span class="main__span"><h2>Span</h2></span>';
+        const htmlSnippet = '<div class="main__div"><h2>Div</h2></div>';
 
         $org.$members.push($(htmlSnippet));
 
@@ -1185,7 +1185,7 @@ targeted manner', function () {
       });
 
       it('updates the state $members if the $org $members decrease in number', function () {
-        const $org = requerio.$orgs['.main__span'];
+        const $org = requerio.$orgs['.main__div'];
         const stateMembersLengthBefore = $org.getState().$members.length;
 
         $org.$members.pop();
@@ -1202,9 +1202,9 @@ targeted manner', function () {
 
         const state = requerio.$orgs['#main'].getState();
 
-        expect(state.attribs.class).to.equal('has-child-test add-class-string');
+        expect(state.attribs.class).to.equal('add-class-string');
         expect(state.classArray).to.include('add-class-string');
-        expect(state.classList).to.include('add-class-string');
+        expect(state.classArray).to.include('add-class-string');
       });
 
       it('dispatches the "addClass" action with a function argument', function () {
@@ -1214,35 +1214,35 @@ targeted manner', function () {
 
         expect(state.attribs.class).to.have.string('add-class-function');
         expect(state.classArray).to.include('add-class-function');
-        expect(state.classList).to.include('add-class-function');
+        expect(state.classArray).to.include('add-class-function');
       });
 
       it('dispatches the "addClass" action in a targeted manner', function () {
-        requerio.$orgs['.main__span'].dispatchAction('addClass', 'add-class-1', 1);
+        requerio.$orgs['.main__div'].dispatchAction('addClass', 'add-class-1', 1);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.attribs.class).to.not.have.string('add-class-1');
         expect(state0.classArray).to.not.include('add-class-1');
-        expect(state0.classList).to.not.include('add-class-1');
+        expect(state0.classArray).to.not.include('add-class-1');
         expect(state1.attribs.class).to.have.string('add-class-1');
         expect(state1.classArray).to.include('add-class-1');
-        expect(state1.classList).to.include('add-class-1');
+        expect(state1.classArray).to.include('add-class-1');
       });
 
       it('does not dispatch the "addClass" action if the target is out-of-bounds', function () {
-        requerio.$orgs['.main__span'].dispatchAction('addClass', 'out-of-bounds', 2);
+        requerio.$orgs['.main__div'].dispatchAction('addClass', 'out-of-bounds', 2);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.attribs.class).to.not.have.string('out-of-bounds');
         expect(state0.classArray).to.not.include('out-of-bounds');
-        expect(state0.classList).to.not.include('out-of-bounds');
+        expect(state0.classArray).to.not.include('out-of-bounds');
         expect(state1.attribs.class).to.not.have.string('out-of-bounds');
         expect(state1.classArray).to.not.include('out-of-bounds');
-        expect(state1.classList).to.not.include('out-of-bounds');
+        expect(state1.classArray).to.not.include('out-of-bounds');
       });
 
       it('dispatches the "removeClass" action with a string argument', function () {
@@ -1256,10 +1256,10 @@ targeted manner', function () {
 
         expect(stateBefore.attribs.class).to.have.string('remove-class-string');
         expect(stateBefore.classArray).to.include('remove-class-string');
-        expect(stateBefore.classList).to.include('remove-class-string');
+        expect(stateBefore.classArray).to.include('remove-class-string');
         expect(stateAfter.attribs.class).to.not.have.string('remove-class-string');
         expect(stateAfter.classArray).to.not.include('remove-class-string');
-        expect(stateAfter.classList).to.not.include('remove-class-string');
+        expect(stateAfter.classArray).to.not.include('remove-class-string');
       });
 
       it('dispatches the "removeClass" action with a function argument', function () {
@@ -1273,10 +1273,10 @@ targeted manner', function () {
 
         expect(stateBefore.attribs.class).to.have.string('remove-class-function');
         expect(stateBefore.classArray).to.include('remove-class-function');
-        expect(stateBefore.classList).to.include('remove-class-function');
+        expect(stateBefore.classArray).to.include('remove-class-function');
         expect(stateAfter.attribs.class).to.not.have.string('remove-class-function');
         expect(stateAfter.classArray).to.not.include('remove-class-function');
-        expect(stateAfter.classList).to.not.include('remove-class-function');
+        expect(stateAfter.classArray).to.not.include('remove-class-function');
       });
 
       it('dispatches the "toggleClass" action with a string argument', function () {
@@ -1292,13 +1292,13 @@ targeted manner', function () {
 
         expect(state0.attribs.class).to.not.have.string('toggle-class-string');
         expect(state0.classArray).to.not.include('toggle-class-string');
-        expect(state0.classList).to.not.include('toggle-class-string');
+        expect(state0.classArray).to.not.include('toggle-class-string');
         expect(state1.attribs.class).to.have.string('toggle-class-string');
         expect(state1.classArray).to.include('toggle-class-string');
-        expect(state1.classList).to.include('toggle-class-string');
+        expect(state1.classArray).to.include('toggle-class-string');
         expect(state2.attribs.class).to.not.have.string('toggle-class-string');
         expect(state2.classArray).to.not.include('toggle-class-string');
-        expect(state2.classList).to.not.include('toggle-class-string');
+        expect(state2.classArray).to.not.include('toggle-class-string');
       });
 
       it('dispatches the "toggleClass" action with a function argument', function () {
@@ -1314,35 +1314,35 @@ targeted manner', function () {
 
         expect(state0.attribs.class).to.not.have.string('toggle-class-function');
         expect(state0.classArray).to.not.include('toggle-class-function');
-        expect(state0.classList).to.not.include('toggle-class-function');
+        expect(state0.classArray).to.not.include('toggle-class-function');
         expect(state1.attribs.class).to.have.string('toggle-class-function');
         expect(state1.classArray).to.include('toggle-class-function');
-        expect(state1.classList).to.include('toggle-class-function');
+        expect(state1.classArray).to.include('toggle-class-function');
         expect(state2.attribs.class).to.not.have.string('toggle-class-function');
         expect(state2.classArray).to.not.include('toggle-class-function');
-        expect(state2.classList).to.not.include('toggle-class-function');
+        expect(state2.classArray).to.not.include('toggle-class-function');
       });
 
       it('dispatches the "toggleClass" action with a function argument in a targeted manner', function () {
-        const state0 = requerio.$orgs['.main__span'].getState();
+        const state0 = requerio.$orgs['.main__div'].getState();
 
-        requerio.$orgs['.main__span'].dispatchAction('toggleClass', () => 'toggle-class-function-1', 1);
+        requerio.$orgs['.main__div'].dispatchAction('toggleClass', () => 'toggle-class-function-1', 1);
 
-        const state1 = requerio.$orgs['.main__span'].getState();
+        const state1 = requerio.$orgs['.main__div'].getState();
 
-        requerio.$orgs['.main__span'].dispatchAction('toggleClass', () => 'toggle-class-function-1', 1);
+        requerio.$orgs['.main__div'].dispatchAction('toggleClass', () => 'toggle-class-function-1', 1);
 
-        const state2 = requerio.$orgs['.main__span'].getState();
+        const state2 = requerio.$orgs['.main__div'].getState();
 
         expect(state0.$members[1].attribs.class).to.not.have.string('toggle-class-function-1');
         expect(state0.$members[1].classArray).to.not.include('toggle-class-function-1');
-        expect(state0.$members[1].classList).to.not.include('toggle-class-function-1');
+        expect(state0.$members[1].classArray).to.not.include('toggle-class-function-1');
         expect(state1.$members[1].attribs.class).to.have.string('toggle-class-function-1');
         expect(state1.$members[1].classArray).to.include('toggle-class-function-1');
-        expect(state1.$members[1].classList).to.include('toggle-class-function-1');
+        expect(state1.$members[1].classArray).to.include('toggle-class-function-1');
         expect(state2.$members[1].attribs.class).to.not.have.string('toggle-class-function-1');
         expect(state2.$members[1].classArray).to.not.include('toggle-class-function-1');
-        expect(state2.$members[1].classList).to.not.include('toggle-class-function-1');
+        expect(state2.$members[1].classArray).to.not.include('toggle-class-function-1');
       });
 
       it('dispatches the "toggleClass" action with a true boolean argument', function () {
@@ -1358,13 +1358,13 @@ targeted manner', function () {
 
         expect(state0.attribs.class).to.not.have.string('toggle-class-true');
         expect(state0.classArray).to.not.include('toggle-class-true');
-        expect(state0.classList).to.not.include('toggle-class-true');
+        expect(state0.classArray).to.not.include('toggle-class-true');
         expect(state1.attribs.class).to.have.string('toggle-class-true');
         expect(state1.classArray).to.include('toggle-class-true');
-        expect(state1.classList).to.include('toggle-class-true');
+        expect(state1.classArray).to.include('toggle-class-true');
         expect(state2.attribs.class).to.have.string('toggle-class-true');
         expect(state2.classArray).to.include('toggle-class-true');
-        expect(state2.classList).to.include('toggle-class-true');
+        expect(state2.classArray).to.include('toggle-class-true');
       });
 
       it('dispatches the "toggleClass" action with a false boolean argument', function () {
@@ -1382,13 +1382,13 @@ targeted manner', function () {
 
         expect(state0.attribs.class).to.have.string('toggle-class-false');
         expect(state0.classArray).to.include('toggle-class-false');
-        expect(state0.classList).to.include('toggle-class-false');
+        expect(state0.classArray).to.include('toggle-class-false');
         expect(state1.attribs.class).to.not.have.string('toggle-class-false');
         expect(state1.classArray).to.not.include('toggle-class-false');
-        expect(state1.classList).to.not.include('toggle-class-false');
+        expect(state1.classArray).to.not.include('toggle-class-false');
         expect(state2.attribs.class).to.not.have.string('toggle-class-false');
         expect(state2.classArray).to.not.include('toggle-class-false');
-        expect(state2.classList).to.not.include('toggle-class-false');
+        expect(state2.classArray).to.not.include('toggle-class-false');
       });
 
       it('dispatches the "attr" action with a single string value argument', function () {
@@ -1408,40 +1408,40 @@ targeted manner', function () {
         expect(state.attribs.test).to.equal('testing67890');
       });
 
-      it('dispatches the "attr" action with a single string value argument on a single target', function () {
-        requerio.$orgs['.main__span'].dispatchAction('attr', {test: 'testing12345'}, 1);
+      it('dispatches the "attr" action with a single string value argument in a targeted manner', function () {
+        requerio.$orgs['.main__div'].dispatchAction('attr', {test: 'testing12345'}, 1);
 
-        const state = requerio.$orgs['.main__span'].getState(1);
+        const state = requerio.$orgs['.main__div'].getState(1);
 
         expect(state.attribs.test).to.equal('testing12345');
       });
 
-      it('dispatches the "attr" action with a multiple string value argument on a single target', function () {
-        requerio.$orgs['.main__span']
+      it('dispatches the "attr" action with a multiple string value argument in a targeted manner', function () {
+        requerio.$orgs['.main__div']
           .dispatchAction('attr', {taste: 'tasting12345', test: 'testing67890'}, 1);
 
-        const state = requerio.$orgs['.main__span'].getState(1);
+        const state = requerio.$orgs['.main__div'].getState(1);
 
         expect(state.attribs.taste).to.equal('tasting12345');
         expect(state.attribs.test).to.equal('testing67890');
       });
 
-      it('dispatches the "attr" action with a single string value argument on multiple targets', function () {
-        requerio.$orgs['.main__span'].dispatchAction('attr', {twist: 'twisting12345'}, [0, 1]);
+      it('dispatches the "attr" action with a single string value argument across multiple targets', function () {
+        requerio.$orgs['.main__div'].dispatchAction('attr', {twist: 'twisting12345'}, [0, 1]);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.attribs.twist).to.equal('twisting12345');
         expect(state1.attribs.twist).to.equal('twisting12345');
       });
 
-      it('dispatches the "attr" action with a multiple string value argument on multiple targets', function () {
-        requerio.$orgs['.main__span']
+      it('dispatches the "attr" action with a multiple string value argument across multiple targets', function () {
+        requerio.$orgs['.main__div']
           .dispatchAction('attr', {taste: 'tasting67890', twist: 'twisting67890'}, [0, 1]);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.attribs.taste).to.equal('tasting67890');
         expect(state0.attribs.twist).to.equal('twisting67890');
@@ -1503,31 +1503,31 @@ targeted manner', function () {
         expect(state.style['background-color']).to.equal('magenta');
       });
 
-      it('dispatches the "css" action with a single string value argument on a single target', function () {
-        requerio.$orgs['.main__span'].dispatchAction('css', {color: 'red'}, 1);
+      it('dispatches the "css" action with a single string value argument in a targeted manner', function () {
+        requerio.$orgs['.main__div'].dispatchAction('css', {color: 'red'}, 1);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.style.color).to.not.equal(state1.style.color);
         expect(state1.style.color).to.equal('red');
       });
 
-      it('dispatches the "css" action with a single string value argument on multiple targets', function () {
-        requerio.$orgs['.main__span'].dispatchAction('css', {color: 'green'}, [0, 1]);
+      it('dispatches the "css" action with a single string value argument across multiple targets', function () {
+        requerio.$orgs['.main__div'].dispatchAction('css', {color: 'green'}, [0, 1]);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.style.color).to.equal('green');
         expect(state1.style.color).to.equal('green');
       });
 
-      it('dispatches the "css" action with a multiple string value argument on a single target', function () {
-        requerio.$orgs['.main__span'].dispatchAction('css', {'color': 'blue', 'background-color': 'blue'}, 1);
+      it('dispatches the "css" action with a multiple string value argument in a targeted manner', function () {
+        requerio.$orgs['.main__div'].dispatchAction('css', {'color': 'blue', 'background-color': 'blue'}, 1);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.style.color).to.not.equal(state1.style.color);
         expect(state0.style['background-color']).to.not.equal(state1.style['background-color']);
@@ -1535,11 +1535,11 @@ targeted manner', function () {
         expect(state1.style['background-color']).to.equal('blue');
       });
 
-      it('dispatches the "css" action with a multiple string value argument on multiple targets', function () {
-        requerio.$orgs['.main__span'].dispatchAction('css', {'color': 'cyan', 'background-color': 'cyan'}, [0, 1]);
+      it('dispatches the "css" action with a multiple string value argument across multiple targets', function () {
+        requerio.$orgs['.main__div'].dispatchAction('css', {'color': 'cyan', 'background-color': 'cyan'}, [0, 1]);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.style.color).to.equal('cyan');
         expect(state0.style['background-color']).to.equal('cyan');
@@ -1547,38 +1547,38 @@ targeted manner', function () {
         expect(state1.style['background-color']).to.equal('cyan');
       });
 
-      it('dispatches the "css" action to update the state with a single string property argument on a single target\
+      it('dispatches the "css" action to update the state with a single string property argument in a targeted manner\
 ', function () {
-        requerio.$orgs['.main__span'].css({color: 'yellow'});
-        requerio.$orgs['.main__span'].dispatchAction('css', 'color', 1);
+        requerio.$orgs['.main__div'].css({color: 'yellow'});
+        requerio.$orgs['.main__div'].dispatchAction('css', 'color', 1);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.style.color).to.not.equal(state1.style.color);
         expect(state1.style.color).to.equal('yellow');
       });
 
-      it('dispatches the "css" action to update the state with a single string property argument on multiple targets\
-', function () {
-        requerio.$orgs['.main__span'].css({color: 'magenta'});
-        requerio.$orgs['.main__span'].dispatchAction('css', 'color', [0, 1]);
+      it('dispatches the "css" action to update the state with a single string property argument across multiple \
+targets', function () {
+        requerio.$orgs['.main__div'].css({color: 'magenta'});
+        requerio.$orgs['.main__div'].dispatchAction('css', 'color', [0, 1]);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.style.color).to.equal('magenta');
         expect(state1.style.color).to.equal('magenta');
       });
 
-      it('dispatches the "css" action to update the state with a multiple string properties argument on a single target\
-', function () {
-        requerio.$orgs['.main__span'].css({color: 'black'});
-        requerio.$orgs['.main__span'].css({'background-color': 'black'});
-        requerio.$orgs['.main__span'].dispatchAction('css', ['color', 'background-color'], 1);
+      it('dispatches the "css" action to update the state with a multiple string properties argument in a targeted \
+manner', function () {
+        requerio.$orgs['.main__div'].css({color: 'black'});
+        requerio.$orgs['.main__div'].css({'background-color': 'black'});
+        requerio.$orgs['.main__div'].dispatchAction('css', ['color', 'background-color'], 1);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.style.color).to.not.equal(state1.style.color);
         expect(state0.style['background-color']).to.not.equal(state1.style['background-color']);
@@ -1586,14 +1586,14 @@ targeted manner', function () {
         expect(state1.style['background-color']).to.equal('black');
       });
 
-      it('dispatches the "css" action to update the state with a multiple string properties argument on multiple \
+      it('dispatches the "css" action to update the state with a multiple string properties argument across multiple \
 targets', function () {
-        requerio.$orgs['.main__span'].css({color: 'white'});
-        requerio.$orgs['.main__span'].css({'background-color': 'white'});
-        requerio.$orgs['.main__span'].dispatchAction('css', ['color', 'background-color'], [0, 1]);
+        requerio.$orgs['.main__div'].css({color: 'white'});
+        requerio.$orgs['.main__div'].css({'background-color': 'white'});
+        requerio.$orgs['.main__div'].dispatchAction('css', ['color', 'background-color'], [0, 1]);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.style.color).to.equal('white');
         expect(state0.style['background-color']).to.equal('white');
@@ -1629,19 +1629,19 @@ targets', function () {
         expect(state.data.trust).to.equal('trusting12345');
       });
 
-      it('dispatches the "data" action with a single string value argument on a single target', function () {
-        requerio.$orgs['.main__span'].dispatchAction('data', {test: 'testing12345'}, 1);
+      it('dispatches the "data" action with a single string value argument in a targeted manner', function () {
+        requerio.$orgs['.main__div'].dispatchAction('data', {test: 'testing12345'}, 1);
 
-        const state = requerio.$orgs['.main__span'].getState(1);
+        const state = requerio.$orgs['.main__div'].getState(1);
 
         expect(state.data.test).to.equal('testing12345');
       });
 
-      it('dispatches the "data" action with a multiple string value argument on a single target', function () {
-        requerio.$orgs['.main__span'].dispatchAction(
+      it('dispatches the "data" action with a multiple string value argument in a targeted manner', function () {
+        requerio.$orgs['.main__div'].dispatchAction(
           'data', {taste: 'tasting12345', twist: 'twisting12345', toast: 'toasting12345', trust: 'trusting12345'}, 1);
 
-        const state = requerio.$orgs['.main__span'].getState(1);
+        const state = requerio.$orgs['.main__div'].getState(1);
 
         expect(state.data.taste).to.equal('tasting12345');
         expect(state.data.twist).to.equal('twisting12345');
@@ -1649,22 +1649,22 @@ targets', function () {
         expect(state.data.trust).to.equal('trusting12345');
       });
 
-      it('dispatches the "data" action with a single string value argument on multiple targets', function () {
-        requerio.$orgs['.main__span'].dispatchAction('data', {taste: 'tasting67890'}, [0, 1]);
+      it('dispatches the "data" action with a single string value argument across multiple targets', function () {
+        requerio.$orgs['.main__div'].dispatchAction('data', {taste: 'tasting67890'}, [0, 1]);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.data.taste).to.equal('tasting67890');
         expect(state1.data.taste).to.equal('tasting67890');
       });
 
-      it('dispatches the "data" action with a multiple string value argument on multiple targets', function () {
-        requerio.$orgs['.main__span']
+      it('dispatches the "data" action with a multiple string value argument across multiple targets', function () {
+        requerio.$orgs['.main__div']
           .dispatchAction('data', {twist: 'twisting67890', toast: 'toasting67890'}, [0, 1]);
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.data.twist).to.equal('twisting67890');
         expect(state0.data.toast).to.equal('toasting67890');
@@ -1692,73 +1692,6 @@ targets', function () {
         const state = requerio.$orgs['#main'].getState();
 
         expect(state.height).to.equal(1000);
-      });
-
-      it('dispatches the "html" action with a string argument', function () {
-        const mainInputStateBefore = requerio.$orgs['.main__input'].getState();
-        const mainStateBefore = requerio.$orgs['#main'].getState();
-
-        requerio.$orgs['#main'].dispatchAction(
-          'html',
-          `<input class="main__input html-string" type="text">
-<span class="main__span main__span--0">Foot</span>
-<span class="main__span main__span--1">Barf</span>`
-        );
-
-        const mainInputStateAfter = requerio.$orgs['.main__input'].getState();
-        const mainStateAfter = requerio.$orgs['#main'].getState();
-
-        expect(mainStateBefore.innerHTML).to.not.equal(mainStateAfter.innerHTML);
-        expect(mainStateBefore.textContent).to.not.equal(mainStateAfter.textContent);
-        expect(mainStateAfter.innerHTML).to.equal(`<input class="main__input html-string" type="text">
-<span class="main__span main__span--0">Foot</span>
-<span class="main__span main__span--1">Barf</span>`);
-        expect(mainStateAfter.textContent).to.equal('\nFoot\nBarf');
-        expect(mainInputStateBefore.classList).to.not.include('html-string');
-        expect(mainInputStateAfter.classList).to.include('html-string');
-      });
-
-      it('dispatches the "html" action with a string argument in a targeted manner', function () {
-        const mainSpan1StateBefore = requerio.$orgs['.main__span'].getState(1);
-
-        requerio.$orgs['.main__span'].dispatchAction(
-          'html',
-          '<span>htmlString</span>',
-          1
-        );
-
-        const mainSpan1StateAfter = requerio.$orgs['.main__span'].getState(1);
-
-        expect(mainSpan1StateBefore.innerHTML).to.not.equal(mainSpan1StateAfter.innerHTML);
-        expect(mainSpan1StateBefore.textContent).to.not.equal(mainSpan1StateAfter.textContent);
-        expect(mainSpan1StateAfter.innerHTML).to.equal('<span>htmlString</span>');
-        expect(mainSpan1StateAfter.textContent).to.equal('htmlString');
-      });
-
-      it('dispatches the "html" action with a differing number of members among its descendants', function () {
-        const mainSpanStateBefore = requerio.$orgs['.main__span'].getState();
-        const mainStateBefore = requerio.$orgs['#main'].getState();
-
-        requerio.$orgs['#main'].dispatchAction(
-          'html',
-          `<input class="main__input" type="text">
-<span class="main__span main__span--0">Foo</span>
-<span class="main__span main__span--1">Bar</span>
-<span class="main__span main__span--2">Baz</span>`
-        );
-
-        const mainSpanStateAfter = requerio.$orgs['.main__span'].getState();
-        const mainStateAfter = requerio.$orgs['#main'].getState();
-
-        expect(mainStateBefore.innerHTML).to.not.equal(mainStateAfter.innerHTML);
-        expect(mainStateBefore.textContent).to.not.equal(mainStateAfter.textContent);
-        expect(mainStateAfter.innerHTML).to.equal(`<input class="main__input" type="text">
-<span class="main__span main__span--0">Foo</span>
-<span class="main__span main__span--1">Bar</span>
-<span class="main__span main__span--2">Baz</span>`);
-        expect(mainStateAfter.textContent).to.equal('\nFoo\nBar\nBaz');
-        expect(mainSpanStateBefore.$members.length).to.equal(2);
-        expect(mainSpanStateAfter.$members.length).to.equal(3);
       });
 
       it('dispatches the "innerWidth" action', function () {
@@ -1827,23 +1760,23 @@ targets', function () {
         expect(stateAfter.data.trust).to.be.undefined;
       });
 
-      it('dispatches the "removeData" action with a single string value argument on a single target', function () {
-        const stateBefore = requerio.$orgs['.main__span'].getState(1);
+      it('dispatches the "removeData" action with a single string value argument in a targeted manner', function () {
+        const stateBefore = requerio.$orgs['.main__div'].getState(1);
 
-        requerio.$orgs['.main__span'].dispatchAction('removeData', 'test', 1);
+        requerio.$orgs['.main__div'].dispatchAction('removeData', 'test', 1);
 
-        const stateAfter = requerio.$orgs['.main__span'].getState(1);
+        const stateAfter = requerio.$orgs['.main__div'].getState(1);
 
         expect(stateBefore.data.test).to.equal('testing12345');
         expect(stateAfter.data.test).to.be.undefined;
       });
 
-      it('dispatches the "removeData" action with a multiple string value argument on a single target', function () {
-        const stateBefore = requerio.$orgs['.main__span'].getState(1);
+      it('dispatches the "removeData" action with a multiple string value argument in a targeted manner', function () {
+        const stateBefore = requerio.$orgs['.main__div'].getState(1);
 
-        requerio.$orgs['.main__span'].dispatchAction('removeData', 'taste twist', 1);
+        requerio.$orgs['.main__div'].dispatchAction('removeData', 'taste twist', 1);
 
-        const stateAfter = requerio.$orgs['.main__span'].getState();
+        const stateAfter = requerio.$orgs['.main__div'].getState();
 
         expect(stateBefore.data.taste).to.equal('tasting67890');
         expect(stateBefore.data.twist).to.equal('twisting67890');
@@ -1851,12 +1784,12 @@ targets', function () {
         expect(stateAfter.data.twist).to.be.undefined;
       });
 
-      it('dispatches the "removeData" action with an array argument on a single target', function () {
-        const stateBefore = requerio.$orgs['.main__span'].getState(1);
+      it('dispatches the "removeData" action with an array argument in a targeted manner', function () {
+        const stateBefore = requerio.$orgs['.main__div'].getState(1);
 
-        requerio.$orgs['.main__span'].dispatchAction('removeData', ['toast', 'trust']);
+        requerio.$orgs['.main__div'].dispatchAction('removeData', ['toast', 'trust']);
 
-        const stateAfter = requerio.$orgs['.main__span'].getState();
+        const stateAfter = requerio.$orgs['.main__div'].getState();
 
         expect(stateBefore.data.toast).to.equal('toasting67890');
         expect(stateBefore.data.trust).to.equal('trusting12345');
@@ -1904,7 +1837,7 @@ targets', function () {
         bottom++;
         left++;
 
-        requerio.$orgs['.main__span'].dispatchAction(
+        requerio.$orgs['.main__div'].dispatchAction(
           'setBoundingClientRect',
           {
             width,
@@ -1917,9 +1850,9 @@ targets', function () {
           1
         );
 
-        const state0 = requerio.$orgs['.main__span'].getState(0);
+        const state0 = requerio.$orgs['.main__div'].getState(0);
         const boundingClientRect0 = state0.boundingClientRect;
-        const state1 = requerio.$orgs['.main__span'].getState(1);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
         const boundingClientRect1 = state1.boundingClientRect;
 
         expect(boundingClientRect0.width).to.not.equal(boundingClientRect1.width);
@@ -1971,300 +1904,420 @@ targets', function () {
     });
 
     describe('augmented organism prototype methods', function () {
-      let augmentedHtml;
-
-      before(function () {
-        requerio.$orgs['#augmented'].dispatchAction('html');
-
-        augmentedHtml = requerio.$orgs['#augmented'].getState().innerHTML;
-      });
-
-      afterEach(function () {
-        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
-      });
-
       it('after() updates the innerHTML of the parent organism', function () {
-        requerio.$orgs['.augmented__span--1']
-          .dispatchAction('after', '\n<span class="augmented__span augmented__span--1.1"></span>');
+        requerio.$orgs['#after'].dispatchAction('html');
 
-        const state = requerio.$orgs['#augmented'].getState();
+        const stateBefore = requerio.$orgs['#after'].getState();
 
-        expect(state.innerHTML).to.equal(`
-      <span class="augmented__span augmented__span--0">Foo</span>
-      <span class="augmented__span augmented__span--1">Bar</span>
-<span class="augmented__span augmented__span--1.1"></span>
-    `);
+        requerio.$orgs['.after--0']
+          .dispatchAction('after', '\n        <span class="after after--0.5"></span>');
+
+        const stateAfter = requerio.$orgs['#after'].getState();
+
+        expect(stateBefore.innerHTML).to.equal(`
+        <span class="after after--0"></span>
+        <span class="after after--1"></span>
+      `);
+        expect(stateAfter.innerHTML).to.equal(`
+        <span class="after after--0"></span>
+        <span class="after after--0.5"></span>
+        <span class="after after--1"></span>
+      `);
       });
 
       it('after() updates the innerHTML of the parent organism in a targeted manner', function () {
-        requerio.$orgs['.augmented__span']
-          .dispatchAction('after', '\n<span class="augmented__span augmented__span--1.2"></span>', 1);
+        requerio.$orgs['#after'].dispatchAction('html');
 
-        const state = requerio.$orgs['#augmented'].getState();
+        const stateBefore = requerio.$orgs['#after'].getState();
 
-        expect(state.innerHTML).to.equal(`
-      <span class="augmented__span augmented__span--0">Foo</span>
-      <span class="augmented__span augmented__span--1">Bar</span>
-<span class="augmented__span augmented__span--1.2"></span>
-    `);
+        requerio.$orgs['.after']
+          .dispatchAction('after', '\n        <span class="after after--1.5"></span>', 2);
+
+        const stateAfter = requerio.$orgs['#after'].getState();
+
+        expect(stateBefore.innerHTML).to.equal(`
+        <span class="after after--0"></span>
+        <span class="after after--0.5"></span>
+        <span class="after after--1"></span>
+      `);
+        expect(stateAfter.innerHTML).to.equal(`
+        <span class="after after--0"></span>
+        <span class="after after--0.5"></span>
+        <span class="after after--1"></span>
+        <span class="after after--1.5"></span>
+      `);
       });
 
       it('append() updates the innerHTML of the organism', function () {
-        const stateBefore = requerio.$orgs['.next__span--0'].getState();
+        const stateBefore = requerio.$orgs['.append--0'].getState();
 
-        requerio.$orgs['.next__span--0'].dispatchAction('append', '<span>Goo</span>');
+        requerio.$orgs['.append--0'].dispatchAction('append', '  <span>Bar</span>\n');
 
-        const stateAfter = requerio.$orgs['.next__span--0'].getState();
-
-        requerio.$orgs['.next__span--0'].dispatchAction('append', '<span>Hoo</span>');
-
-        const stateAfterAgain = requerio.$orgs['.next__span--0'].getState();
+        const stateAfter = requerio.$orgs['.append--0'].getState();
 
         expect(stateBefore.innerHTML).to.be.null;
         expect(stateBefore.textContent).to.be.null;
-        expect(stateAfter.innerHTML).to.equal('Foo<span>Goo</span>');
-        expect(stateAfter.textContent).to.equal('FooGoo');
-        expect(stateAfterAgain.innerHTML).to.equal('Foo<span>Goo</span><span>Hoo</span>');
-        expect(stateAfterAgain.textContent).to.equal('FooGooHoo');
+        expect(stateAfter.innerHTML).to.equal(`
+        <span>Foo</span>
+        <span>Bar</span>
+`);
+        expect(stateAfter.textContent).to.equal(`
+        Foo
+        Bar
+`);
       });
 
       it('append() updates the innerHTML of the organism in a targeted manner', function () {
-        const stateBefore = requerio.$orgs['.next__span'].getState(1);
+        const stateBefore = requerio.$orgs['.append'].getState(1);
 
-        requerio.$orgs['.next__span'].dispatchAction('append', '<span>Car</span>', 1);
+        requerio.$orgs['.append'].dispatchAction('append', '  <span>Bar</span>\n', 1);
 
-        const stateAfter = requerio.$orgs['.next__span'].getState(1);
-
-        requerio.$orgs['.next__span'].dispatchAction('append', '<span>Dar</span>', 1);
-
-        const stateAfterAgain = requerio.$orgs['.next__span'].getState(1);
+        const stateAfter = requerio.$orgs['.append'].getState(1);
 
         expect(stateBefore.innerHTML).to.be.null;
         expect(stateBefore.textContent).to.be.null;
-        expect(stateAfter.innerHTML).to.equal('Bar<span>Car</span>');
-        expect(stateAfter.textContent).to.equal('BarCar');
-        expect(stateAfterAgain.innerHTML).to.equal('Bar<span>Car</span><span>Dar</span>');
-        expect(stateAfterAgain.textContent).to.equal('BarCarDar');
+        expect(stateAfter.innerHTML).to.equal(`
+        <span>Foo</span>
+        <span>Bar</span>
+`);
+        expect(stateAfter.textContent).to.equal(`
+        Foo
+        Bar
+`);
       });
 
       it('before() updates the innerHTML of the parent organism', function () {
-        requerio.$orgs['.augmented__span--1']
-          .dispatchAction('before', '<span class="augmented__span augmented__span--0.1"></span>\n');
+        requerio.$orgs['#before'].dispatchAction('html');
 
-        const state = requerio.$orgs['#augmented'].getState();
+        const stateBefore = requerio.$orgs['#before'].getState();
 
-        expect(state.innerHTML).to.equal(`
-      <span class="augmented__span augmented__span--0">Foo</span>
-      <span class="augmented__span augmented__span--0.1"></span>
-<span class="augmented__span augmented__span--1">Bar</span>
-    `);
+        requerio.$orgs['.before--0']
+          .dispatchAction('before', '<span class="before before---0.5"></span>\n        ');
+
+        const stateAfter = requerio.$orgs['#before'].getState();
+
+        expect(stateBefore.innerHTML).to.equal(`
+        <span class="before before--0"></span>
+        <span class="before before--1"></span>
+      `);
+        expect(stateAfter.innerHTML).to.equal(`
+        <span class="before before---0.5"></span>
+        <span class="before before--0"></span>
+        <span class="before before--1"></span>
+      `);
       });
 
       it('before() updates the innerHTML of the parent organism in a targeted manner', function () {
-        requerio.$orgs['.augmented__span']
-          .dispatchAction('before', '<span class="augmented__span augmented__span--0.2"></span>\n', 1);
+        requerio.$orgs['#before'].dispatchAction('html');
 
-        const state = requerio.$orgs['#augmented'].getState();
+        const stateBefore = requerio.$orgs['#before'].getState();
 
-        expect(state.innerHTML).to.equal(`
-      <span class="augmented__span augmented__span--0">Foo</span>
-      <span class="augmented__span augmented__span--0.2"></span>
-<span class="augmented__span augmented__span--1">Bar</span>
-    `);
+        requerio.$orgs['.before']
+          .dispatchAction('before', '<span class="before before--0.5"></span>\n        ', 2);
+
+        const stateAfter = requerio.$orgs['#before'].getState();
+
+        expect(stateBefore.innerHTML).to.equal(`
+        <span class="before before---0.5"></span>
+        <span class="before before--0"></span>
+        <span class="before before--1"></span>
+      `);
+        expect(stateAfter.innerHTML).to.equal(`
+        <span class="before before---0.5"></span>
+        <span class="before before--0"></span>
+        <span class="before before--0.5"></span>
+        <span class="before before--1"></span>
+      `);
       });
 
-      it('detach() removes the organism from the DOM', function () {
-        const augmentedHtml = requerio.$orgs['#augmented'].html();
-        const augmentedSpanHtml = requerio.$orgs['.augmented__span--0'].html();
+      it('detach() disconnects the organism from the DOM', function () {
+        requerio.$orgs['#detach'].dispatchAction('html');
 
-        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
+        const stateBefore = requerio.$orgs['#detach'].getState();
 
-        const stateBefore = requerio.$orgs['#augmented'].getState();
+        requerio.$orgs['.detach--0'].dispatchAction('detach');
 
-        requerio.$orgs['.augmented__span--0'].dispatchAction('detach');
+        const stateAfter = requerio.$orgs['#detach'].getState();
 
-        const stateAfter = requerio.$orgs['#augmented'].getState();
-
-        expect(stateBefore.innerHTML).to.include(augmentedSpanHtml);
-        expect(stateAfter.innerHTML).to.not.include(augmentedSpanHtml);
-
-        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
+        expect(stateBefore.innerHTML).to.include('<span class="detach detach--0"></span>');
+        expect(stateAfter.innerHTML).to.not.include('<span class="detach detach--0"></span>');
       });
 
-      it('detach() removes the organism from the DOM in a targeted manner', function () {
-        const augmentedHtml = requerio.$orgs['#augmented'].html();
-        const augmentedSpanHtml0 = requerio.$orgs['.augmented__span--0'].html();
-        const augmentedSpanHtml1 = requerio.$orgs['.augmented__span--1'].html();
+      it('detach() disconnects the organism from DOM in a targeted manner', function () {
+        const stateBefore = requerio.$orgs['#detach'].getState();
 
-        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
+        requerio.$orgs['.detach'].dispatchAction('detach', 1);
 
-        const stateBefore = requerio.$orgs['#augmented'].getState();
+        const stateAfter = requerio.$orgs['#detach'].getState();
 
-        requerio.$orgs['.augmented__span'].dispatchAction('detach', null, 1);
-
-        const stateAfter = requerio.$orgs['#augmented'].getState();
-
-        expect(stateBefore.innerHTML).to.include(augmentedSpanHtml0);
-        expect(stateBefore.innerHTML).to.include(augmentedSpanHtml1);
-        expect(stateAfter.innerHTML).to.include(augmentedSpanHtml0);
-        expect(stateAfter.innerHTML).to.not.include(augmentedSpanHtml1);
-
-        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
+        expect(stateBefore.innerHTML).to.include('<span class="detach detach--1"></span>');
+        expect(stateAfter.innerHTML).to.not.include('<span class="detach detach--1"></span>');
       });
 
       it('empty() deletes the innerHTML from the organism', function () {
-        const augmentedSpanHtml = requerio.$orgs['.augmented__span--0'].html();
+        requerio.$orgs['.empty--0'].dispatchAction('html');
 
-        requerio.$orgs['.augmented__span--0'].dispatchAction('html', augmentedSpanHtml);
+        const stateBefore = requerio.$orgs['.empty--0'].getState();
 
-        const stateBefore = requerio.$orgs['.augmented__span--0'].getState();
+        requerio.$orgs['.empty--0'].dispatchAction('empty');
 
-        requerio.$orgs['.augmented__span--0'].dispatchAction('empty');
+        const stateAfter = requerio.$orgs['.empty--0'].getState();
 
-        const stateAfter = requerio.$orgs['.augmented__span--0'].getState();
-
-        expect(stateBefore.innerHTML).to.equal(augmentedSpanHtml);
+        expect(stateBefore.innerHTML).to.equal('<span></span>');
         expect(stateAfter.innerHTML).to.equal('');
-
-        requerio.$orgs['.augmented__span--0'].dispatchAction('html', augmentedSpanHtml);
       });
 
       it('empty() deletes the innerHTML from the organism in a targeted manner', function () {
-        const augmentedSpanHtml0 = requerio.$orgs['.augmented__span--0'].html();
-        const augmentedSpanHtml1 = requerio.$orgs['.augmented__span--1'].html();
+        requerio.$orgs['.empty'].dispatchAction('html', null, 1);
+        requerio.$orgs['.empty'].dispatchAction('html', null, 2);
+        requerio.$orgs['.empty'].dispatchAction('html', null, 3);
 
-        requerio.$orgs['.augmented__span'].dispatchAction('html', augmentedSpanHtml0, 0);
-        requerio.$orgs['.augmented__span'].dispatchAction('html', augmentedSpanHtml1, 1);
+        const stateBefore1 = requerio.$orgs['.empty'].getState(1);
+        const stateBefore2 = requerio.$orgs['.empty'].getState(2);
+        const stateBefore3 = requerio.$orgs['.empty'].getState(3);
 
-        const stateBefore0 = requerio.$orgs['.augmented__span'].getState(0);
-        const stateBefore1 = requerio.$orgs['.augmented__span'].getState(1);
+        requerio.$orgs['.empty'].dispatchAction('empty', null, 1);
 
-        requerio.$orgs['.augmented__span'].dispatchAction('empty', null, 1);
+        const stateAfter1 = requerio.$orgs['.empty'].getState(1);
+        const stateAfter2 = requerio.$orgs['.empty'].getState(2);
+        const stateAfter3 = requerio.$orgs['.empty'].getState(3);
 
-        const stateAfter0 = requerio.$orgs['.augmented__span'].getState(0);
-        const stateAfter1 = requerio.$orgs['.augmented__span'].getState(1);
-
-        expect(stateBefore0.innerHTML).to.equal(augmentedSpanHtml0);
-        expect(stateBefore1.innerHTML).to.equal(augmentedSpanHtml1);
-        expect(stateAfter0.innerHTML).to.equal(augmentedSpanHtml0);
+        expect(stateBefore1.innerHTML).to.equal('<span></span>');
+        expect(stateBefore2.innerHTML).to.equal('<span></span>');
+        expect(stateBefore3.innerHTML).to.equal('<span></span>');
         expect(stateAfter1.innerHTML).to.equal('');
+        expect(stateAfter2.innerHTML).to.equal('<span></span>');
+        expect(stateAfter3.innerHTML).to.equal('<span></span>');
+      });
 
-        requerio.$orgs['.augmented__span'].dispatchAction('html', augmentedSpanHtml1, 1);
+      it('empty() deletes the innerHTML from the organism across multiple targets', function () {
+        const stateBefore2 = requerio.$orgs['.empty'].getState(2);
+        const stateBefore3 = requerio.$orgs['.empty'].getState(3);
+
+        requerio.$orgs['.empty'].dispatchAction('empty', null, [2, 3]);
+
+        const stateAfter2 = requerio.$orgs['.empty'].getState(2);
+        const stateAfter3 = requerio.$orgs['.empty'].getState(3);
+
+        expect(stateBefore2.innerHTML).to.equal('<span></span>');
+        expect(stateBefore3.innerHTML).to.equal('<span></span>');
+        expect(stateAfter2.innerHTML).to.equal('');
+        expect(stateAfter3.innerHTML).to.equal('');
+      });
+
+      it('html() dangerously writes HTML to the DOM', function () {
+        requerio.$orgs['.html--0'].dispatchAction('html');
+
+        const stateBefore = requerio.$orgs['.html--0'].getState();
+
+        requerio.$orgs['.html--0'].dispatchAction('html', '<span>Foo</span>');
+
+        const stateAfter = requerio.$orgs['.html--0'].getState();
+
+        expect(stateBefore.innerHTML).to.equal('');
+        expect(stateBefore.textContent).to.equal('');
+        expect(stateAfter.innerHTML).to.equal('<span>Foo</span>');
+        expect(stateAfter.textContent).to.equal('Foo');
+      });
+
+      it('html() dangerously writes HTML to the DOM in a targeted manner', function () {
+        requerio.$orgs['.html'].dispatchAction('html');
+
+        const stateBefore = requerio.$orgs['.html'].getState();
+        const stateBefore1 = requerio.$orgs['.html'].getState(1);
+
+        requerio.$orgs['.html'].dispatchAction('html', '<span>Bar</span>', 1);
+
+        const stateAfter = requerio.$orgs['.html'].getState();
+        const stateAfter1 = requerio.$orgs['.html'].getState(1);
+
+        expect(stateBefore.innerHTML).to.equal('<span>Foo</span>');
+        expect(stateBefore.textContent).to.equal('FooFooFooFoo');
+        expect(stateBefore1.innerHTML).to.equal('<span>Foo</span>');
+        expect(stateBefore1.textContent).to.be.null;
+        expect(stateAfter.innerHTML).to.equal('<span>Foo</span>');
+        expect(stateAfter.textContent).to.equal('FooBarFooFoo');
+        expect(stateAfter1.innerHTML).to.equal('<span>Bar</span>');
+        expect(stateAfter1.textContent).to.equal('Bar');
+      });
+
+      it('html() dangerously writes HTML to the DOM across multiple targets', function () {
+        const stateBefore = requerio.$orgs['.html'].getState();
+        const stateBefore2 = requerio.$orgs['.html'].getState(2);
+        const stateBefore3 = requerio.$orgs['.html'].getState(3);
+
+        requerio.$orgs['.html'].dispatchAction('html', '<span>Bar</span>', [2, 3]);
+
+        const stateAfter = requerio.$orgs['.html'].getState();
+        const stateAfter2 = requerio.$orgs['.html'].getState(2);
+        const stateAfter3 = requerio.$orgs['.html'].getState(3);
+
+        expect(stateBefore.innerHTML).to.equal('<span>Foo</span>');
+        expect(stateBefore.textContent).to.equal('FooBarFooFoo');
+        expect(stateBefore2.innerHTML).to.equal('<span>Foo</span>');
+        expect(stateBefore2.textContent).to.equal('Foo');
+        expect(stateBefore3.innerHTML).to.equal('<span>Foo</span>');
+        expect(stateBefore3.textContent).to.equal('Foo');
+        expect(stateAfter.innerHTML).to.equal('<span>Foo</span>');
+        expect(stateAfter.textContent).to.equal('FooBarBarBar');
+        expect(stateAfter2.innerHTML).to.equal('<span>Bar</span>');
+        expect(stateAfter2.textContent).to.equal('Bar');
+        expect(stateAfter3.innerHTML).to.equal('<span>Bar</span>');
+        expect(stateAfter3.textContent).to.equal('Bar');
+      });
+
+      it('html(), by adding HTML elements, can alter the number of members among descendants', function () {
+        const membersStateBefore = requerio.$orgs['.html'].getState();
+
+        requerio.$orgs['#html'].dispatchAction(
+          'html',
+          `
+<span class="html html--0"></span>
+<span class="html html--1">Foo</span>
+<span class="html html--2">Foo</span>
+<span class="html html--3">Foo</span>
+<span class="html html--4">Foo</span>
+`);
+
+        const membersStateAfter = requerio.$orgs['.html'].getState();
+
+        expect(membersStateBefore.$members.length).to.equal(4);
+        expect(membersStateAfter.$members.length).to.equal(5);
       });
 
       it('prepend() updates the innerHTML of the organism', function () {
-        const stateBefore = requerio.$orgs['.next__span--2'].getState();
+        const stateBefore = requerio.$orgs['.prepend--0'].getState();
 
-        requerio.$orgs['.next__span--2'].dispatchAction('prepend', '<span>Eoo</span>');
+        requerio.$orgs['.prepend--0'].dispatchAction('prepend', '\n        <span>Foo</span>');
 
-        const stateAfter = requerio.$orgs['.next__span--2'].getState();
-
-        requerio.$orgs['.next__span--2'].dispatchAction('prepend', '<span>Doo</span>');
-
-        const stateAfterAgain = requerio.$orgs['.next__span--2'].getState();
+        const stateAfter = requerio.$orgs['.prepend--0'].getState();
 
         expect(stateBefore.innerHTML).to.be.null;
         expect(stateBefore.textContent).to.be.null;
-        expect(stateAfter.innerHTML).to.equal('<span>Eoo</span>Foo');
-        expect(stateAfter.textContent).to.equal('EooFoo');
-        expect(stateAfterAgain.innerHTML).to.equal('<span>Doo</span><span>Eoo</span>Foo');
-        expect(stateAfterAgain.textContent).to.equal('DooEooFoo');
+        expect(stateAfter.innerHTML).to.equal(`
+        <span>Foo</span>
+        <span>Bar</span>
+      `);
+        expect(stateAfter.textContent).to.equal(`
+        Foo
+        Bar
+      `);
       });
 
       it('prepend() updates the innerHTML of the organism in a targeted manner', function () {
-        const stateBefore = requerio.$orgs['.next__span'].getState(3);
+        const stateBefore = requerio.$orgs['.prepend'].getState(1);
 
-        requerio.$orgs['.next__span'].dispatchAction('prepend', '<span>Aar</span>', 3);
+        requerio.$orgs['.prepend'].dispatchAction('prepend', '\n        <span>Foo</span>', 1);
 
-        const stateAfter = requerio.$orgs['.next__span'].getState(3);
-
-        requerio.$orgs['.next__span'].dispatchAction('prepend', '<span>Zar</span>', 3);
-
-        const stateAfterAgain = requerio.$orgs['.next__span'].getState(3);
+        const stateAfter = requerio.$orgs['.prepend'].getState(1);
 
         expect(stateBefore.innerHTML).to.be.null;
         expect(stateBefore.textContent).to.be.null;
-        expect(stateAfter.innerHTML).to.equal('<span>Aar</span>Bar');
-        expect(stateAfter.textContent).to.equal('AarBar');
-        expect(stateAfterAgain.innerHTML).to.equal('<span>Zar</span><span>Aar</span>Bar');
-        expect(stateAfterAgain.textContent).to.equal('ZarAarBar');
+        expect(stateAfter.innerHTML).to.equal(`
+        <span>Foo</span>
+        <span>Bar</span>
+      `);
+        expect(stateAfter.textContent).to.equal(`
+        Foo
+        Bar
+      `);
       });
 
       it('remove() deletes the organism from the DOM', function () {
-        const augmentedHtml = requerio.$orgs['#augmented'].html();
-        const augmentedSpanHtml = requerio.$orgs['.augmented__span--0'].html();
+        requerio.$orgs['#remove'].dispatchAction('html');
 
-        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
+        const stateBefore = requerio.$orgs['#remove'].getState();
 
-        const stateBefore = requerio.$orgs['#augmented'].getState();
+        requerio.$orgs['.remove--0'].dispatchAction('detach');
 
-        requerio.$orgs['.augmented__span--0'].dispatchAction('remove');
+        const stateAfter = requerio.$orgs['#remove'].getState();
 
-        const stateAfter = requerio.$orgs['#augmented'].getState();
-
-        expect(stateBefore.innerHTML).to.include(augmentedSpanHtml);
-        expect(stateAfter.innerHTML).to.not.include(augmentedSpanHtml);
-
-        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
+        expect(stateBefore.innerHTML).to.include('<span class="remove remove--0"></span>');
+        expect(stateAfter.innerHTML).to.not.include('<span class="remove remove--0"></span>');
       });
 
       it('remove() deletes the organism from the DOM in a targeted manner', function () {
-        const augmentedHtml = requerio.$orgs['#augmented'].html();
-        const augmentedSpanHtml0 = requerio.$orgs['.augmented__span--0'].html();
-        const augmentedSpanHtml1 = requerio.$orgs['.augmented__span--1'].html();
+        const stateBefore = requerio.$orgs['#remove'].getState();
 
-        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
+        requerio.$orgs['.remove'].dispatchAction('remove', 1);
 
-        const stateBefore = requerio.$orgs['#augmented'].getState();
+        const stateAfter = requerio.$orgs['#remove'].getState();
 
-        requerio.$orgs['.augmented__span'].dispatchAction('remove', null, 1);
-
-        const stateAfter = requerio.$orgs['#augmented'].getState();
-
-        expect(stateBefore.innerHTML).to.include(augmentedSpanHtml0);
-        expect(stateBefore.innerHTML).to.include(augmentedSpanHtml1);
-        expect(stateAfter.innerHTML).to.include(augmentedSpanHtml0);
-        expect(stateAfter.innerHTML).to.not.include(augmentedSpanHtml1);
-
-        requerio.$orgs['#augmented'].dispatchAction('html', augmentedHtml);
+        expect(stateBefore.innerHTML).to.include('<span class="remove remove--1"></span>');
+        expect(stateAfter.innerHTML).to.not.include('<span class="remove remove--1"></span>');
       });
 
-      it('text() safely updates text in the DOM', function () {
-        const stateBefore = requerio.$orgs['.next__span--4'].getState();
+      it('text() safely writes text to the DOM', function () {
+        requerio.$orgs['.text--0'].dispatchAction('text');
 
-        requerio.$orgs['.next__span--4'].dispatchAction('text', '\n<span>Foof\n</span>');
+        const stateBefore = requerio.$orgs['.text--0'].getState();
 
-        const stateAfter = requerio.$orgs['.next__span--4'].getState();
+        requerio.$orgs['.text--0'].dispatchAction('text', '<span>Foo</span>');
 
-        requerio.$orgs['.next__span--4'].dispatchAction('text', '\n<span>Foot\n</span>');
+        const stateAfter = requerio.$orgs['.text--0'].getState();
 
-        const stateAfterAgain = requerio.$orgs['.next__span--4'].getState();
-
-        expect(stateBefore.innerHTML).to.be.null;
-        expect(stateBefore.textContent).to.be.null;
-        expect(stateAfter.innerHTML).to.equal('\n&lt;span&gt;Foof\n&lt;/span&gt;');
-        expect(stateAfter.textContent).to.equal('\n<span>Foof\n</span>');
-        expect(stateAfterAgain.innerHTML).to.equal('\n&lt;span&gt;Foot\n&lt;/span&gt;');
-        expect(stateAfterAgain.textContent).to.equal('\n<span>Foot\n</span>');
+        expect(stateBefore.innerHTML).to.equal('');
+        expect(stateBefore.textContent).to.equal('');
+        expect(stateAfter.innerHTML).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
+        expect(stateAfter.textContent).to.equal('<span>Foo</span>');
       });
 
-      it('text() safely updates text in the DOM in a targeted manner', function () {
-        const stateBefore = requerio.$orgs['.next__span'].getState(5);
+      it('text() safely writes text to the DOM in a targeted manner', function () {
+        requerio.$orgs['.text'].dispatchAction('text');
 
-        requerio.$orgs['.next__span'].dispatchAction('text', '<span>Barf</span>', 5);
+        const stateBefore = requerio.$orgs['.text'].getState();
+        const stateBefore1 = requerio.$orgs['.text'].getState(1);
 
-        const stateAfter = requerio.$orgs['.next__span'].getState(5);
+        requerio.$orgs['.text'].dispatchAction('text', '<span>Bar</span>', 1);
 
-        requerio.$orgs['.next__span'].dispatchAction('text', '<span>Bart</span>', 5);
+        const stateAfter = requerio.$orgs['.text'].getState();
+        const stateAfter1 = requerio.$orgs['.text'].getState(1);
 
-        const stateAfterAgain = requerio.$orgs['.next__span'].getState(5);
+        expect(stateBefore.innerHTML).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
+        expect(stateBefore.textContent).to.equal('<span>Foo</span>FooFooFoo');
+        expect(stateBefore.$members[1].innerHTML).to.equal('<span>Foo</span>');
+        expect(stateBefore.$members[1].textContent).to.be.null;
+        expect(stateBefore1.innerHTML).to.equal('<span>Foo</span>');
+        expect(stateBefore1.textContent).to.be.null;
+        expect(stateAfter.innerHTML).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
+        expect(stateAfter.textContent).to.equal('<span>Foo</span><span>Bar</span>FooFoo');
+        expect(stateAfter.$members[1].innerHTML).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
+        expect(stateAfter.$members[1].textContent).to.equal('<span>Bar</span>');
+        expect(stateAfter1.innerHTML).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
+        expect(stateAfter1.textContent).to.equal('<span>Bar</span>');
+      });
 
-        expect(stateBefore.innerHTML).to.be.null;
-        expect(stateBefore.textContent).to.be.null;
-        expect(stateAfter.innerHTML).to.equal('&lt;span&gt;Barf&lt;/span&gt;');
-        expect(stateAfter.textContent).to.equal('<span>Barf</span>');
-        expect(stateAfterAgain.innerHTML).to.equal('&lt;span&gt;Bart&lt;/span&gt;');
-        expect(stateAfterAgain.textContent).to.equal('<span>Bart</span>');
+      it('text() safely writes text to the DOM across multiple targets', function () {
+        const stateBefore = requerio.$orgs['.text'].getState();
+        const stateBefore2 = requerio.$orgs['.text'].getState(2);
+        const stateBefore3 = requerio.$orgs['.text'].getState(3);
+
+        requerio.$orgs['.text'].dispatchAction('text', '<span>Bar</span>', [2, 3]);
+
+        const stateAfter = requerio.$orgs['.text'].getState();
+        const stateAfter2 = requerio.$orgs['.text'].getState(2);
+        const stateAfter3 = requerio.$orgs['.text'].getState(3);
+
+        expect(stateBefore.innerHTML).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
+        expect(stateBefore.textContent).to.equal('<span>Foo</span><span>Bar</span>FooFoo');
+        expect(stateBefore.$members[2].innerHTML).to.equal('<span>Foo</span>');
+        expect(stateBefore.$members[2].textContent).to.equal('Foo');
+        expect(stateBefore.$members[3].innerHTML).to.equal('<span>Foo</span>');
+        expect(stateBefore.$members[3].textContent).to.equal('Foo');
+        expect(stateBefore2.innerHTML).to.equal('<span>Foo</span>');
+        expect(stateBefore2.textContent).to.equal('Foo');
+        expect(stateBefore3.innerHTML).to.equal('<span>Foo</span>');
+        expect(stateBefore3.textContent).to.equal('Foo');
+        expect(stateAfter.innerHTML).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
+        expect(stateAfter.textContent).to.equal('<span>Foo</span><span>Bar</span><span>Bar</span><span>Bar</span>');
+        expect(stateAfter.$members[2].innerHTML).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
+        expect(stateAfter.$members[2].textContent).to.equal('<span>Bar</span>');
+        expect(stateAfter.$members[3].innerHTML).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
+        expect(stateAfter.$members[3].textContent).to.equal('<span>Bar</span>');
+        expect(stateAfter2.innerHTML).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
+        expect(stateAfter2.textContent).to.equal('<span>Bar</span>');
+        expect(stateAfter3.innerHTML).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
+        expect(stateAfter3.textContent).to.equal('<span>Bar</span>');
       });
     });
   };

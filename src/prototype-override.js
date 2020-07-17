@@ -617,6 +617,17 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         break;
       }
 
+      case 'empty': {
+        if ($member) {
+          applyMethod(this, 'empty', args, $member);
+        }
+        else {
+          applyMethod(this, 'empty', args, this.$members);
+        }
+
+        break;
+      }
+
       // getBoundingClientRect takes measurements and updates state. This never accepts an argument.
       // On the client, it has to operate on the DOM Element member of the jQuery component.
       case 'getBoundingClientRect': {
@@ -635,6 +646,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       case 'text': {
         const state = store.getState()[this.selector];
 
+//if (method !== 'text') {
         if (Array.isArray($member) && Array.isArray(memberIdx)) {
           // Dispatch on each iteration of $member array.
           $member.forEach(($elem, idx) => {
@@ -670,10 +682,11 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
             memberIdx: memberIdx
           });
         }
+//}
 
         // If the 'html' action is dispatched without an arg, or with a null arg, and the .innerHTML property on the
         // state is unset, we want to set the .innerHTML property.
-        // Same goes for 'append' and 'prepend' irrespective of arg.
+        // Same goes for 'append', 'prepend', and 'text' irrespective of arg.
         // eslint-disable-next-line eqeqeq
         if (method !== 'html' || args[0] == null) {
           if (Array.isArray($member) && Array.isArray(memberIdx)) {
@@ -1025,8 +1038,83 @@ __Returns__: `object` - The organism's state.
       }
     }
 
+    const membersLength = state.$members.length;
+
     // Do update measurements if changed by user interaction, e.g., resizing viewport.
     updateState = this.updateMeasurements(state, $member, memberIdx) || updateState;
+
+    // Do not preemptively update .textContent property because we don't want to bloat the app with too much data,
+    // nor do we want to perform unnecessary .text() reads.
+    // Therefore, only proceed with a 'text' action if textContent is already set.
+    const textContentOld = state.textContent;
+    let updateInnerHTML = true;
+
+    // eslint-disable-next-line eqeqeq
+    if (textContentOld != null) {
+      /*
+      let textContentNew;
+
+      if (typeof memberIdx === 'number') {
+        textContentNew = $member ? $member.text() : textContentOld;
+      }
+      else {
+        */
+        const textContentNew = this.text();
+/*
+        // An untargeted .text() invocation concatenates the textContents of the members. Since an untargted .html() 
+        // will get the innerHTML of just the first member, we need to flag alsoUpdateInnerHTML = true to update the
+        // innerHTML of the member states.
+        if (textContentNew !== textContentOld) {
+          alsoUpdateInnerHTML = true;
+        }
+      }
+        */
+
+      if (textContentNew !== textContentOld) {
+        if (typeof memberIdx === 'number') {
+          const textContentNew = $member ? $member.text() : textContentOld;
+
+          if (textContentNew !== textContentOld) {
+            store.dispatch({
+              type: 'TEXT',
+              selector: this.selector,
+              $org: this,
+              method: 'text',
+              args: [textContentNew],
+              memberIdx
+            });
+          }
+        }
+        else {
+          for (let i = 0; i < membersLength; i++) {
+            const textContentOld = state.$members[i].textContent;
+            const textContentNew = this.$members[i].text();
+
+            if (textContentNew !== textContentOld) {
+              store.dispatch({
+                type: 'TEXT',
+                selector: this.selector,
+                $org: this,
+                method: 'text',
+                args: [textContentNew],
+                memberIdx: i
+              });
+            }
+          }
+        }
+
+        store.dispatch({
+          type: 'TEXT',
+          selector: this.selector,
+          $org: this,
+          method: 'text',
+          args: [textContentNew]
+        });
+
+        //updateInnerHTML = false;
+        updateState = true;
+      }
+    }
 
     // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data,
     // nor do we want to perform unnecessary .html() reads.
@@ -1035,56 +1123,68 @@ __Returns__: `object` - The organism's state.
 
     // eslint-disable-next-line eqeqeq
     if (innerHTMLOld != null) {
-      let innerHTMLNew;
+    //if (updateInnerHTML && innerHTMLOld != null) {
 
       if (typeof memberIdx === 'number') {
-        innerHTMLNew = $member.html();
+        const innerHTMLNew = $member ? $member.html() : innerHTMLOld;
+
+        if (innerHTMLNew !== innerHTMLOld) {
+          store.dispatch({
+            type: 'HTML',
+            selector: this.selector,
+            $org: this,
+            method: 'html',
+            args: [innerHTMLNew],
+            memberIdx: memberIdx || void(0) // So memberIdx 0's innerHTML goes as the organism's innerHTML.
+          });
+
+          updateState = true;
+        }
+        else {
+        }
       }
       else {
-        innerHTMLNew = this.html();
-      }
 
-      if (innerHTMLNew !== innerHTMLOld) {
-        store.dispatch({
-          type: 'HTML',
-          selector: this.selector,
-          $org: this,
-          method: 'html',
-          args: [innerHTMLNew],
-          memberIdx
-        });
+        let innerHTMLZero;
 
-        updateState = true;
-      }
-    }
+        for (let i = 0; i < membersLength; i++) {
+          const innerHTMLOld = state.$members[i].innerHTML;
 
-    // Do not preemptively update .textContent property because we don't want to bloat the app with too much data,
-    // nor do we want to perform unnecessary .text() reads.
-    // Therefore, only proceed with a 'text' action if textContent is already set.
-    const textContentOld = state.textContent;
+          // eslint-disable-next-line eqeqeq
+//          if (innerHTMLOld != null) {
+            const innerHTMLNew = this.$members[i].html();
+              if (i === 0) {
+                innerHTMLZero = innerHTMLNew;
+              }
 
-    // eslint-disable-next-line eqeqeq
-    if (textContentOld != null) {
-      let textContentNew;
+            if (innerHTMLNew !== innerHTMLOld) {
 
-      if (typeof memberIdx === 'number') {
-        textContentNew = $member.text();
-      }
-      else {
-        textContentNew = this.text();
-      }
 
-      if (textContentNew !== textContentOld) {
-        store.dispatch({
-          type: 'TEXT',
-          selector: this.selector,
-          $org: this,
-          method: 'text',
-          args: [textContentNew],
-          memberIdx
-        });
+              store.dispatch({
+                type: 'HTML',
+                selector: this.selector,
+                $org: this,
+                method: 'html',
+                args: [innerHTMLNew],
+                memberIdx: i
+              });
 
-        updateState = true;
+              updateState = true;
+            }
+//          }
+        }
+
+        if (typeof innerHTMLZero === 'string' && innerHTMLZero !== innerHTMLOld) {
+          store.dispatch({
+            type: 'HTML',
+            selector: this.selector,
+            $org: this,
+            method: 'html',
+            args: [innerHTMLZero]
+          });
+
+          updateState = true;
+        }
       }
     }
 
@@ -1096,7 +1196,7 @@ __Returns__: `object` - The organism's state.
       let valueNew;
 
       if (typeof memberIdx === 'number') {
-        valueNew = $member.val();
+        valueNew = $member ? $member.val() : valueOld;
       }
       else {
         valueNew = this.val();
