@@ -2166,7 +2166,7 @@ targets', function () {
         expect(stateAfter3.textContent).to.equal('Bar');
       });
 
-      it('html(), by adding HTML elements, can alter the number of members among descendants', function () {
+      it('html(), by adding HTML elements, can increase the number of members among descendants', function () {
         const membersStateBefore = requerio.$orgs['.html'].getState();
 
         requerio.$orgs['#html'].dispatchAction(
@@ -2183,6 +2183,25 @@ targets', function () {
 
         expect(membersStateBefore.$members.length).to.equal(4);
         expect(membersStateAfter.$members.length).to.equal(5);
+      });
+
+      it('html(), by removing HTML elements, can decrease the number of members among descendants', function () {
+        const membersStateBefore = requerio.$orgs['.html'].getState();
+
+        requerio.$orgs['#html'].dispatchAction(
+          'html',
+          `
+<span class="html html--0"></span>
+<span class="html html--1">Foo</span>
+<span class="html html--2">Foo</span>
+<span class="html html--3">Foo</span>
+`);
+
+
+        const membersStateAfter = requerio.$orgs['.html'].getState();
+
+        expect(membersStateBefore.$members.length).to.equal(5);
+        expect(membersStateAfter.$members.length).to.equal(4);
       });
 
       it('prepend() updates the innerHTML of the organism', function () {

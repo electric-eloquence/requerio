@@ -1023,15 +1023,7 @@ __Returns__: `object` - The organism's state.
 
     // Do update length of state.$members array to match length of this.$members.
     if (Array.isArray(this.$members) && Array.isArray(state.$members)) {
-      if (this.$members.length < state.$members.length) {
-        while (this.$members.length < state.$members.length) {
-          state.$members.pop();
-        }
-
-        updateState = true;
-      }
-
-      else if (this.$members.length > state.$members.length) {
+      if (this.$members.length !== state.$members.length) {
         updateState = this.updateMeasurements(state, $member, state.$members.length);
       }
     }
@@ -1067,18 +1059,20 @@ __Returns__: `object` - The organism's state.
         }
         else {
           for (let i = 0; i < membersLength; i++) {
-            const textContentOld = state.$members[i].textContent;
-            const textContentNew = this.$members[i].text();
+            if (this.$members[i]) {
+              const textContentOld = state.$members[i].textContent;
+              const textContentNew = this.$members[i].text();
 
-            if (textContentNew !== textContentOld) {
-              store.dispatch({
-                type: 'TEXT',
-                selector: this.selector,
-                $org: this,
-                method: 'text',
-                args: [textContentNew],
-                memberIdx: i
-              });
+              if (textContentNew !== textContentOld) {
+                store.dispatch({
+                  type: 'TEXT',
+                  selector: this.selector,
+                  $org: this,
+                  method: 'text',
+                  args: [textContentNew],
+                  memberIdx: i
+                });
+              }
             }
           }
         }
@@ -1122,24 +1116,26 @@ __Returns__: `object` - The organism's state.
         let innerHTMLZero;
 
         for (let i = 0; i < membersLength; i++) {
-          const innerHTMLOld = state.$members[i].innerHTML;
-          const innerHTMLNew = this.$members[i].html();
+          if (this.$members[i]) {
+            const innerHTMLOld = state.$members[i].innerHTML;
+            const innerHTMLNew = this.$members[i].html();
 
-          if (i === 0) {
-            innerHTMLZero = innerHTMLNew;
-          }
+            if (i === 0) {
+              innerHTMLZero = innerHTMLNew;
+            }
 
-          if (innerHTMLNew !== innerHTMLOld) {
-            store.dispatch({
-              type: 'HTML',
-              selector: this.selector,
-              $org: this,
-              method: 'html',
-              args: [innerHTMLNew],
-              memberIdx: i
-            });
+            if (innerHTMLNew !== innerHTMLOld) {
+              store.dispatch({
+                type: 'HTML',
+                selector: this.selector,
+                $org: this,
+                method: 'html',
+                args: [innerHTMLNew],
+                memberIdx: i
+              });
 
-            updateState = true;
+              updateState = true;
+            }
           }
         }
 
@@ -1490,6 +1486,10 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 `.$members` are jQuery/Cheerio components, not fully incepted organisms.
 */
   $.prototype.populateMembers = function () {
+    if (!this.selector || !(this.selector in $orgs)) {
+      return;
+    }
+
     /* istanbul ignore if */
     if (this.selector === 'document' || this.selector === 'window') {
       return;
@@ -1588,7 +1588,7 @@ necessary because neither jQuery nor Cheerio dynamically updates the indexed
 elements or length properties on a saved jQuery or Cheerio component.
 */
   $.prototype.resetElementsAndMembers = function () {
-    if (!this.selector) {
+    if (!this.selector || !(this.selector in $orgs)) {
       return;
     }
 

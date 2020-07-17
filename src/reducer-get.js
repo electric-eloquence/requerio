@@ -2,6 +2,60 @@
 /* eslint-disable max-len */
 
 /**
+ * Contracts for future states. Initial states contain empty values.
+ * Do not to let states bloat for no reason (as it could with large .innerHTML or .textContent).
+ * Be sure to update docs/state-object-defaults.md when updating any of these defaults.
+ *
+ * @param {string} orgSelector - The organism's selector.
+ * @returns {object} Default state.
+ */
+function getStateDefault(orgSelector) {
+  let stateDefault = {};
+
+  if (orgSelector === 'document') {
+    stateDefault = {
+      activeOrganism: null,
+      data: null
+    };
+  }
+  else if (orgSelector === 'window') {
+    stateDefault = {
+      data: null,
+      scrollTop: null,
+      width: null,
+      height: null
+    };
+  }
+  else {
+    stateDefault = {
+      attribs: {},
+      boundingClientRect: {
+        width: null,
+        height: null,
+        top: null,
+        right: null,
+        bottom: null,
+        left: null
+      },
+      classArray: [],
+      classList: [],
+      data: null,
+      innerHTML: null,
+      innerWidth: null,
+      innerHeight: null,
+      scrollTop: null,
+      style: {},
+      textContent: null,
+      width: null,
+      height: null,
+      $members: []
+    };
+  }
+
+  return stateDefault;
+}
+
+/**
  * This builds state objects for organisms and their members.
  *
  * @param {object} $org - Organism.
@@ -588,60 +642,11 @@ function reducerClosure(orgSelector, customReducer) {
    * @returns {object} New state.
    */
   return function (prevState, action) {
-
-    /**
-     * Contracts for future states. Initial states contain empty values.
-     * Do not to let states bloat for no reason (as it could with large .innerHTML or .textContent).
-     *
-     * Be sure to update docs/state-object-defaults.md when updating any of these defaults.
-     */
-    let stateDefault = {};
-
-    if (orgSelector === 'document') {
-      stateDefault = {
-        activeOrganism: null,
-        data: null
-      };
-    }
-    else if (orgSelector === 'window') {
-      stateDefault = {
-        data: null,
-        scrollTop: null,
-        width: null,
-        height: null
-      };
-    }
-    else {
-      stateDefault = {
-        attribs: {},
-        boundingClientRect: {
-          width: null,
-          height: null,
-          top: null,
-          right: null,
-          bottom: null,
-          left: null
-        },
-        classArray: [],
-        classList: [],
-        data: null,
-        innerHTML: null,
-        innerWidth: null,
-        innerHeight: null,
-        scrollTop: null,
-        style: {},
-        textContent: null,
-        width: null,
-        height: null,
-        $members: []
-      };
-    }
-
     // If this is the reducer for the selected organism, reduce and return a new state.
     if (action.selector === orgSelector) {
-
-      let state;
       const $org = action.$org;
+      const stateDefault = getStateDefault(orgSelector);
+      let state;
 
       try {
         // Clone old state into new state.
@@ -659,9 +664,10 @@ function reducerClosure(orgSelector, customReducer) {
           try {
             // Update $members array with clones of stateDefault.
             state.$members = [];
-            $org.$members.forEach(($member, idx) => {
-              state.$members[idx] = JSON.parse(JSON.stringify(stateDefault));
-            });
+
+            for (let i = 0; i < $org.$members.length; i++) {
+              state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
+            }
           }
           catch (err) {
             /* istanbul ignore next */
@@ -672,11 +678,11 @@ function reducerClosure(orgSelector, customReducer) {
         else if ($org.$members.length > state.$members.length) {
           try {
             // Populate $members array with clones of stateDefault if necessary.
-            $org.$members.forEach(($member, idx) => {
-              if (!state.$members[idx]) {
-                state.$members[idx] = JSON.parse(JSON.stringify(stateDefault));
+            for (let i = 0; i < $org.$members.length; i++) {
+              if (!state.$members[i]) {
+                state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
               }
-            });
+            }
           }
           catch (err) {
             /* istanbul ignore next */
@@ -735,7 +741,7 @@ function reducerClosure(orgSelector, customReducer) {
         return prevState;
       }
       else {
-        return stateDefault;
+        return getStateDefault(orgSelector);
       }
     }
   };

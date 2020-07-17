@@ -1380,15 +1380,7 @@ __Returns__: `object` - The organism's state.
 
     // Do update length of state.$members array to match length of this.$members.
     if (Array.isArray(this.$members) && Array.isArray(state.$members)) {
-      if (this.$members.length < state.$members.length) {
-        while (this.$members.length < state.$members.length) {
-          state.$members.pop();
-        }
-
-        updateState = true;
-      }
-
-      else if (this.$members.length > state.$members.length) {
+      if (this.$members.length !== state.$members.length) {
         updateState = this.updateMeasurements(state, $member, state.$members.length);
       }
     }
@@ -1424,18 +1416,20 @@ __Returns__: `object` - The organism's state.
         }
         else {
           for (let i = 0; i < membersLength; i++) {
-            const textContentOld = state.$members[i].textContent;
-            const textContentNew = this.$members[i].text();
+            if (this.$members[i]) {
+              const textContentOld = state.$members[i].textContent;
+              const textContentNew = this.$members[i].text();
 
-            if (textContentNew !== textContentOld) {
-              store.dispatch({
-                type: 'TEXT',
-                selector: this.selector,
-                $org: this,
-                method: 'text',
-                args: [textContentNew],
-                memberIdx: i
-              });
+              if (textContentNew !== textContentOld) {
+                store.dispatch({
+                  type: 'TEXT',
+                  selector: this.selector,
+                  $org: this,
+                  method: 'text',
+                  args: [textContentNew],
+                  memberIdx: i
+                });
+              }
             }
           }
         }
@@ -1479,24 +1473,26 @@ __Returns__: `object` - The organism's state.
         let innerHTMLZero;
 
         for (let i = 0; i < membersLength; i++) {
-          const innerHTMLOld = state.$members[i].innerHTML;
-          const innerHTMLNew = this.$members[i].html();
+          if (this.$members[i]) {
+            const innerHTMLOld = state.$members[i].innerHTML;
+            const innerHTMLNew = this.$members[i].html();
 
-          if (i === 0) {
-            innerHTMLZero = innerHTMLNew;
-          }
+            if (i === 0) {
+              innerHTMLZero = innerHTMLNew;
+            }
 
-          if (innerHTMLNew !== innerHTMLOld) {
-            store.dispatch({
-              type: 'HTML',
-              selector: this.selector,
-              $org: this,
-              method: 'html',
-              args: [innerHTMLNew],
-              memberIdx: i
-            });
+            if (innerHTMLNew !== innerHTMLOld) {
+              store.dispatch({
+                type: 'HTML',
+                selector: this.selector,
+                $org: this,
+                method: 'html',
+                args: [innerHTMLNew],
+                memberIdx: i
+              });
 
-            updateState = true;
+              updateState = true;
+            }
           }
         }
 
@@ -1847,6 +1843,10 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 `.$members` are jQuery/Cheerio components, not fully incepted organisms.
 */
   $.prototype.populateMembers = function () {
+    if (!this.selector || !(this.selector in $orgs)) {
+      return;
+    }
+
     /* istanbul ignore if */
     if (this.selector === 'document' || this.selector === 'window') {
       return;
@@ -1945,7 +1945,7 @@ necessary because neither jQuery nor Cheerio dynamically updates the indexed
 elements or length properties on a saved jQuery or Cheerio component.
 */
   $.prototype.resetElementsAndMembers = function () {
-    if (!this.selector) {
+    if (!this.selector || !(this.selector in $orgs)) {
       return;
     }
 
@@ -2110,6 +2110,60 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
 
 /* eslint-disable lines-around-comment */
 /* eslint-disable max-len */
+
+/**
+ * Contracts for future states. Initial states contain empty values.
+ * Do not to let states bloat for no reason (as it could with large .innerHTML or .textContent).
+ * Be sure to update docs/state-object-defaults.md when updating any of these defaults.
+ *
+ * @param {string} orgSelector - The organism's selector.
+ * @returns {object} Default state.
+ */
+function getStateDefault(orgSelector) {
+  let stateDefault = {};
+
+  if (orgSelector === 'document') {
+    stateDefault = {
+      activeOrganism: null,
+      data: null
+    };
+  }
+  else if (orgSelector === 'window') {
+    stateDefault = {
+      data: null,
+      scrollTop: null,
+      width: null,
+      height: null
+    };
+  }
+  else {
+    stateDefault = {
+      attribs: {},
+      boundingClientRect: {
+        width: null,
+        height: null,
+        top: null,
+        right: null,
+        bottom: null,
+        left: null
+      },
+      classArray: [],
+      classList: [],
+      data: null,
+      innerHTML: null,
+      innerWidth: null,
+      innerHeight: null,
+      scrollTop: null,
+      style: {},
+      textContent: null,
+      width: null,
+      height: null,
+      $members: []
+    };
+  }
+
+  return stateDefault;
+}
 
 /**
  * This builds state objects for organisms and their members.
@@ -2698,60 +2752,11 @@ function reducerClosure(orgSelector, customReducer) {
    * @returns {object} New state.
    */
   return function (prevState, action) {
-
-    /**
-     * Contracts for future states. Initial states contain empty values.
-     * Do not to let states bloat for no reason (as it could with large .innerHTML or .textContent).
-     *
-     * Be sure to update docs/state-object-defaults.md when updating any of these defaults.
-     */
-    let stateDefault = {};
-
-    if (orgSelector === 'document') {
-      stateDefault = {
-        activeOrganism: null,
-        data: null
-      };
-    }
-    else if (orgSelector === 'window') {
-      stateDefault = {
-        data: null,
-        scrollTop: null,
-        width: null,
-        height: null
-      };
-    }
-    else {
-      stateDefault = {
-        attribs: {},
-        boundingClientRect: {
-          width: null,
-          height: null,
-          top: null,
-          right: null,
-          bottom: null,
-          left: null
-        },
-        classArray: [],
-        classList: [],
-        data: null,
-        innerHTML: null,
-        innerWidth: null,
-        innerHeight: null,
-        scrollTop: null,
-        style: {},
-        textContent: null,
-        width: null,
-        height: null,
-        $members: []
-      };
-    }
-
     // If this is the reducer for the selected organism, reduce and return a new state.
     if (action.selector === orgSelector) {
-
-      let state;
       const $org = action.$org;
+      const stateDefault = getStateDefault(orgSelector);
+      let state;
 
       try {
         // Clone old state into new state.
@@ -2769,9 +2774,10 @@ function reducerClosure(orgSelector, customReducer) {
           try {
             // Update $members array with clones of stateDefault.
             state.$members = [];
-            $org.$members.forEach(($member, idx) => {
-              state.$members[idx] = JSON.parse(JSON.stringify(stateDefault));
-            });
+
+            for (let i = 0; i < $org.$members.length; i++) {
+              state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
+            }
           }
           catch (err) {
             /* istanbul ignore next */
@@ -2782,11 +2788,11 @@ function reducerClosure(orgSelector, customReducer) {
         else if ($org.$members.length > state.$members.length) {
           try {
             // Populate $members array with clones of stateDefault if necessary.
-            $org.$members.forEach(($member, idx) => {
-              if (!state.$members[idx]) {
-                state.$members[idx] = JSON.parse(JSON.stringify(stateDefault));
+            for (let i = 0; i < $org.$members.length; i++) {
+              if (!state.$members[i]) {
+                state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
               }
-            });
+            }
           }
           catch (err) {
             /* istanbul ignore next */
@@ -2845,7 +2851,7 @@ function reducerClosure(orgSelector, customReducer) {
         return prevState;
       }
       else {
-        return stateDefault;
+        return getStateDefault(orgSelector);
       }
     }
   };
