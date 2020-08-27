@@ -145,6 +145,7 @@ assert.equal(mainState.style.color, 'green');
 * [innerHeight](docs/methods.md#innerheightvalue)
 * [innerWidth](docs/methods.md#innerwidthvalue)
 * [prepend](docs/methods.md#prependcontent)
+* [prop](docs/methods.md#propproperties)
 * [removeClass](docs/methods.md#removeclassclasses)
 * [scrollTop](docs/methods.md#scrolltopvalue)
 * [setActiveOrganism](docs/methods.md#setactiveorganismselector)

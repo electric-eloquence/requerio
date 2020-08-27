@@ -43,6 +43,7 @@ function getStateDefault(orgSelector) {
       innerHTML: null,
       innerWidth: null,
       innerHeight: null,
+      props: {},
       scrollTop: null,
       style: {},
       textContent: null,
@@ -65,13 +66,15 @@ function getStateDefault(orgSelector) {
  */
 function stateBuild($org, state, action) {
   try {
-    // Cheerio.
-    if ($org[0] && $org[0].attribs) {
+    const memberIdx = action.memberIdx;
+
+    // attribs
+
+    if ($org[0] && $org[0].attribs) { // Cheerio
       state.attribs = JSON.parse(JSON.stringify($org[0].attribs));
     }
 
-    // jQuery.
-    else if ($org[0] && $org[0].attributes && $org[0].attributes.length) {
+    else if ($org[0] && $org[0].attributes && $org[0].attributes.length) { // jQuery
       for (let i = 0; i < $org[0].attributes.length; i++) {
         const attr = $org[0].attributes[i];
 
@@ -79,13 +82,20 @@ function stateBuild($org, state, action) {
       }
     }
 
-    const memberIdx = action.memberIdx;
+    // classArray and classList
+
     let classesForReduction = [];
 
     if (state.attribs && typeof state.attribs.class === 'string') {
       classesForReduction = state.attribs.class.trim() ? state.attribs.class.split(/\s+/) : [];
       state.classArray = classesForReduction;
       state.classList = state.classArray;
+    }
+
+    // props
+
+    for (let i of Object.keys(state.props)) {
+      state.props[i] = $org[0][i];
     }
 
     switch (action.method) {
@@ -377,6 +387,23 @@ Prepend HTML content to the innerHTML of all matches.
 */
       case 'prepend': {
         // Handled by running the method as a side-effect. Will reset elements and members of affected organisms.
+        break;
+      }
+
+      /**
+### prop(properties)
+Set one or more properties for all matches. See https://api.jquery.com/prop/
+for important distinctions between attributes and properties.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| properties | `object` | An object of property:value pairs. |
+*/
+      case 'prop': {
+        if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
+          Object.assign(state.props, action.args[0]);
+        }
+
         break;
       }
 

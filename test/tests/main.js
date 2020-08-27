@@ -1710,6 +1710,32 @@ targets', function () {
         expect(state.innerHeight).to.equal(1000);
       });
 
+      it('dispatches the "prop" action', function () {
+        requerio.$orgs['.main__input'].dispatchAction('prop', {disabled: true});
+
+        const state = requerio.$orgs['.main__input'].getState();
+
+        expect(state.props.disabled).to.be.true;
+      });
+
+      it('dispatches the "prop" action in a targeted manner', function () {
+        requerio.$orgs['input'].dispatchAction('prop', {disabled: true}, 1);
+
+        const state = requerio.$orgs['input'].getState(1);
+
+        expect(state.props.disabled).to.be.true;
+      });
+
+      it('dispatches the "prop" action across multiple targets', function () {
+        requerio.$orgs['input'].dispatchAction('prop', {disabled: false}, [0, 1]);
+
+        const state0 = requerio.$orgs['input'].getState(0);
+        const state1 = requerio.$orgs['input'].getState(1);
+
+        expect(state0.props.disabled).to.be.false;
+        expect(state1.props.disabled).to.be.false;
+      });
+
       it('dispatches the "removeData" action to delete data from the state but not a corresponding data attribute\
 ', function () {
         const stateBefore = requerio.$orgs['#main'].getState();

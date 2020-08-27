@@ -141,6 +141,14 @@ Prepend HTML content to the innerHTML of all matches.
 | --- | --- | --- |
 | content | `function` | A function that returns an HTML string. |
 
+### prop(properties)
+Set one or more properties for all matches. See https://api.jquery.com/prop/
+for important distinctions between attributes and properties.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| properties | `object` | An object of property:value pairs. |
+
 ### remove()
 Remove all matches from the DOM, and from memory.
 
