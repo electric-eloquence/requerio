@@ -585,7 +585,8 @@ function applyData($org, args, $member) {
     applyMethod($org, method, args, $member);
   }
 
-  // Might need to use Object.assign because apparently, as of jQuery 3.5.0, data objects have a null prototype.
+  // Might need to use Object.assign because in jQuery 3.5.0, data objects have a null prototype.
+  // Don't automatically use Object.assign since it is an expensive operation.
   if (Array.isArray($member)) {
     // Get all data to submit for updating state. Only iterate once.
     for (let $elem of $member) {
@@ -605,43 +606,6 @@ function applyData($org, args, $member) {
     const data = $org[method].apply($org);
     // eslint-disable-next-line eqeqeq
     args[0] = data.constructor == null ? Object.assign({}, data) : data;
-  }
-}
-
-/**
- * Apply the .prop() jQuery/Cheerio method.
- *
- * @param {object} $org - Organism object.
- * @param {array} args - Arguments array, (not array-like object).
- * @param {object|object[]} [$member] - Organism member, or array of members.
- */
-function applyProp($org, args, $member) {
-  const method = 'prop';
-
-  if (args.length) {
-    applyMethod($org, method, args, $member);
-  }
-  else {
-    if (Array.isArray($member)) {
-      // Get all props to submit for updating state. Only iterate once.
-      for (let $elem of $member) {
-        const props = $elem[method].apply($elem);
-        // eslint-disable-next-line eqeqeq
-        args[0] = props.constructor == null ? Object.assign({}, props) : props;
-
-        break;
-      }
-    }
-    else if ($member) {
-      const props = $member[method].apply($member);
-      // eslint-disable-next-line eqeqeq
-      args[0] = props.constructor == null ? Object.assign({}, props) : props;
-    }
-    else {
-      const props = $org[method].apply($org);
-      // eslint-disable-next-line eqeqeq
-      args[0] = props.constructor == null ? Object.assign({}, props) : props;
-    }
   }
 }
 
@@ -1156,12 +1120,6 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         else {
           getMeasurement(this, method, args, $member); // Mutates args.
         }
-
-        break;
-      }
-
-      case 'prop': {
-        applyProp(this, args, $member); // Mutates args.
 
         break;
       }

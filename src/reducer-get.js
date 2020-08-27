@@ -94,8 +94,10 @@ function stateBuild($org, state, action) {
 
     // props
 
-    for (let i of Object.keys(state.props)) {
-      state.props[i] = $org[0][i];
+    if (state.props instanceof Object) {
+      for (let i of Object.keys(state.props)) {
+        state.props[i] = $org[0][i];
+      }
     }
 
     switch (action.method) {
