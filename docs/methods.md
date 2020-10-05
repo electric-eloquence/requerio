@@ -74,8 +74,7 @@ be across all styles across all organisms.
 | properties | `string`\|`string[]` | The name or names of properties to get from the element, and set on the state. |
 
 ### data(keyValues)
-Set one or more key:value pairs of data. Does not affect HTML attributes in the
-DOM.
+Set one or more key:value pairs of data. Does not affect HTML data attributes.
 
 | Param | Type | Description |
 | --- | --- | --- |
