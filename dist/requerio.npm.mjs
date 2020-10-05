@@ -2131,7 +2131,7 @@ function getStateDefault(orgSelector) {
         left: null
       },
       classArray: [],
-      classList: [],
+      classList: [], // DEPRECATED.
       data: null,
       innerHTML: null,
       innerWidth: null,
@@ -2175,14 +2175,14 @@ function stateBuild($org, state, action) {
       }
     }
 
-    // classArray and classList
+    // classArray
 
     let classesForReduction = [];
 
     if (state.attribs && typeof state.attribs.class === 'string') {
       classesForReduction = state.attribs.class.trim() ? state.attribs.class.split(/\s+/) : [];
       state.classArray = classesForReduction;
-      state.classList = state.classArray;
+      state.classList = state.classArray; // DEPRECATED.
     }
 
     // prop
@@ -2206,7 +2206,7 @@ class.
 */
       case 'addClass': {
         // Handled by running the method as a side-effect and splitting the class attribute into an array and copying
-        // that to .classArray and .classList
+        // that to .classArray
         break;
       }
 
@@ -2313,8 +2313,7 @@ be across all styles across all organisms.
 
       /**
 ### data(keyValues)
-Set one or more key:value pairs of data. Does not affect HTML attributes in the
-DOM.
+Set one or more key:value pairs of data. Does not affect HTML data attributes.
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -2523,7 +2522,7 @@ class.
 */
       case 'removeClass': {
         // Handled by running the method as a side-effect and splitting the class attribute into an array and copying
-        // that to .classArray and .classList
+        // that to .classArray
         break;
       }
 
@@ -2696,7 +2695,7 @@ on a true/false switch.
 */
       case 'toggleClass': {
         // Handled by running the method as a side-effect and splitting the class attribute into an array and copying
-        // that to .classArray and .classList
+        // that to .classArray
         break;
       }
 
