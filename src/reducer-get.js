@@ -43,7 +43,7 @@ function getStateDefault(orgSelector) {
       innerHTML: null,
       innerWidth: null,
       innerHeight: null,
-      props: {},
+      prop: {},
       scrollTop: null,
       style: {},
       textContent: null,
@@ -92,11 +92,11 @@ function stateBuild($org, state, action) {
       state.classList = state.classArray;
     }
 
-    // props
+    // prop
 
-    if (state.props instanceof Object) {
-      for (let i of Object.keys(state.props)) {
-        state.props[i] = $org[0][i];
+    if (state.prop instanceof Object) {
+      for (let i of Object.keys(state.prop)) {
+        state.prop[i] = $org[0][i];
       }
     }
 
@@ -403,7 +403,7 @@ for important distinctions between attributes and properties.
 */
       case 'prop': {
         if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          Object.assign(state.props, action.args[0]);
+          Object.assign(state.prop, action.args[0]);
         }
 
         break;
