@@ -110,22 +110,6 @@ once `state.innerHTML` has been set to a string, subsequent invocations of
 necessary, since very large innerHTML strings across many organisms with many
 members can add up to a large amount of data.
 
-### innerHeight(value)
-Set the innerHeight (including padding, but not border or margin) of all
-matches.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | `number`\|`string`\|`function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
-
-### innerWidth(value)
-Set the innerWidth (including padding, but not border or margin) of all
-matches.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | `number`\|`string`\|`function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
-
 ### prepend(...content)
 Prepend HTML content to the innerHTML of all matches.
 

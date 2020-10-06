@@ -7,17 +7,7 @@
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![License][license-image]][license-url]
 
-As of [v0.5.0](https://github.com/electric-eloquence/requerio/releases/tag/v0.5.0),
-Requerio is far more strict about accepting arrays as the 2nd parameter for 
-`.dispatchAction()`. Only a few action methods allow such arrays. They are 
-restricted to 
-[after](docs/methods.md#aftercontent), 
-[append](docs/methods.md#appendcontent), 
-[before](docs/methods.md#beforecontent), 
-[prepend](docs/methods.md#prependcontent), and 
-[toggleClass](docs/methods.md#toggleclassclasses).
-
-Also, while Requerio was named with 
+While Requerio was named with 
 <a href="https://www.npmjs.com/package/cheerio" target="_blank">Cheerio</a> in 
 mind, Cheerio is optional and can be replaced by jQuery on the server via JSDOM, 
 or any other DOM emulator.

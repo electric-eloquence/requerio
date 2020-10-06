@@ -737,23 +737,6 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         break;
       }
 
-      // If innerWidth and innerHeight methods are applied to the `window` object, copy the respective property to the
-      // state.
-      case 'innerWidth':
-      case 'innerHeight': {
-        /* istanbul ignore if */
-        if (this.selector === 'window' && typeof window === 'object') {
-          this[method] = window[method];
-          args[0] = window[method];
-
-          break;
-        }
-      }
-
-      // innerWidth, innerHeight, scrollTop, width, and height methods with no args take measurements and update
-      // state. innerWidth and innerHeight, when not applied to window, run the jQuery method.
-      case 'innerWidth':
-      case 'innerHeight':
       case 'scrollTop':
       case 'width':
       case 'height': {
@@ -990,6 +973,7 @@ __Returns__: `object` - The organism's state.
       updateState = true;
     }
 
+    //TODO: Update this. Might no longer be null by default.
     // Do update .data property if data were updated on a data attribute, i.e., not by a 'data' action.
     // As per jQuery documentation, the 'data' action will only read data from data attributes once. Further changes
     // to data attributes will not be read by the 'data' action.
@@ -1144,6 +1128,10 @@ __Returns__: `object` - The organism's state.
         }
       }
     }
+
+    //TODO:
+    // Do update .prop values if they were changed by user interaction, i.e. checking a checkbox, etc.
+
 
     // Do update form field values if they were changed by user interaction.
     const valueOld = state.value;
@@ -1678,8 +1666,6 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
 
     // Be sure to add to these if more measurements are added to the state object.
     for (let method of [
-      'innerWidth',
-      'innerHeight',
       'scrollTop',
       'width',
       'height'

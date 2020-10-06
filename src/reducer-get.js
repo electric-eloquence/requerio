@@ -15,12 +15,23 @@ function getStateDefault(orgSelector) {
   if (orgSelector === 'document') {
     stateDefault = {
       activeOrganism: null,
-      data: null
+      data: {},
+      innerWidth: null,
+      innerHeight: null,
+      outerWidth: null,
+      outerHeight: null,
+      scrollTop: null,
+      width: null,
+      height: null
     };
   }
   else if (orgSelector === 'window') {
     stateDefault = {
-      data: null,
+      data: {},
+      innerWidth: null,
+      innerHeight: null,
+      outerWidth: null,
+      outerHeight: null,
       scrollTop: null,
       width: null,
       height: null
@@ -39,10 +50,12 @@ function getStateDefault(orgSelector) {
       },
       classArray: [],
       classList: [], // DEPRECATED.
-      data: null,
+      data: {},
       innerHTML: null,
       innerWidth: null,
       innerHeight: null,
+      outerWidth: null,
+      outerHeight: null,
       prop: {},
       scrollTop: null,
       style: {},
@@ -113,7 +126,8 @@ class.
 */
       case 'addClass': {
         // Handled by running the method as a side-effect and splitting the class attribute into an array and copying
-        // that to .classArray
+        // that to .classArray. Not documenting acceptance of array arguments, even though jQuery does, because Cheerio
+        // does not.
         break;
       }
 
@@ -334,44 +348,6 @@ members can add up to a large amount of data.
       }
 
       /**
-### innerHeight(value)
-Set the innerHeight (including padding, but not border or margin) of all
-matches.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | `number`\|`string`\|`function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
-*/
-      case 'innerHeight': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state.innerHeight = action.args[0];
-          }
-        }
-
-        break;
-      }
-
-      /**
-### innerWidth(value)
-Set the innerWidth (including padding, but not border or margin) of all
-matches.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | `number`\|`string`\|`function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
-*/
-      case 'innerWidth': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state.innerWidth = action.args[0];
-          }
-        }
-
-        break;
-      }
-
-      /**
 ### prepend(...content)
 Prepend HTML content to the innerHTML of all matches.
 
@@ -429,7 +405,8 @@ class.
 */
       case 'removeClass': {
         // Handled by running the method as a side-effect and splitting the class attribute into an array and copying
-        // that to .classArray
+        // that to .classArray. Not documenting acceptance of array arguments, even though jQuery does, because Cheerio
+        // does not.
         break;
       }
 

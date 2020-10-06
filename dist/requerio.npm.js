@@ -66,54 +66,6 @@ var organismsIncept = ($orgs, $) => {
      * @param {number} [distance] - Distance.
      * @returns {number|null|object} Distance, null, or organism.
      */
-    if (typeof $org.innerWidth === 'undefined') {
-      $org.innerWidth = (distance) => {
-        if (typeof distance === 'undefined') {
-          if ($org.$members[0]) {
-            return $org.$members[0]._innerWidth;
-          }
-          else {
-            return null;
-          }
-        }
-        else {
-          for (let i = 0; i < $org.$members.length; i++) {
-            $org.$members[i]._innerWidth = distance;
-          }
-
-          return $org;
-        }
-      };
-    }
-
-    /**
-     * @param {number} [distance] - Distance.
-     * @returns {number|null|object} Distance, null, or organism.
-     */
-    if (typeof $org.innerHeight === 'undefined') {
-      $org.innerHeight = (distance) => {
-        if (typeof distance === 'undefined') {
-          if ($org.$members[0]) {
-            return $org.$members[0]._innerHeight;
-          }
-          else {
-            return null;
-          }
-        }
-        else {
-          for (let i = 0; i < $org.$members.length; i++) {
-            $org.$members[i]._innerHeight = distance;
-          }
-
-          return $org;
-        }
-      };
-    }
-
-    /**
-     * @param {number} [distance] - Distance.
-     * @returns {number|null|object} Distance, null, or organism.
-     */
     if (typeof $org.scrollTop === 'undefined') {
       $org.scrollTop = (distance) => {
         if (typeof distance === 'undefined') {
@@ -1096,23 +1048,6 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         break;
       }
 
-      // If innerWidth and innerHeight methods are applied to the `window` object, copy the respective property to the
-      // state.
-      case 'innerWidth':
-      case 'innerHeight': {
-        /* istanbul ignore if */
-        if (this.selector === 'window' && typeof window === 'object') {
-          this[method] = window[method];
-          args[0] = window[method];
-
-          break;
-        }
-      }
-
-      // innerWidth, innerHeight, scrollTop, width, and height methods with no args take measurements and update
-      // state. innerWidth and innerHeight, when not applied to window, run the jQuery method.
-      case 'innerWidth':
-      case 'innerHeight':
       case 'scrollTop':
       case 'width':
       case 'height': {
@@ -1349,6 +1284,7 @@ __Returns__: `object` - The organism's state.
       updateState = true;
     }
 
+    //TODO: Update this. Might no longer be null by default.
     // Do update .data property if data were updated on a data attribute, i.e., not by a 'data' action.
     // As per jQuery documentation, the 'data' action will only read data from data attributes once. Further changes
     // to data attributes will not be read by the 'data' action.
@@ -1503,6 +1439,10 @@ __Returns__: `object` - The organism's state.
         }
       }
     }
+
+    //TODO:
+    // Do update .prop values if they were changed by user interaction, i.e. checking a checkbox, etc.
+
 
     // Do update form field values if they were changed by user interaction.
     const valueOld = state.value;
@@ -2037,8 +1977,6 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
 
     // Be sure to add to these if more measurements are added to the state object.
     for (let method of [
-      'innerWidth',
-      'innerHeight',
       'scrollTop',
       'width',
       'height'
@@ -2110,12 +2048,23 @@ function getStateDefault(orgSelector) {
   if (orgSelector === 'document') {
     stateDefault = {
       activeOrganism: null,
-      data: null
+      data: {},
+      innerWidth: null,
+      innerHeight: null,
+      outerWidth: null,
+      outerHeight: null,
+      scrollTop: null,
+      width: null,
+      height: null
     };
   }
   else if (orgSelector === 'window') {
     stateDefault = {
-      data: null,
+      data: {},
+      innerWidth: null,
+      innerHeight: null,
+      outerWidth: null,
+      outerHeight: null,
       scrollTop: null,
       width: null,
       height: null
@@ -2134,10 +2083,12 @@ function getStateDefault(orgSelector) {
       },
       classArray: [],
       classList: [], // DEPRECATED.
-      data: null,
+      data: {},
       innerHTML: null,
       innerWidth: null,
       innerHeight: null,
+      outerWidth: null,
+      outerHeight: null,
       prop: {},
       scrollTop: null,
       style: {},
@@ -2208,7 +2159,8 @@ class.
 */
       case 'addClass': {
         // Handled by running the method as a side-effect and splitting the class attribute into an array and copying
-        // that to .classArray
+        // that to .classArray. Not documenting acceptance of array arguments, even though jQuery does, because Cheerio
+        // does not.
         break;
       }
 
@@ -2429,44 +2381,6 @@ members can add up to a large amount of data.
       }
 
       /**
-### innerHeight(value)
-Set the innerHeight (including padding, but not border or margin) of all
-matches.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | `number`\|`string`\|`function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
-*/
-      case 'innerHeight': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state.innerHeight = action.args[0];
-          }
-        }
-
-        break;
-      }
-
-      /**
-### innerWidth(value)
-Set the innerWidth (including padding, but not border or margin) of all
-matches.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | `number`\|`string`\|`function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
-*/
-      case 'innerWidth': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state.innerWidth = action.args[0];
-          }
-        }
-
-        break;
-      }
-
-      /**
 ### prepend(...content)
 Prepend HTML content to the innerHTML of all matches.
 
@@ -2524,7 +2438,8 @@ class.
 */
       case 'removeClass': {
         // Handled by running the method as a side-effect and splitting the class attribute into an array and copying
-        // that to .classArray
+        // that to .classArray. Not documenting acceptance of array arguments, even though jQuery does, because Cheerio
+        // does not.
         break;
       }
 
