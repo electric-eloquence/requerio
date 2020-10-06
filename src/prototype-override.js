@@ -219,6 +219,32 @@ function applyCss($org, args, $member) {
       }
     }
   }
+
+  for (let property of Object.keys(args[0])) {
+    let camel;
+
+    if (property.includes('-')) {
+      const hyphenatedArr = property.split('-');
+      const camelArr = [];
+
+      for (let i = 0; i < hyphenatedArr.length; i++) {
+        if (i === 0) {
+          camelArr[i] = hyphenatedArr[i];
+
+          continue;
+        }
+
+        camelArr[i] = hyphenatedArr[i][0].toUpperCase() + hyphenatedArr[i].slice(1);
+      }
+
+      camel = camelArr.join('');
+    }
+
+    if ($org[0].style && camel in $org[0].style) {
+      args[0][camel] = args[0][property];
+      delete args[0][property];
+    }
+  }
 }
 
 function applyData($org, args, $member) {
@@ -228,7 +254,6 @@ function applyData($org, args, $member) {
     applyMethod($org, method, args, $member);
   }
 
-  // Might need to use Object.assign because in jQuery 3.5.0, data objects have a null prototype.
   // Don't automatically use Object.assign since it is an expensive operation.
   if (Array.isArray($member)) {
     // Get all data to submit for updating state. Only iterate once.
@@ -316,22 +341,207 @@ function getBoundingClientRect($org, args, memberIdx) {
   return args;
 }
 
+function getMeasurementSwitch(method, $org, elem, computedStyle) {
+  switch (method) {
+    case 'innerWidth':
+      if ($org.selector === 'window') {
+        return elem.innerWidth;
+      }
+      else if ($org.selector === 'document') {
+        return;
+      }
+      else {
+        if (computedStyle.boxSizing === 'content-box') {
+          return parseInt(computedStyle.width, 10) +
+            (parseInt(computedStyle.paddingLeft, 10) || 0) +
+            (parseInt(computedStyle.paddingRight, 10) || 0);
+        }
+        else {
+          return parseInt(computedStyle.width, 10) -
+            (parseInt(computedStyle.borderLeftWidth, 10) || 0) -
+            (parseInt(computedStyle.borderRightWidth, 10) || 0);
+        }
+      }
+
+      break;
+
+    case 'innerHeight':
+      if ($org.selector === 'window') {
+        return elem.innerHeight;
+      }
+      else if ($org.selector === 'document') {
+        return;
+      }
+      else {
+        if (computedStyle.boxSizing === 'content-box') {
+          return parseInt(computedStyle.height, 10) +
+            (parseInt(computedStyle.paddingTop, 10) || 0) +
+            (parseInt(computedStyle.paddingBottom, 10) || 0);
+        }
+        else {
+          return parseInt(computedStyle.height, 10) -
+            (parseInt(computedStyle.borderTopWidth, 10) || 0) -
+            (parseInt(computedStyle.borderBottomWidth, 10) || 0);
+        }
+      }
+
+      break;
+
+    case 'outerWidth':
+      if ($org.selector === 'window') {
+        return elem.outerWidth;
+      }
+      else if ($org.selector === 'document') {
+        return;
+      }
+      else {
+        if (computedStyle.boxSizing === 'content-box') {
+          return parseInt(computedStyle.width, 10) +
+            (parseInt(computedStyle.paddingLeft, 10) || 0) +
+            (parseInt(computedStyle.paddingRight, 10) || 0) +
+            (parseInt(computedStyle.borderLeftWidth, 10) || 0) +
+            (parseInt(computedStyle.borderRightWidth, 10) || 0) +
+            (parseInt(computedStyle.marginLeft, 10) || 0) +
+            (parseInt(computedStyle.marginRight, 10) || 0);
+        }
+        else {
+          return parseInt(computedStyle.width, 10) +
+            (parseInt(computedStyle.marginLeft, 10) || 0) +
+            (parseInt(computedStyle.marginRight, 10) || 0);
+        }
+      }
+
+      break;
+
+    case 'outerHeight':
+      if ($org.selector === 'window') {
+        return elem.outerHeight;
+      }
+      else if ($org.selector === 'document') {
+        return;
+      }
+      else {
+        if (computedStyle.boxSizing === 'content-box') {
+          return parseInt(computedStyle.height, 10) +
+            (parseInt(computedStyle.paddingTop, 10) || 0) +
+            (parseInt(computedStyle.paddingBottom, 10) || 0) +
+            (parseInt(computedStyle.borderTopWidth, 10) || 0) +
+            (parseInt(computedStyle.borderBottomWidth, 10) || 0) +
+            (parseInt(computedStyle.marginTop, 10) || 0) +
+            (parseInt(computedStyle.marginBottom, 10) || 0);
+        }
+        else {
+          return parseInt(computedStyle.height, 10) +
+            (parseInt(computedStyle.marginTop, 10) || 0) +
+            (parseInt(computedStyle.marginBottom, 10) || 0);
+        }
+      }
+
+      break;
+
+    case 'scrollLeft':
+      if ($org.selector === 'window') {
+        return elem.pageXOffset;
+      }
+      else if ($org.selector === 'document') {
+        return elem.documentElement.scrollLeft;
+      }
+      else {
+        return elem.scrollLeft;
+      }
+
+      break;
+
+    case 'scrollTop':
+      if ($org.selector === 'window') {
+        return elem.pageYOffset;
+      }
+      else if ($org.selector === 'document') {
+        return elem.documentElement.scrollTop;
+      }
+      else {
+        return elem.scrollTop;
+      }
+
+      break;
+
+    case 'width':
+      if ($org.selector === 'window') {
+        return elem.innerWidth;
+      }
+      else if ($org.selector === 'document') {
+        return Math.max(
+          elem.body.scrollWidth,
+          elem.documentElement.scrollWidth,
+          elem.body.offsetWidth,
+          elem.documentElement.offsetWidth,
+          elem.documentElement.clientWidth
+        );
+      }
+      else {
+        if (computedStyle.boxSizing === 'content-box') {
+          return parseInt(computedStyle.width, 10);
+        }
+        else {
+          return parseInt(computedStyle.width, 10) -
+            (parseInt(computedStyle.paddingLeft, 10) || 0) -
+            (parseInt(computedStyle.paddingRight, 10) || 0) -
+            (parseInt(computedStyle.borderLeftWidth, 10) || 0) -
+            (parseInt(computedStyle.borderRightWidth, 10) || 0);
+        }
+      }
+
+      break;
+
+    case 'height':
+      if ($org.selector === 'window') {
+        return elem.innerHeight;
+      }
+      else if ($org.selector === 'document') {
+        return Math.max(
+          elem.body.scrollHeight,
+          elem.documentElement.scrollHeight,
+          elem.body.offsetHeight,
+          elem.documentElement.offsetHeight,
+          elem.documentElement.clientHeight
+        );
+      }
+      else {
+        if (computedStyle.boxSizing === 'content-box') {
+          return parseInt(computedStyle.height, 10);
+        }
+        else {
+          return parseInt(computedStyle.height, 10) -
+            (parseInt(computedStyle.paddingTop, 10) || 0) -
+            (parseInt(computedStyle.paddingBottom, 10) || 0) -
+            (parseInt(computedStyle.borderTopWidth, 10) || 0) -
+            (parseInt(computedStyle.borderBottomWidth, 10) || 0);
+        }
+      }
+
+      break;
+  }
+}
+
 /**
- * Apply a jQuery/Cheerio method to get a measurement.
+ * Get a measurement as efficiently as possible.
  *
  * @param {object} $org - Organism object.
  * @param {string} method - Name of the method to be applied.
  * @param {array} args - Arguments array, (not array-like object). Must always be an empty array. Will write the
  *   measurement to its element 0.
+ * @param {object|undefined} computedStyle - Only defined for jQuery. Per DOM `CSSStyleDeclaration` spec.
  * @param {object|object[]} [$member] - Organism member, or array of members.
  * @returns {array} The `args` array.
  */
-function getMeasurement($org, method, args, $member) {
+function getMeasurement($org, method, args, computedStyle, $member) {
   if (Array.isArray($member)) {
     // Apply on first valid iteration of $member array.
     for (let $elem of $member) {
-      /* istanbul ignore if */
-      if (typeof $elem[method] === 'function') {
+      if (typeof window === 'object') { // jQuery
+        args[0] = getMeasurementSwitch(method, $org, $elem[0], computedStyle);
+      }
+      else { // Cheerio
         args[0] = $elem[method].apply($elem);
 
         break;
@@ -341,16 +551,24 @@ function getMeasurement($org, method, args, $member) {
   else if ($member) {
     // Apply to $member.
     /* istanbul ignore if */
-    if (typeof $member[method] === 'function') {
+    if (typeof window === 'object') { // jQuery
+      args[0] = getMeasurementSwitch(method, $org, $member[0], computedStyle);
+    }
+    else { // Cheerio
       args[0] = $member[method].apply($member);
     }
   }
   else {
     // Apply to $org.
-    if (typeof $org[method] === 'function') {
+    if (typeof window === 'object') { // jQuery
+      args[0] = getMeasurementSwitch(method, $org, $org[0], computedStyle);
+    }
+    else { // Cheerio
       args[0] = $org[method].apply($org);
     }
   }
+
+  args[0] = isNaN(args[0]) ? void 0 : args[0];
 
   return args;
 }
@@ -636,7 +854,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       case 'append':
       case 'prepend':
       case 'text': {
-        const state = store.getState()[this.selector];
+        const state = stor.getState()[this.selector];
 
         if (Array.isArray($member) && Array.isArray(memberIdx)) {
           // Dispatch on each iteration of $member array.
@@ -674,8 +892,8 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
           });
         }
 
-        // If the 'html' action is dispatched without an arg, or with a null arg, and the .innerHTML property on the
-        // state is unset, we want to set the .innerHTML property.
+        // If the 'html' action is dispatched without an arg, or with a null arg, and the .html property on the state is
+        // unset, we want to set the .html property.
         // Same goes for 'append', 'prepend', and 'text' irrespective of arg.
         // eslint-disable-next-line eqeqeq
         if (method !== 'html' || args[0] == null) {
@@ -685,7 +903,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
               const memberState = state.$members[memberIdx[idx]];
 
               // eslint-disable-next-line eqeqeq
-              if (!memberState || memberState.innerHTML == null) {
+              if (!memberState || memberState.html == null) {
                 this.prevAction = store.dispatch({
                   type: 'HTML',
                   selector: this.selector,
@@ -701,7 +919,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
             const memberState = state.$members[memberIdx];
 
             // eslint-disable-next-line eqeqeq
-            if (!memberState || memberState.innerHTML == null) {
+            if (!memberState || memberState.html == null) {
               this.prevAction = store.dispatch({
                 type: 'HTML',
                 selector: this.selector,
@@ -714,7 +932,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
           }
           else {
             // eslint-disable-next-line eqeqeq
-            if (state.innerHTML == null) {
+            if (state.html == null) {
               this.prevAction = store.dispatch({
                 type: 'HTML',
                 selector: this.selector,
@@ -737,14 +955,25 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         break;
       }
 
+      case 'innerWidth':
+      case 'innerHeight':
+      case 'outerWidth':
+      case 'outerHeight':
+      case 'scrollLeft':
       case 'scrollTop':
       case 'width':
       case 'height': {
+        let computedStyle;
+
+        if (typeof window === 'object') { // jQuery
+          computedStyle = getComputedStyle(this[memberIdx || 0]);
+        }
+
         if (args.length) {
           applyMethod(this, method, args, $member);
         }
         else {
-          getMeasurement(this, method, args, $member); // Mutates args.
+          getMeasurement(this, method, args, computedStyle, $member); // Mutates args.
         }
 
         break;
@@ -828,7 +1057,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 
   /**
 ### .exclude(selector)
-Exclude (temporarily) a selected member or members from an organism's `.$members`
+Excludes (temporarily) selected member or members from an organism's `.$members`
 array. A `.dispatchAction()` is meant to be ultimately chained to this method.
 Invoking `.dispatchAction()` will restore all original `.$members`.
 
@@ -927,7 +1156,7 @@ A server-side stand-in for client-side `.focus()`.
 
   /**
 ### .getState([memberIdx])
-A reference to Redux `store.getState()`.
+Gets state of Requerio organism or member. Invokes Redux `store.getState()`.
 
 __Returns__: `object` - The organism's state.
 
@@ -937,11 +1166,13 @@ __Returns__: `object` - The organism's state.
 */
   $.prototype.getState = function (memberIdx) {
     const $member = this.$members[memberIdx];
+    let orgIdx = 0;
     let state;
     let updateState = false;
 
     if (typeof memberIdx === 'number') {
       state = store.getState()[this.selector].$members[memberIdx];
+      orgIdx = memberIdx;
 
       /* istanbul ignore if */
       if (!state) {
@@ -953,49 +1184,11 @@ __Returns__: `object` - The organism's state.
       state = store.getState()[this.selector];
     }
 
-    // Do not preemptively update .style property because we only want to track styles dispatched through Requerio.
-
-    // Do update .attribs property if an attribute was changed by user interaction, e.g., `checked` attribute.
-    const argsAttr = [];
-
-    applyAttr(this, argsAttr, $member, memberIdx); // Mutates argsAttr.
-
-    if (JSON.stringify(state.attribs) !== JSON.stringify(argsAttr[0])) {
-      store.dispatch({
-        type: 'ATTR',
-        selector: this.selector,
-        $org: this,
-        method: 'attr',
-        args: argsAttr,
-        memberIdx
-      });
-
-      updateState = true;
-    }
-
-    //TODO: Update this. Might no longer be null by default.
-    // Do update .data property if data were updated on a data attribute, i.e., not by a 'data' action.
-    // As per jQuery documentation, the 'data' action will only read data from data attributes once. Further changes
-    // to data attributes will not be read by the 'data' action.
-    // https://api.jquery.com/data/#data-html5
-    if (!state.data) {
-      const argsData = [];
-
-      applyData(this, argsData, $member); // Mutates argsData.
-
-      if (JSON.stringify(state.data) !== JSON.stringify(argsData[0])) {
-        store.dispatch({
-          type: 'DATA',
-          selector: this.selector,
-          $org: this,
-          method: 'data',
-          args: argsData,
-          memberIdx
-        });
-
-        updateState = true;
-      }
-    }
+    /* .boundingClientRect updated by updateMeasurements */
+    /* .css updated by reducer - values are in real-time */
+    /* .data not updated by non-Requerio methods so leave alone */
+    /* .html not updated by non-Requerio methods so leave alone */
+    /* .text not updated by non-Requerio methods so leave alone */
 
     // Do update length of state.$members array to match length of this.$members.
     if (Array.isArray(this.$members) && Array.isArray(state.$members)) {
@@ -1009,151 +1202,92 @@ __Returns__: `object` - The organism's state.
     // Do update measurements if changed by user interaction, e.g., resizing viewport.
     updateState = this.updateMeasurements(state, $member, memberIdx) || updateState;
 
-    // Do not preemptively update .textContent property because we don't want to bloat the app with too much data,
-    // nor do we want to perform unnecessary .text() reads.
-    // Therefore, only proceed with a 'text' action if textContent is already set.
-    const textContentOld = state.textContent;
+    /* .attribs */
+    // Do update .attribs property if an attribute was changed by user interaction, e.g., `checked` attribute. (Not the
+    // best example because it should be updated by the 'prop' action.)
+    let attribsNow = {};
 
-    // eslint-disable-next-line eqeqeq
-    if (textContentOld != null) {
-      const textContentNew = this.text();
+    if (typeof window === 'object') { // jQuery
+      const attributes = this[orgIdx].attributes;
 
-      if (textContentNew !== textContentOld) {
-        if (typeof memberIdx === 'number') {
-          const textContentNew = $member ? $member.text() : textContentOld;
+      for (let i = 0, l = attributes.length; i < l; i++) {
+        attribsNow[attributes[i].name] = attributes[i].value;
+      }
+    }
+    else { // Cheerio
+      attribsNow = this[orgIdx].attribs;
+    }
 
-          if (textContentNew !== textContentOld) {
-            store.dispatch({
-              type: 'TEXT',
-              selector: this.selector,
-              $org: this,
-              method: 'text',
-              args: [textContentNew],
-              memberIdx
-            });
-          }
+    if (JSON.stringify(state.attribs) !== JSON.stringify(attribsNow)) {
+      store.dispatch({
+        type: 'ATTR',
+        selector: this.selector,
+        $org: this,
+        method: 'attr',
+        args: [attribsNow],
+        memberIdx
+      });
+
+      updateState = true;
+    }
+
+    /* .prop */
+    // Do update .prop property if an property was changed by user interaction, e.g., `checked` property.
+    let propNow = {};
+
+    if (typeof window === 'object') { // jQuery
+      for (let property of Object.keys(state.prop)) {
+        if (property in this[orgIdx]) {
+          propNow[property] = this[orgIdx][property];
+        }
+      }
+    }
+    else { // Cheerio
+      if ($member) {
+        propNow[property] = $member.prop(property);
+      }
+      else {
+        propNow[property] = this.prop(property);
+      }
+    }
+
+    if (JSON.stringify(state.prop) !== JSON.stringify(propNow)) {
+      store.dispatch({
+        type: 'PROP',
+        selector: this.selector,
+        $org: this,
+        method: 'prop',
+        args: [propNow],
+        memberIdx
+      });
+
+      updateState = true;
+    }
+
+    /* val */
+    // Do update form field values if they were changed by user interaction.
+    if (typeof state.val !== 'undefined') {
+      let valueNow;
+
+      if (typeof window === 'object') { // jQuery
+        valueNow = this[orgIdx].value;
+      }
+      else { // Cheerio
+        if ($member) {
+          valueNow = $member.val();
         }
         else {
-          for (let i = 0; i < membersLength; i++) {
-            if (this.$members[i]) {
-              const textContentOld = state.$members[i].textContent;
-              const textContentNew = this.$members[i].text();
-
-              if (textContentNew !== textContentOld) {
-                store.dispatch({
-                  type: 'TEXT',
-                  selector: this.selector,
-                  $org: this,
-                  method: 'text',
-                  args: [textContentNew],
-                  memberIdx: i
-                });
-              }
-            }
-          }
-        }
-
-        store.dispatch({
-          type: 'TEXT',
-          selector: this.selector,
-          $org: this,
-          method: 'text',
-          args: [textContentNew]
-        });
-
-        updateState = true;
-      }
-    }
-
-    // Do not preemptively update .innerHTML property because we don't want to bloat the app with too much data,
-    // nor do we want to perform unnecessary .html() reads.
-    // Therefore, only proceed with an 'html' action if innerHTML is already set.
-    const innerHTMLOld = state.innerHTML;
-
-    // eslint-disable-next-line eqeqeq
-    if (innerHTMLOld != null) {
-      if (typeof memberIdx === 'number') {
-        const innerHTMLNew = $member ? $member.html() : innerHTMLOld;
-
-        if (innerHTMLNew !== innerHTMLOld) {
-          store.dispatch({
-            type: 'HTML',
-            selector: this.selector,
-            $org: this,
-            method: 'html',
-            args: [innerHTMLNew],
-            memberIdx: memberIdx || void 0 // So memberIdx 0's innerHTML goes as the organism's innerHTML.
-          });
-
-          updateState = true;
+          valueNow = this.val();
         }
       }
-      else {
-        let innerHTMLZero;
 
-        for (let i = 0; i < membersLength; i++) {
-          if (this.$members[i]) {
-            const innerHTMLOld = state.$members[i].innerHTML;
-            const innerHTMLNew = this.$members[i].html();
-
-            if (i === 0) {
-              innerHTMLZero = innerHTMLNew;
-            }
-
-            if (innerHTMLNew !== innerHTMLOld) {
-              store.dispatch({
-                type: 'HTML',
-                selector: this.selector,
-                $org: this,
-                method: 'html',
-                args: [innerHTMLNew],
-                memberIdx: i
-              });
-
-              updateState = true;
-            }
-          }
-        }
-
-        if (typeof innerHTMLZero === 'string' && innerHTMLZero !== innerHTMLOld) {
-          store.dispatch({
-            type: 'HTML',
-            selector: this.selector,
-            $org: this,
-            method: 'html',
-            args: [innerHTMLZero]
-          });
-
-          updateState = true;
-        }
-      }
-    }
-
-    //TODO:
-    // Do update .prop values if they were changed by user interaction, i.e. checking a checkbox, etc.
-
-
-    // Do update form field values if they were changed by user interaction.
-    const valueOld = state.value;
-
-    // eslint-disable-next-line eqeqeq
-    if (valueOld != null) {
-      let valueNew;
-
-      if (typeof memberIdx === 'number') {
-        valueNew = $member ? $member.val() : valueOld;
-      }
-      else {
-        valueNew = this.val();
-      }
-
-      if (valueNew !== valueOld) {
+      if (valueNow !== state.val) {
         store.dispatch({
           type: 'VAL',
           selector: this.selector,
           $org: this,
           method: 'val',
-          args: [valueNew],
+          args: [valueNow],
           memberIdx
         });
 
@@ -1185,7 +1319,7 @@ __Returns__: `object` - This app's state store.
 
   /**
 ### .hasChild(selector)
-Filter (temporarily) an organism's `.$members` array to include only those with
+Filters (temporarily) an organism's `.$members` array to include only those with
 a child matching the selector. A `.dispatchAction()` is meant to be ultimately
 chained to this method. Invoking `.dispatchAction()` will restore all original
 `$.members`.
@@ -1220,9 +1354,10 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
   /**
 ### .hasElement(element)
-Filter (temporarily) an organism's `.$members` to include only that whose element
-matches the param. A `.dispatchAction()` is meant to be ultimately chained to
-this method. Invoking `.dispatchAction()` will restore all original `$.members`.
+Filters (temporarily) an organism's `.$members` to include only those whose
+elements match the param. A `.dispatchAction()` is meant to be ultimately
+chained to this method. Invoking `.dispatchAction()` will restore all original
+`$.members`.
 
 __Returns__: `object` - The organism with its `.$members` winnowed of exclusions.
 
@@ -1245,7 +1380,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
   /**
 ### .hasNext(selector)
-Filter (temporarily) an organism's `.$members` array to include only those whose
+Filters (temporarily) an organism's `.$members` array to include only those whose
 "next" sibling is matched by the selector. A `.dispatchAction()` is meant to be
 ultimately chained to this method. Invoking `.dispatchAction()` will restore all
 original `$.members`.
@@ -1280,7 +1415,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
   /**
 ### .hasParent(selector)
-Filter (temporarily) an organism's `.$members` to include only those with a
+Filters (temporarily) an organism's `.$members` to include only those with a
 parent matching the selector. A `.dispatchAction()` is meant to be ultimately
 chained to this method. Invoking `.dispatchAction()` will restore all original
 `$.members`.
@@ -1315,8 +1450,8 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
   /**
 ### .hasPrev(selector)
-Filter (temporarily) an organism's `.$members` to include only those whose "prev"
-sibling is matched by the selector. A `.dispatchAction()` is meant to be
+Filters (temporarily) an organism's `.$members` to include only those whose
+"prev" sibling is matched by the selector. A `.dispatchAction()` is meant to be
 ultimately chained to this method. Invoking `.dispatchAction()` will restore all
 original `$.members`.
 
@@ -1350,7 +1485,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
   /**
 ### .hasSelector(selector)
-Filter (temporarily) an organism's `.$members` to include only those that match
+Filters (temporarily) an organism's `.$members` to include only those that match
 the selector criteria. A `.dispatchAction()` is meant to be ultimately chained
 to this method. Invoking `.dispatchAction()` will restore all original
 `$.members`.
@@ -1391,7 +1526,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
   /**
 ### .hasSibling(selector)
-Filter (temporarily) an organism's `.$members` to include only those with a
+Filters (temporarily) an organism's `.$members` to include only those with a
 sibling matched by the selector. A `.dispatchAction()` is meant to be ultimately
 chained to this method. Invoking `.dispatchAction()` will restore all original
 `$.members`.
@@ -1662,19 +1797,30 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
 | [memberIdx] | `number`\|`number[]` | The index (or array of indices) of the organism member(s) (if targeting one or more members). |
 */
   $.prototype.updateMeasurements = function (state, $member, memberIdx) {
+    let computedStyle;
     let updateState = false;
+
+    if (typeof window === 'object') { // jQuery
+      computedStyle = getComputedStyle(this[memberIdx || 0]);
+    }
 
     // Be sure to add to these if more measurements are added to the state object.
     for (let method of [
+      'innerWidth',
+      'innerHeight',
+      'outerWidth',
+      'outerHeight',
+      'scrollLeft',
       'scrollTop',
       'width',
       'height'
     ]) {
       const args = [];
 
-      getMeasurement(this, method, args, $member); // Mutates args.
+      getMeasurement(this, method, args, computedStyle, $member); // Mutates args.
 
-      if (state[method] !== args[0]) {
+      // eslint-disable-next-line eqeqeq
+      if (state[method] != args[0]) { // Allow undefined == null to satisfy condition.
         store.dispatch({
           type: convertMethodToType(method),
           selector: this.selector,
@@ -1697,7 +1843,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     // Dependent on dispatches of other measurements to populate members.
     getBoundingClientRect(this, args, memberIdx); // Mutates args.
 
-    for (let measurement of Object.keys(state.boundingClientRect)) {
+    for (let measurement in args[0]) {
       if (state.boundingClientRect[measurement] !== args[0][measurement]) {
         store.dispatch({
           type: 'SET_BOUNDING_CLIENT_RECT',

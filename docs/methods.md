@@ -58,16 +58,19 @@ Add HTML content immediately before all matches.
 | content | `function` | A function that returns an HTML string. |
 
 ### css(properties)
-Set one or more CSS properties for all matches.
+Set one or more CSS properties for all matches. Will set `state.css` as per the
+getter below.
 
 | Param | Type | Description |
 | --- | --- | --- |
 | properties | `object` | An object of property:value pairs to set. |
 
 ### css(properties)
-Update `state.style` with the computed style of the actual element. Requerio
-does not preemptively set all styles on the state, given how wasteful that would
-be across all styles across all organisms.
+Update `state.css` with both the real-time computed style of the actual element
+and the static style set by Cheerio or jQuery `.css()`. The real-time style will
+be keyed in camelCase. The static style key will be hyphenated. Requerio does
+not preemptively set all styles on the state, given how wasteful that would be
+across all styles across all organisms.
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -94,7 +97,7 @@ Set the height (not including padding, border, or margin) of all matches.
 | value | `number`\|`string`\|`function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
 
 ### html(htmlString)
-Set the innerHTML of all matches.
+Set the innerHTML of all matches. Will set `state.html` as per the getter below.
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -102,13 +105,13 @@ Set the innerHTML of all matches.
 
 ### html()
 Dispatching an 'html' action without an htmlString parameter will set
-`state.innerHTML` to the string value of the innerHTML of the actual element.
-Prior to that, `state.innerHTML` will be null. Simply invoking `.getState()`
-where `state.innerHTML` is null will not update `state.innerHTML`. However,
-once `state.innerHTML` has been set to a string, subsequent invocations of
-`.getState()` will update `state.innerHTML`. Set `state.innerHTML` only when
-necessary, since very large innerHTML strings across many organisms with many
-members can add up to a large amount of data.
+`state.html` to the string value of the innerHTML of the actual element. Prior
+to that, `state.html` will be null. Simply invoking `.getState()` where
+`state.html` is null will not update `state.html`. However, once `state.html`
+has been set to a string, subsequent invocations of `.getState()` will update
+`state.html`. Set `state.html` only when necessary, since very large innerHTML
+strings across many organisms with many members can add up to a large amount of
+data.
 
 ### prepend(...content)
 Prepend HTML content to the innerHTML of all matches.
@@ -159,6 +162,14 @@ DOM.
 | --- | --- | --- |
 | list | `string`\|`array` | A space-separated string or an array naming the pieces of data to delete. |
 
+### scrollLeft(value)
+Set the horizontal scroll position (the number of CSS pixels that are hidden
+from view to the left of the scrollable area) of the match.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | `number` | The number to set the scroll position to. |
+
 ### scrollTop(value)
 Set the vertical scroll position (the number of CSS pixels that are hidden from
 view above the scrollable area) of the match.
@@ -183,24 +194,25 @@ properties on `state.boundingClientRect`.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| boundingClientRect | `object` | An object of key:values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class, with the exception of `.x` and `.y` (as per compatibility with Microsoft browsers). |
+| boundingClientRect | `object` | An object of key:values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class. |
 
 ### text(text)
-Set the textContent of all matches. This is a safer way to change text on the DOM than dispatching an 'html' action.
+Set the textContent of all matches. This is a safer way to change text on the
+DOM than dispatching an 'html' action. Will set `state.text` as per the getter
+below.
 
 | Param | Type | Description |
 | --- | --- | --- |
 | text | `string` | A string of text. Functions are not supported. |
 
 ### text()
-Dispatching a 'text' action without a parameter will set `state.textContent` to
-the string value of the textContent of the actual element. Prior to that,
-`state.textContent` will be null. Simply invoking `.getState()` where
-`state.textContent` is null will not update `state.textContent`. However, once
-`state.textContent` has been set to a string, subsequent invocations of
-`.getState()` will update `state.textContent`. Set `state.textContent` only when
-necessary, since very large text strings across many organisms with many members
-can add up to a large amount of data.
+Dispatching a 'text' action without a parameter will set `state.text` to the
+string value of the textContent of the actual element. Prior to that,
+`state.text` will be null. Simply invoking `.getState()` where `state.text` is
+null will not update `state.text`. However, once `state.text` has been set to a
+string, subsequent invocations of `.getState()` will update `state.text`. Set
+`state.text` only when necessary, since very large text strings across many
+organisms with many members can add up to a large amount of data.
 
 ### toggleClass(classes)
 For each submitted class, add or remove that class from all matches, depending
@@ -219,7 +231,7 @@ on a true/false switch.
 | paramsArray | `array` | An array: where element 0 is a space-separated string, or a function that returns a space-separated string; and element 1 is a boolean switch, where true means add, false means remove. |
 
 ### val(value)
-Set the value of all matches, typically form fields. This will set `state.value`.
+Set the value of all matches, typically form fields. This will set `state.val`.
 
 | Param | Type | Description |
 | --- | --- | --- |
