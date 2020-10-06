@@ -1715,7 +1715,7 @@ targets', function () {
 
         const state = requerio.$orgs['.main__input'].getState();
 
-        expect(state.props.disabled).to.be.true;
+        expect(state.prop.disabled).to.be.true;
       });
 
       it('dispatches the "prop" action in a targeted manner', function () {
@@ -1723,7 +1723,7 @@ targets', function () {
 
         const state = requerio.$orgs['input'].getState(1);
 
-        expect(state.props.disabled).to.be.true;
+        expect(state.prop.disabled).to.be.true;
       });
 
       it('dispatches the "prop" action across multiple targets', function () {
@@ -1732,8 +1732,8 @@ targets', function () {
         const state0 = requerio.$orgs['input'].getState(0);
         const state1 = requerio.$orgs['input'].getState(1);
 
-        expect(state0.props.disabled).to.be.false;
-        expect(state1.props.disabled).to.be.false;
+        expect(state0.prop.disabled).to.be.false;
+        expect(state1.prop.disabled).to.be.false;
       });
 
       it('dispatches the "removeData" action to delete data from the state but not a corresponding data attribute\

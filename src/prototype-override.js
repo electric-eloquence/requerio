@@ -543,7 +543,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 | Param | Type | Description |
 | --- | --- | --- |
 | method | `string` | The name of the method on the organism's prototype. |
-| [args] | `*` | This param contains the values to be passed as arguments to the method. null or an empty array may be submitted if not passing arguments, but targeting a memberIdx. |
+| [args] | `*` | This param contains the values to be passed as arguments to the method. `null` may be submitted if not passing arguments, but targeting a memberIdx. |
 | [memberIdx] | `number`\|`number[]` | The index, or array of indices, of the organism member(s), if targeting one or more members. |
 */
   $.prototype.dispatchAction = function (method, args_, memberIdx_) {
