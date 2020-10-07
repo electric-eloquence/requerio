@@ -14,6 +14,7 @@ Do not to let states bloat for no reason (as it could with large innerHTML, text
 | outerWidth | `null`\|`number` | `null` | In number of CSS pixels. Includes padding, border, and margin. |
 | outerHeight | `null`\|`number` | `null` | In number of CSS pixels. Includes padding, border, and margin. |
 | prop | `object` | {} | An object of HTML properties set by jQuery or Cheerio `.prop()`. |
+| scrollLeft | `null`\|`number` | `null` | The number of CSS pixels scrolled to the left of viewable area. |
 | scrollTop | `null`\|`number` | `null` | The number of CSS pixels scrolled above the viewable area. |
 | text | `null`\|`string` | `null` | To DOM `Element.textContent` spec. `null` means the initial textContent state wasn't modified. `null` has a completely different meaning than empty string. |
 | val | `string` | `undefined` | Only defined on input element states. |

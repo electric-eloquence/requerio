@@ -64,6 +64,126 @@ export default ($orgs, $) => {
      * @param {number} [distance] - Distance.
      * @returns {number|null|object} Distance, null, or organism.
      */
+    if (typeof $org.innerWidth === 'undefined') {
+      $org.innerWidth = (distance) => {
+        if (typeof distance === 'undefined') {
+          if ($org.$members[0]) {
+            return $org.$members[0]._innerWidth;
+          }
+          else {
+            return null;
+          }
+        }
+        else {
+          for (let i = 0; i < $org.$members.length; i++) {
+            $org.$members[i]._innerWidth = distance;
+          }
+
+          return $org;
+        }
+      };
+    }
+
+    /**
+     * @param {number} [distance] - Distance.
+     * @returns {number|null|object} Distance, null, or organism.
+     */
+    if (typeof $org.innerHeight === 'undefined') {
+      $org.innerHeight = (distance) => {
+        if (typeof distance === 'undefined') {
+          if ($org.$members[0]) {
+            return $org.$members[0]._innerHeight;
+          }
+          else {
+            return null;
+          }
+        }
+        else {
+          for (let i = 0; i < $org.$members.length; i++) {
+            $org.$members[i]._innerHeight = distance;
+          }
+
+          return $org;
+        }
+      };
+    }
+
+    /**
+     * @param {number} [distance] - Distance.
+     * @returns {number|null|object} Distance, null, or organism.
+     */
+    if (typeof $org.outerWidth === 'undefined') {
+      $org.outerWidth = (distance) => {
+        if (typeof distance === 'undefined') {
+          if ($org.$members[0]) {
+            return $org.$members[0]._outerWidth;
+          }
+          else {
+            return null;
+          }
+        }
+        else {
+          for (let i = 0; i < $org.$members.length; i++) {
+            $org.$members[i]._outerWidth = distance;
+          }
+
+          return $org;
+        }
+      };
+    }
+
+    /**
+     * @param {number} [distance] - Distance.
+     * @returns {number|null|object} Distance, null, or organism.
+     */
+    if (typeof $org.outerHeight === 'undefined') {
+      $org.outerHeight = (distance) => {
+        if (typeof distance === 'undefined') {
+          if ($org.$members[0]) {
+            return $org.$members[0]._outerHeight;
+          }
+          else {
+            return null;
+          }
+        }
+        else {
+          for (let i = 0; i < $org.$members.length; i++) {
+            $org.$members[i]._outerHeight = distance;
+          }
+
+          return $org;
+        }
+      };
+    }
+
+    /**
+     * @param {number} [distance] - Distance.
+     * @returns {number|null|object} Distance, null, or organism.
+     */
+    if (typeof $org.scrollLeft === 'undefined') {
+      $org.scrollLeft = (distance) => {
+        if (typeof distance === 'undefined') {
+          if ($org.$members[0]) {
+            return $org.$members[0]._scrollLeft;
+          }
+          else {
+            return null;
+          }
+        }
+        else {
+          for (let i = 0; i < $org.$members.length; i++) {
+            $org.$members[i]._scrollLeft = distance;
+          }
+
+          return $org;
+        }
+      };
+    }
+
+    /**
+     * @param {number} [distance] - Distance.
+     * @returns {number|null|object} Distance, null, or organism.
+     */
     if (typeof $org.scrollTop === 'undefined') {
       $org.scrollTop = (distance) => {
         if (typeof distance === 'undefined') {

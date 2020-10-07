@@ -588,12 +588,15 @@ below.
 
 ### text()
 Dispatching a 'text' action without a parameter will set `state.text` to the
-string value of the textContent of the actual element. Prior to that,
-`state.text` will be null. Simply invoking `.getState()` where `state.text` is
-null will not update `state.text`. However, once `state.text` has been set to a
-string, subsequent invocations of `.getState()` will update `state.text`. Set
-`state.text` only when necessary, since very large text strings across many
-organisms with many members can add up to a large amount of data.
+the textContent of the targeted element, or if untargeted, the textContent of
+the first element. This contrasts with the return value of jQuery/Cheerio
+`.text()` which concatenates the textContent of all matching elements. Prior to
+the first 'text' action, `state.text` will be null. Simply invoking `.getState()`
+where `state.text` is null will not update `state.text`. However, once
+`state.text` has been set to a string, subsequent invocations of `.getState()`
+will update `state.text`. Set `state.text` only when necessary, since very large
+text strings across many organisms with many members can add up to a large
+amount of data.
 */
       case 'text': {
         // Only perform this update
@@ -763,7 +766,9 @@ function reducerClosure(orgSelector, customReducer) {
       }
       else if (Array.isArray(memberIdx)) {
         for (let idx of memberIdx) {
-          stateBuild($org.$members[idx], state.$members[idx], action);
+          if ($org.$members[idx]) {
+            stateBuild($org.$members[idx], state.$members[idx] || {}, action);
+          }
         }
       }
 

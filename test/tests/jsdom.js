@@ -68,9 +68,11 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           const stateAfter = requerio.$orgs.window.getState();
 
           expect(JSON.stringify(stateBefore)).to.equal(
+            // eslint-disable-next-line max-len
             '{"data":{},"innerWidth":null,"innerHeight":null,"outerWidth":null,"outerHeight":null,"scrollTop":null,"width":null,"height":null}'
           );
           expect(JSON.stringify(stateAfter)).to.equal(
+            // eslint-disable-next-line max-len
             '{"data":{},"innerWidth":null,"innerHeight":null,"outerWidth":null,"outerHeight":null,"scrollTop":null,"width":null,"height":null}'
           );
         });
@@ -85,9 +87,11 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           const stateAfter = requerio.$orgs.window.getState();
 
           expect(JSON.stringify(stateBefore)).to.equal(
+            // eslint-disable-next-line max-len
             '{"data":{},"innerWidth":null,"innerHeight":null,"outerWidth":null,"outerHeight":null,"scrollTop":null,"width":null,"height":null}'
           );
           expect(JSON.stringify(stateAfter)).to.equal(
+            // eslint-disable-next-line max-len
             '{"data":{},"innerWidth":0,"innerHeight":0,"outerWidth":1024,"outerHeight":768,"scrollTop":0,"width":0,"height":0}'
           );
         });

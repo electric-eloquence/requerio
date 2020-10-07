@@ -363,8 +363,6 @@ function getMeasurementSwitch(method, $org, elem, computedStyle) {
         }
       }
 
-      break;
-
     case 'innerHeight':
       if ($org.selector === 'window') {
         return elem.innerHeight;
@@ -384,8 +382,6 @@ function getMeasurementSwitch(method, $org, elem, computedStyle) {
             (parseInt(computedStyle.borderBottomWidth, 10) || 0);
         }
       }
-
-      break;
 
     case 'outerWidth':
       if ($org.selector === 'window') {
@@ -411,8 +407,6 @@ function getMeasurementSwitch(method, $org, elem, computedStyle) {
         }
       }
 
-      break;
-
     case 'outerHeight':
       if ($org.selector === 'window') {
         return elem.outerHeight;
@@ -437,8 +431,6 @@ function getMeasurementSwitch(method, $org, elem, computedStyle) {
         }
       }
 
-      break;
-
     case 'scrollLeft':
       if ($org.selector === 'window') {
         return elem.pageXOffset;
@@ -450,8 +442,6 @@ function getMeasurementSwitch(method, $org, elem, computedStyle) {
         return elem.scrollLeft;
       }
 
-      break;
-
     case 'scrollTop':
       if ($org.selector === 'window') {
         return elem.pageYOffset;
@@ -462,8 +452,6 @@ function getMeasurementSwitch(method, $org, elem, computedStyle) {
       else {
         return elem.scrollTop;
       }
-
-      break;
 
     case 'width':
       if ($org.selector === 'window') {
@@ -491,8 +479,6 @@ function getMeasurementSwitch(method, $org, elem, computedStyle) {
         }
       }
 
-      break;
-
     case 'height':
       if ($org.selector === 'window') {
         return elem.innerHeight;
@@ -518,8 +504,6 @@ function getMeasurementSwitch(method, $org, elem, computedStyle) {
             (parseInt(computedStyle.borderBottomWidth, 10) || 0);
         }
       }
-
-      break;
   }
 }
 
@@ -541,7 +525,7 @@ function getMeasurement($org, method, args, computedStyle, $member) {
       if (typeof window === 'object') { // jQuery
         args[0] = getMeasurementSwitch(method, $org, $elem[0], computedStyle);
       }
-      else { // Cheerio
+      else if (typeof $elem[method] === 'function') { // Cheerio
         args[0] = $elem[method].apply($elem);
 
         break;
@@ -554,7 +538,7 @@ function getMeasurement($org, method, args, computedStyle, $member) {
     if (typeof window === 'object') { // jQuery
       args[0] = getMeasurementSwitch(method, $org, $member[0], computedStyle);
     }
-    else { // Cheerio
+    else if (typeof $member[method] === 'function') { // Cheerio
       args[0] = $member[method].apply($member);
     }
   }
@@ -563,7 +547,7 @@ function getMeasurement($org, method, args, computedStyle, $member) {
     if (typeof window === 'object') { // jQuery
       args[0] = getMeasurementSwitch(method, $org, $org[0], computedStyle);
     }
-    else { // Cheerio
+    else if (typeof $org[method] === 'function') { // Cheerio
       args[0] = $org[method].apply($org);
     }
   }
@@ -854,103 +838,121 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       case 'append':
       case 'prepend':
       case 'text': {
-        const state = stor.getState()[this.selector];
+        if (args.length) {
+          applyMethod(this, method, args, $member);
+        }
+
+        let html;
+        let text;
 
         if (Array.isArray($member) && Array.isArray(memberIdx)) {
-          // Dispatch on each iteration of $member array.
-          $member.forEach(($elem, idx) => {
-            this.prevAction = store.dispatch({
+          if (args.length) {
+            if (typeof window === 'object') { // jQuery
+              html = this[memberIdx[0]].innerHTML;
+              text = this[memberIdx[0]].textContent;
+            }
+            else { // Cheerio
+              html = $member[0].html();
+              text = $member[0].text();
+            }
+          }
+          else {
+            $member.forEach(($elem, idx) => {
+              let htmlScoped;
+              let textScoped;
+
+              // On each iteration of $member array.
+              if (typeof window === 'object') { // jQuery
+                htmlScoped = $elem[0].innerHTML;
+                textScoped = $elem[0].textContent;
+              }
+              else { // Cheerio
+                htmlScoped = $elem.html();
+                textScoped = $elem.text();
+              }
+
+              store.dispatch({
+                type: 'HTML',
+                selector: this.selector,
+                $org: this,
+                method: 'html',
+                args: [htmlScoped],
+                memberIdx
+              });
+
+              store.dispatch({
+                type: 'TEXT',
+                selector: this.selector,
+                $org: this,
+                method: 'text',
+                args: [textScoped],
+                memberIdx
+              });
+
+              if (idx === 0) {
+                html = htmlScoped;
+                text = textScoped;
+              }
+            });
+          }
+        }
+        else if ($member && typeof memberIdx === 'number') {
+          // On $member.
+          if (typeof window === 'object') { // jQuery
+            html = $member[0].innerHTML;
+            text = $member[0].textContent;
+          }
+          else { // Cheerio
+            html = $member.html();
+            text = $member.text();
+          }
+        }
+        else {
+          // On $org.
+          if (typeof window === 'object') { // jQuery
+            html = this[0].innerHTML;
+            text = this[0].textContent;
+          }
+          else { // Cheerio
+            html = this.html();
+            text = this.$members[0].text();
+          }
+        }
+
+        if (method !== 'html') {
+          // eslint-disable-next-line eqeqeq
+          if (html != null) {
+            store.dispatch({
+              type: 'HTML',
+              selector: this.selector,
+              $org: this,
+              method: 'html',
+              args: [html],
+              memberIdx
+            });
+          }
+        }
+
+        if (method !== 'text') {
+          // eslint-disable-next-line eqeqeq
+          if (text != null) {
+            store.dispatch({
               type: 'TEXT',
               selector: this.selector,
               $org: this,
               method: 'text',
-              args: [$elem.text()],
-              memberIdx: memberIdx[idx]
-            });
-          });
-        }
-        else if ($member && typeof memberIdx === 'number') {
-          // Dispatch on $member.
-          this.prevAction = store.dispatch({
-            type: 'TEXT',
-            selector: this.selector,
-            $org: this,
-            method: 'text',
-            args: [$member.text()],
-            memberIdx: memberIdx
-          });
-        }
-        else {
-          // Dispatch on $org.
-          this.prevAction = store.dispatch({
-            type: 'TEXT',
-            selector: this.selector,
-            $org: this,
-            method: 'text',
-            args: [this.text()],
-            memberIdx: memberIdx
-          });
-        }
-
-        // If the 'html' action is dispatched without an arg, or with a null arg, and the .html property on the state is
-        // unset, we want to set the .html property.
-        // Same goes for 'append', 'prepend', and 'text' irrespective of arg.
-        // eslint-disable-next-line eqeqeq
-        if (method !== 'html' || args[0] == null) {
-          if (Array.isArray($member) && Array.isArray(memberIdx)) {
-            // Dispatch on each iteration of $member array.
-            $member.forEach(($elem, idx) => {
-              const memberState = state.$members[memberIdx[idx]];
-
-              // eslint-disable-next-line eqeqeq
-              if (!memberState || memberState.html == null) {
-                this.prevAction = store.dispatch({
-                  type: 'HTML',
-                  selector: this.selector,
-                  $org: this,
-                  method: 'html',
-                  args: [$elem.html()],
-                  memberIdx: memberIdx[idx]
-                });
-              }
+              args: [text],
+              memberIdx
             });
           }
-          else if ($member && typeof memberIdx === 'number') {
-            const memberState = state.$members[memberIdx];
-
-            // eslint-disable-next-line eqeqeq
-            if (!memberState || memberState.html == null) {
-              this.prevAction = store.dispatch({
-                type: 'HTML',
-                selector: this.selector,
-                $org: this,
-                method: 'html',
-                args: [$member.html()],
-                memberIdx: memberIdx
-              });
-            }
-          }
-          else {
-            // eslint-disable-next-line eqeqeq
-            if (state.html == null) {
-              this.prevAction = store.dispatch({
-                type: 'HTML',
-                selector: this.selector,
-                $org: this,
-                method: 'html',
-                args: [this.html()],
-                memberIdx: memberIdx
-              });
-            }
-          }
-
-          // Return because we don't want to invoke the default 'html' dispatch for the 'html' method.
-          if (method === 'html') {
-            return this;
-          }
         }
 
-        applyMethod(this, method, args, $member);
+        if (method === 'html') {
+          args[0] = html;
+        }
+        else if (method === 'text') {
+          args[0] = text;
+        }
 
         break;
       }
@@ -1187,8 +1189,6 @@ __Returns__: `object` - The organism's state.
     /* .boundingClientRect updated by updateMeasurements */
     /* .css updated by reducer - values are in real-time */
     /* .data not updated by non-Requerio methods so leave alone */
-    /* .html not updated by non-Requerio methods so leave alone */
-    /* .text not updated by non-Requerio methods so leave alone */
 
     // Do update length of state.$members array to match length of this.$members.
     if (Array.isArray(this.$members) && Array.isArray(state.$members)) {
@@ -1197,14 +1197,12 @@ __Returns__: `object` - The organism's state.
       }
     }
 
-    const membersLength = state.$members.length;
-
     // Do update measurements if changed by user interaction, e.g., resizing viewport.
     updateState = this.updateMeasurements(state, $member, memberIdx) || updateState;
 
     /* .attribs */
-    // Do update .attribs property if an attribute was changed by user interaction, e.g., `checked` attribute. (Not the
-    // best example because it should be updated by the 'prop' action.)
+    // Do update .attribs if an attribute was changed by user interaction, e.g., `checked` attribute. (Not the best
+    // example because it should be updated by the 'prop' action.)
     let attribsNow = {};
 
     if (typeof window === 'object') { // jQuery
@@ -1231,23 +1229,79 @@ __Returns__: `object` - The organism's state.
       updateState = true;
     }
 
-    /* .prop */
-    // Do update .prop property if an property was changed by user interaction, e.g., `checked` property.
-    let propNow = {};
+    /* .html */
+    /* .text */
+    // Do update .html property in case it was changed by after, before, detach, empty, remove, etc.
+    let htmlNow;
 
     if (typeof window === 'object') { // jQuery
-      for (let property of Object.keys(state.prop)) {
+      htmlNow = this[orgIdx].innerHTML;
+    }
+    else { // Cheerio
+      if ($member) {
+        htmlNow = $member.html();
+      }
+      else {
+        htmlNow = this.html();
+      }
+    }
+
+    if (state.html && state.html !== htmlNow) {
+      store.dispatch({
+        type: 'HTML',
+        selector: this.selector,
+        $org: this,
+        method: 'html',
+        args: [htmlNow],
+        memberIdx
+      });
+
+      let textNow;
+
+      // If html has changed, text has probably changed.
+      if (typeof window === 'object') { // jQuery
+        textNow = this[orgIdx].textContent;
+      }
+      else { // Cheerio
+        if ($member) {
+          textNow = $member.text();
+        }
+        else {
+          textNow = this.text();
+        }
+      }
+
+      if (state.text !== textNow) {
+        store.dispatch({
+          type: 'TEXT',
+          selector: this.selector,
+          $org: this,
+          method: 'text',
+          args: [textNow],
+          memberIdx
+        });
+      }
+
+      updateState = true;
+    }
+
+    /* .prop */
+    // Do update .prop if a property was changed by user interaction, e.g., `checked` property.
+    let propNow = {};
+
+    for (let property of Object.keys(state.prop)) {
+      if (typeof window === 'object') { // jQuery
         if (property in this[orgIdx]) {
           propNow[property] = this[orgIdx][property];
         }
       }
-    }
-    else { // Cheerio
-      if ($member) {
-        propNow[property] = $member.prop(property);
-      }
-      else {
-        propNow[property] = this.prop(property);
+      else { // Cheerio
+        if ($member) {
+          propNow[property] = $member.prop(property);
+        }
+        else {
+          propNow[property] = this.prop(property);
+        }
       }
     }
 
