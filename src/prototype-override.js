@@ -220,29 +220,32 @@ function applyCss($org, args, $member) {
     }
   }
 
-  for (let property of Object.keys(args[0])) {
-    let camel;
+  if (typeof window === 'object') { // jQuery
+    if (args[0] instanceof Object && args[0].constructor === Object) {
+      for (let property of Object.keys(args[0])) {
+        let camel;
 
-    if (property.includes('-')) {
-      const hyphenatedArr = property.split('-');
-      const camelArr = [];
+        if (property.includes('-')) {
+          const hyphenatedArr = property.split('-');
+          const camelArr = [];
 
-      for (let i = 0; i < hyphenatedArr.length; i++) {
-        if (i === 0) {
-          camelArr[i] = hyphenatedArr[i];
+          for (let i = 0; i < hyphenatedArr.length; i++) {
+            if (i === 0) {
+              camelArr[i] = hyphenatedArr[i];
 
-          continue;
+              continue;
+            }
+
+            camelArr[i] = hyphenatedArr[i][0].toUpperCase() + hyphenatedArr[i].slice(1);
+          }
+
+          camel = camelArr.join('');
         }
 
-        camelArr[i] = hyphenatedArr[i][0].toUpperCase() + hyphenatedArr[i].slice(1);
+        if ($org[0] && $org[0].style && camel in $org[0].style) {
+          args[0][camel] = args[0][property];
+        }
       }
-
-      camel = camelArr.join('');
-    }
-
-    if ($org[0].style && camel in $org[0].style) {
-      args[0][camel] = args[0][property];
-      delete args[0][property];
     }
   }
 }
@@ -342,7 +345,7 @@ function getBoundingClientRect($org, args, memberIdx) {
 }
 
 /**
- * Convenience method for getting measurements in a window environment.
+ * Convenience method for getting measurements in a DOM environment.
  *
  * @param {object} $org - Organism object.
  * @param {string} method - Name of the method to be applied.
@@ -1268,9 +1271,6 @@ __Returns__: `object` - The organism's state.
       state = store.getState()[this.selector];
     }
 
-    /* .css updated by reducer - values are in real-time */
-    /* .data not updated by non-Requerio methods so leave alone */
-
     /* boundingClientRect */
     /* innerWidth */
     /* innerHeight */
@@ -1311,6 +1311,10 @@ __Returns__: `object` - The organism's state.
 
       updateState = true;
     }
+
+    /* .css */
+    /* .data */
+    // Do not update while getting state.
 
     /* .html */
     /* .text */

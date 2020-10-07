@@ -651,29 +651,32 @@ function applyCss($org, args, $member) {
     }
   }
 
-  for (let property of Object.keys(args[0])) {
-    let camel;
+  if (typeof window === 'object') { // jQuery
+    if (args[0] instanceof Object && args[0].constructor === Object) {
+      for (let property of Object.keys(args[0])) {
+        let camel;
 
-    if (property.includes('-')) {
-      const hyphenatedArr = property.split('-');
-      const camelArr = [];
+        if (property.includes('-')) {
+          const hyphenatedArr = property.split('-');
+          const camelArr = [];
 
-      for (let i = 0; i < hyphenatedArr.length; i++) {
-        if (i === 0) {
-          camelArr[i] = hyphenatedArr[i];
+          for (let i = 0; i < hyphenatedArr.length; i++) {
+            if (i === 0) {
+              camelArr[i] = hyphenatedArr[i];
 
-          continue;
+              continue;
+            }
+
+            camelArr[i] = hyphenatedArr[i][0].toUpperCase() + hyphenatedArr[i].slice(1);
+          }
+
+          camel = camelArr.join('');
         }
 
-        camelArr[i] = hyphenatedArr[i][0].toUpperCase() + hyphenatedArr[i].slice(1);
+        if ($org[0] && $org[0].style && camel in $org[0].style) {
+          args[0][camel] = args[0][property];
+        }
       }
-
-      camel = camelArr.join('');
-    }
-
-    if ($org[0].style && camel in $org[0].style) {
-      args[0][camel] = args[0][property];
-      delete args[0][property];
     }
   }
 }
@@ -773,7 +776,7 @@ function getBoundingClientRect($org, args, memberIdx) {
 }
 
 /**
- * Convenience method for getting measurements in a window environment.
+ * Convenience method for getting measurements in a DOM environment.
  *
  * @param {object} $org - Organism object.
  * @param {string} method - Name of the method to be applied.
@@ -1699,9 +1702,6 @@ __Returns__: `object` - The organism's state.
       state = store.getState()[this.selector];
     }
 
-    /* .css updated by reducer - values are in real-time */
-    /* .data not updated by non-Requerio methods so leave alone */
-
     /* boundingClientRect */
     /* innerWidth */
     /* innerHeight */
@@ -1742,6 +1742,10 @@ __Returns__: `object` - The organism's state.
 
       updateState = true;
     }
+
+    /* .css */
+    /* .data */
+    // Do not update while getting state.
 
     /* .html */
     /* .text */
@@ -2701,17 +2705,29 @@ getter below.
 | properties | `object` | An object of property:value pairs to set. |
 
 ### css(properties)
-Update `state.css` with both the real-time computed style of the actual element
-and the static style set by Cheerio or jQuery `.css()`. The real-time style will
-be keyed in camelCase. The static style key will be hyphenated. Requerio does
-not preemptively set all styles on the state, given how wasteful that would be
-across all styles across all organisms.
+Update `state.css` with the style set by Cheerio or jQuery `.css()`. In a DOM
+environment, a snapshot of the real-time style will be keyed in camelCase. In
+all environments, the static style key will be hyphenated.
 
 | Param | Type | Description |
 | --- | --- | --- |
 | properties | `string`\|`string[]` | The name or names of properties to get from the element, and set on the state. |
 */
       case 'css': {
+        // Copy the styles from the HTML style attribute to state.css in case a camelCase property was submitted without
+        // a corresponding hyphenated property.
+        if (state.attribs.style) {
+          for (let style of state.attribs.style.split(';')) {
+            const styleTrimmed = style.trim();
+
+            if (styleTrimmed) {
+              const styleSplit = styleTrimmed.split(':');
+
+              state.css[styleSplit[0].trim()] = styleSplit[1].trim();
+            }
+          }
+        }
+
         Object.assign(state.css, action.args[0]);
         state.style = state.css; // DEPRECATED.
 

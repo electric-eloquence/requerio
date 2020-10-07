@@ -66,11 +66,9 @@ getter below.
 | properties | `object` | An object of property:value pairs to set. |
 
 ### css(properties)
-Update `state.css` with both the real-time computed style of the actual element
-and the static style set by Cheerio or jQuery `.css()`. The real-time style will
-be keyed in camelCase. The static style key will be hyphenated. Requerio does
-not preemptively set all styles on the state, given how wasteful that would be
-across all styles across all organisms.
+Update `state.css` with the style set by Cheerio or jQuery `.css()`. In a DOM
+environment, a snapshot of the real-time style will be keyed in camelCase. In
+all environments, the static style key will be hyphenated.
 
 | Param | Type | Description |
 | --- | --- | --- |

@@ -17,4 +17,4 @@ global.document = window.document;
 const $ = global.$ = require('jquery');
 const $organismsAfter = JSON.parse(JSON.stringify($organismsBefore));
 
-describe('Requerio with jQuery', tests($organismsBefore, Requerio, $, Redux, $organismsAfter, window));
+describe('Requerio with jQuery', tests($organismsBefore, Requerio, $, Redux, $organismsAfter));

@@ -1470,9 +1470,8 @@ targeted manner', function () {
         if (typeof window === 'object') {
           expect(state.css.backgroundColor).to.equal('green');
         }
-        else {
-          expect(state.css['background-color']).to.equal('green');
-        }
+
+        expect(state.css['background-color']).to.equal('green');
       });
 
       it('dispatches the "css" action with a single function value argument', function () {
@@ -1493,9 +1492,8 @@ targeted manner', function () {
         if (typeof window === 'object') {
           expect(state.css.backgroundColor).to.equal('cyan');
         }
-        else {
-          expect(state.css['background-color']).to.equal('cyan');
-        }
+
+        expect(state.css['background-color']).to.equal('cyan');
       });
 
       it('dispatches the "css" action to update the state with a single string property argument', function () {
@@ -1519,9 +1517,8 @@ targeted manner', function () {
         if (typeof window === 'object') {
           expect(state.css.backgroundColor).to.equal('magenta');
         }
-        else {
-          expect(state.css['background-color']).to.equal('magenta');
-        }
+
+        expect(state.css['background-color']).to.equal('magenta');
       });
 
       it('dispatches the "css" action with a single string value argument in a targeted manner', function () {
@@ -1557,10 +1554,9 @@ targeted manner', function () {
           expect(state0.css.backgroundColor).to.not.equal(state1.css.backgroundColor);
           expect(state1.css.backgroundColor).to.equal('blue');
         }
-        else {
-          expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
-          expect(state1.css['background-color']).to.equal('blue');
-        }
+
+        expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
+        expect(state1.css['background-color']).to.equal('blue');
       });
 
       it('dispatches the "css" action with a multiple string value argument across multiple targets', function () {
@@ -1576,10 +1572,9 @@ targeted manner', function () {
           expect(state0.css.backgroundColor).to.equal('cyan');
           expect(state1.css.backgroundColor).to.equal('cyan');
         }
-        else {
-          expect(state0.css['background-color']).to.equal('cyan');
-          expect(state1.css['background-color']).to.equal('cyan');
-        }
+
+        expect(state0.css['background-color']).to.equal('cyan');
+        expect(state1.css['background-color']).to.equal('cyan');
       });
 
       it('dispatches the "css" action to update the state with a single string property argument in a targeted manner\
@@ -1622,10 +1617,9 @@ manner', function () {
           expect(state0.css.backgroundColor).to.not.equal(state1.css['background-color']);
           expect(state1.css.backgroundColor).to.equal('black');
         }
-        else {
-          expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
-          expect(state1.css['background-color']).to.equal('black');
-        }
+
+        expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
+        expect(state1.css['background-color']).to.equal('black');
       });
 
       it('dispatches the "css" action to update the state with a multiple string properties argument across multiple \
@@ -1644,10 +1638,9 @@ targets', function () {
           expect(state0.css.backgroundColor).to.equal('white');
           expect(state1.css.backgroundColor).to.equal('white');
         }
-        else {
-          expect(state0.css['background-color']).to.equal('white');
-          expect(state1.css['background-color']).to.equal('white');
-        }
+
+        expect(state0.css['background-color']).to.equal('white');
+        expect(state1.css['background-color']).to.equal('white');
       });
 
       it('dispatches the "data" action to update state with data from a data attribute', function () {
