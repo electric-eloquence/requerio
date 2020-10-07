@@ -1277,12 +1277,46 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         if (Array.isArray($member) && Array.isArray(memberIdx)) {
           if (args.length) {
             if (typeof window === 'object') { // jQuery
-              html = this[memberIdx[0]].innerHTML;
-              text = this[memberIdx[0]].textContent;
+              for (let idx of memberIdx) {
+                if (this[idx]) {
+                  if (method === 'html' && args[0] !== null) {
+                    html = args[0];
+                  }
+                  else {
+                    html = this[idx].innerHTML;
+                  }
+
+                  if (method === 'text' && args[0] !== null) {
+                    text = args[0];
+                  }
+                  else {
+                    text = this[idx].textContent;
+                  }
+
+                  break;
+                }
+              }
             }
             else { // Cheerio
-              html = $member[0].html();
-              text = $member[0].text();
+              for (let $elem of $member) {
+                if ($elem) {
+                  if (method === 'html' && args[0] !== null) {
+                    html = args[0];
+                  }
+                  else {
+                    html = $elem.html();
+                  }
+
+                  if (method === 'text' && args[0] !== null) {
+                    text = args[0];
+                  }
+                  else {
+                    text = $elem.text();
+                  }
+
+                  break;
+                }
+              }
             }
           }
           else {
@@ -1292,12 +1326,16 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 
               // On each iteration of $member array.
               if (typeof window === 'object') { // jQuery
-                htmlScoped = $elem[0].innerHTML;
-                textScoped = $elem[0].textContent;
+                if ($elem && $elem[0]) {
+                  htmlScoped = $elem[0].innerHTML;
+                  textScoped = $elem[0].textContent;
+                }
               }
               else { // Cheerio
-                htmlScoped = $elem.html();
-                textScoped = $elem.text();
+                if ($elem) {
+                  htmlScoped = $elem.html();
+                  textScoped = $elem.text();
+                }
               }
 
               store.dispatch({
@@ -1306,7 +1344,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
                 $org: this,
                 method: 'html',
                 args: [htmlScoped],
-                memberIdx
+                idx
               });
 
               store.dispatch({
@@ -1315,7 +1353,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
                 $org: this,
                 method: 'text',
                 args: [textScoped],
-                memberIdx
+                idx
               });
 
               if (idx === 0) {
@@ -1328,8 +1366,10 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         else if ($member && typeof memberIdx === 'number') {
           // On $member.
           if (typeof window === 'object') { // jQuery
-            html = $member[0].innerHTML;
-            text = $member[0].textContent;
+            if ($member[0]) {
+              html = $member[0].innerHTML;
+              text = $member[0].textContent;
+            }
           }
           else { // Cheerio
             html = $member.html();
@@ -1339,8 +1379,10 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         else {
           // On $org.
           if (typeof window === 'object') { // jQuery
-            html = this[0].innerHTML;
-            text = this[0].textContent;
+            if (this[0]) {
+              html = this[0].innerHTML;
+              text = this[0].textContent;
+            }
           }
           else { // Cheerio
             html = this.html();
@@ -1376,10 +1418,13 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
           }
         }
 
-        if (method === 'html') {
+        // eslint-disable-next-line eqeqeq
+        if (method === 'html' && args[0] == null) {
           args[0] = html;
         }
-        else if (method === 'text') {
+
+        // eslint-disable-next-line eqeqeq
+        if (method === 'text' && args[0] == null) {
           args[0] = text;
         }
 
@@ -1394,10 +1439,26 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       case 'scrollTop':
       case 'width':
       case 'height': {
-        let computedStyle;
+        let computedStyle = {};
 
         if (typeof window === 'object') { // jQuery
-          computedStyle = getComputedStyle(this[memberIdx || 0]);
+          if (Array.isArray($member) && Array.isArray(memberIdx)) {
+            for (let idx of memberIdx) {
+              if (this[idx]) {
+                computedStyle = window.getComputedStyle(this[idx]);
+
+                break;
+              }
+            }
+          }
+          else if ($member && typeof memberIdx === 'number') {
+            if ($member[0]) {
+              computedStyle = window.getComputedStyle($member[0]);
+            }
+          }
+          else {
+            computedStyle = window.getComputedStyle(this[0]);
+          }
         }
 
         if (args.length) {
@@ -1615,17 +1676,18 @@ __Returns__: `object` - The organism's state.
       state = store.getState()[this.selector];
     }
 
-    /* .boundingClientRect updated by updateMeasurements */
     /* .css updated by reducer - values are in real-time */
     /* .data not updated by non-Requerio methods so leave alone */
 
-    // Do update length of state.$members array to match length of this.$members.
-    if (Array.isArray(this.$members) && Array.isArray(state.$members)) {
-      if (this.$members.length !== state.$members.length) {
-        updateState = this.updateMeasurements(state, $member, state.$members.length);
-      }
-    }
-
+    /* boundingClientRect */
+    /* innerWidth */
+    /* innerHeight */
+    /* outerWidth */
+    /* outerHeight */
+    /* scrollLeft */
+    /* scrollTop */
+    /* width */
+    /* height */
     // Do update measurements if changed by user interaction, e.g., resizing viewport.
     updateState = this.updateMeasurements(state, $member, memberIdx) || updateState;
 
@@ -1660,7 +1722,7 @@ __Returns__: `object` - The organism's state.
 
     /* .html */
     /* .text */
-    // Do update .html property in case it was changed by after, before, detach, empty, remove, etc.
+    // Do update .html property in case it was changed by another action.
     let htmlNow;
 
     if (typeof window === 'object') { // jQuery
@@ -1710,6 +1772,17 @@ __Returns__: `object` - The organism's state.
           memberIdx
         });
       }
+
+      updateState = true;
+    }
+
+    // To update member count if changed by an action on html/text, dispatch an action with an empty method.
+    if (typeof memberIdx === 'undefined' && this.length !== state.$members.length) {
+      store.dispatch({
+        type: '',
+        selector: this.selector,
+        $org: this
+      });
 
       updateState = true;
     }
@@ -1787,7 +1860,16 @@ __Returns__: `object` - The organism's state.
       }
     }
 
-    return state;
+    const stateNow = JSON.parse(JSON.stringify(state));
+
+    if (typeof memberIdx === 'number') {
+      delete stateNow.$members;
+    }
+    else {
+      stateNow.members = state.$members.length;
+    }
+
+    return stateNow;
   };
 
   /**
@@ -2280,11 +2362,15 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
 | [memberIdx] | `number`\|`number[]` | The index (or array of indices) of the organism member(s) (if targeting one or more members). |
 */
   $.prototype.updateMeasurements = function (state, $member, memberIdx) {
+    if (memberIdx && !this[memberIdx]) {
+      return false;
+    }
+
     let computedStyle;
     let updateState = false;
 
     if (typeof window === 'object') { // jQuery
-      computedStyle = getComputedStyle(this[memberIdx || 0]);
+      computedStyle = window.getComputedStyle(this[memberIdx || 0]);
     }
 
     // Be sure to add to these if more measurements are added to the state object.
@@ -2363,26 +2449,24 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
 function getStateDefault(orgSelector) {
   let stateDefault = {};
 
-  if (orgSelector === 'document') {
+  if (orgSelector === 'window') {
     stateDefault = {
-      activeOrganism: null,
       data: {},
       innerWidth: null,
       innerHeight: null,
       outerWidth: null,
       outerHeight: null,
+      scrollLeft: null,
       scrollTop: null,
       width: null,
       height: null
     };
   }
-  else if (orgSelector === 'window') {
+  else if (orgSelector === 'document') {
     stateDefault = {
+      activeOrganism: null,
       data: {},
-      innerWidth: null,
-      innerHeight: null,
-      outerWidth: null,
-      outerHeight: null,
+      scrollLeft: null,
       scrollTop: null,
       width: null,
       height: null
@@ -2412,6 +2496,7 @@ function getStateDefault(orgSelector) {
       outerWidth: null,
       outerHeight: null,
       prop: {},
+      scrollLeft: null,
       scrollTop: null,
       style: {}, // DEPRECATED.
       text: null,
@@ -3055,6 +3140,7 @@ function reducerClosure(orgSelector, customReducer) {
   return function (prevState, action) {
     // If this is the reducer for the selected organism, reduce and return a new state.
     if (action.selector === orgSelector) {
+      const memberIdx = action.memberIdx;
       const $org = action.$org;
       const stateDefault = getStateDefault(orgSelector);
       let state;
@@ -3070,42 +3156,42 @@ function reducerClosure(orgSelector, customReducer) {
       }
 
       // Update length of state.$members array to match length of $org.$members.
-      if (Array.isArray($org.$members) && Array.isArray(state.$members)) {
-        if ($org.$members.length < state.$members.length) {
-          try {
-            // Update $members array with clones of stateDefault.
-            state.$members = [];
+      if ($org.length < state.$members.length) {
+        try {
+          let i = state.$members.length;
 
-            for (let i = 0; i < $org.$members.length; i++) {
+          while (i--) {
+            if (!$org[i]) {
+              state.$members.pop();
+            }
+            else {
+              break;
+            }
+          }
+        }
+        catch (err) {
+          /* istanbul ignore next */
+          console.error(err); // eslint-disable-line no-console
+        }
+      }
+
+      else if ($org.length > state.$members.length) {
+        try {
+          // Populate $members array with clones of stateDefault if necessary.
+          for (let i = 0, l = $org.length; i < l; i++) {
+            if (!state.$members[i]) {
               state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
             }
           }
-          catch (err) {
-            /* istanbul ignore next */
-            console.error(err); // eslint-disable-line no-console
-          }
         }
-
-        else if ($org.$members.length > state.$members.length) {
-          try {
-            // Populate $members array with clones of stateDefault if necessary.
-            for (let i = 0; i < $org.$members.length; i++) {
-              if (!state.$members[i]) {
-                state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
-              }
-            }
-          }
-          catch (err) {
-            /* istanbul ignore next */
-            console.error(err); // eslint-disable-line no-console
-          }
+        catch (err) {
+          /* istanbul ignore next */
+          console.error(err); // eslint-disable-line no-console
         }
       }
 
       // Build new state for organism.
       stateBuild($org, state, action);
-
-      const memberIdx = action.memberIdx;
 
       // Build new state for selection in $members array.
       if (

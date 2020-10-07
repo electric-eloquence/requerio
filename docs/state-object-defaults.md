@@ -11,6 +11,7 @@ Do not to let states bloat for no reason (as it could with large innerHTML, text
 | html | `null`\|`string` | `null` | To DOM `Element.innerHTML` spec. `null` means the initial innerHTML state wasn't modified. `null` has a completely different meaning than empty string. |
 | innerWidth | `null`\|`number` | `null` | In number of CSS pixels. Includes padding, but not border or margin. |
 | innerHeight | `null`\|`number` | `null` | In number of CSS pixels. Includes padding, but not border or margin. |
+| members | `number` | `undefined` | The number of members belonging to the selection. (A tag or class can select multiple members.) |
 | outerWidth | `null`\|`number` | `null` | In number of CSS pixels. Includes padding, border, and margin. |
 | outerHeight | `null`\|`number` | `null` | In number of CSS pixels. Includes padding, border, and margin. |
 | prop | `object` | {} | An object of HTML properties set by jQuery or Cheerio `.prop()`. |
@@ -20,4 +21,3 @@ Do not to let states bloat for no reason (as it could with large innerHTML, text
 | val | `string` | `undefined` | Only defined on input element states. |
 | width | `null`\|`number` | `null` | In number of CSS pixels. Does not include padding, border, or margin. |
 | height | `null`\|`number` | `null` | In number of CSS pixels. Does not include padding, border, or margin. |
-| $members | `array` | [] | The state of the members belonging to the selection. (A tag or class can select multiple members.) |

@@ -30,10 +30,6 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
       });
 
       it('initializes correctly', function () {
-        // Need to unset these because they were set in jsdom.js.
-        delete global.window;
-        delete global.document;
-
         requerio.init();
 
         expect(requerio.store).to.be.an('object');
@@ -1204,33 +1200,6 @@ targeted manner', function () {
     });
 
     describe('reducer-get', function () {
-      it('updates the state $members if the $org $members increase in number', function () {
-        const $org = requerio.$orgs['.main__div'];
-        const stateMembersLengthBefore = $org.getState().$members.length;
-        const htmlSnippet = '<div class="main__div"><h2>Div</h2></div>';
-
-        $org.$members.push($(htmlSnippet));
-
-        const stateMembersLengthAfter = $org.getState().$members.length;
-
-        expect($org.$members.length).to.equal(3);
-        expect(stateMembersLengthBefore).to.equal(2);
-        expect(stateMembersLengthAfter).to.equal(3);
-      });
-
-      it('updates the state $members if the $org $members decrease in number', function () {
-        const $org = requerio.$orgs['.main__div'];
-        const stateMembersLengthBefore = $org.getState().$members.length;
-
-        $org.$members.pop();
-
-        const stateMembersLengthAfter = $org.getState().$members.length;
-
-        expect($org.$members.length).to.equal(2);
-        expect(stateMembersLengthBefore).to.equal(3);
-        expect(stateMembersLengthAfter).to.equal(2);
-      });
-
       it('dispatches the "addClass" action with a string argument', function () {
         requerio.$orgs['#main'].dispatchAction('addClass', 'add-class-string');
 
@@ -1497,7 +1466,13 @@ targeted manner', function () {
         const state = requerio.$orgs['#main'].getState();
 
         expect(state.css.color).to.equal('green');
-        expect(state.css['background-color']).to.equal('green');
+
+        if (typeof window === 'object') {
+          expect(state.css.backgroundColor).to.equal('green');
+        }
+        else {
+          expect(state.css['background-color']).to.equal('green');
+        }
       });
 
       it('dispatches the "css" action with a single function value argument', function () {
@@ -1514,7 +1489,13 @@ targeted manner', function () {
         const state = requerio.$orgs['#main'].getState();
 
         expect(state.css.color).to.equal('cyan');
-        expect(state.css['background-color']).to.equal('cyan');
+
+        if (typeof window === 'object') {
+          expect(state.css.backgroundColor).to.equal('cyan');
+        }
+        else {
+          expect(state.css['background-color']).to.equal('cyan');
+        }
       });
 
       it('dispatches the "css" action to update the state with a single string property argument', function () {
@@ -1534,7 +1515,13 @@ targeted manner', function () {
         const state = requerio.$orgs['#main'].getState();
 
         expect(state.css.color).to.equal('magenta');
-        expect(state.css['background-color']).to.equal('magenta');
+
+        if (typeof window === 'object') {
+          expect(state.css.backgroundColor).to.equal('magenta');
+        }
+        else {
+          expect(state.css['background-color']).to.equal('magenta');
+        }
       });
 
       it('dispatches the "css" action with a single string value argument in a targeted manner', function () {
@@ -1564,9 +1551,16 @@ targeted manner', function () {
         const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.css.color).to.not.equal(state1.css.color);
-        expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
         expect(state1.css.color).to.equal('blue');
-        expect(state1.css['background-color']).to.equal('blue');
+
+        if (typeof window === 'object') {
+          expect(state0.css.backgroundColor).to.not.equal(state1.css.backgroundColor);
+          expect(state1.css.backgroundColor).to.equal('blue');
+        }
+        else {
+          expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
+          expect(state1.css['background-color']).to.equal('blue');
+        }
       });
 
       it('dispatches the "css" action with a multiple string value argument across multiple targets', function () {
@@ -1576,9 +1570,16 @@ targeted manner', function () {
         const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.css.color).to.equal('cyan');
-        expect(state0.css['background-color']).to.equal('cyan');
         expect(state1.css.color).to.equal('cyan');
-        expect(state1.css['background-color']).to.equal('cyan');
+
+        if (typeof window === 'object') {
+          expect(state0.css.backgroundColor).to.equal('cyan');
+          expect(state1.css.backgroundColor).to.equal('cyan');
+        }
+        else {
+          expect(state0.css['background-color']).to.equal('cyan');
+          expect(state1.css['background-color']).to.equal('cyan');
+        }
       });
 
       it('dispatches the "css" action to update the state with a single string property argument in a targeted manner\
@@ -1615,9 +1616,16 @@ manner', function () {
         const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.css.color).to.not.equal(state1.css.color);
-        expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
         expect(state1.css.color).to.equal('black');
-        expect(state1.css['background-color']).to.equal('black');
+
+        if (typeof window === 'object') {
+          expect(state0.css.backgroundColor).to.not.equal(state1.css['background-color']);
+          expect(state1.css.backgroundColor).to.equal('black');
+        }
+        else {
+          expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
+          expect(state1.css['background-color']).to.equal('black');
+        }
       });
 
       it('dispatches the "css" action to update the state with a multiple string properties argument across multiple \
@@ -1630,9 +1638,16 @@ targets', function () {
         const state1 = requerio.$orgs['.main__div'].getState(1);
 
         expect(state0.css.color).to.equal('white');
-        expect(state0.css['background-color']).to.equal('white');
         expect(state1.css.color).to.equal('white');
-        expect(state1.css['background-color']).to.equal('white');
+
+        if (typeof window === 'object') {
+          expect(state0.css.backgroundColor).to.equal('white');
+          expect(state1.css.backgroundColor).to.equal('white');
+        }
+        else {
+          expect(state0.css['background-color']).to.equal('white');
+          expect(state1.css['background-color']).to.equal('white');
+        }
       });
 
       it('dispatches the "data" action to update state with data from a data attribute', function () {
@@ -2243,8 +2258,8 @@ targets', function () {
 
         const membersStateAfter = requerio.$orgs['.html'].getState();
 
-        expect(membersStateBefore.$members.length).to.equal(4);
-        expect(membersStateAfter.$members.length).to.equal(5);
+        expect(membersStateBefore.members).to.equal(4);
+        expect(membersStateAfter.members).to.equal(5);
       });
 
       it('html(), by removing HTML elements, can decrease the number of members among descendants', function () {
@@ -2261,11 +2276,10 @@ targets', function () {
 <span class="html html--3">Foo</span>
 `);
 
-
         const membersStateAfter = requerio.$orgs['.html'].getState();
 
-        expect(membersStateBefore.$members.length).to.equal(5);
-        expect(membersStateAfter.$members.length).to.equal(4);
+        expect(membersStateBefore.members).to.equal(5);
+        expect(membersStateAfter.members).to.equal(4);
       });
 
       it('prepend() updates the html of the organism', function () {
@@ -2358,14 +2372,10 @@ targets', function () {
 
         expect(stateBefore.html).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
         expect(stateBefore.text).to.equal('<span>Foo</span>');
-        expect(stateBefore.$members[1].html).to.be.null;
-        expect(stateBefore.$members[1].text).to.be.null;
         expect(stateBefore1.html).to.be.null;
         expect(stateBefore1.text).to.be.null;
         expect(stateAfter.html).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
         expect(stateAfter.text).to.equal('<span>Foo</span>');
-        expect(stateAfter.$members[1].html).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
-        expect(stateAfter.$members[1].text).to.equal('<span>Bar</span>');
         expect(stateAfter1.html).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
         expect(stateAfter1.text).to.equal('<span>Bar</span>');
       });
@@ -2383,20 +2393,12 @@ targets', function () {
 
         expect(stateBefore.html).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
         expect(stateBefore.text).to.equal('<span>Foo</span>');
-        expect(stateBefore.$members[2].html).to.be.null;
-        expect(stateBefore.$members[2].text).to.be.null;
-        expect(stateBefore.$members[3].html).to.be.null;
-        expect(stateBefore.$members[3].text).to.be.null;
         expect(stateBefore2.html).to.be.null;
         expect(stateBefore2.text).to.be.null;
         expect(stateBefore3.html).to.be.null;
         expect(stateBefore3.text).to.be.null;
         expect(stateAfter.html).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
         expect(stateAfter.text).to.equal('<span>Foo</span>');
-        expect(stateAfter.$members[2].html).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
-        expect(stateAfter.$members[2].text).to.equal('<span>Bar</span>');
-        expect(stateAfter.$members[3].html).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
-        expect(stateAfter.$members[3].text).to.equal('<span>Bar</span>');
         expect(stateAfter2.html).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
         expect(stateAfter2.text).to.equal('<span>Bar</span>');
         expect(stateAfter3.html).to.equal('&lt;span&gt;Bar&lt;/span&gt;');

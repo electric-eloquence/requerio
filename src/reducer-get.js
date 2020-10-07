@@ -12,26 +12,24 @@
 function getStateDefault(orgSelector) {
   let stateDefault = {};
 
-  if (orgSelector === 'document') {
+  if (orgSelector === 'window') {
     stateDefault = {
-      activeOrganism: null,
       data: {},
       innerWidth: null,
       innerHeight: null,
       outerWidth: null,
       outerHeight: null,
+      scrollLeft: null,
       scrollTop: null,
       width: null,
       height: null
     };
   }
-  else if (orgSelector === 'window') {
+  else if (orgSelector === 'document') {
     stateDefault = {
+      activeOrganism: null,
       data: {},
-      innerWidth: null,
-      innerHeight: null,
-      outerWidth: null,
-      outerHeight: null,
+      scrollLeft: null,
       scrollTop: null,
       width: null,
       height: null
@@ -61,6 +59,7 @@ function getStateDefault(orgSelector) {
       outerWidth: null,
       outerHeight: null,
       prop: {},
+      scrollLeft: null,
       scrollTop: null,
       style: {}, // DEPRECATED.
       text: null,
@@ -704,6 +703,7 @@ function reducerClosure(orgSelector, customReducer) {
   return function (prevState, action) {
     // If this is the reducer for the selected organism, reduce and return a new state.
     if (action.selector === orgSelector) {
+      const memberIdx = action.memberIdx;
       const $org = action.$org;
       const stateDefault = getStateDefault(orgSelector);
       let state;
@@ -719,42 +719,42 @@ function reducerClosure(orgSelector, customReducer) {
       }
 
       // Update length of state.$members array to match length of $org.$members.
-      if (Array.isArray($org.$members) && Array.isArray(state.$members)) {
-        if ($org.$members.length < state.$members.length) {
-          try {
-            // Update $members array with clones of stateDefault.
-            state.$members = [];
+      if ($org.length < state.$members.length) {
+        try {
+          let i = state.$members.length;
 
-            for (let i = 0; i < $org.$members.length; i++) {
+          while (i--) {
+            if (!$org[i]) {
+              state.$members.pop();
+            }
+            else {
+              break;
+            }
+          }
+        }
+        catch (err) {
+          /* istanbul ignore next */
+          console.error(err); // eslint-disable-line no-console
+        }
+      }
+
+      else if ($org.length > state.$members.length) {
+        try {
+          // Populate $members array with clones of stateDefault if necessary.
+          for (let i = 0, l = $org.length; i < l; i++) {
+            if (!state.$members[i]) {
               state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
             }
           }
-          catch (err) {
-            /* istanbul ignore next */
-            console.error(err); // eslint-disable-line no-console
-          }
         }
-
-        else if ($org.$members.length > state.$members.length) {
-          try {
-            // Populate $members array with clones of stateDefault if necessary.
-            for (let i = 0; i < $org.$members.length; i++) {
-              if (!state.$members[i]) {
-                state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
-              }
-            }
-          }
-          catch (err) {
-            /* istanbul ignore next */
-            console.error(err); // eslint-disable-line no-console
-          }
+        catch (err) {
+          /* istanbul ignore next */
+          console.error(err); // eslint-disable-line no-console
         }
       }
 
       // Build new state for organism.
       stateBuild($org, state, action);
-
-      const memberIdx = action.memberIdx;
 
       // Build new state for selection in $members array.
       if (
