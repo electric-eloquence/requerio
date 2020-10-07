@@ -63,17 +63,17 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         it('dispatches the "getBoundingClientRect" action on "window" but does not update its state', function () {
           const stateBefore = requerio.$orgs.window.getState();
 
-          requerio.$orgs['window'].dispatchAction('getBoundingClientRect');
+          requerio.$orgs.window.dispatchAction('getBoundingClientRect');
 
           const stateAfter = requerio.$orgs.window.getState();
 
           expect(JSON.stringify(stateBefore)).to.equal(
             // eslint-disable-next-line max-len
-            '{"data":{},"innerWidth":null,"innerHeight":null,"outerWidth":null,"outerHeight":null,"scrollTop":null,"width":null,"height":null}'
+            '{"data":{},"innerWidth":null,"innerHeight":null,"outerWidth":null,"outerHeight":null,"scrollLeft":null,"scrollTop":null,"width":null,"height":null}'
           );
           expect(JSON.stringify(stateAfter)).to.equal(
             // eslint-disable-next-line max-len
-            '{"data":{},"innerWidth":null,"innerHeight":null,"outerWidth":null,"outerHeight":null,"scrollTop":null,"width":null,"height":null}'
+            '{"data":{},"innerWidth":1024,"innerHeight":768,"outerWidth":1024,"outerHeight":768,"scrollLeft":0,"scrollTop":0,"width":1024,"height":768}'
           );
         });
       }
@@ -82,23 +82,32 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         it('dispatches the "getBoundingClientRect" action on "window"', function () {
           const stateBefore = requerio.$orgs.window.getState();
 
-          requerio.$orgs['window'].dispatchAction('getBoundingClientRect');
+          requerio.$orgs.window.dispatchAction('getBoundingClientRect');
 
           const stateAfter = requerio.$orgs.window.getState();
 
           expect(JSON.stringify(stateBefore)).to.equal(
             // eslint-disable-next-line max-len
-            '{"data":{},"innerWidth":null,"innerHeight":null,"outerWidth":null,"outerHeight":null,"scrollTop":null,"width":null,"height":null}'
+            '{"data":{},"innerWidth":null,"innerHeight":null,"outerWidth":null,"outerHeight":null,"scrollLeft":null,"scrollTop":null,"width":null,"height":null}'
           );
-          expect(JSON.stringify(stateAfter)).to.equal(
-            // eslint-disable-next-line max-len
-            '{"data":{},"innerWidth":0,"innerHeight":0,"outerWidth":1024,"outerHeight":768,"scrollTop":0,"width":0,"height":0}'
-          );
+
+          if (typeof window === 'object') { // jQuery.
+            expect(JSON.stringify(stateAfter)).to.equal(
+              // eslint-disable-next-line max-len
+              '{"data":{},"innerWidth":1024,"innerHeight":768,"outerWidth":1024,"outerHeight":768,"scrollLeft":0,"scrollTop":0,"width":1024,"height":768}'
+            );
+          }
+          else { // Cheerio.
+            expect(JSON.stringify(stateAfter)).to.equal(
+              // eslint-disable-next-line max-len
+              '{"data":{},"innerWidth":0,"innerHeight":0,"outerWidth":1024,"outerHeight":768,"scrollLeft":0,"scrollTop":0,"width":0,"height":0}'
+            );
+          }
         });
       }
 
       it('dispatches the "innerWidth" action on the "window" organism', function () {
-        requerio.$orgs['window'].dispatchAction('innerWidth');
+        requerio.$orgs.window.dispatchAction('innerWidth');
 
         const state = requerio.$orgs.window.getState();
 
@@ -106,7 +115,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
       });
 
       it('dispatches the "innerHeight" action on the "window" organism', function () {
-        requerio.$orgs['window'].dispatchAction('innerHeight');
+        requerio.$orgs.window.dispatchAction('innerHeight');
 
         const state = requerio.$orgs.window.getState();
 
@@ -114,7 +123,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
       });
 
       it('dispatches the "outerWidth" action on the "window" organism', function () {
-        requerio.$orgs['window'].dispatchAction('outerWidth');
+        requerio.$orgs.window.dispatchAction('outerWidth');
 
         const state = requerio.$orgs.window.getState();
 
@@ -122,7 +131,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
       });
 
       it('dispatches the "outerHeight" action on the "window" organism', function () {
-        requerio.$orgs['window'].dispatchAction('outerHeight');
+        requerio.$orgs.window.dispatchAction('outerHeight');
 
         const state = requerio.$orgs.window.getState();
 

@@ -318,7 +318,9 @@ Set the height (not including padding, border, or margin) of all matches.
 
             // If using Cheerio.
             if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
-              state.boundingClientRect.height = action.args[0];
+              if (state.boundingClientRect) {
+                state.boundingClientRect.height = action.args[0];
+              }
             }
           }
         }
@@ -666,7 +668,9 @@ Set the width (not including padding, border, or margin) of all matches.
 
             // If using Cheerio.
             if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
-              state.boundingClientRect.width = action.args[0];
+              if (state.boundingClientRect) {
+                state.boundingClientRect.width = action.args[0];
+              }
             }
           }
         }
@@ -719,37 +723,39 @@ function reducerClosure(orgSelector, customReducer) {
       }
 
       // Update length of state.$members array to match length of $org.$members.
-      if ($org.length < state.$members.length) {
-        try {
-          let i = state.$members.length;
+      if (state.$members) {
+        if ($org.length < state.$members.length) {
+          try {
+            let i = state.$members.length;
 
-          while (i--) {
-            if (!$org[i]) {
-              state.$members.pop();
-            }
-            else {
-              break;
+            while (i--) {
+              if (!$org[i]) {
+                state.$members.pop();
+              }
+              else {
+                break;
+              }
             }
           }
-        }
-        catch (err) {
-          /* istanbul ignore next */
-          console.error(err); // eslint-disable-line no-console
-        }
-      }
-
-      else if ($org.length > state.$members.length) {
-        try {
-          // Populate $members array with clones of stateDefault if necessary.
-          for (let i = 0, l = $org.length; i < l; i++) {
-            if (!state.$members[i]) {
-              state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
-            }
+          catch (err) {
+            /* istanbul ignore next */
+            console.error(err); // eslint-disable-line no-console
           }
         }
-        catch (err) {
-          /* istanbul ignore next */
-          console.error(err); // eslint-disable-line no-console
+
+        else if ($org.length > state.$members.length) {
+          try {
+            // Populate $members array with clones of stateDefault if necessary.
+            for (let i = 0, l = $org.length; i < l; i++) {
+              if (!state.$members[i]) {
+                state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
+              }
+            }
+          }
+          catch (err) {
+            /* istanbul ignore next */
+            console.error(err); // eslint-disable-line no-console
+          }
         }
       }
 

@@ -772,7 +772,17 @@ function getBoundingClientRect($org, args, memberIdx) {
   return args;
 }
 
-function getMeasurementSwitch(method, $org, elem, computedStyle) {
+/**
+ * Convenience method for getting measurements in a window environment.
+ *
+ * @param {object} $org - Organism object.
+ * @param {string} method - Name of the method to be applied.
+ *   measurement to its element 0.
+ * @param {object} computedStyle - Only defined for jQuery. Per DOM `CSSStyleDeclaration` spec.
+ * @param {object} elem - Per DOM `HTMLElement` spec.
+ * @returns {array} The `args` array.
+ */
+function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
   switch (method) {
     case 'innerWidth':
       if ($org.selector === 'window') {
@@ -783,6 +793,7 @@ function getMeasurementSwitch(method, $org, elem, computedStyle) {
       }
       else {
         if (computedStyle.boxSizing === 'content-box') {
+
           return parseInt(computedStyle.width, 10) +
             (parseInt(computedStyle.paddingLeft, 10) || 0) +
             (parseInt(computedStyle.paddingRight, 10) || 0);
@@ -954,7 +965,7 @@ function getMeasurement($org, method, args, computedStyle, $member) {
     // Apply on first valid iteration of $member array.
     for (let $elem of $member) {
       if (typeof window === 'object') { // jQuery
-        args[0] = getMeasurementSwitch(method, $org, $elem[0], computedStyle);
+        args[0] = getMeasurementSwitch($org, method, computedStyle, $elem[0]);
       }
       else if (typeof $elem[method] === 'function') { // Cheerio
         args[0] = $elem[method].apply($elem);
@@ -967,7 +978,7 @@ function getMeasurement($org, method, args, computedStyle, $member) {
     // Apply to $member.
     /* istanbul ignore if */
     if (typeof window === 'object') { // jQuery
-      args[0] = getMeasurementSwitch(method, $org, $member[0], computedStyle);
+      args[0] = getMeasurementSwitch($org, method, computedStyle, $member[0]);
     }
     else if (typeof $member[method] === 'function') { // Cheerio
       args[0] = $member[method].apply($member);
@@ -976,7 +987,15 @@ function getMeasurement($org, method, args, computedStyle, $member) {
   else {
     // Apply to $org.
     if (typeof window === 'object') { // jQuery
-      args[0] = getMeasurementSwitch(method, $org, $org[0], computedStyle);
+      if ($org.selector === 'window') {
+        args[0] = getMeasurementSwitch($org, method, computedStyle, window);
+      }
+      else if ($org.selector === 'document') {
+        args[0] = getMeasurementSwitch($org, method, computedStyle, document);
+      }
+      else {
+        args[0] = getMeasurementSwitch($org, method, computedStyle, $org[0]);
+      }
     }
     else if (typeof $org[method] === 'function') { // Cheerio
       args[0] = $org[method].apply($org);
@@ -1256,7 +1275,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       // getBoundingClientRect takes measurements and updates state. This never accepts an argument.
       // On the client, it has to operate on the DOM Element member of the jQuery component.
       case 'getBoundingClientRect': {
-        if (this.selector === 'document' || this.selector === 'window') {
+        if (this.selector === 'window' || this.selector === 'document') {
           break;
         }
 
@@ -1444,22 +1463,24 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         let computedStyle = {};
 
         if (typeof window === 'object') { // jQuery
-          if (Array.isArray($member) && Array.isArray(memberIdx)) {
-            for (let idx of memberIdx) {
-              if (this[idx]) {
-                computedStyle = window.getComputedStyle(this[idx]);
+          if (this.selector !== 'window' && !this.selector === 'document') {
+            if (Array.isArray($member) && Array.isArray(memberIdx)) {
+              for (let idx of memberIdx) {
+                if (this[idx]) {
+                  computedStyle = window.getComputedStyle(this[idx]);
 
-                break;
+                  break;
+                }
               }
             }
-          }
-          else if ($member && typeof memberIdx === 'number') {
-            if ($member[0]) {
-              computedStyle = window.getComputedStyle($member[0]);
+            else if ($member && typeof memberIdx === 'number') {
+              if ($member[0]) {
+                computedStyle = window.getComputedStyle($member[0]);
+              }
             }
-          }
-          else {
-            computedStyle = window.getComputedStyle(this[0]);
+            else {
+              computedStyle = window.getComputedStyle(this[0]);
+            }
           }
         }
 
@@ -2173,7 +2194,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
     }
 
     /* istanbul ignore if */
-    if (this.selector === 'document' || this.selector === 'window') {
+    if (this.selector === 'window' || this.selector === 'document') {
       return;
     }
 
@@ -2372,7 +2393,25 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     let updateState = false;
 
     if (typeof window === 'object') { // jQuery
-      computedStyle = window.getComputedStyle(this[memberIdx || 0]);
+      if (this.selector !== 'window' && !this.selector !== 'document') {
+        if (Array.isArray($member) && Array.isArray(memberIdx)) {
+          for (let idx of memberIdx) {
+            if (this[idx]) {
+              computedStyle = window.getComputedStyle(this[idx]);
+
+              break;
+            }
+          }
+        }
+        else if ($member && typeof memberIdx === 'number') {
+          if ($member[0]) {
+            computedStyle = window.getComputedStyle($member[0]);
+          }
+        }
+        else {
+          computedStyle = window.getComputedStyle(this[0]);
+        }
+      }
     }
 
     // Be sure to add to these if more measurements are added to the state object.
@@ -2405,8 +2444,8 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
       }
     }
 
-    if (this.selector === 'window') {
-      return false;
+    if (this.selector === 'window' || this.selector === 'document') {
+      return updateState;
     }
 
     const args = [];
@@ -2757,7 +2796,9 @@ Set the height (not including padding, border, or margin) of all matches.
 
             // If using Cheerio.
             if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
-              state.boundingClientRect.height = action.args[0];
+              if (state.boundingClientRect) {
+                state.boundingClientRect.height = action.args[0];
+              }
             }
           }
         }
@@ -3105,7 +3146,9 @@ Set the width (not including padding, border, or margin) of all matches.
 
             // If using Cheerio.
             if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
-              state.boundingClientRect.width = action.args[0];
+              if (state.boundingClientRect) {
+                state.boundingClientRect.width = action.args[0];
+              }
             }
           }
         }
@@ -3158,37 +3201,39 @@ function reducerClosure(orgSelector, customReducer) {
       }
 
       // Update length of state.$members array to match length of $org.$members.
-      if ($org.length < state.$members.length) {
-        try {
-          let i = state.$members.length;
+      if (state.$members) {
+        if ($org.length < state.$members.length) {
+          try {
+            let i = state.$members.length;
 
-          while (i--) {
-            if (!$org[i]) {
-              state.$members.pop();
-            }
-            else {
-              break;
+            while (i--) {
+              if (!$org[i]) {
+                state.$members.pop();
+              }
+              else {
+                break;
+              }
             }
           }
-        }
-        catch (err) {
-          /* istanbul ignore next */
-          console.error(err); // eslint-disable-line no-console
-        }
-      }
-
-      else if ($org.length > state.$members.length) {
-        try {
-          // Populate $members array with clones of stateDefault if necessary.
-          for (let i = 0, l = $org.length; i < l; i++) {
-            if (!state.$members[i]) {
-              state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
-            }
+          catch (err) {
+            /* istanbul ignore next */
+            console.error(err); // eslint-disable-line no-console
           }
         }
-        catch (err) {
-          /* istanbul ignore next */
-          console.error(err); // eslint-disable-line no-console
+
+        else if ($org.length > state.$members.length) {
+          try {
+            // Populate $members array with clones of stateDefault if necessary.
+            for (let i = 0, l = $org.length; i < l; i++) {
+              if (!state.$members[i]) {
+                state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
+              }
+            }
+          }
+          catch (err) {
+            /* istanbul ignore next */
+            console.error(err); // eslint-disable-line no-console
+          }
         }
       }
 
