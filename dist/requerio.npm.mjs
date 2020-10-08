@@ -2797,8 +2797,8 @@ Empty innerHTML of all matches.
             action.args[0] instanceof Object
           ) {
 
-            // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) because DOMRect is not a plain
-            // object.
+            // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) or Object.assign because DOMRect is not a plain
+            // object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE support.
             const rectObj = action.args[0];
 
             for (const i in rectObj) {
@@ -3058,8 +3058,9 @@ properties on `state.boundingClientRect`.
         ) {
           const rectObj = action.args[0];
 
-          // Must iterate through and copy from properties in rectObj. Shortcuts like Object.assign won't work because
-          // rectObj is not a plain object in browsers.
+            // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) or Object.assign because DOMRect is
+            // not a plain object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE
+            // support.
           for (const measurement in state.boundingClientRect) {
             if (
               state.boundingClientRect[measurement] !== action.args[0][measurement] &&
