@@ -1720,18 +1720,30 @@ in a targeted manner', function () {
         expect(state.css.color).to.equal('red');
       });
 
+      it('dispatches the "css" action with a single string camelCase value argument', function () {
+        requerio.$orgs['#main'].dispatchAction('css', {backgroundColor: 'darkred'});
+
+        const state = requerio.$orgs['#main'].getState();
+
+        expect(state.css.backgroundColor).to.equal('darkred');
+
+        // Cheerio does not convert from camelCase to hyphenated.
+        if (typeof window === 'object') {
+          expect(state.css['background-color']).to.equal('darkred');
+        }
+      });
+
       it('dispatches the "css" action with a multiple string value argument', function () {
-        requerio.$orgs['#main'].dispatchAction('css', {'color': 'green', 'background-color': 'green'});
+        requerio.$orgs['#main'].dispatchAction('css', {color: 'green', 'background-color': 'green'});
 
         const state = requerio.$orgs['#main'].getState();
 
         expect(state.css.color).to.equal('green');
+        expect(state.css['background-color']).to.equal('green');
 
         if (typeof window === 'object') {
           expect(state.css.backgroundColor).to.equal('green');
         }
-
-        expect(state.css['background-color']).to.equal('green');
       });
 
       it('dispatches the "css" action with a single function value argument', function () {
@@ -1743,11 +1755,12 @@ in a targeted manner', function () {
       });
 
       it('dispatches the "css" action with a multiple function value argument', function () {
-        requerio.$orgs['#main'].dispatchAction('css', {'color': () => 'cyan', 'background-color': () => 'cyan'});
+        requerio.$orgs['#main'].dispatchAction('css', {color: () => 'cyan', 'background-color': () => 'cyan'});
 
         const state = requerio.$orgs['#main'].getState();
 
         expect(state.css.color).to.equal('cyan');
+        expect(state.css['background-color']).to.equal('cyan');
 
         if (typeof window === 'object') {
           expect(state.css.backgroundColor).to.equal('cyan');
@@ -1773,6 +1786,7 @@ in a targeted manner', function () {
         const state = requerio.$orgs['#main'].getState();
 
         expect(state.css.color).to.equal('magenta');
+        expect(state.css['background-color']).to.equal('magenta');
 
         if (typeof window === 'object') {
           expect(state.css.backgroundColor).to.equal('magenta');
@@ -1791,6 +1805,22 @@ in a targeted manner', function () {
         expect(state1.css.color).to.equal('red');
       });
 
+      it('dispatches the "css" action with a single string camelCase value argument in a targeted manner', function () {
+        requerio.$orgs['.main__div'].dispatchAction('css', {backgroundColor: 'darkred'}, 1);
+
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
+
+        expect(state0.css.backgroundColor).to.not.equal(state1.css.backgroundColor);
+        expect(state1.css.backgroundColor).to.equal('darkred');
+
+        // Cheerio does not convert from camelCase to hyphenated.
+        if (typeof window === 'object') {
+          expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
+          expect(state1.css['background-color']).to.equal('darkred');
+        }
+      });
+
       it('dispatches the "css" action with a single string value argument across multiple targets', function () {
         requerio.$orgs['.main__div'].dispatchAction('css', {color: 'green'}, [0, 1]);
 
@@ -1801,8 +1831,24 @@ in a targeted manner', function () {
         expect(state1.css.color).to.equal('green');
       });
 
+      it('dispatches the "css" action with a single string camelCase value argument in a targeted manner', function () {
+        requerio.$orgs['.main__div'].dispatchAction('css', {backgroundColor: 'darkgreen'}, 1);
+
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
+
+        expect(state0.css.backgroundColor).to.not.equal(state1.css.backgroundColor);
+        expect(state1.css.backgroundColor).to.equal('darkgreen');
+
+        // Cheerio does not convert from camelCase to hyphenated.
+        if (typeof window === 'object') {
+          expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
+          expect(state1.css['background-color']).to.equal('darkgreen');
+        }
+      });
+
       it('dispatches the "css" action with a multiple string value argument in a targeted manner', function () {
-        requerio.$orgs['.main__div'].dispatchAction('css', {'color': 'blue', 'background-color': 'blue'}, 1);
+        requerio.$orgs['.main__div'].dispatchAction('css', {color: 'blue', 'background-color': 'blue'}, 1);
 
         const state0 = requerio.$orgs['.main__div'].getState(0);
         const state1 = requerio.$orgs['.main__div'].getState(1);
@@ -1820,7 +1866,7 @@ in a targeted manner', function () {
       });
 
       it('dispatches the "css" action with a multiple string value argument across multiple targets', function () {
-        requerio.$orgs['.main__div'].dispatchAction('css', {'color': 'cyan', 'background-color': 'cyan'}, [0, 1]);
+        requerio.$orgs['.main__div'].dispatchAction('css', {color: 'cyan', 'background-color': 'cyan'}, [0, 1]);
 
         const state0 = requerio.$orgs['.main__div'].getState(0);
         const state1 = requerio.$orgs['.main__div'].getState(1);

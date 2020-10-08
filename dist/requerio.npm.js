@@ -7,7 +7,7 @@
  * @param {object} $ - jQuery or Cheerio.
  */
 var organismsIncept = ($orgs, $) => {
-  for (let i of Object.keys($orgs)) {
+  for (const i of Object.keys($orgs)) {
     /* istanbul ignore if */
     if ($orgs[i] && $orgs[i].hasRequerio) {
       continue;
@@ -307,7 +307,7 @@ function getActiveOrganism($orgs, lastActiveOrganism) {
     }
   }
 
-  for (let orgSelector of Object.keys($orgs)) {
+  for (const orgSelector of Object.keys($orgs)) {
     const $org = $orgs[orgSelector];
 
     for (let i = 0; i < $org.length; i++) {
@@ -348,7 +348,7 @@ function getActiveOrganism($orgs, lastActiveOrganism) {
 var postInception = (requerio) => {
   const {$orgs, store} = requerio;
 
-  for (let orgSelector of Object.keys($orgs)) {
+  for (const orgSelector of Object.keys($orgs)) {
     if ($orgs[orgSelector] && $orgs[orgSelector].hasRequerio) {
       continue;
     }
@@ -446,9 +446,9 @@ organism, set the focused organism's selector as `state.activeOrganism`.
 function applyMethod($org, method, args, $member) {
   if (Array.isArray($member)) {
     // Apply on each iteration of $member array.
-    for (let $elem of $member) {
-      if (typeof $elem[method] === 'function') {
-        $elem[method].apply($elem, args);
+    for (let i = 0; i < $member.length; i++) {
+      if (typeof $member[i][method] === 'function') {
+        $member[i][method].apply($member[i], args);
       }
     }
   }
@@ -488,7 +488,9 @@ function applyAttr($org, args, $member, memberIdx) {
     if ($org[0] && $org[0].attribs) {
       if (Array.isArray(memberIdx)) {
         // Get attribs from first valid iteration of elements.
-        for (let idx of memberIdx) {
+        for (let i = 0; i < memberIdx.length; i++) {
+          const idx = memberIdx[i];
+
           if ($org[idx] && $org[idx].attribs) {
             args[0] = $org[idx].attribs;
 
@@ -510,13 +512,15 @@ function applyAttr($org, args, $member, memberIdx) {
     else if ($org[0] && $org[0].attributes) {
       if (Array.isArray(memberIdx)) {
         // Get attribs from first valid iteration of elements.
-        for (let idx of memberIdx) {
+        for (let i = 0; i < memberIdx.length; i++) {
+          const idx = memberIdx[i];
+
           if ($org[idx] && $org[idx].attributes && $org[idx].attributes.length) {
             const attribs = {};
 
             // .attributes is not an Iterable so no for of.
-            for (let i = 0; i < $org[idx].attributes.length; i++) {
-              const attribute = $org[idx].attributes[i];
+            for (let j = 0; j < $org[idx].attributes.length; j++) {
+              const attribute = $org[idx].attributes[j];
               attribs[attribute.name] = attribute.value;
             }
 
@@ -567,14 +571,17 @@ function applyCss($org, args, $member) {
     // Set operation.
     if (args[0] instanceof Object && args[0].constructor === Object) {
       // Apply on each iteration of $member array.
-      for (let $elem of $member) {
-        $elem[method].apply($elem, args);
+      for (let i = 0; i < $member.length; i++) {
+        $member[i][method].apply($member[i], args);
       }
     }
 
     // Get operation. Only iterate once.
-    for (let $elem of $member) {
+    for (let i = 0; i < $member.length; i++) {
+      const $elem = $member[i];
+
       if (args[0] instanceof Object && args[0].constructor === Object) {
+        // Retrieve evaluated css after setting in previous block.
         const keys = Object.keys(args[0]);
         args[0] = $elem[method].apply($elem, [keys]);
       }
@@ -605,6 +612,7 @@ function applyCss($org, args, $member) {
       // Apply to $member.
       $member[method].apply($member, args);
 
+      // Retrieve evaluated css.
       const keys = Object.keys(args[0]);
 
       if (keys.length === 1) {
@@ -632,7 +640,7 @@ function applyCss($org, args, $member) {
       // Apply to $org.
       $org[method].apply($org, args);
 
-      // Retrieve updated css.
+      // Retrieve evaluated css.
       const keys = Object.keys(args[0]);
 
       if (keys.length === 1) {
@@ -659,10 +667,10 @@ function applyCss($org, args, $member) {
 
   if (typeof window === 'object') { // jQuery
     if (args[0] instanceof Object && args[0].constructor === Object) {
-      for (let property of Object.keys(args[0])) {
+      for (const property of Object.keys(args[0])) {
         let camel;
 
-        if (property.includes('-')) {
+        if (property.indexOf('-') > -1) {
           const hyphenatedArr = property.split('-');
           const camelArr = [];
 
@@ -694,26 +702,22 @@ function applyData($org, args, $member) {
     applyMethod($org, method, args, $member);
   }
 
-  // Don't automatically use Object.assign since it is an expensive operation.
   if (Array.isArray($member)) {
     // Get all data to submit for updating state. Only iterate once.
-    for (let $elem of $member) {
-      const data = $elem[method].apply($elem);
-      // eslint-disable-next-line eqeqeq
-      args[0] = data.constructor == null ? Object.assign({}, data) : data;
+    for (let i = 0; i < $member.length; i++) {
+      const data = $member[i][method].apply($member[i]);
+      args[0] = data;
 
       break;
     }
   }
   else if ($member) {
     const data = $member[method].apply($member);
-    // eslint-disable-next-line eqeqeq
-    args[0] = data.constructor == null ? Object.assign({}, data) : data;
+    args[0] = data;
   }
   else {
     const data = $org[method].apply($org);
-    // eslint-disable-next-line eqeqeq
-    args[0] = data.constructor == null ? Object.assign({}, data) : data;
+    args[0] = data;
   }
 }
 
@@ -740,7 +744,9 @@ function getBoundingClientRect($org, args, memberIdx) {
   const method = 'getBoundingClientRect';
 
   if (Array.isArray(memberIdx)) {
-    memberIdx.forEach((idx) => {
+    for (let i = 0; i < memberIdx.length; i++) {
+      const idx = memberIdx[i];
+
       // Apply on indexed element.
       /* istanbul ignore else */
       if (typeof $org[method] === 'function') {
@@ -751,7 +757,7 @@ function getBoundingClientRect($org, args, memberIdx) {
           args[0] = $org[idx][method].call($org[idx]);
         }
       }
-    });
+    }
   }
   else if (typeof memberIdx === 'number') {
     // Apply on indexed element.
@@ -971,7 +977,9 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
 function getMeasurement($org, method, args, computedStyle, $member) {
   if (Array.isArray($member)) {
     // Apply on first valid iteration of $member array.
-    for (let $elem of $member) {
+    for (let i = 0; i < $member.length; i++) {
+      const $elem = $member[i];
+
       if (typeof window === 'object') { // jQuery
         args[0] = getMeasurementSwitch($org, method, computedStyle, $elem[0]);
       }
@@ -1039,7 +1047,7 @@ var prototypeOverride = (requerio) => {
     const $parent = this.parent();
 
     if (arguments.length) {
-      for (let orgSelector1 of Object.keys($orgs)) {
+      for (const orgSelector1 of Object.keys($orgs)) {
         const $org1 = $orgs[orgSelector1];
 
         // Iterate through organisms and check if the parent of this organism (dispatching the 'after' action)
@@ -1060,9 +1068,7 @@ var prototypeOverride = (requerio) => {
     if (arguments.length) {
       this.resetElementsAndMembers();
 
-      for (let descendantToReset of descendantsToReset) {
-        descendantToReset.resetElementsAndMembers();
-      }
+      descendantsToReset.forEach(descendantToReset => descendantToReset.resetElementsAndMembers());
     }
 
     return retVal;
@@ -1079,7 +1085,7 @@ var prototypeOverride = (requerio) => {
     const descendantsToReset = [];
 
     if (arguments.length) {
-      for (let orgSelector1 of Object.keys($orgs)) {
+      for (const orgSelector1 of Object.keys($orgs)) {
         const $org1 = $orgs[orgSelector1];
 
         // Iterate through organisms and check if this organism (dispatching the 'append' action) is an ancestor.
@@ -1099,9 +1105,7 @@ var prototypeOverride = (requerio) => {
     if (arguments.length) {
       this.resetElementsAndMembers();
 
-      for (let descendantToReset of descendantsToReset) {
-        descendantToReset.resetElementsAndMembers();
-      }
+      descendantsToReset.forEach(descendantToReset => descendantToReset.resetElementsAndMembers());
     }
 
     return retVal;
@@ -1119,7 +1123,7 @@ var prototypeOverride = (requerio) => {
     const $parent = this.parent();
 
     if (arguments.length) {
-      for (let orgSelector1 of Object.keys($orgs)) {
+      for (const orgSelector1 of Object.keys($orgs)) {
         const $org1 = $orgs[orgSelector1];
 
         // Iterate through organisms and check if the parent of this organism (dispatching the 'before' action)
@@ -1140,9 +1144,7 @@ var prototypeOverride = (requerio) => {
     if (arguments.length) {
       this.resetElementsAndMembers();
 
-      for (let descendantToReset of descendantsToReset) {
-        descendantToReset.resetElementsAndMembers();
-      }
+      descendantsToReset.forEach(descendantToReset => descendantToReset.resetElementsAndMembers());
     }
 
     return retVal;
@@ -1166,7 +1168,7 @@ A server-side stand-in for client-side `.blur()`.
   $.prototype.detach = function () {
     const parentsToReset = [];
 
-    for (let orgSelector1 of Object.keys($orgs)) {
+    for (const orgSelector1 of Object.keys($orgs)) {
       for (let i = 0; i < this.$members.length; i++) {
         if (this.$members[i].parent(orgSelector1).length) {
           parentsToReset.push($orgs[orgSelector1]);
@@ -1184,9 +1186,7 @@ A server-side stand-in for client-side `.blur()`.
       this.remove();
     }
 
-    for (let parentToReset of parentsToReset) {
-      parentToReset.resetElementsAndMembers();
-    }
+    parentsToReset.forEach(parentToReset => parentToReset.resetElementsAndMembers());
 
     return this;
   };
@@ -1224,6 +1224,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
     if (membersLength < this.$members.length) {
       memberIdx = [];
 
+      // forEach loop necessary to retain original idx in case items were deleted.
       this.$members.forEach(($member, idx) => memberIdx.push(idx));
     }
 
@@ -1233,8 +1234,8 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
     if (Array.isArray(memberIdx)) {
       $member = [];
 
-      for (let idx of memberIdx) {
-        $member.push($(this[idx]));
+      for (let i = 0; i < memberIdx.length; i++) {
+        $member.push($(this[memberIdx[i]]));
       }
     }
     else if (typeof memberIdx === 'number') {
@@ -1306,7 +1307,9 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         if (Array.isArray($member) && Array.isArray(memberIdx)) {
           if (args.length) {
             if (typeof window === 'object') { // jQuery
-              for (let idx of memberIdx) {
+              for (let i = 0; i < memberIdx.length; i++) {
+                const idx = memberIdx[i];
+
                 if (this[idx]) {
                   if (method === 'html' && args[0] !== null) {
                     html = args[0];
@@ -1327,7 +1330,9 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
               }
             }
             else { // Cheerio
-              for (let $elem of $member) {
+              for (let i = 0; i < $member.length; i++) {
+                const $elem = $member[i];
+
                 if ($elem) {
                   if (method === 'html' && args[0] !== null) {
                     html = args[0];
@@ -1349,7 +1354,8 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
             }
           }
           else {
-            $member.forEach(($elem, idx) => {
+            for (let i = 0; i < $member.length; i++) {
+              const $elem = $member[i];
               let htmlScoped;
               let textScoped;
 
@@ -1373,7 +1379,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
                 $org: this,
                 method: 'html',
                 args: [htmlScoped],
-                idx
+                i
               });
 
               store.dispatch({
@@ -1382,14 +1388,14 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
                 $org: this,
                 method: 'text',
                 args: [textScoped],
-                idx
+                i
               });
 
-              if (idx === 0) {
+              if (i === 0) {
                 html = htmlScoped;
                 text = textScoped;
               }
-            });
+            }
           }
         }
         else if ($member && typeof memberIdx === 'number') {
@@ -1473,9 +1479,9 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         if (typeof window === 'object') { // jQuery
           if (this.selector !== 'window' && this.selector !== 'document') {
             if (Array.isArray($member) && Array.isArray(memberIdx)) {
-              for (let idx of memberIdx) {
-                if (this[idx]) {
-                  computedStyle = window.getComputedStyle(this[idx]);
+              for (let i = 0; i < memberIdx.length; i++) {
+                if (this[memberIdx[i]]) {
+                  computedStyle = window.getComputedStyle(this[memberIdx[i]]);
 
                   break;
                 }
@@ -1552,7 +1558,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
   $.prototype.empty = function () {
     const descendantsToReset = [];
 
-    for (let orgSelector1 of Object.keys($orgs)) {
+    for (const orgSelector1 of Object.keys($orgs)) {
       const $org1 = $orgs[orgSelector1];
 
       // Iterate through organisms and check if this organism (dispatching the 'empty' action) is an ancestor.
@@ -1570,9 +1576,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 
     this.resetElementsAndMembers();
 
-    for (let descendantToReset of descendantsToReset) {
-      descendantToReset.resetElementsAndMembers();
-    }
+    descendantsToReset.forEach(descendantToReset => descendantToReset.resetElementsAndMembers());
 
     return retVal;
   };
@@ -1660,7 +1664,7 @@ A server-side stand-in for client-side `.focus()`.
         rectState = state.boundingClientRect;
       }
 
-      for (let i of Object.keys(rectState)) {
+      for (const i of Object.keys(rectState)) {
         if (rectState[i] !== null) {
           return rectState;
         }
@@ -1739,7 +1743,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
     if (typeof window === 'object') { // jQuery
       const attributes = this[orgIdx].attributes;
 
-      for (let i = 0, l = attributes.length; i < l; i++) {
+      for (let i = 0; i < attributes.length; i++) {
         attribsNow[attributes[i].name] = attributes[i].value;
       }
     }
@@ -1835,7 +1839,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
     // Do update .prop if a property was changed by user interaction, e.g., `checked` property.
     let propNow = {};
 
-    for (let property of Object.keys(state.prop)) {
+    for (const property of Object.keys(state.prop)) {
       if (typeof window === 'object') { // jQuery
         if (property in this[orgIdx]) {
           propNow[property] = this[orgIdx][property];
@@ -2177,7 +2181,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
     const descendantsToReset = [];
 
     if (arguments.length) {
-      for (let orgSelector1 of Object.keys($orgs)) {
+      for (const orgSelector1 of Object.keys($orgs)) {
         const $org1 = $orgs[orgSelector1];
 
         // Iterate through organisms and check if this organism (dispatching the 'html' action) is an ancestor.
@@ -2197,9 +2201,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
     if (arguments.length) {
       this.resetElementsAndMembers();
 
-      for (let descendantToReset of descendantsToReset) {
-        descendantToReset.resetElementsAndMembers();
-      }
+      descendantsToReset.forEach(descendantToReset => descendantToReset.resetElementsAndMembers());
     }
 
     return retVal;
@@ -2240,7 +2242,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
     const $parent = this.parent();
 
     if (arguments.length) {
-      for (let orgSelector1 of Object.keys($orgs)) {
+      for (const orgSelector1 of Object.keys($orgs)) {
         const $org1 = $orgs[orgSelector1];
 
         // Iterate through organisms and check if this organism (dispatching the 'prepend' action) is an ancestor.
@@ -2260,9 +2262,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
     if (arguments.length) {
       this.resetElementsAndMembers();
 
-      for (let descendantToReset of descendantsToReset) {
-        descendantToReset.resetElementsAndMembers();
-      }
+      descendantsToReset.forEach(descendantToReset => descendantToReset.resetElementsAndMembers());
     }
 
     return retVal;
@@ -2278,7 +2278,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
   $.prototype.remove = function () {
     const parentsToReset = [];
 
-    for (let orgSelector1 of Object.keys($orgs)) {
+    for (const orgSelector1 of Object.keys($orgs)) {
       for (let i = 0; i < this.$members.length; i++) {
         if (this.$members[i].parent(orgSelector1).length) {
           parentsToReset.push($orgs[orgSelector1]);
@@ -2290,9 +2290,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
     removeFnOrig.apply(this);
 
-    for (let parentToReset of parentsToReset) {
-      parentToReset.resetElementsAndMembers();
-    }
+    parentsToReset.forEach(parentToReset => parentToReset.resetElementsAndMembers());
 
     return this;
   };
@@ -2366,7 +2364,7 @@ testing.
     const descendantsToReset = [];
 
     if (arguments.length) {
-      for (let orgSelector1 of Object.keys($orgs)) {
+      for (const orgSelector1 of Object.keys($orgs)) {
         const $org1 = $orgs[orgSelector1];
 
         // Iterate through organisms and check if this organism (dispatching the 'text' action) is an ancestor.
@@ -2386,9 +2384,7 @@ testing.
     if (arguments.length) {
       this.resetElementsAndMembers();
 
-      for (let descendantToReset of descendantsToReset) {
-        descendantToReset.resetElementsAndMembers();
-      }
+      descendantsToReset.forEach(descendantToReset => descendantToReset.resetElementsAndMembers());
     }
 
     return retVal;
@@ -2418,9 +2414,9 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     if (typeof window === 'object') { // jQuery
       if (this.selector !== 'window' && this.selector !== 'document') {
         if (Array.isArray($member) && Array.isArray(memberIdx)) {
-          for (let idx of memberIdx) {
-            if (this[idx]) {
-              computedStyle = window.getComputedStyle(this[idx]);
+          for (let i = 0; i < memberIdx.length; i++) {
+            if (this[memberIdx[i]]) {
+              computedStyle = window.getComputedStyle(this[memberIdx[i]]);
 
               break;
             }
@@ -2438,7 +2434,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     }
 
     // Be sure to add to these if more measurements are added to the state object.
-    for (let method of [
+    for (const method of [
       'innerWidth',
       'innerHeight',
       'outerWidth',
@@ -2476,7 +2472,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     // Dependent on dispatches of other measurements to populate members.
     getBoundingClientRect(this, args, memberIdx); // Mutates args.
 
-    for (let measurement in args[0]) {
+    for (const measurement in args[0]) {
       if (state.boundingClientRect[measurement] !== args[0][measurement]) {
         store.dispatch({
           type: 'SET_BOUNDING_CLIENT_RECT',
@@ -2595,7 +2591,6 @@ function stateBuild($org, state, action) {
     else if ($org[0] && $org[0].attributes && $org[0].attributes.length) { // jQuery
       for (let i = 0; i < $org[0].attributes.length; i++) {
         const attr = $org[0].attributes[i];
-
         state.attribs[attr.name] = attr.value;
       }
     }
@@ -2613,7 +2608,7 @@ function stateBuild($org, state, action) {
     // prop
 
     if (state.prop instanceof Object) {
-      for (let i of Object.keys(state.prop)) {
+      for (const i of Object.keys(state.prop)) {
         state.prop[i] = $org[0][i];
       }
     }
@@ -2687,7 +2682,9 @@ Set one or more attributes for all matches.
 */
       case 'attr': {
         if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          Object.assign(state.attribs, action.args[0]);
+          for (const i in action.args[0]) {
+            state.attribs[i] = action.args[0][i];
+          }
         }
 
         break;
@@ -2736,7 +2733,7 @@ all environments, the static style key will be hyphenated.
         // Copy the styles from the HTML style attribute to state.css in case a camelCase property was submitted without
         // a corresponding hyphenated property.
         if (state.attribs.style) {
-          for (let style of state.attribs.style.split(';')) {
+          for (const style of state.attribs.style.split(';')) {
             const styleTrimmed = style.trim();
 
             if (styleTrimmed) {
@@ -2747,7 +2744,10 @@ all environments, the static style key will be hyphenated.
           }
         }
 
-        Object.assign(state.css, action.args[0]);
+        for (const i in action.args[0]) {
+          state.css[i] = action.args[0][i];
+        }
+
         state.style = state.css; // DEPRECATED.
 
         break;
@@ -2763,7 +2763,9 @@ Set one or more key:value pairs of data. Does not affect HTML data attributes.
 */
       case 'data': {
         if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          Object.assign(state.data, action.args[0]);
+          for (const i in action.args[0]) {
+            state.data[i] = action.args[0][i];
+          }
         }
 
         break;
@@ -2797,11 +2799,11 @@ Empty innerHTML of all matches.
             action.args[0] instanceof Object
           ) {
 
-            // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) in FF and Edge because in those
-            // browsers, DOMRect properties are inherited, not "own" properties (as in hasOwnProperty).
+            // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) because DOMRect is not a plain
+            // object.
             const rectObj = action.args[0];
 
-            for (let i in rectObj) {
+            for (const i in rectObj) {
               if (typeof rectObj[i] === 'number') {
                 state.boundingClientRect[i] = rectObj[i];
               }
@@ -2914,7 +2916,9 @@ for important distinctions between attributes and properties.
 */
       case 'prop': {
         if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          Object.assign(state.prop, action.args[0]);
+          for (const i in action.args[0]) {
+            state.prop[i] = action.args[0][i];
+          }
         }
 
         break;
@@ -2965,19 +2969,19 @@ DOM.
 */
       case 'removeData': {
         if (typeof action.args[0] === 'string') {
-          if (action.args[0].includes(' ')) {
-            action.args[0].split(' ').forEach((key) => {
+          if (action.args[0].indexOf(' ') > -1) {
+            for (const key of action.args[0].split(' ')) {
               delete state.data[key];
-            });
+            }
           }
           else {
             delete state.data[action.args[0]];
           }
         }
         else if (Array.isArray(action.args[0])) {
-          action.args[0].forEach((key) => {
-            delete state.data[key];
-          });
+          for (let i = 0; i < action.args[0].length; i++) {
+            delete state.data[action.args[0][i]];
+          }
         }
 
         break;
@@ -3058,7 +3062,7 @@ properties on `state.boundingClientRect`.
 
           // Must iterate through and copy from properties in rectObj. Shortcuts like Object.assign won't work because
           // rectObj is not a plain object in browsers.
-          for (let measurement in state.boundingClientRect) {
+          for (const measurement in state.boundingClientRect) {
             if (
               state.boundingClientRect[measurement] !== action.args[0][measurement] &&
               action.args[0][measurement] != null // eslint-disable-line eqeqeq
@@ -3073,11 +3077,15 @@ properties on `state.boundingClientRect`.
               typeof memberIdx === 'number' &&
               state.$members[memberIdx]
             ) {
-              Object.assign(state.$members[memberIdx].boundingClientRect, rectObj);
+              for (const i in rectObj) {
+                state.$members[memberIdx].boundingClientRect[i] = rectObj[i];
+              }
             }
             else {
-              for (let $member of state.$members) {
-                Object.assign($member.boundingClientRect, rectObj);
+              for (let i = 0; i < state.$members.length; i++) {
+                for (const j in rectObj) {
+                  state.$members[i].boundingClientRect[j] = rectObj[j];
+                }
               }
             }
           }
@@ -3255,7 +3263,7 @@ function reducerClosure(orgSelector, customReducer) {
         else if ($org.length > state.$members.length) {
           try {
             // Populate $members array with clones of stateDefault if necessary.
-            for (let i = 0, l = $org.length; i < l; i++) {
+            for (let i = 0; i < $org.length; i++) {
               if (!state.$members[i]) {
                 state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
               }
@@ -3280,7 +3288,9 @@ function reducerClosure(orgSelector, customReducer) {
         stateBuild($org.$members[memberIdx], state.$members[memberIdx], action);
       }
       else if (Array.isArray(memberIdx)) {
-        for (let idx of memberIdx) {
+        for (let i = 0; i < memberIdx.length; i++) {
+          const idx = memberIdx[i];
+
           if ($org.$members[idx]) {
             stateBuild($org.$members[idx], state.$members[idx] || {}, action);
           }
@@ -3296,7 +3306,7 @@ function reducerClosure(orgSelector, customReducer) {
           typeof customState === 'object' && // Don't want to check constructor because this is user submitted.
           customState instanceof Object
         ) {
-          for (let i of Object.keys(customState)) {
+          for (const i of Object.keys(customState)) {
             if (typeof customState[i] === 'function') {
               // The older Requerio versions would have functions as properties of this object.
               // If this is the case, ignore the output of customReducer and return the state as built earlier.
@@ -3335,7 +3345,7 @@ function reducerClosure(orgSelector, customReducer) {
 var reducerGet = ($orgs, Redux, customReducer) => {
   const reducers = {};
 
-  for (let i of Object.keys($orgs)) {
+  for (const i of Object.keys($orgs)) {
     reducers[i] = reducerClosure(i, customReducer);
   }
 
@@ -3388,7 +3398,11 @@ class Requerio {
     }
 
     organismsIncept($organisms, this.$);
-    Object.assign(this.$orgs, $organisms);
+
+    for (const i in $organisms) {
+      this.$orgs[i] = $organisms[i];
+    }
+
     postInception(this);
 
     const reducer = reducerGet(this.$orgs, this.Redux, this.customReducer);

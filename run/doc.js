@@ -28,7 +28,7 @@ const path = require('path');
     return;
   }
 
-  for (let comment of comments) {
+  for (const comment of comments) {
     md += comment.slice(3, -2);
   }
 
@@ -62,7 +62,7 @@ const path = require('path');
     return;
   }
 
-  for (let comment of comments) {
+  for (const comment of comments) {
     md += comment.slice(3, -2);
   }
 

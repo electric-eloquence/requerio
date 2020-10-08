@@ -94,7 +94,6 @@ function stateBuild($org, state, action) {
     else if ($org[0] && $org[0].attributes && $org[0].attributes.length) { // jQuery
       for (let i = 0; i < $org[0].attributes.length; i++) {
         const attr = $org[0].attributes[i];
-
         state.attribs[attr.name] = attr.value;
       }
     }
@@ -112,7 +111,7 @@ function stateBuild($org, state, action) {
     // prop
 
     if (state.prop instanceof Object) {
-      for (let i of Object.keys(state.prop)) {
+      for (const i of Object.keys(state.prop)) {
         state.prop[i] = $org[0][i];
       }
     }
@@ -186,7 +185,9 @@ Set one or more attributes for all matches.
 */
       case 'attr': {
         if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          Object.assign(state.attribs, action.args[0]);
+          for (const i in action.args[0]) {
+            state.attribs[i] = action.args[0][i];
+          }
         }
 
         break;
@@ -235,7 +236,7 @@ all environments, the static style key will be hyphenated.
         // Copy the styles from the HTML style attribute to state.css in case a camelCase property was submitted without
         // a corresponding hyphenated property.
         if (state.attribs.style) {
-          for (let style of state.attribs.style.split(';')) {
+          for (const style of state.attribs.style.split(';')) {
             const styleTrimmed = style.trim();
 
             if (styleTrimmed) {
@@ -246,7 +247,10 @@ all environments, the static style key will be hyphenated.
           }
         }
 
-        Object.assign(state.css, action.args[0]);
+        for (const i in action.args[0]) {
+          state.css[i] = action.args[0][i];
+        }
+
         state.style = state.css; // DEPRECATED.
 
         break;
@@ -262,7 +266,9 @@ Set one or more key:value pairs of data. Does not affect HTML data attributes.
 */
       case 'data': {
         if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          Object.assign(state.data, action.args[0]);
+          for (const i in action.args[0]) {
+            state.data[i] = action.args[0][i];
+          }
         }
 
         break;
@@ -296,11 +302,11 @@ Empty innerHTML of all matches.
             action.args[0] instanceof Object
           ) {
 
-            // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) in FF and Edge because in those
-            // browsers, DOMRect properties are inherited, not "own" properties (as in hasOwnProperty).
+            // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) because DOMRect is not a plain
+            // object.
             const rectObj = action.args[0];
 
-            for (let i in rectObj) {
+            for (const i in rectObj) {
               if (typeof rectObj[i] === 'number') {
                 state.boundingClientRect[i] = rectObj[i];
               }
@@ -413,7 +419,9 @@ for important distinctions between attributes and properties.
 */
       case 'prop': {
         if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          Object.assign(state.prop, action.args[0]);
+          for (const i in action.args[0]) {
+            state.prop[i] = action.args[0][i];
+          }
         }
 
         break;
@@ -464,19 +472,19 @@ DOM.
 */
       case 'removeData': {
         if (typeof action.args[0] === 'string') {
-          if (action.args[0].includes(' ')) {
-            action.args[0].split(' ').forEach((key) => {
+          if (action.args[0].indexOf(' ') > -1) {
+            for (const key of action.args[0].split(' ')) {
               delete state.data[key];
-            });
+            }
           }
           else {
             delete state.data[action.args[0]];
           }
         }
         else if (Array.isArray(action.args[0])) {
-          action.args[0].forEach((key) => {
-            delete state.data[key];
-          });
+          for (let i = 0; i < action.args[0].length; i++) {
+            delete state.data[action.args[0][i]];
+          }
         }
 
         break;
@@ -557,7 +565,7 @@ properties on `state.boundingClientRect`.
 
           // Must iterate through and copy from properties in rectObj. Shortcuts like Object.assign won't work because
           // rectObj is not a plain object in browsers.
-          for (let measurement in state.boundingClientRect) {
+          for (const measurement in state.boundingClientRect) {
             if (
               state.boundingClientRect[measurement] !== action.args[0][measurement] &&
               action.args[0][measurement] != null // eslint-disable-line eqeqeq
@@ -572,11 +580,15 @@ properties on `state.boundingClientRect`.
               typeof memberIdx === 'number' &&
               state.$members[memberIdx]
             ) {
-              Object.assign(state.$members[memberIdx].boundingClientRect, rectObj);
+              for (const i in rectObj) {
+                state.$members[memberIdx].boundingClientRect[i] = rectObj[i];
+              }
             }
             else {
-              for (let $member of state.$members) {
-                Object.assign($member.boundingClientRect, rectObj);
+              for (let i = 0; i < state.$members.length; i++) {
+                for (const j in rectObj) {
+                  state.$members[i].boundingClientRect[j] = rectObj[j];
+                }
               }
             }
           }
@@ -754,7 +766,7 @@ function reducerClosure(orgSelector, customReducer) {
         else if ($org.length > state.$members.length) {
           try {
             // Populate $members array with clones of stateDefault if necessary.
-            for (let i = 0, l = $org.length; i < l; i++) {
+            for (let i = 0; i < $org.length; i++) {
               if (!state.$members[i]) {
                 state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
               }
@@ -779,7 +791,9 @@ function reducerClosure(orgSelector, customReducer) {
         stateBuild($org.$members[memberIdx], state.$members[memberIdx], action);
       }
       else if (Array.isArray(memberIdx)) {
-        for (let idx of memberIdx) {
+        for (let i = 0; i < memberIdx.length; i++) {
+          const idx = memberIdx[i];
+
           if ($org.$members[idx]) {
             stateBuild($org.$members[idx], state.$members[idx] || {}, action);
           }
@@ -795,7 +809,7 @@ function reducerClosure(orgSelector, customReducer) {
           typeof customState === 'object' && // Don't want to check constructor because this is user submitted.
           customState instanceof Object
         ) {
-          for (let i of Object.keys(customState)) {
+          for (const i of Object.keys(customState)) {
             if (typeof customState[i] === 'function') {
               // The older Requerio versions would have functions as properties of this object.
               // If this is the case, ignore the output of customReducer and return the state as built earlier.
@@ -834,7 +848,7 @@ function reducerClosure(orgSelector, customReducer) {
 export default ($orgs, Redux, customReducer) => {
   const reducers = {};
 
-  for (let i of Object.keys($orgs)) {
+  for (const i of Object.keys($orgs)) {
     reducers[i] = reducerClosure(i, customReducer);
   }
 

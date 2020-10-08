@@ -5,7 +5,7 @@
  * @param {object} $ - jQuery or Cheerio.
  */
 export default ($orgs, $) => {
-  for (let i of Object.keys($orgs)) {
+  for (const i of Object.keys($orgs)) {
     /* istanbul ignore if */
     if ($orgs[i] && $orgs[i].hasRequerio) {
       continue;
