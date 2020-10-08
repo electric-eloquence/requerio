@@ -3058,9 +3058,9 @@ properties on `state.boundingClientRect`.
         ) {
           const rectObj = action.args[0];
 
-            // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) or Object.assign because DOMRect is
-            // not a plain object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE
-            // support.
+          // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) or Object.assign because DOMRect is
+          // not a plain object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE
+          // support.
           for (const measurement in state.boundingClientRect) {
             if (
               state.boundingClientRect[measurement] !== action.args[0][measurement] &&
