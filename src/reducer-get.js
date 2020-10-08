@@ -242,13 +242,13 @@ all environments, the static style key will be hyphenated.
             if (styleTrimmed) {
               const styleSplit = styleTrimmed.split(':');
 
-              state.css[styleSplit[0].trim()] = styleSplit[1].trim();
+              state[action.method][styleSplit[0].trim()] = styleSplit[1].trim();
             }
           }
         }
 
         for (const i in action.args[0]) {
-          state.css[i] = action.args[0][i];
+          state[action.method][i] = action.args[0][i];
         }
 
         state.style = state.css; // DEPRECATED.
@@ -267,7 +267,7 @@ Set one or more key:value pairs of data. Does not affect HTML data attributes.
       case 'data': {
         if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
           for (const i in action.args[0]) {
-            state.data[i] = action.args[0][i];
+            state[action.method][i] = action.args[0][i];
           }
         }
 
@@ -420,7 +420,7 @@ for important distinctions between attributes and properties.
       case 'prop': {
         if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
           for (const i in action.args[0]) {
-            state.prop[i] = action.args[0][i];
+            state[action.method][i] = action.args[0][i];
           }
         }
 
@@ -669,6 +669,7 @@ Set the value of all matches, typically form fields. This will set `state.val`.
         if (action.args.length === 1) {
           // Coerce to string. It's the users' job to make sure they are submitting the right type.
           state[action.method] = action.args[0] + '';
+          state.value = state.val; // DEPRECATED
         }
 
         break;
