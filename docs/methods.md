@@ -196,24 +196,24 @@ properties on `state.boundingClientRect`.
 
 ### text(text)
 Set the textContent of all matches. This is a safer way to change text on the
-DOM than dispatching an 'html' action. Will set `state.text` as per the getter
-below.
+DOM than dispatching an 'html' action. Will set `state.textContent` as per the
+getter below.
 
 | Param | Type | Description |
 | --- | --- | --- |
 | text | `string` | A string of text. Functions are not supported. |
 
 ### text()
-Dispatching a 'text' action without a parameter will set `state.text` to the
+Dispatching a 'text' action without a parameter will set `state.textContent` to
 the textContent of the targeted element, or if untargeted, the textContent of
 the first element. This contrasts with the return value of jQuery/Cheerio
 `.text()` which concatenates the textContent of all matching elements. Prior to
-the first 'text' action, `state.text` will be null. Simply invoking `.getState()`
-where `state.text` is null will not update `state.text`. However, once
-`state.text` has been set to a string, subsequent invocations of `.getState()`
-will update `state.text`. Set `state.text` only when necessary, since very large
-text strings across many organisms with many members can add up to a large
-amount of data.
+the first 'text' action, `state.textContent` will be null. Simply invoking
+`.getState()` where `state.textContent` is null will not update
+`state.textContent`. However, once `state.textContent` has been set to a string,
+subsequent invocations of `.getState()` will update `state.textContent`. Set
+`state.textContent` only when necessary, since very large text strings across
+many organisms with many members can add up to a large amount of data.
 
 ### toggleClass(classes)
 For each submitted class, add or remove that class from all matches, depending

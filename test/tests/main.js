@@ -2476,12 +2476,12 @@ targets', function () {
         const stateAfter = requerio.$orgs['.append--0'].getState();
 
         expect(stateBefore.html).to.be.null;
-        expect(stateBefore.text).to.be.null;
+        expect(stateBefore.textContent).to.be.null;
         expect(stateAfter.html).to.equal(`
         <span>Foo</span>
         <span>Bar</span>
 `);
-        expect(stateAfter.text).to.equal(`
+        expect(stateAfter.textContent).to.equal(`
         Foo
         Bar
 `);
@@ -2495,12 +2495,12 @@ targets', function () {
         const stateAfter = requerio.$orgs['.append'].getState(1);
 
         expect(stateBefore.html).to.be.null;
-        expect(stateBefore.text).to.be.null;
+        expect(stateBefore.textContent).to.be.null;
         expect(stateAfter.html).to.equal(`
         <span>Foo</span>
         <span>Bar</span>
 `);
-        expect(stateAfter.text).to.equal(`
+        expect(stateAfter.textContent).to.equal(`
         Foo
         Bar
 `);
@@ -2635,9 +2635,9 @@ targets', function () {
         const stateAfter = requerio.$orgs['.html--0'].getState();
 
         expect(stateBefore.html).to.equal('');
-        expect(stateBefore.text).to.equal('');
+        expect(stateBefore.textContent).to.equal('');
         expect(stateAfter.html).to.equal('<span>Foo</span>');
-        expect(stateAfter.text).to.equal('Foo');
+        expect(stateAfter.textContent).to.equal('Foo');
       });
 
       it('html() dangerously writes HTML to the DOM in a targeted manner', function () {
@@ -2652,13 +2652,13 @@ targets', function () {
         const stateAfter1 = requerio.$orgs['.html'].getState(1);
 
         expect(stateBefore.html).to.equal('<span>Foo</span>');
-        expect(stateBefore.text).to.equal('Foo');
+        expect(stateBefore.textContent).to.equal('Foo');
         expect(stateBefore1.html).to.be.null;
-        expect(stateBefore1.text).to.be.null;
+        expect(stateBefore1.textContent).to.be.null;
         expect(stateAfter.html).to.equal('<span>Foo</span>');
-        expect(stateAfter.text).to.equal('Foo');
+        expect(stateAfter.textContent).to.equal('Foo');
         expect(stateAfter1.html).to.equal('<span>Bar</span>');
-        expect(stateAfter1.text).to.equal('Bar');
+        expect(stateAfter1.textContent).to.equal('Bar');
       });
 
       it('html() dangerously writes HTML to the DOM across multiple targets', function () {
@@ -2673,17 +2673,17 @@ targets', function () {
         const stateAfter3 = requerio.$orgs['.html'].getState(3);
 
         expect(stateBefore.html).to.equal('<span>Foo</span>');
-        expect(stateBefore.text).to.equal('Foo');
+        expect(stateBefore.textContent).to.equal('Foo');
         expect(stateBefore2.html).to.be.null;
-        expect(stateBefore2.text).to.be.null;
+        expect(stateBefore2.textContent).to.be.null;
         expect(stateBefore3.html).to.be.null;
-        expect(stateBefore3.text).to.be.null;
+        expect(stateBefore3.textContent).to.be.null;
         expect(stateAfter.html).to.equal('<span>Foo</span>');
-        expect(stateAfter.text).to.equal('Foo');
+        expect(stateAfter.textContent).to.equal('Foo');
         expect(stateAfter2.html).to.equal('<span>Bar</span>');
-        expect(stateAfter2.text).to.equal('Bar');
+        expect(stateAfter2.textContent).to.equal('Bar');
         expect(stateAfter3.html).to.equal('<span>Bar</span>');
-        expect(stateAfter3.text).to.equal('Bar');
+        expect(stateAfter3.textContent).to.equal('Bar');
       });
 
       it('html(), by adding HTML elements, can increase the number of members among descendants', function () {
@@ -2735,12 +2735,12 @@ targets', function () {
         const stateAfter = requerio.$orgs['.prepend--0'].getState();
 
         expect(stateBefore.html).to.be.null;
-        expect(stateBefore.text).to.be.null;
+        expect(stateBefore.textContent).to.be.null;
         expect(stateAfter.html).to.equal(`
         <span>Foo</span>
         <span>Bar</span>
       `);
-        expect(stateAfter.text).to.equal(`
+        expect(stateAfter.textContent).to.equal(`
         Foo
         Bar
       `);
@@ -2754,12 +2754,12 @@ targets', function () {
         const stateAfter = requerio.$orgs['.prepend'].getState(1);
 
         expect(stateBefore.html).to.be.null;
-        expect(stateBefore.text).to.be.null;
+        expect(stateBefore.textContent).to.be.null;
         expect(stateAfter.html).to.equal(`
         <span>Foo</span>
         <span>Bar</span>
       `);
-        expect(stateAfter.text).to.equal(`
+        expect(stateAfter.textContent).to.equal(`
         Foo
         Bar
       `);
@@ -2799,9 +2799,9 @@ targets', function () {
         const stateAfter = requerio.$orgs['.text--0'].getState();
 
         expect(stateBefore.html).to.equal('');
-        expect(stateBefore.text).to.equal('');
+        expect(stateBefore.textContent).to.equal('');
         expect(stateAfter.html).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
-        expect(stateAfter.text).to.equal('<span>Foo</span>');
+        expect(stateAfter.textContent).to.equal('<span>Foo</span>');
       });
 
       it('text() safely writes text to the DOM in a targeted manner', function () {
@@ -2816,13 +2816,13 @@ targets', function () {
         const stateAfter1 = requerio.$orgs['.text'].getState(1);
 
         expect(stateBefore.html).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
-        expect(stateBefore.text).to.equal('<span>Foo</span>');
+        expect(stateBefore.textContent).to.equal('<span>Foo</span>');
         expect(stateBefore1.html).to.be.null;
-        expect(stateBefore1.text).to.be.null;
+        expect(stateBefore1.textContent).to.be.null;
         expect(stateAfter.html).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
-        expect(stateAfter.text).to.equal('<span>Foo</span>');
+        expect(stateAfter.textContent).to.equal('<span>Foo</span>');
         expect(stateAfter1.html).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
-        expect(stateAfter1.text).to.equal('<span>Bar</span>');
+        expect(stateAfter1.textContent).to.equal('<span>Bar</span>');
       });
 
       it('text() safely writes text to the DOM across multiple targets', function () {
@@ -2837,17 +2837,17 @@ targets', function () {
         const stateAfter3 = requerio.$orgs['.text'].getState(3);
 
         expect(stateBefore.html).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
-        expect(stateBefore.text).to.equal('<span>Foo</span>');
+        expect(stateBefore.textContent).to.equal('<span>Foo</span>');
         expect(stateBefore2.html).to.be.null;
-        expect(stateBefore2.text).to.be.null;
+        expect(stateBefore2.textContent).to.be.null;
         expect(stateBefore3.html).to.be.null;
-        expect(stateBefore3.text).to.be.null;
+        expect(stateBefore3.textContent).to.be.null;
         expect(stateAfter.html).to.equal('&lt;span&gt;Foo&lt;/span&gt;');
-        expect(stateAfter.text).to.equal('<span>Foo</span>');
+        expect(stateAfter.textContent).to.equal('<span>Foo</span>');
         expect(stateAfter2.html).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
-        expect(stateAfter2.text).to.equal('<span>Bar</span>');
+        expect(stateAfter2.textContent).to.equal('<span>Bar</span>');
         expect(stateAfter3.html).to.equal('&lt;span&gt;Bar&lt;/span&gt;');
-        expect(stateAfter3.text).to.equal('<span>Bar</span>');
+        expect(stateAfter3.textContent).to.equal('<span>Bar</span>');
       });
     });
   };

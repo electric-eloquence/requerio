@@ -1373,7 +1373,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
         }
       }
 
-      if (state.text !== textNow) {
+      if (state.textContent !== textNow) {
         store.dispatch({
           type: 'TEXT',
           selector: this.selector,
@@ -1476,9 +1476,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
 
     if (typeof memberIdx === 'number') {
       delete stateNow.$members;
-    }
-    else {
-      stateNow.members = state.$members.length;
+      delete stateNow.members;
     }
 
     return stateNow;

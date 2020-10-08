@@ -1810,7 +1810,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
         }
       }
 
-      if (state.text !== textNow) {
+      if (state.textContent !== textNow) {
         store.dispatch({
           type: 'TEXT',
           selector: this.selector,
@@ -1913,9 +1913,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
 
     if (typeof memberIdx === 'number') {
       delete stateNow.$members;
-    }
-    else {
-      stateNow.members = state.$members.length;
+      delete stateNow.members;
     }
 
     return stateNow;
@@ -2500,7 +2498,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
 
 /**
  * Contracts for future states. Initial states contain empty values.
- * Do not to let states bloat for no reason (as it could with large .html or .text).
+ * Do not to let states bloat for no reason (as it could with large .html or .textContent).
  * Be sure to update docs/state-object-defaults.md when updating any of these defaults.
  *
  * @param {string} orgSelector - The organism's selector.
@@ -2559,11 +2557,11 @@ function getStateDefault(orgSelector) {
       scrollLeft: null,
       scrollTop: null,
       style: {}, // DEPRECATED.
-      text: null,
-      textContent: null, // DEPRECATED.
+      textContent: null,
       width: null,
       height: null,
-      $members: []
+      $members: [], // $members and members are not recursive, i.e. on organism states only, not on member states.
+      members: null
     };
   }
 
@@ -2863,7 +2861,7 @@ data.
         // AND
         //   this action is untargeted
         //   OR is targeted and is the member action (not the organism action).
-        if (action.args.length === 1 && (typeof memberIdx === 'undefined' || !state.$members.length)) {
+        if (action.args.length === 1 && (typeof memberIdx === 'undefined' || !state.members)) {
           state[action.method] = action.args[0];
           state.innerHTML = state.html; // DEPRECATED.
         }
@@ -3098,24 +3096,24 @@ properties on `state.boundingClientRect`.
       /**
 ### text(text)
 Set the textContent of all matches. This is a safer way to change text on the
-DOM than dispatching an 'html' action. Will set `state.text` as per the getter
-below.
+DOM than dispatching an 'html' action. Will set `state.textContent` as per the
+getter below.
 
 | Param | Type | Description |
 | --- | --- | --- |
 | text | `string` | A string of text. Functions are not supported. |
 
 ### text()
-Dispatching a 'text' action without a parameter will set `state.text` to the
+Dispatching a 'text' action without a parameter will set `state.textContent` to
 the textContent of the targeted element, or if untargeted, the textContent of
 the first element. This contrasts with the return value of jQuery/Cheerio
 `.text()` which concatenates the textContent of all matching elements. Prior to
-the first 'text' action, `state.text` will be null. Simply invoking `.getState()`
-where `state.text` is null will not update `state.text`. However, once
-`state.text` has been set to a string, subsequent invocations of `.getState()`
-will update `state.text`. Set `state.text` only when necessary, since very large
-text strings across many organisms with many members can add up to a large
-amount of data.
+the first 'text' action, `state.textContent` will be null. Simply invoking
+`.getState()` where `state.textContent` is null will not update
+`state.textContent`. However, once `state.textContent` has been set to a string,
+subsequent invocations of `.getState()` will update `state.textContent`. Set
+`state.textContent` only when necessary, since very large text strings across
+many organisms with many members can add up to a large amount of data.
 */
       case 'text': {
         // Only perform this update
@@ -3123,9 +3121,8 @@ amount of data.
         // AND
         //   this action is untargeted
         //   OR is targeted and is the member action (not the organism action).
-        if (action.args.length === 1 && (typeof memberIdx === 'undefined' || !state.$members.length)) {
-          state[action.method] = action.args[0];
-          state.textContent = state.text; // DEPRECATED.
+        if (action.args.length === 1 && (typeof memberIdx === 'undefined' || !state.members)) {
+          state.textContent = action.args[0];
         }
 
         break;
@@ -3166,7 +3163,7 @@ Set the value of all matches, typically form fields. This will set `state.val`.
         if (action.args.length === 1) {
           // Coerce to string. It's the users' job to make sure they are submitting the right type.
           state[action.method] = action.args[0] + '';
-          state.value = state.val; // DEPRECATED
+          state.value = state.val; // DEPRECATED.
         }
 
         break;
@@ -3276,6 +3273,8 @@ function reducerClosure(orgSelector, customReducer) {
             console.error(err); // eslint-disable-line no-console
           }
         }
+
+        state.members = state.$members.length;
       }
 
       // Build new state for organism.
