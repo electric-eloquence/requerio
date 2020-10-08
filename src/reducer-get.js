@@ -262,10 +262,6 @@ Set one or more key:value pairs of data. Does not affect HTML data attributes.
 */
       case 'data': {
         if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          if (!state.data) {
-            state.data = {};
-          }
-
           Object.assign(state.data, action.args[0]);
         }
 

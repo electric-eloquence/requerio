@@ -155,9 +155,7 @@ organism, set the focused organism's selector as `state.activeOrganism`.
 
         const state = store.getState()[orgSelector];
 
-        if (orgSelector === 'window' && typeof window === 'object') {
-          $org.updateMeasurements(state);
-        }
+        $org.updateMeasurements(state);
 
         return state;
       };

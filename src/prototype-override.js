@@ -365,7 +365,6 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       }
       else {
         if (computedStyle.boxSizing === 'content-box') {
-
           return parseInt(computedStyle.width, 10) +
             (parseInt(computedStyle.paddingLeft, 10) || 0) +
             (parseInt(computedStyle.paddingRight, 10) || 0);
@@ -1035,7 +1034,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         let computedStyle = {};
 
         if (typeof window === 'object') { // jQuery
-          if (this.selector !== 'window' && !this.selector === 'document') {
+          if (this.selector !== 'window' && this.selector !== 'document') {
             if (Array.isArray($member) && Array.isArray(memberIdx)) {
               for (let idx of memberIdx) {
                 if (this[idx]) {
@@ -1245,7 +1244,7 @@ A server-side stand-in for client-side `.focus()`.
 ### .getState([memberIdx])
 Gets state of Requerio organism or member. Invokes Redux `store.getState()`.
 
-__Returns__: `object` - The organism's state.
+__Returns__: `object`\|`null` - The organism's or member's state or `null` if the state doesn't exist.
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1267,8 +1266,20 @@ __Returns__: `object` - The organism's state.
       }
     }
 
+    // Return null if the memberIdx is out-of-bounds.
+    // The case of window and document organisms is already handled in post-inception.js.
+    if (!this[orgIdx]) {
+      return null;
+    }
+
     if (!state) {
       state = store.getState()[this.selector];
+    }
+
+    // If still no state, return null.
+    /* istanbul ignore if */
+    if (!state) {
+      return null;
     }
 
     /* boundingClientRect */
@@ -1403,6 +1414,7 @@ __Returns__: `object` - The organism's state.
       }
     }
 
+    /* istanbul ignore if */
     if (JSON.stringify(state.prop) !== JSON.stringify(propNow)) {
       store.dispatch({
         type: 'PROP',
@@ -1958,7 +1970,8 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
 | [memberIdx] | `number`\|`number[]` | The index (or array of indices) of the organism member(s) (if targeting one or more members). |
 */
   $.prototype.updateMeasurements = function (state, $member, memberIdx) {
-    if (memberIdx && !this[memberIdx]) {
+    /* istanbul ignore if */
+    if (typeof memberIdx === 'number' && !this[memberIdx]) {
       return false;
     }
 
@@ -1966,7 +1979,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     let updateState = false;
 
     if (typeof window === 'object') { // jQuery
-      if (this.selector !== 'window' && !this.selector !== 'document') {
+      if (this.selector !== 'window' && this.selector !== 'document') {
         if (Array.isArray($member) && Array.isArray(memberIdx)) {
           for (let idx of memberIdx) {
             if (this[idx]) {

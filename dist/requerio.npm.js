@@ -69,6 +69,7 @@ var organismsIncept = ($orgs, $) => {
     if (typeof $org.innerWidth === 'undefined') {
       $org.innerWidth = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._innerWidth;
           }
@@ -93,6 +94,7 @@ var organismsIncept = ($orgs, $) => {
     if (typeof $org.innerHeight === 'undefined') {
       $org.innerHeight = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._innerHeight;
           }
@@ -117,6 +119,7 @@ var organismsIncept = ($orgs, $) => {
     if (typeof $org.outerWidth === 'undefined') {
       $org.outerWidth = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._outerWidth;
           }
@@ -141,6 +144,7 @@ var organismsIncept = ($orgs, $) => {
     if (typeof $org.outerHeight === 'undefined') {
       $org.outerHeight = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._outerHeight;
           }
@@ -165,6 +169,7 @@ var organismsIncept = ($orgs, $) => {
     if (typeof $org.scrollLeft === 'undefined') {
       $org.scrollLeft = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._scrollLeft;
           }
@@ -189,6 +194,7 @@ var organismsIncept = ($orgs, $) => {
     if (typeof $org.scrollTop === 'undefined') {
       $org.scrollTop = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._scrollTop;
           }
@@ -213,6 +219,7 @@ var organismsIncept = ($orgs, $) => {
     if (typeof $org.width === 'undefined') {
       $org.width = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._width;
           }
@@ -237,6 +244,7 @@ var organismsIncept = ($orgs, $) => {
     if (typeof $org.height === 'undefined') {
       $org.height = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._height;
           }
@@ -419,9 +427,7 @@ organism, set the focused organism's selector as `state.activeOrganism`.
 
         const state = store.getState()[orgSelector];
 
-        if (orgSelector === 'window' && typeof window === 'object') {
-          $org.updateMeasurements(state);
-        }
+        $org.updateMeasurements(state);
 
         return state;
       };
@@ -796,7 +802,6 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       }
       else {
         if (computedStyle.boxSizing === 'content-box') {
-
           return parseInt(computedStyle.width, 10) +
             (parseInt(computedStyle.paddingLeft, 10) || 0) +
             (parseInt(computedStyle.paddingRight, 10) || 0);
@@ -1466,7 +1471,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         let computedStyle = {};
 
         if (typeof window === 'object') { // jQuery
-          if (this.selector !== 'window' && !this.selector === 'document') {
+          if (this.selector !== 'window' && this.selector !== 'document') {
             if (Array.isArray($member) && Array.isArray(memberIdx)) {
               for (let idx of memberIdx) {
                 if (this[idx]) {
@@ -1676,7 +1681,7 @@ A server-side stand-in for client-side `.focus()`.
 ### .getState([memberIdx])
 Gets state of Requerio organism or member. Invokes Redux `store.getState()`.
 
-__Returns__: `object` - The organism's state.
+__Returns__: `object`\|`null` - The organism's or member's state or `null` if the state doesn't exist.
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1698,8 +1703,20 @@ __Returns__: `object` - The organism's state.
       }
     }
 
+    // Return null if the memberIdx is out-of-bounds.
+    // The case of window and document organisms is already handled in post-inception.js.
+    if (!this[orgIdx]) {
+      return null;
+    }
+
     if (!state) {
       state = store.getState()[this.selector];
+    }
+
+    // If still no state, return null.
+    /* istanbul ignore if */
+    if (!state) {
+      return null;
     }
 
     /* boundingClientRect */
@@ -1834,6 +1851,7 @@ __Returns__: `object` - The organism's state.
       }
     }
 
+    /* istanbul ignore if */
     if (JSON.stringify(state.prop) !== JSON.stringify(propNow)) {
       store.dispatch({
         type: 'PROP',
@@ -2389,7 +2407,8 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
 | [memberIdx] | `number`\|`number[]` | The index (or array of indices) of the organism member(s) (if targeting one or more members). |
 */
   $.prototype.updateMeasurements = function (state, $member, memberIdx) {
-    if (memberIdx && !this[memberIdx]) {
+    /* istanbul ignore if */
+    if (typeof memberIdx === 'number' && !this[memberIdx]) {
       return false;
     }
 
@@ -2397,7 +2416,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     let updateState = false;
 
     if (typeof window === 'object') { // jQuery
-      if (this.selector !== 'window' && !this.selector !== 'document') {
+      if (this.selector !== 'window' && this.selector !== 'document') {
         if (Array.isArray($member) && Array.isArray(memberIdx)) {
           for (let idx of memberIdx) {
             if (this[idx]) {
@@ -2744,10 +2763,6 @@ Set one or more key:value pairs of data. Does not affect HTML data attributes.
 */
       case 'data': {
         if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          if (!state.data) {
-            state.data = {};
-          }
-
           Object.assign(state.data, action.args[0]);
         }
 

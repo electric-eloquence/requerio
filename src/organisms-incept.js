@@ -67,6 +67,7 @@ export default ($orgs, $) => {
     if (typeof $org.innerWidth === 'undefined') {
       $org.innerWidth = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._innerWidth;
           }
@@ -91,6 +92,7 @@ export default ($orgs, $) => {
     if (typeof $org.innerHeight === 'undefined') {
       $org.innerHeight = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._innerHeight;
           }
@@ -115,6 +117,7 @@ export default ($orgs, $) => {
     if (typeof $org.outerWidth === 'undefined') {
       $org.outerWidth = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._outerWidth;
           }
@@ -139,6 +142,7 @@ export default ($orgs, $) => {
     if (typeof $org.outerHeight === 'undefined') {
       $org.outerHeight = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._outerHeight;
           }
@@ -163,6 +167,7 @@ export default ($orgs, $) => {
     if (typeof $org.scrollLeft === 'undefined') {
       $org.scrollLeft = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._scrollLeft;
           }
@@ -187,6 +192,7 @@ export default ($orgs, $) => {
     if (typeof $org.scrollTop === 'undefined') {
       $org.scrollTop = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._scrollTop;
           }
@@ -211,6 +217,7 @@ export default ($orgs, $) => {
     if (typeof $org.width === 'undefined') {
       $org.width = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._width;
           }
@@ -235,6 +242,7 @@ export default ($orgs, $) => {
     if (typeof $org.height === 'undefined') {
       $org.height = (distance) => {
         if (typeof distance === 'undefined') {
+          /* istanbul ignore else */
           if ($org.$members[0]) {
             return $org.$members[0]._height;
           }

@@ -60,7 +60,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
       // Cheerio.
       if ($._root && $._root.attribs) {
-        it('dispatches the "getBoundingClientRect" action on "window" but does not update its state', function () {
+        it('dispatches the "getBoundingClientRect" action on the "window" organism', function () {
           const stateBefore = requerio.$orgs.window.getState();
 
           requerio.$orgs.window.dispatchAction('getBoundingClientRect');
@@ -79,7 +79,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
       }
       // jQuery.
       else {
-        it('dispatches the "getBoundingClientRect" action on "window"', function () {
+        it('dispatches the "getBoundingClientRect" action on the "window" organism', function () {
           const stateBefore = requerio.$orgs.window.getState();
 
           requerio.$orgs.window.dispatchAction('getBoundingClientRect');
@@ -90,19 +90,10 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
             // eslint-disable-next-line max-len
             '{"data":{},"innerWidth":null,"innerHeight":null,"outerWidth":null,"outerHeight":null,"scrollLeft":null,"scrollTop":null,"width":null,"height":null}'
           );
-
-          if (typeof window === 'object') { // jQuery.
-            expect(JSON.stringify(stateAfter)).to.equal(
-              // eslint-disable-next-line max-len
-              '{"data":{},"innerWidth":1024,"innerHeight":768,"outerWidth":1024,"outerHeight":768,"scrollLeft":0,"scrollTop":0,"width":1024,"height":768}'
-            );
-          }
-          else { // Cheerio.
-            expect(JSON.stringify(stateAfter)).to.equal(
-              // eslint-disable-next-line max-len
-              '{"data":{},"innerWidth":0,"innerHeight":0,"outerWidth":1024,"outerHeight":768,"scrollLeft":0,"scrollTop":0,"width":0,"height":0}'
-            );
-          }
+          expect(JSON.stringify(stateAfter)).to.equal(
+            // eslint-disable-next-line max-len
+            '{"data":{},"innerWidth":1024,"innerHeight":768,"outerWidth":1024,"outerHeight":768,"scrollLeft":0,"scrollTop":0,"width":1024,"height":768}'
+          );
         });
       }
 

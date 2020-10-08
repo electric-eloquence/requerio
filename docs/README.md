@@ -63,7 +63,7 @@ A server-side stand-in for client-side `.focus()`.
 ### .getState([memberIdx])
 Gets state of Requerio organism or member. Invokes Redux `store.getState()`.
 
-__Returns__: `object` - The organism's state.
+__Returns__: `object`\|`null` - The organism's or member's state or `null` if the state doesn't exist.
 
 | Param | Type | Description |
 | --- | --- | --- |
