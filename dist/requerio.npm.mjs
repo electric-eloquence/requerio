@@ -3116,23 +3116,27 @@ function reducerClosure(orgSelector, customReducer) {
       }
 
       if (typeof customReducer === 'function') {
-        const customState = customReducer(JSON.parse(JSON.stringify(state)), action, $org, prevState);
+        try {
+          const customState = customReducer(JSON.parse(JSON.stringify(state)), action, $org, prevState);
 
-        // We need to validate customState because older versions of Requerio had the 4th constructor argument return an
-        // object of action functions. We now want the 4th argument to be an optional custom reducer.
-        if (
-          typeof customState === 'object' && // Must be an object and not function.
-          customState instanceof Object // Don't want to check constructor because this is user submitted.
-        ) {
-          for (const i of Object.keys(customState)) {
-            if (typeof customState[i] === 'function') {
-              // The older Requerio versions would have functions as properties of this object.
-              // If this is the case, ignore the output of customReducer and return the state as built earlier.
-              return state;
+          if (
+            customState &&                  // Must not be null. Must be an object
+            typeof customState === 'object' // but don't want to check the constructor because this is user submitted.
+          ) {
+            for (const i of Object.keys(customState)) {
+              if (typeof customState[i] === 'function') {
+                // The older Requerio versions would have functions as properties of this object.
+                // If this is the case, ignore the output of customReducer and return the state as built earlier.
+                return state;
+              }
             }
-          }
 
-          return customState;
+            return customState;
+          }
+        }
+        catch (err) {
+          /* istanbul ignore next */
+          console.error(err); // eslint-disable-line no-console
         }
       }
 
