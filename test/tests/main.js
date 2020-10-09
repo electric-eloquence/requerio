@@ -264,20 +264,6 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         });
 
         describe('with no argument', function () {
-          it('returns the organism when "attr" is dispatched', function () {
-            const retVal =
-              requerio.$orgs['.exclude__w-no-argument'].exclude('.exclude__w-no-argument--0').dispatchAction('attr');
-
-            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
-          });
-
-          it('returns the organism when "data" is dispatched', function () {
-            const retVal =
-              requerio.$orgs['.exclude__w-no-argument'].exclude('.exclude__w-no-argument--0').dispatchAction('data');
-
-            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
-          });
-
           it('returns the organism when "getBoundingClientRect" is dispatched', function () {
             const retVal = requerio.$orgs['.exclude__w-no-argument'].exclude('.exclude__w-no-argument--0')
               .dispatchAction('getBoundingClientRect');
@@ -285,30 +271,9 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
             expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
           });
 
-          it('returns the organism when "innerWidth" is dispatched', function () {
-            const retVal = requerio.$orgs['.exclude__w-no-argument']
-              .exclude('.exclude__w-no-argument--0').dispatchAction('innerWidth');
-
-            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
-          });
-
-          it('returns the organism when "innerHeight" is dispatched', function () {
-            const retVal = requerio.$orgs['.exclude__w-no-argument']
-              .exclude('.exclude__w-no-argument--0').dispatchAction('innerHeight');
-
-            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
-          });
-
-          it('returns the organism when "outerWidth" is dispatched', function () {
-            const retVal = requerio.$orgs['.exclude__w-no-argument']
-              .exclude('.exclude__w-no-argument--0').dispatchAction('outerWidth');
-
-            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
-          });
-
-          it('returns the organism when "outerHeight" is dispatched', function () {
-            const retVal = requerio.$orgs['.exclude__w-no-argument']
-              .exclude('.exclude__w-no-argument--0').dispatchAction('outerHeight');
+          it('returns the organism when "height" is dispatched', function () {
+            const retVal =
+              requerio.$orgs['.exclude__w-no-argument'].exclude('.exclude__w-no-argument--0').dispatchAction('height');
 
             expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
           });
@@ -330,13 +295,6 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           it('returns the organism when "width" is dispatched', function () {
             const retVal =
               requerio.$orgs['.exclude__w-no-argument'].exclude('.exclude__w-no-argument--0').dispatchAction('width');
-
-            expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
-          });
-
-          it('returns the organism when "height" is dispatched', function () {
-            const retVal =
-              requerio.$orgs['.exclude__w-no-argument'].exclude('.exclude__w-no-argument--0').dispatchAction('height');
 
             expect(retVal).to.equal(requerio.$orgs['.exclude__w-no-argument']);
           });
@@ -1088,14 +1046,14 @@ in a targeted manner', function () {
 
           // Cheerio.
           if ($._root && $._root.attribs) {
-            $org.innerWidth(width);
-            $org.innerHeight(height);
-            $org.outerWidth(width);
-            $org.outerHeight(height);
-            $org.scrollLeft(left);
-            $org.scrollTop(top);
-            $org.width(width);
-            $org.height(height);
+            $org.innerWidth(width, 1);
+            $org.innerHeight(height, 1);
+            $org.outerWidth(width, 1);
+            $org.outerHeight(height, 1);
+            $org.scrollLeft(left, 1);
+            $org.scrollTop(top, 1);
+            $org.width(width, 1);
+            $org.height(height, 1);
           }
           // jQuery.
           else {
@@ -1121,7 +1079,7 @@ in a targeted manner', function () {
             },
             1
           );
-          $org.updateMeasurements(stateBefore1, $org, 1);
+          $org.updateMeasurements(stateBefore1, $org.$members[1], 1);
 
           const stateAfter0 = $org.getState(0);
           const stateAfter1 = $org.getState(1);
@@ -1194,14 +1152,22 @@ in a targeted manner', function () {
 
           // Cheerio.
           if ($._root && $._root.attribs) {
-            $org.innerWidth(width);
-            $org.innerHeight(height);
-            $org.outerWidth(width);
-            $org.outerHeight(height);
-            $org.scrollLeft(left);
-            $org.scrollTop(top);
-            $org.width(width);
-            $org.height(height);
+            $org.innerWidth(width, 0);
+            $org.innerHeight(height, 0);
+            $org.outerWidth(width, 0);
+            $org.outerHeight(height, 0);
+            $org.scrollLeft(left, 0);
+            $org.scrollTop(top, 0);
+            $org.width(width, 0);
+            $org.height(height, 0);
+            $org.innerWidth(width, 2);
+            $org.innerHeight(height, 2);
+            $org.outerWidth(width, 2);
+            $org.outerHeight(height, 2);
+            $org.scrollLeft(left, 2);
+            $org.scrollTop(top, 2);
+            $org.width(width, 2);
+            $org.height(height, 2);
           }
           // jQuery.
           else {
@@ -1235,7 +1201,7 @@ in a targeted manner', function () {
             },
             [0, 2]
           );
-          $org.updateMeasurements(stateBefore0, [$org, $org], [0, 2]);
+          $org.updateMeasurements(stateBefore0, [$org.$members[0], $org.$members[2]], [0, 2]);
 
           const stateAfter0 = $org.getState(0);
           const stateAfter1 = $org.getState(1);
@@ -1622,38 +1588,6 @@ in a targeted manner', function () {
         expect(state2.classArray).to.not.include('toggle-class-false');
       });
 
-      it('dispatches the "attr" action with no argument', function () {
-        requerio.$orgs['#main'].dispatchAction('attr');
-
-        const state = requerio.$orgs['#main'].getState();
-
-        expect(state.attribs.id).to.equal('main');
-        expect(state.attribs['data-from-attribute']).to.equal('hyphen-delimited to camelCase');
-        expect(state.attribs.class).to.equal('add-class-string add-class-function toggle-class-true');
-
-        if (typeof window === 'object') {
-          expect(state.attribs.style).to.equal('width: 3px; height: 3px;');
-        }
-      });
-
-      it('dispatches the "attr" action with no argument in a targeted manner', function () {
-        requerio.$orgs['.main__div'].dispatchAction('attr', null, 1);
-
-        const state = requerio.$orgs['.main__div'].getState(1);
-
-        expect(state.attribs.class).to.equal('main__div main__div--1 add-class-1');
-      });
-
-      it('dispatches the "attr" action with no argument across multiple targets', function () {
-        requerio.$orgs['.main__div'].dispatchAction('attr', null, [0, 1]);
-
-        const state0 = requerio.$orgs['.main__div'].getState(0);
-        const state1 = requerio.$orgs['.main__div'].getState(1);
-
-        expect(state0.attribs.class).to.equal('main__div main__div--0');
-        expect(state1.attribs.class).to.equal('main__div main__div--1 add-class-1');
-      });
-
       it('dispatches the "attr" action with a single string value argument', function () {
         requerio.$orgs['#main'].dispatchAction('attr', {test: 'testing12345'});
 
@@ -1769,32 +1703,6 @@ in a targeted manner', function () {
         expect(state.css['background-color']).to.equal('cyan');
       });
 
-      it('dispatches the "css" action to update the state with a single string property argument', function () {
-        requerio.$orgs['#main'].css({color: 'yellow'});
-        requerio.$orgs['#main'].dispatchAction('css', 'color');
-
-        const state = requerio.$orgs['#main'].getState();
-
-        expect(state.css.color).to.equal('yellow');
-      });
-
-      it('dispatches the "css" action to update the state with a multiple string properties argument', function () {
-        requerio.$orgs['#main'].css({color: 'magenta'});
-        requerio.$orgs['#main'].css({'background-color': 'magenta'});
-        requerio.$orgs['#main'].dispatchAction('css', ['color', 'background-color']);
-
-        const state = requerio.$orgs['#main'].getState();
-
-        expect(state.css.color).to.equal('magenta');
-        expect(state.css['background-color']).to.equal('magenta');
-
-        if (typeof window === 'object') {
-          expect(state.css.backgroundColor).to.equal('magenta');
-        }
-
-        expect(state.css['background-color']).to.equal('magenta');
-      });
-
       it('dispatches the "css" action with a single string value argument in a targeted manner', function () {
         requerio.$orgs['.main__div'].dispatchAction('css', {color: 'red'}, 1);
 
@@ -1831,18 +1739,19 @@ in a targeted manner', function () {
         expect(state1.css.color).to.equal('green');
       });
 
-      it('dispatches the "css" action with a single string camelCase value argument in a targeted manner', function () {
-        requerio.$orgs['.main__div'].dispatchAction('css', {backgroundColor: 'darkgreen'}, 1);
+      it('dispatches the "css" action with a single string camelCase value argument across multiple targets\
+', function () {
+        requerio.$orgs['.main__div'].dispatchAction('css', {backgroundColor: 'darkgreen'}, [0, 1]);
 
         const state0 = requerio.$orgs['.main__div'].getState(0);
         const state1 = requerio.$orgs['.main__div'].getState(1);
 
-        expect(state0.css.backgroundColor).to.not.equal(state1.css.backgroundColor);
+        expect(state0.css.backgroundColor).to.equal('darkgreen');
         expect(state1.css.backgroundColor).to.equal('darkgreen');
 
         // Cheerio does not convert from camelCase to hyphenated.
         if (typeof window === 'object') {
-          expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
+          expect(state0.css['background-color']).to.equal('darkgreen');
           expect(state1.css['background-color']).to.equal('darkgreen');
         }
       });
@@ -1881,72 +1790,6 @@ in a targeted manner', function () {
 
         expect(state0.css['background-color']).to.equal('cyan');
         expect(state1.css['background-color']).to.equal('cyan');
-      });
-
-      it('dispatches the "css" action to update the state with a single string property argument in a targeted manner\
-', function () {
-        requerio.$orgs['.main__div'].css({color: 'yellow'});
-        requerio.$orgs['.main__div'].dispatchAction('css', 'color', 1);
-
-        const state0 = requerio.$orgs['.main__div'].getState(0);
-        const state1 = requerio.$orgs['.main__div'].getState(1);
-
-        expect(state0.css.color).to.not.equal(state1.css.color);
-        expect(state1.css.color).to.equal('yellow');
-      });
-
-      it('dispatches the "css" action to update the state with a single string property argument across multiple \
-targets', function () {
-        requerio.$orgs['.main__div'].css({color: 'magenta'});
-        requerio.$orgs['.main__div'].dispatchAction('css', 'color', [0, 1]);
-
-        const state0 = requerio.$orgs['.main__div'].getState(0);
-        const state1 = requerio.$orgs['.main__div'].getState(1);
-
-        expect(state0.css.color).to.equal('magenta');
-        expect(state1.css.color).to.equal('magenta');
-      });
-
-      it('dispatches the "css" action to update the state with a multiple string properties argument in a targeted \
-manner', function () {
-        requerio.$orgs['.main__div'].css({color: 'black'});
-        requerio.$orgs['.main__div'].css({'background-color': 'black'});
-        requerio.$orgs['.main__div'].dispatchAction('css', ['color', 'background-color'], 1);
-
-        const state0 = requerio.$orgs['.main__div'].getState(0);
-        const state1 = requerio.$orgs['.main__div'].getState(1);
-
-        expect(state0.css.color).to.not.equal(state1.css.color);
-        expect(state1.css.color).to.equal('black');
-
-        if (typeof window === 'object') {
-          expect(state0.css.backgroundColor).to.not.equal(state1.css['background-color']);
-          expect(state1.css.backgroundColor).to.equal('black');
-        }
-
-        expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
-        expect(state1.css['background-color']).to.equal('black');
-      });
-
-      it('dispatches the "css" action to update the state with a multiple string properties argument across multiple \
-targets', function () {
-        requerio.$orgs['.main__div'].css({color: 'white'});
-        requerio.$orgs['.main__div'].css({'background-color': 'white'});
-        requerio.$orgs['.main__div'].dispatchAction('css', ['color', 'background-color'], [0, 1]);
-
-        const state0 = requerio.$orgs['.main__div'].getState(0);
-        const state1 = requerio.$orgs['.main__div'].getState(1);
-
-        expect(state0.css.color).to.equal('white');
-        expect(state1.css.color).to.equal('white');
-
-        if (typeof window === 'object') {
-          expect(state0.css.backgroundColor).to.equal('white');
-          expect(state1.css.backgroundColor).to.equal('white');
-        }
-
-        expect(state0.css['background-color']).to.equal('white');
-        expect(state1.css['background-color']).to.equal('white');
       });
 
       it('dispatches the "data" action to update state with data from a data attribute', function () {
@@ -2044,108 +1887,81 @@ targets', function () {
         expect(state.height).to.equal(1000);
       });
 
-      it('dispatches the "innerWidth" action', function () {
-        requerio.$orgs['#main'].dispatchAction('innerWidth', 1000);
-
-        const state = requerio.$orgs['#main'].getState();
-
-        expect(state.innerWidth).to.equal(1000);
-      });
-
-      it('dispatches the "innerWidth" action in a targeted manner', function () {
-        requerio.$orgs['.main__div'].dispatchAction('innerWidth', 1010, 0);
+      it('dispatches the "height" action in a targeted manner', function () {
+        requerio.$orgs['.main__div'].dispatchAction('height', 1010, 0);
 
         const state = requerio.$orgs['.main__div'].getState(0);
 
-        expect(state.innerWidth).to.equal(1010);
+        expect(state.height).to.equal(1010);
       });
 
-      it('dispatches the "innerWidth" action across multiple targets', function () {
-        requerio.$orgs['.main__div'].dispatchAction('innerWidth', 1020, [0, 1]);
+      it('dispatches the "height" action across multiple targets', function () {
+        requerio.$orgs['.main__div'].dispatchAction('height', 1020, [0, 1]);
 
         const state0 = requerio.$orgs['.main__div'].getState(0);
         const state1 = requerio.$orgs['.main__div'].getState(1);
 
-        expect(state0.innerWidth).to.equal(1020);
-        expect(state1.innerWidth).to.equal(1020);
+        expect(state0.height).to.equal(1020);
+        expect(state1.height).to.equal(1020);
       });
 
-      it('dispatches the "innerHeight" action', function () {
-        requerio.$orgs['#main'].dispatchAction('innerHeight', 1000);
+      it('dispatches the "height" action with a function argument', function () {
+        requerio.$orgs['#main'].dispatchAction(
+          'height',
+          function (idx, distance) {
+            return distance + parseInt(Object.keys(this).length + '' + idx, 10);
+          }
+        );
 
         const state = requerio.$orgs['#main'].getState();
 
-        expect(state.innerHeight).to.equal(1000);
+        if (typeof window === 'object') {
+          expect(state.height).to.equal(1020);
+        }
+        else {
+          expect(state.height).to.equal(1110);
+        }
       });
 
-      it('dispatches the "innerHeight" action in a targeted manner', function () {
-        requerio.$orgs['.main__div'].dispatchAction('innerHeight', 1010, 0);
+      it('dispatches the "height" action with a function argument in a targeted manner', function () {
+        requerio.$orgs['.main__div'].dispatchAction(
+          'height',
+          function (idx, distance) {
+            return distance + parseInt(Object.keys(this).length + '' + idx, 10);
+          },
+          0
+        );
 
         const state = requerio.$orgs['.main__div'].getState(0);
 
-        expect(state.innerHeight).to.equal(1010);
+        if (typeof window === 'object') {
+          expect(state.height).to.equal(1040);
+        }
+        else {
+          expect(state.height).to.equal(1130);
+        }
       });
 
-      it('dispatches the "innerHeight" action across multiple targets', function () {
-        requerio.$orgs['.main__div'].dispatchAction('innerHeight', 1020, [0, 1]);
+      it('dispatches the "height" action with a function argument across multiple targets', function () {
+        requerio.$orgs['.main__div'].dispatchAction(
+          'height',
+          function (idx, distance) {
+            return distance + parseInt(Object.keys(this).length + '' + idx, 10);
+          },
+          [0, 1]
+        );
 
         const state0 = requerio.$orgs['.main__div'].getState(0);
         const state1 = requerio.$orgs['.main__div'].getState(1);
 
-        expect(state0.innerHeight).to.equal(1020);
-        expect(state1.innerHeight).to.equal(1020);
-      });
-
-      it('dispatches the "outerWidth" action', function () {
-        requerio.$orgs['#main'].dispatchAction('outerWidth', 1010);
-
-        const state = requerio.$orgs['#main'].getState();
-
-        expect(state.outerWidth).to.equal(1010);
-      });
-
-      it('dispatches the "outerWidth" action in a targeted manner', function () {
-        requerio.$orgs['.main__div'].dispatchAction('outerWidth', 1010, 0);
-
-        const state = requerio.$orgs['.main__div'].getState(0);
-
-        expect(state.outerWidth).to.equal(1010);
-      });
-
-      it('dispatches the "outerWidth" action across multiple targets', function () {
-        requerio.$orgs['.main__div'].dispatchAction('outerWidth', 1020, [0, 1]);
-
-        const state0 = requerio.$orgs['.main__div'].getState(0);
-        const state1 = requerio.$orgs['.main__div'].getState(1);
-
-        expect(state0.outerWidth).to.equal(1020);
-        expect(state1.outerWidth).to.equal(1020);
-      });
-
-      it('dispatches the "outerHeight" action', function () {
-        requerio.$orgs['#main'].dispatchAction('outerHeight', 1100);
-
-        const state = requerio.$orgs['#main'].getState();
-
-        expect(state.outerHeight).to.equal(1100);
-      });
-
-      it('dispatches the "outerHeight" action in a targeted manner', function () {
-        requerio.$orgs['.main__div'].dispatchAction('outerHeight', 1010, 0);
-
-        const state = requerio.$orgs['.main__div'].getState(0);
-
-        expect(state.outerHeight).to.equal(1010);
-      });
-
-      it('dispatches the "outerHeight" action across multiple targets', function () {
-        requerio.$orgs['.main__div'].dispatchAction('outerHeight', 1020, [0, 1]);
-
-        const state0 = requerio.$orgs['.main__div'].getState(0);
-        const state1 = requerio.$orgs['.main__div'].getState(1);
-
-        expect(state0.outerHeight).to.equal(1020);
-        expect(state1.outerHeight).to.equal(1020);
+        if (typeof window === 'object') {
+          expect(state0.height).to.equal(1060);
+          expect(state1.height).to.equal(1040);
+        }
+        else {
+          expect(state0.height).to.equal(1240);
+          expect(state1.height).to.equal(1131);
+        }
       });
 
       it('dispatches the "prop" action', function () {

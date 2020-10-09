@@ -30,258 +30,92 @@ function applyMethod($org, method, args, $member) {
 }
 
 /**
- * Apply the .attr() jQuery/Cheerio method.
- *
- * @param {object} $org - Organism object.
- * @param {array} args - Arguments array, (not array-like object).
- * @param {object|object[]} [$member] - Organism member, or array of members.
- * @param {number|number[]} [memberIdx] - Organism member index, or array of indices.
- */
-function applyAttr($org, args, $member, memberIdx) {
-  if (args.length) {
-    applyMethod($org, 'attr', args, $member);
-  }
-  else {
-
-    // Cheerio components have an .attribs property for element attributes, which is undocumented and may change without
-    // notice. However, this is unlikely, since it is derived from its htmlparser2 dependency. The htmlparser2 package
-    // has had this property since its initial release and its public position is that this won't change.
-    // https://github.com/fb55/htmlparser2/issues/35
-    // https://github.com/cheeriojs/cheerio/issues/547
-    if ($org[0] && $org[0].attribs) {
-      if (Array.isArray(memberIdx)) {
-        // Get attribs from first valid iteration of elements.
-        for (let i = 0; i < memberIdx.length; i++) {
-          const idx = memberIdx[i];
-
-          if ($org[idx] && $org[idx].attribs) {
-            args[0] = $org[idx].attribs;
-
-            break;
-          }
-        }
-      }
-      else if ($org[memberIdx] && $org[memberIdx].attribs) {
-        args[0] = $org[memberIdx].attribs;
-      }
-      else {
-        args[0] = $org[0].attribs;
-      }
-    }
-
-    // jQuery saves and keys selected DOM Element objects in an array-like manner on the jQuery component.
-    // The .attributes property of each Element object are per the DOM spec.
-    // We need to parse the .attributes property to create a key:value store, which we'll submit as args[0].
-    else if ($org[0] && $org[0].attributes) {
-      if (Array.isArray(memberIdx)) {
-        // Get attribs from first valid iteration of elements.
-        for (let i = 0; i < memberIdx.length; i++) {
-          const idx = memberIdx[i];
-
-          if ($org[idx] && $org[idx].attributes && $org[idx].attributes.length) {
-            const attribs = {};
-
-            // .attributes is not an Iterable so no for of.
-            for (let j = 0; j < $org[idx].attributes.length; j++) {
-              const attribute = $org[idx].attributes[j];
-              attribs[attribute.name] = attribute.value;
-            }
-
-            args[0] = attribs;
-
-            break;
-          }
-        }
-      }
-      else if ($org[memberIdx] && $org[memberIdx].attributes && $org[memberIdx].attributes.length) {
-        const attribs = {};
-
-        // .attributes is not an Iterable, so no for...of.
-        for (let i = 0; i < $org[memberIdx].attributes.length; i++) {
-          const attribute = $org[memberIdx].attributes[i];
-          attribs[attribute.name] = attribute.value;
-        }
-
-        args[0] = attribs;
-      }
-      else if ($org[0].attributes.length) {
-        const attribs = {};
-
-        // .attributes is not an Iterable so no for of.
-        for (let i = 0; i < $org[0].attributes.length; i++) {
-          const attribute = $org[0].attributes[i];
-          attribs[attribute.name] = attribute.value;
-        }
-
-        args[0] = attribs;
-      }
-    }
-  }
-}
-
-/**
- * Apply the .css() jQuery/Cheerio method. If a string or array is submitted as the arg, will update the state with the
- * current style value.
+ * Apply the jQuery or Cheerio .`data()` method on the organism and  prep data for copying directly to state.
  *
  * @param {object} $org - Organism object.
  * @param {array} args - Arguments array, (not array-like object).
  * @param {object|object[]} [$member] - Organism member, or array of members.
  */
-function applyCss($org, args, $member) {
-  const method = 'css';
-
-  if (Array.isArray($member)) {
-    // Set operation.
-    if (args[0] instanceof Object && args[0].constructor === Object) {
-      // Apply on each iteration of $member array.
-      for (let i = 0; i < $member.length; i++) {
-        $member[i][method].apply($member[i], args);
-      }
-    }
-
-    // Get operation. Only iterate once.
-    for (let i = 0; i < $member.length; i++) {
-      const $elem = $member[i];
-
-      if (args[0] instanceof Object && args[0].constructor === Object) {
-        // Retrieve evaluated css after setting in previous block.
-        const keys = Object.keys(args[0]);
-        args[0] = $elem[method].apply($elem, [keys]);
-      }
-      else if (typeof args[0] === 'string') {
-        const key = args[0];
-        const value = $elem[method].apply($elem, args);
-        args[0] = {};
-        args[0][key] = value;
-      }
-      else if (Array.isArray(args[0])) {
-        args[0] = $elem[method].apply($elem, args);
-      }
-      else /* istanbul ignore next */ {
-        args[0] = {};
-      }
-
-      break;
-    }
-
-    if (!$member.length) {
-      /* istanbul ignore next */
-      args[0] = {};
-    }
-  }
-  else if ($member) {
-    // Set operation.
-    if (args[0] instanceof Object && args[0].constructor === Object) {
-      // Apply to $member.
-      $member[method].apply($member, args);
-
-      // Retrieve evaluated css.
-      const keys = Object.keys(args[0]);
-
-      if (keys.length === 1) {
-        args[0] = {};
-        args[0][keys[0]] = $member[method].apply($member, keys);
-      }
-      else {
-        args[0] = $member[method].apply($member, [keys]);
-      }
-    }
-    // Get operation.
-    else if (typeof args[0] === 'string') {
-      const key = args[0];
-      const value = $member[method].apply($member, args);
-      args[0] = {};
-      args[0][key] = value;
-    }
-    else if (Array.isArray(args[0])) {
-      args[0] = $member[method].apply($member, args);
-    }
-  }
-  else {
-    // Set operation.
-    if (args[0] instanceof Object && args[0].constructor === Object) {
-      // Apply to $org.
-      $org[method].apply($org, args);
-
-      // Retrieve evaluated css.
-      const keys = Object.keys(args[0]);
-
-      if (keys.length === 1) {
-        args[0] = {};
-        args[0][keys[0]] = $org[method].apply($org, keys);
-      }
-      else {
-        args[0] = $org[method].apply($org, [keys]);
-      }
-    }
-    // Get operation.
-    else {
-      if (typeof args[0] === 'string') {
-        const key = args[0];
-        const value = $org[method].apply($org, args);
-        args[0] = {};
-        args[0][key] = value;
-      }
-      else if (Array.isArray(args[0])) {
-        args[0] = $org[method].apply($org, args);
-      }
-    }
-  }
-
-  if (typeof window === 'object') { // jQuery
-    if (args[0] instanceof Object && args[0].constructor === Object) {
-      for (const property of Object.keys(args[0])) {
-        let camel;
-
-        if (property.indexOf('-') > -1) {
-          const hyphenatedArr = property.split('-');
-          const camelArr = [];
-
-          for (let i = 0; i < hyphenatedArr.length; i++) {
-            if (i === 0) {
-              camelArr[i] = hyphenatedArr[i];
-
-              continue;
-            }
-
-            camelArr[i] = hyphenatedArr[i][0].toUpperCase() + hyphenatedArr[i].slice(1);
-          }
-
-          camel = camelArr.join('');
-        }
-
-        if ($org[0] && $org[0].style && camel in $org[0].style) {
-          args[0][camel] = args[0][property];
-        }
-      }
-    }
-  }
-}
-
 function applyData($org, args, $member) {
-  const method = 'data';
-
   if (args[0] instanceof Object && args[0].constructor === Object) {
-    applyMethod($org, method, args, $member);
+    applyMethod($org, 'data', args, $member);
   }
 
   if (Array.isArray($member)) {
     // Get all data to submit for updating state. Only iterate once.
     for (let i = 0; i < $member.length; i++) {
-      const data = $member[i][method].apply($member[i]);
+      const data = $member[i].data.apply($member[i]);
       args[0] = data;
 
       break;
     }
   }
   else if ($member) {
-    const data = $member[method].apply($member);
+    const data = $member.data.apply($member);
     args[0] = data;
   }
   else {
-    const data = $org[method].apply($org);
+    const data = $org.data.apply($org);
     args[0] = data;
   }
+}
+
+/**
+ * Apply a method for getting or setting a measurement.
+ *
+ * @param {object} $org - Organism object.
+ * @param {string} method - Name of the method to be applied.
+ * @param {array} args - Arguments array, (not array-like object).
+ * @param {object|object[]} [$member] - Organism member, or array of members.
+ * @param {number|number[]} [memberIdx] - The index of the member within $org.$members, or array of member indices.
+ * @returns {number|string|undefined} The measurement if getting.
+ */
+function applyMeasurement($org, method, args, $member, memberIdx) {
+  let retVal;
+
+  if (Array.isArray($member) && Array.isArray(memberIdx)) {
+    // Apply on each iteration of $member array.
+    for (let i = 0; i < $member.length; i++) {
+      if (typeof window === 'object') { // jQuery
+        if (typeof $member[i][method] === 'function') {
+          $member[i][method].apply($member[i], args);
+        }
+      }
+      else { // Cheerio
+        if (typeof $org[method] === 'function') {
+          retVal = $org[method].call($org, args[0], memberIdx[i]);
+        }
+      }
+    }
+  }
+  else if ($member && typeof memberIdx === 'number') {
+    // Apply to $member.
+    if (typeof window === 'object') { // jQuery
+      if (typeof $member[method] === 'function') {
+        $member[method].apply($member, args);
+      }
+    }
+    else { // Cheerio
+      if (typeof $org[method] === 'function') {
+        retVal = $org[method].call($org, args[0], memberIdx);
+      }
+    }
+  }
+  else {
+    // Apply to $org.
+    if (typeof window === 'object') { // jQuery
+      if (typeof $org[method] === 'function') {
+        $org[method].apply($org, args);
+      }
+    }
+    else { // Cheerio
+      if (typeof $org[method] === 'function') {
+        retVal = $org[method].call($org, args[0]);
+      }
+    }
+  }
+
+  return retVal;
 }
 
 /**
@@ -304,20 +138,18 @@ function convertMethodToType(method) {
  * @returns {array} The `args` array.
  */
 function getBoundingClientRect($org, args, memberIdx) {
-  const method = 'getBoundingClientRect';
-
   if (Array.isArray(memberIdx)) {
     for (let i = 0; i < memberIdx.length; i++) {
       const idx = memberIdx[i];
 
       // Apply on indexed element.
       /* istanbul ignore else */
-      if (typeof $org[method] === 'function') {
-        args[0] = $org[method].call($org, idx);
+      if (typeof $org.getBoundingClientRect === 'function') {
+        args[0] = $org.getBoundingClientRect.call($org, idx);
       }
       else if (typeof window === 'object') {
-        if ($org[idx] && typeof $org[idx][method] === 'function') {
-          args[0] = $org[idx][method].call($org[idx]);
+        if ($org[idx] && typeof $org[idx].getBoundingClientRect === 'function') {
+          args[0] = $org[idx].getBoundingClientRect.call($org[idx]);
         }
       }
     }
@@ -325,24 +157,24 @@ function getBoundingClientRect($org, args, memberIdx) {
   else if (typeof memberIdx === 'number') {
     // Apply on indexed element.
     /* istanbul ignore else */
-    if (typeof $org[method] === 'function') {
-      args[0] = $org[method].call($org, memberIdx);
+    if (typeof $org.getBoundingClientRect === 'function') {
+      args[0] = $org.getBoundingClientRect.call($org, memberIdx);
     }
     else if (typeof window === 'object') {
-      if ($org[memberIdx] && typeof $org[memberIdx][method] === 'function') {
-        args[0] = $org[memberIdx][method].call($org[memberIdx]);
+      if ($org[memberIdx] && typeof $org[memberIdx].getBoundingClientRect === 'function') {
+        args[0] = $org[memberIdx].getBoundingClientRect.call($org[memberIdx]);
       }
     }
   }
   else {
     // If no memberIdx, apply on first item.
     /* istanbul ignore else */
-    if (typeof $org[method] === 'function') {
-      args[0] = $org[method].call($org);
+    if (typeof $org.getBoundingClientRect === 'function') {
+      args[0] = $org.getBoundingClientRect.call($org);
     }
     else if (typeof window === 'object') {
-      if ($org[0] && typeof $org[0][method] === 'function') {
-        args[0] = $org[0][method].call($org[0]);
+      if ($org[0] && typeof $org[0].getBoundingClientRect === 'function') {
+        args[0] = $org[0].getBoundingClientRect.call($org[0]);
       }
     }
   }
@@ -535,22 +367,21 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
  *   measurement to its element 0.
  * @param {object|undefined} computedStyle - Only defined for jQuery. Per DOM `CSSStyleDeclaration` spec.
  * @param {object|object[]} [$member] - Organism member, or array of members.
+ * @param {number|number[]} [memberIdx] - The index of the member within $org.$members, or array of member indices.
  * @returns {array} The `args` array.
  */
-function getMeasurement($org, method, args, computedStyle, $member) {
+function getMeasurement($org, method, args, computedStyle, $member, memberIdx) {
   if (Array.isArray($member)) {
     // Apply on first valid iteration of $member array.
     for (let i = 0; i < $member.length; i++) {
-      const $elem = $member[i];
-
       if (typeof window === 'object') { // jQuery
-        args[0] = getMeasurementSwitch($org, method, computedStyle, $elem[0]);
+        args[0] = getMeasurementSwitch($org, method, computedStyle, $member[i][0]);
       }
-      else if (typeof $elem[method] === 'function') { // Cheerio
-        args[0] = $elem[method].apply($elem);
+      else if (typeof $org[method] === 'function') { // Cheerio
+        args[0] = applyMeasurement($org, method, [null], $member, memberIdx);
+      }
 
-        break;
-      }
+      break;
     }
   }
   else if ($member) {
@@ -559,8 +390,8 @@ function getMeasurement($org, method, args, computedStyle, $member) {
     if (typeof window === 'object') { // jQuery
       args[0] = getMeasurementSwitch($org, method, computedStyle, $member[0]);
     }
-    else if (typeof $member[method] === 'function') { // Cheerio
-      args[0] = $member[method].apply($member);
+    else if (typeof $org[method] === 'function') { // Cheerio
+      args[0] = applyMeasurement($org, method, [null], $member, memberIdx);
     }
   }
   else {
@@ -577,7 +408,7 @@ function getMeasurement($org, method, args, computedStyle, $member) {
       }
     }
     else if (typeof $org[method] === 'function') { // Cheerio
-      args[0] = $org[method].apply($org);
+      args[0] = applyMeasurement($org, method, [null]);
     }
   }
 
@@ -814,15 +645,13 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
     switch (method) {
 
       case 'attr': {
-        applyAttr(this, args, $member, memberIdx); // Mutates args.
+        applyMethod(this, method, args, $member);
 
         break;
       }
 
-      // Dispatching 'css' with a property (or properties) but no value will write the existing property and value to
-      // the .style property on the state.
       case 'css': {
-        applyCss(this, args, $member); // Mutates args.
+        applyMethod(this, method, args, $member);
 
         break;
       }
@@ -835,10 +664,10 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 
       case 'empty': {
         if ($member) {
-          applyMethod(this, 'empty', args, $member);
+          applyMethod(this, method, args, $member);
         }
         else {
-          applyMethod(this, 'empty', args, this.$members);
+          applyMethod(this, method, args, this.$members);
         }
 
         break;
@@ -1041,7 +870,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 
         if (typeof window === 'object') { // jQuery
           if (this.selector !== 'window' && this.selector !== 'document') {
-            if (Array.isArray($member) && Array.isArray(memberIdx)) {
+            if (Array.isArray(memberIdx)) {
               for (let i = 0; i < memberIdx.length; i++) {
                 if (this[memberIdx[i]]) {
                   computedStyle = window.getComputedStyle(this[memberIdx[i]]);
@@ -1062,7 +891,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         }
 
         if (args.length) {
-          applyMethod(this, method, args, $member);
+          applyMeasurement(this, method, args, $member, memberIdx);
         }
         else {
           getMeasurement(this, method, args, computedStyle, $member); // Mutates args.
@@ -1083,6 +912,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         if (Array.isArray(args[0])) {
           args = args[0];
         }
+
         applyMethod(this, method, args, $member);
 
         break;
@@ -1295,7 +1125,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
     /* scrollTop */
     /* width */
     /* height */
-    // Do update measurements if changed by user interaction, e.g., resizing viewport.
+    // Do update measurements if changed by dispatchAction or user interaction, e.g., resizing viewport.
     updateState = this.updateMeasurements(state, $member, memberIdx) || updateState;
 
     /* .attribs */
@@ -1388,7 +1218,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
     }
 
     // To update member count if changed by an action on html/text, dispatch an action with an empty method.
-    if (typeof memberIdx === 'undefined' && this.length !== state.$members.length) {
+    if (typeof memberIdx === 'undefined' && this.length !== state.members) {
       store.dispatch({
         type: '',
         selector: this.selector,
@@ -1434,7 +1264,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
 
     /* val */
     // Do update form field values if they were changed by user interaction.
-    if (typeof state.val !== 'undefined') {
+    if (typeof state.val !== 'undefined' || typeof this[orgIdx].value !== 'undefined') {
       let valueNow;
 
       if (typeof window === 'object') { // jQuery
@@ -1472,11 +1302,15 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
       }
     }
 
-    const stateNow = JSON.parse(JSON.stringify(state));
+    let stateNow;
 
     if (typeof memberIdx === 'number') {
+      stateNow = JSON.parse(JSON.stringify(state));
       delete stateNow.$members;
       delete stateNow.members;
+    }
+    else {
+      stateNow = state;
     }
 
     return stateNow;
@@ -2007,7 +1841,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     ]) {
       const args = [];
 
-      getMeasurement(this, method, args, computedStyle, $member); // Mutates args.
+      getMeasurement(this, method, args, computedStyle, $member, memberIdx); // Mutates args.
 
       // eslint-disable-next-line eqeqeq
       if (state[method] != args[0]) { // Allow undefined == null to satisfy condition.

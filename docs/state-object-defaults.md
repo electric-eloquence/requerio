@@ -21,5 +21,5 @@ Do not to let states bloat for no reason (as it could with large html, textConte
 | val | `string` | `undefined` | A form input's value. Only on input element states. |
 | width | `null`\|`number` | `null` | In number of CSS pixels. Does not include padding, border, or margin. |
 | height | `null`\|`number` | `null` | In number of CSS pixels. Does not include padding, border, or margin. |
-| $members | `object` | `{}` | The states of the members of the selection. On organism states only, not on member states. |
-| members | `number` | `null` | The number of members belonging to the selection. On organism states only, not on member states. |
+| $members | `object` | `[]` | The states of the members of the selection. On organism states only, not on member states. |
+| members | `number` | `undefined` | The number of members belonging to the selection. On organism states only, not on member states. |

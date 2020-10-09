@@ -1,5 +1,36 @@
 'use strict';
 
+function getMeasurement($org, measurement, idx) {
+  /* istanbul ignore else */
+  if ($org.$members[idx]) {
+    return $org.$members[idx]['_' + measurement];
+  }
+  else {
+    return null;
+  }
+}
+
+function setMeasurement($org, measurement, distance_, idx) {
+  for (let i = 0; i < $org.$members.length; i++) {
+    if (typeof idx === 'number' && idx !== i) {
+      continue;
+    }
+
+    let distance;
+
+    if (typeof distance_ === 'function') {
+      distance = parseInt(distance_.call($org[i], i, $org.$members[i]['_' + measurement]), 10);
+    }
+    else {
+      distance = parseInt(distance_, 10);
+    }
+
+    $org.$members[i]['_' + measurement] = distance;
+  }
+
+  return $org;
+}
+
 /**
  * Populate $orgs values with jQuery or Cheerio components.
  *
@@ -63,201 +94,137 @@ var organismsIncept = ($orgs, $) => {
     // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param {number} [distance] - Distance.
+     * @param {number|string|function} [distance] - Distance.
+     * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
     if (typeof $org.innerWidth === 'undefined') {
-      $org.innerWidth = (distance) => {
-        if (typeof distance === 'undefined') {
-          /* istanbul ignore else */
-          if ($org.$members[0]) {
-            return $org.$members[0]._innerWidth;
-          }
-          else {
-            return null;
-          }
+      $org.innerWidth = (distance, memberIdx) => {
+        // eslint-disable-next-line eqeqeq
+        if (distance == null) {
+          return getMeasurement($org, 'innerWidth', memberIdx || 0);
         }
         else {
-          for (let i = 0; i < $org.$members.length; i++) {
-            $org.$members[i]._innerWidth = distance;
-          }
-
-          return $org;
+          return setMeasurement($org, 'innerWidth', distance, memberIdx);
         }
       };
     }
 
     /**
-     * @param {number} [distance] - Distance.
+     * @param {number|string|function} [distance] - Distance.
+     * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
     if (typeof $org.innerHeight === 'undefined') {
-      $org.innerHeight = (distance) => {
-        if (typeof distance === 'undefined') {
-          /* istanbul ignore else */
-          if ($org.$members[0]) {
-            return $org.$members[0]._innerHeight;
-          }
-          else {
-            return null;
-          }
+      $org.innerHeight = (distance, memberIdx) => {
+        // eslint-disable-next-line eqeqeq
+        if (distance == null) {
+          return getMeasurement($org, 'innerHeight', memberIdx || 0);
         }
         else {
-          for (let i = 0; i < $org.$members.length; i++) {
-            $org.$members[i]._innerHeight = distance;
-          }
-
-          return $org;
+          return setMeasurement($org, 'innerHeight', distance, memberIdx);
         }
       };
     }
 
     /**
-     * @param {number} [distance] - Distance.
+     * @param {number|string|function} [distance] - Distance.
+     * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
     if (typeof $org.outerWidth === 'undefined') {
-      $org.outerWidth = (distance) => {
-        if (typeof distance === 'undefined') {
-          /* istanbul ignore else */
-          if ($org.$members[0]) {
-            return $org.$members[0]._outerWidth;
-          }
-          else {
-            return null;
-          }
+      $org.outerWidth = (distance, memberIdx) => {
+        // eslint-disable-next-line eqeqeq
+        if (distance == null) {
+          return getMeasurement($org, 'outerWidth', memberIdx || 0);
         }
         else {
-          for (let i = 0; i < $org.$members.length; i++) {
-            $org.$members[i]._outerWidth = distance;
-          }
-
-          return $org;
+          return setMeasurement($org, 'outerWidth', distance, memberIdx);
         }
       };
     }
 
     /**
-     * @param {number} [distance] - Distance.
+     * @param {number|string|function} [distance] - Distance.
+     * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
     if (typeof $org.outerHeight === 'undefined') {
-      $org.outerHeight = (distance) => {
-        if (typeof distance === 'undefined') {
-          /* istanbul ignore else */
-          if ($org.$members[0]) {
-            return $org.$members[0]._outerHeight;
-          }
-          else {
-            return null;
-          }
+      $org.outerHeight = (distance, memberIdx) => {
+        // eslint-disable-next-line eqeqeq
+        if (distance == null) {
+          return getMeasurement($org, 'outerHeight', memberIdx || 0);
         }
         else {
-          for (let i = 0; i < $org.$members.length; i++) {
-            $org.$members[i]._outerHeight = distance;
-          }
-
-          return $org;
+          return setMeasurement($org, 'outerHeight', distance, memberIdx);
         }
       };
     }
 
     /**
-     * @param {number} [distance] - Distance.
+     * @param {number|string|function} [distance] - Distance.
+     * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
     if (typeof $org.scrollLeft === 'undefined') {
-      $org.scrollLeft = (distance) => {
-        if (typeof distance === 'undefined') {
-          /* istanbul ignore else */
-          if ($org.$members[0]) {
-            return $org.$members[0]._scrollLeft;
-          }
-          else {
-            return null;
-          }
+      $org.scrollLeft = (distance, memberIdx) => {
+        // eslint-disable-next-line eqeqeq
+        if (distance == null) {
+          return getMeasurement($org, 'scrollLeft', memberIdx || 0);
         }
         else {
-          for (let i = 0; i < $org.$members.length; i++) {
-            $org.$members[i]._scrollLeft = distance;
-          }
-
-          return $org;
+          return setMeasurement($org, 'scrollLeft', distance, memberIdx);
         }
       };
     }
 
     /**
-     * @param {number} [distance] - Distance.
+     * @param {number|string|function} [distance] - Distance.
+     * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
     if (typeof $org.scrollTop === 'undefined') {
-      $org.scrollTop = (distance) => {
-        if (typeof distance === 'undefined') {
-          /* istanbul ignore else */
-          if ($org.$members[0]) {
-            return $org.$members[0]._scrollTop;
-          }
-          else {
-            return null;
-          }
+      $org.scrollTop = (distance, memberIdx) => {
+        // eslint-disable-next-line eqeqeq
+        if (distance == null) {
+          return getMeasurement($org, 'scrollTop', memberIdx || 0);
         }
         else {
-          for (let i = 0; i < $org.$members.length; i++) {
-            $org.$members[i]._scrollTop = distance;
-          }
-
-          return $org;
+          return setMeasurement($org, 'scrollTop', distance, memberIdx);
         }
       };
     }
 
     /**
-     * @param {number} [distance] - Distance.
+     * @param {number|string|function} [distance] - Distance.
+     * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
     if (typeof $org.width === 'undefined') {
-      $org.width = (distance) => {
-        if (typeof distance === 'undefined') {
-          /* istanbul ignore else */
-          if ($org.$members[0]) {
-            return $org.$members[0]._width;
-          }
-          else {
-            return null;
-          }
+      $org.width = (distance, memberIdx) => {
+        // eslint-disable-next-line eqeqeq
+        if (distance == null) {
+          return getMeasurement($org, 'width', memberIdx || 0);
         }
         else {
-          for (let i = 0; i < $org.$members.length; i++) {
-            $org.$members[i]._width = distance;
-          }
-
-          return $org;
+          return setMeasurement($org, 'width', distance, memberIdx);
         }
       };
     }
 
     /**
-     * @param {number} [distance] - Distance.
+     * @param {number|string|function} [distance] - Distance.
+     * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {object} Organism.
      */
     if (typeof $org.height === 'undefined') {
-      $org.height = (distance) => {
-        if (typeof distance === 'undefined') {
-          /* istanbul ignore else */
-          if ($org.$members[0]) {
-            return $org.$members[0]._height;
-          }
-          else {
-            return null;
-          }
+      $org.height = (distance, memberIdx) => {
+        // eslint-disable-next-line eqeqeq
+        if (distance == null) {
+          return getMeasurement($org, 'height', memberIdx || 0);
         }
         else {
-          for (let i = 0; i < $org.$members.length; i++) {
-            $org.$members[i]._height = distance;
-          }
-
-          return $org;
+          return setMeasurement($org, 'height', distance, memberIdx);
         }
       };
     }
@@ -467,258 +434,92 @@ function applyMethod($org, method, args, $member) {
 }
 
 /**
- * Apply the .attr() jQuery/Cheerio method.
- *
- * @param {object} $org - Organism object.
- * @param {array} args - Arguments array, (not array-like object).
- * @param {object|object[]} [$member] - Organism member, or array of members.
- * @param {number|number[]} [memberIdx] - Organism member index, or array of indices.
- */
-function applyAttr($org, args, $member, memberIdx) {
-  if (args.length) {
-    applyMethod($org, 'attr', args, $member);
-  }
-  else {
-
-    // Cheerio components have an .attribs property for element attributes, which is undocumented and may change without
-    // notice. However, this is unlikely, since it is derived from its htmlparser2 dependency. The htmlparser2 package
-    // has had this property since its initial release and its public position is that this won't change.
-    // https://github.com/fb55/htmlparser2/issues/35
-    // https://github.com/cheeriojs/cheerio/issues/547
-    if ($org[0] && $org[0].attribs) {
-      if (Array.isArray(memberIdx)) {
-        // Get attribs from first valid iteration of elements.
-        for (let i = 0; i < memberIdx.length; i++) {
-          const idx = memberIdx[i];
-
-          if ($org[idx] && $org[idx].attribs) {
-            args[0] = $org[idx].attribs;
-
-            break;
-          }
-        }
-      }
-      else if ($org[memberIdx] && $org[memberIdx].attribs) {
-        args[0] = $org[memberIdx].attribs;
-      }
-      else {
-        args[0] = $org[0].attribs;
-      }
-    }
-
-    // jQuery saves and keys selected DOM Element objects in an array-like manner on the jQuery component.
-    // The .attributes property of each Element object are per the DOM spec.
-    // We need to parse the .attributes property to create a key:value store, which we'll submit as args[0].
-    else if ($org[0] && $org[0].attributes) {
-      if (Array.isArray(memberIdx)) {
-        // Get attribs from first valid iteration of elements.
-        for (let i = 0; i < memberIdx.length; i++) {
-          const idx = memberIdx[i];
-
-          if ($org[idx] && $org[idx].attributes && $org[idx].attributes.length) {
-            const attribs = {};
-
-            // .attributes is not an Iterable so no for of.
-            for (let j = 0; j < $org[idx].attributes.length; j++) {
-              const attribute = $org[idx].attributes[j];
-              attribs[attribute.name] = attribute.value;
-            }
-
-            args[0] = attribs;
-
-            break;
-          }
-        }
-      }
-      else if ($org[memberIdx] && $org[memberIdx].attributes && $org[memberIdx].attributes.length) {
-        const attribs = {};
-
-        // .attributes is not an Iterable, so no for...of.
-        for (let i = 0; i < $org[memberIdx].attributes.length; i++) {
-          const attribute = $org[memberIdx].attributes[i];
-          attribs[attribute.name] = attribute.value;
-        }
-
-        args[0] = attribs;
-      }
-      else if ($org[0].attributes.length) {
-        const attribs = {};
-
-        // .attributes is not an Iterable so no for of.
-        for (let i = 0; i < $org[0].attributes.length; i++) {
-          const attribute = $org[0].attributes[i];
-          attribs[attribute.name] = attribute.value;
-        }
-
-        args[0] = attribs;
-      }
-    }
-  }
-}
-
-/**
- * Apply the .css() jQuery/Cheerio method. If a string or array is submitted as the arg, will update the state with the
- * current style value.
+ * Apply the jQuery or Cheerio .`data()` method on the organism and  prep data for copying directly to state.
  *
  * @param {object} $org - Organism object.
  * @param {array} args - Arguments array, (not array-like object).
  * @param {object|object[]} [$member] - Organism member, or array of members.
  */
-function applyCss($org, args, $member) {
-  const method = 'css';
-
-  if (Array.isArray($member)) {
-    // Set operation.
-    if (args[0] instanceof Object && args[0].constructor === Object) {
-      // Apply on each iteration of $member array.
-      for (let i = 0; i < $member.length; i++) {
-        $member[i][method].apply($member[i], args);
-      }
-    }
-
-    // Get operation. Only iterate once.
-    for (let i = 0; i < $member.length; i++) {
-      const $elem = $member[i];
-
-      if (args[0] instanceof Object && args[0].constructor === Object) {
-        // Retrieve evaluated css after setting in previous block.
-        const keys = Object.keys(args[0]);
-        args[0] = $elem[method].apply($elem, [keys]);
-      }
-      else if (typeof args[0] === 'string') {
-        const key = args[0];
-        const value = $elem[method].apply($elem, args);
-        args[0] = {};
-        args[0][key] = value;
-      }
-      else if (Array.isArray(args[0])) {
-        args[0] = $elem[method].apply($elem, args);
-      }
-      else /* istanbul ignore next */ {
-        args[0] = {};
-      }
-
-      break;
-    }
-
-    if (!$member.length) {
-      /* istanbul ignore next */
-      args[0] = {};
-    }
-  }
-  else if ($member) {
-    // Set operation.
-    if (args[0] instanceof Object && args[0].constructor === Object) {
-      // Apply to $member.
-      $member[method].apply($member, args);
-
-      // Retrieve evaluated css.
-      const keys = Object.keys(args[0]);
-
-      if (keys.length === 1) {
-        args[0] = {};
-        args[0][keys[0]] = $member[method].apply($member, keys);
-      }
-      else {
-        args[0] = $member[method].apply($member, [keys]);
-      }
-    }
-    // Get operation.
-    else if (typeof args[0] === 'string') {
-      const key = args[0];
-      const value = $member[method].apply($member, args);
-      args[0] = {};
-      args[0][key] = value;
-    }
-    else if (Array.isArray(args[0])) {
-      args[0] = $member[method].apply($member, args);
-    }
-  }
-  else {
-    // Set operation.
-    if (args[0] instanceof Object && args[0].constructor === Object) {
-      // Apply to $org.
-      $org[method].apply($org, args);
-
-      // Retrieve evaluated css.
-      const keys = Object.keys(args[0]);
-
-      if (keys.length === 1) {
-        args[0] = {};
-        args[0][keys[0]] = $org[method].apply($org, keys);
-      }
-      else {
-        args[0] = $org[method].apply($org, [keys]);
-      }
-    }
-    // Get operation.
-    else {
-      if (typeof args[0] === 'string') {
-        const key = args[0];
-        const value = $org[method].apply($org, args);
-        args[0] = {};
-        args[0][key] = value;
-      }
-      else if (Array.isArray(args[0])) {
-        args[0] = $org[method].apply($org, args);
-      }
-    }
-  }
-
-  if (typeof window === 'object') { // jQuery
-    if (args[0] instanceof Object && args[0].constructor === Object) {
-      for (const property of Object.keys(args[0])) {
-        let camel;
-
-        if (property.indexOf('-') > -1) {
-          const hyphenatedArr = property.split('-');
-          const camelArr = [];
-
-          for (let i = 0; i < hyphenatedArr.length; i++) {
-            if (i === 0) {
-              camelArr[i] = hyphenatedArr[i];
-
-              continue;
-            }
-
-            camelArr[i] = hyphenatedArr[i][0].toUpperCase() + hyphenatedArr[i].slice(1);
-          }
-
-          camel = camelArr.join('');
-        }
-
-        if ($org[0] && $org[0].style && camel in $org[0].style) {
-          args[0][camel] = args[0][property];
-        }
-      }
-    }
-  }
-}
-
 function applyData($org, args, $member) {
-  const method = 'data';
-
   if (args[0] instanceof Object && args[0].constructor === Object) {
-    applyMethod($org, method, args, $member);
+    applyMethod($org, 'data', args, $member);
   }
 
   if (Array.isArray($member)) {
     // Get all data to submit for updating state. Only iterate once.
     for (let i = 0; i < $member.length; i++) {
-      const data = $member[i][method].apply($member[i]);
+      const data = $member[i].data.apply($member[i]);
       args[0] = data;
 
       break;
     }
   }
   else if ($member) {
-    const data = $member[method].apply($member);
+    const data = $member.data.apply($member);
     args[0] = data;
   }
   else {
-    const data = $org[method].apply($org);
+    const data = $org.data.apply($org);
     args[0] = data;
   }
+}
+
+/**
+ * Apply a method for getting or setting a measurement.
+ *
+ * @param {object} $org - Organism object.
+ * @param {string} method - Name of the method to be applied.
+ * @param {array} args - Arguments array, (not array-like object).
+ * @param {object|object[]} [$member] - Organism member, or array of members.
+ * @param {number|number[]} [memberIdx] - The index of the member within $org.$members, or array of member indices.
+ * @returns {number|string|undefined} The measurement if getting.
+ */
+function applyMeasurement($org, method, args, $member, memberIdx) {
+  let retVal;
+
+  if (Array.isArray($member) && Array.isArray(memberIdx)) {
+    // Apply on each iteration of $member array.
+    for (let i = 0; i < $member.length; i++) {
+      if (typeof window === 'object') { // jQuery
+        if (typeof $member[i][method] === 'function') {
+          $member[i][method].apply($member[i], args);
+        }
+      }
+      else { // Cheerio
+        if (typeof $org[method] === 'function') {
+          retVal = $org[method].call($org, args[0], memberIdx[i]);
+        }
+      }
+    }
+  }
+  else if ($member && typeof memberIdx === 'number') {
+    // Apply to $member.
+    if (typeof window === 'object') { // jQuery
+      if (typeof $member[method] === 'function') {
+        $member[method].apply($member, args);
+      }
+    }
+    else { // Cheerio
+      if (typeof $org[method] === 'function') {
+        retVal = $org[method].call($org, args[0], memberIdx);
+      }
+    }
+  }
+  else {
+    // Apply to $org.
+    if (typeof window === 'object') { // jQuery
+      if (typeof $org[method] === 'function') {
+        $org[method].apply($org, args);
+      }
+    }
+    else { // Cheerio
+      if (typeof $org[method] === 'function') {
+        retVal = $org[method].call($org, args[0]);
+      }
+    }
+  }
+
+  return retVal;
 }
 
 /**
@@ -741,20 +542,18 @@ function convertMethodToType(method) {
  * @returns {array} The `args` array.
  */
 function getBoundingClientRect($org, args, memberIdx) {
-  const method = 'getBoundingClientRect';
-
   if (Array.isArray(memberIdx)) {
     for (let i = 0; i < memberIdx.length; i++) {
       const idx = memberIdx[i];
 
       // Apply on indexed element.
       /* istanbul ignore else */
-      if (typeof $org[method] === 'function') {
-        args[0] = $org[method].call($org, idx);
+      if (typeof $org.getBoundingClientRect === 'function') {
+        args[0] = $org.getBoundingClientRect.call($org, idx);
       }
       else if (typeof window === 'object') {
-        if ($org[idx] && typeof $org[idx][method] === 'function') {
-          args[0] = $org[idx][method].call($org[idx]);
+        if ($org[idx] && typeof $org[idx].getBoundingClientRect === 'function') {
+          args[0] = $org[idx].getBoundingClientRect.call($org[idx]);
         }
       }
     }
@@ -762,24 +561,24 @@ function getBoundingClientRect($org, args, memberIdx) {
   else if (typeof memberIdx === 'number') {
     // Apply on indexed element.
     /* istanbul ignore else */
-    if (typeof $org[method] === 'function') {
-      args[0] = $org[method].call($org, memberIdx);
+    if (typeof $org.getBoundingClientRect === 'function') {
+      args[0] = $org.getBoundingClientRect.call($org, memberIdx);
     }
     else if (typeof window === 'object') {
-      if ($org[memberIdx] && typeof $org[memberIdx][method] === 'function') {
-        args[0] = $org[memberIdx][method].call($org[memberIdx]);
+      if ($org[memberIdx] && typeof $org[memberIdx].getBoundingClientRect === 'function') {
+        args[0] = $org[memberIdx].getBoundingClientRect.call($org[memberIdx]);
       }
     }
   }
   else {
     // If no memberIdx, apply on first item.
     /* istanbul ignore else */
-    if (typeof $org[method] === 'function') {
-      args[0] = $org[method].call($org);
+    if (typeof $org.getBoundingClientRect === 'function') {
+      args[0] = $org.getBoundingClientRect.call($org);
     }
     else if (typeof window === 'object') {
-      if ($org[0] && typeof $org[0][method] === 'function') {
-        args[0] = $org[0][method].call($org[0]);
+      if ($org[0] && typeof $org[0].getBoundingClientRect === 'function') {
+        args[0] = $org[0].getBoundingClientRect.call($org[0]);
       }
     }
   }
@@ -972,22 +771,21 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
  *   measurement to its element 0.
  * @param {object|undefined} computedStyle - Only defined for jQuery. Per DOM `CSSStyleDeclaration` spec.
  * @param {object|object[]} [$member] - Organism member, or array of members.
+ * @param {number|number[]} [memberIdx] - The index of the member within $org.$members, or array of member indices.
  * @returns {array} The `args` array.
  */
-function getMeasurement($org, method, args, computedStyle, $member) {
+function getMeasurement$1($org, method, args, computedStyle, $member, memberIdx) {
   if (Array.isArray($member)) {
     // Apply on first valid iteration of $member array.
     for (let i = 0; i < $member.length; i++) {
-      const $elem = $member[i];
-
       if (typeof window === 'object') { // jQuery
-        args[0] = getMeasurementSwitch($org, method, computedStyle, $elem[0]);
+        args[0] = getMeasurementSwitch($org, method, computedStyle, $member[i][0]);
       }
-      else if (typeof $elem[method] === 'function') { // Cheerio
-        args[0] = $elem[method].apply($elem);
+      else if (typeof $org[method] === 'function') { // Cheerio
+        args[0] = applyMeasurement($org, method, [null], $member, memberIdx);
+      }
 
-        break;
-      }
+      break;
     }
   }
   else if ($member) {
@@ -996,8 +794,8 @@ function getMeasurement($org, method, args, computedStyle, $member) {
     if (typeof window === 'object') { // jQuery
       args[0] = getMeasurementSwitch($org, method, computedStyle, $member[0]);
     }
-    else if (typeof $member[method] === 'function') { // Cheerio
-      args[0] = $member[method].apply($member);
+    else if (typeof $org[method] === 'function') { // Cheerio
+      args[0] = applyMeasurement($org, method, [null], $member, memberIdx);
     }
   }
   else {
@@ -1014,7 +812,7 @@ function getMeasurement($org, method, args, computedStyle, $member) {
       }
     }
     else if (typeof $org[method] === 'function') { // Cheerio
-      args[0] = $org[method].apply($org);
+      args[0] = applyMeasurement($org, method, [null]);
     }
   }
 
@@ -1251,15 +1049,13 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
     switch (method) {
 
       case 'attr': {
-        applyAttr(this, args, $member, memberIdx); // Mutates args.
+        applyMethod(this, method, args, $member);
 
         break;
       }
 
-      // Dispatching 'css' with a property (or properties) but no value will write the existing property and value to
-      // the .style property on the state.
       case 'css': {
-        applyCss(this, args, $member); // Mutates args.
+        applyMethod(this, method, args, $member);
 
         break;
       }
@@ -1272,10 +1068,10 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 
       case 'empty': {
         if ($member) {
-          applyMethod(this, 'empty', args, $member);
+          applyMethod(this, method, args, $member);
         }
         else {
-          applyMethod(this, 'empty', args, this.$members);
+          applyMethod(this, method, args, this.$members);
         }
 
         break;
@@ -1478,7 +1274,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 
         if (typeof window === 'object') { // jQuery
           if (this.selector !== 'window' && this.selector !== 'document') {
-            if (Array.isArray($member) && Array.isArray(memberIdx)) {
+            if (Array.isArray(memberIdx)) {
               for (let i = 0; i < memberIdx.length; i++) {
                 if (this[memberIdx[i]]) {
                   computedStyle = window.getComputedStyle(this[memberIdx[i]]);
@@ -1499,10 +1295,10 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         }
 
         if (args.length) {
-          applyMethod(this, method, args, $member);
+          applyMeasurement(this, method, args, $member, memberIdx);
         }
         else {
-          getMeasurement(this, method, args, computedStyle, $member); // Mutates args.
+          getMeasurement$1(this, method, args, computedStyle, $member); // Mutates args.
         }
 
         break;
@@ -1520,6 +1316,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
         if (Array.isArray(args[0])) {
           args = args[0];
         }
+
         applyMethod(this, method, args, $member);
 
         break;
@@ -1732,7 +1529,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
     /* scrollTop */
     /* width */
     /* height */
-    // Do update measurements if changed by user interaction, e.g., resizing viewport.
+    // Do update measurements if changed by dispatchAction or user interaction, e.g., resizing viewport.
     updateState = this.updateMeasurements(state, $member, memberIdx) || updateState;
 
     /* .attribs */
@@ -1825,7 +1622,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
     }
 
     // To update member count if changed by an action on html/text, dispatch an action with an empty method.
-    if (typeof memberIdx === 'undefined' && this.length !== state.$members.length) {
+    if (typeof memberIdx === 'undefined' && this.length !== state.members) {
       store.dispatch({
         type: '',
         selector: this.selector,
@@ -1871,7 +1668,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
 
     /* val */
     // Do update form field values if they were changed by user interaction.
-    if (typeof state.val !== 'undefined') {
+    if (typeof state.val !== 'undefined' || typeof this[orgIdx].value !== 'undefined') {
       let valueNow;
 
       if (typeof window === 'object') { // jQuery
@@ -1909,11 +1706,15 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
       }
     }
 
-    const stateNow = JSON.parse(JSON.stringify(state));
+    let stateNow;
 
     if (typeof memberIdx === 'number') {
+      stateNow = JSON.parse(JSON.stringify(state));
       delete stateNow.$members;
       delete stateNow.members;
+    }
+    else {
+      stateNow = state;
     }
 
     return stateNow;
@@ -2444,7 +2245,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     ]) {
       const args = [];
 
-      getMeasurement(this, method, args, computedStyle, $member); // Mutates args.
+      getMeasurement$1(this, method, args, computedStyle, $member, memberIdx); // Mutates args.
 
       // eslint-disable-next-line eqeqeq
       if (state[method] != args[0]) { // Allow undefined == null to satisfy condition.
@@ -2561,7 +2362,7 @@ function getStateDefault(orgSelector) {
       width: null,
       height: null,
       $members: [], // $members and members are not recursive, i.e. on organism states only, not on member states.
-      members: null
+      members: void 0
     };
   }
 
@@ -2571,24 +2372,28 @@ function getStateDefault(orgSelector) {
 /**
  * This builds state objects for organisms and their members.
  *
- * @param {object} $org - Organism.
+ * @param {object} $orgOrMember - Organism or member.
  * @param {object} state - Preinitialized state.
  * @param {object} action - Object defining how we'll act.
  * @returns {undefined} This function mutates the state param.
  */
-function stateBuild($org, state, action) {
+function stateBuild($orgOrMember, state, action) {
   try {
-    const memberIdx = action.memberIdx;
+    const {
+      args,
+      memberIdx,
+      method
+    } = action;
 
     // attribs
 
-    if ($org[0] && $org[0].attribs) { // Cheerio
-      state.attribs = JSON.parse(JSON.stringify($org[0].attribs));
+    if ($orgOrMember[0] && $orgOrMember[0].attribs) { // Cheerio
+      state.attribs = JSON.parse(JSON.stringify($orgOrMember[0].attribs));
     }
 
-    else if ($org[0] && $org[0].attributes && $org[0].attributes.length) { // jQuery
-      for (let i = 0; i < $org[0].attributes.length; i++) {
-        const attr = $org[0].attributes[i];
+    else if ($orgOrMember[0] && $orgOrMember[0].attributes && $orgOrMember[0].attributes.length) { // jQuery
+      for (let i = 0; i < $orgOrMember[0].attributes.length; i++) {
+        const attr = $orgOrMember[0].attributes[i];
         state.attribs[attr.name] = attr.value;
       }
     }
@@ -2607,11 +2412,11 @@ function stateBuild($org, state, action) {
 
     if (state.prop instanceof Object) {
       for (const i of Object.keys(state.prop)) {
-        state.prop[i] = $org[0][i];
+        state.prop[i] = $orgOrMember[0][i];
       }
     }
 
-    switch (action.method) {
+    switch (method) {
 
       /**
 ### addClass(classes)
@@ -2679,12 +2484,8 @@ Set one or more attributes for all matches.
 | attributes | `object` | An object of attribute:value pairs. A string value will add or update the corresponding attribute. A null value will remove the corresponding attribute. |
 */
       case 'attr': {
-        if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          for (const i in action.args[0]) {
-            state.attribs[i] = action.args[0][i];
-          }
-        }
-
+        // Handled by running the method as a side-effect and deriving state.attribs from the element's .attributes or
+        // .attribs property.
         break;
       }
 
@@ -2711,25 +2512,15 @@ Add HTML content immediately before all matches.
 
       /**
 ### css(properties)
-Set one or more CSS properties for all matches. Will set `state.css` as per the
-getter below.
+Set one or more CSS properties for all matches.
 
 | Param | Type | Description |
 | --- | --- | --- |
 | properties | `object` | An object of property:value pairs to set. |
-
-### css(properties)
-Update `state.css` with the style set by Cheerio or jQuery `.css()`. In a DOM
-environment, a snapshot of the real-time style will be keyed in camelCase. In
-all environments, the static style key will be hyphenated.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| properties | `string`\|`string[]` | The name or names of properties to get from the element, and set on the state. |
 */
       case 'css': {
-        // Copy the styles from the HTML style attribute to state.css in case a camelCase property was submitted without
-        // a corresponding hyphenated property.
+        // Copy the styles from the HTML style attribute to state.css. This would have been set as a side-effect of
+        // running the method.
         if (state.attribs.style) {
           for (const style of state.attribs.style.split(';')) {
             const styleTrimmed = style.trim();
@@ -2737,13 +2528,66 @@ all environments, the static style key will be hyphenated.
             if (styleTrimmed) {
               const styleSplit = styleTrimmed.split(':');
 
-              state[action.method][styleSplit[0].trim()] = styleSplit[1].trim();
+              state.css[styleSplit[0].trim()] = styleSplit[1].trim();
             }
           }
         }
 
-        for (const i in action.args[0]) {
-          state[action.method][i] = action.args[0][i];
+        if (args[0] instanceof Object && args[0].constructor === Object) {
+          for (const property of Object.keys(args[0])) {
+            // In a DOM environment, if args are submitted as camelCase, they will show up in attribs as hyphenated.
+            // Make sure the camelCase is applied to state as well.
+            const caps = (property.indexOf('-') === -1 && property.match(/[A-Z]/g)) || [];
+            let hyphen = property;
+
+            // First, try to convert camelCase to hyphenated and see if there is a match.
+            while (caps.length) {
+              const cap = caps.pop();
+              hyphen = hyphen.slice(0, hyphen.lastIndexOf(cap)) + '-' + cap.toLowerCase() +
+                hyphen.slice(hyphen.lastIndexOf(cap) + 1);
+            }
+
+            // If camelCase and its hyphenated property is in state.css, copy.
+            if (hyphen !== property && hyphen in state.css) {
+              state.css[property] = state.css[hyphen];
+            }
+            else if (typeof window === 'object') { // jQuery
+              // If the property was not picked up thus far, check if it is a property of the element's .style object.
+              if ($orgOrMember[0] && $orgOrMember[0].style && property in $orgOrMember[0].style) {
+                // The element's .style property is a real-time computed value. It might not equal the value submitted
+                // as an arg or written to the HTML style attribute.
+                state.css[property] = $orgOrMember[0].style[property];
+              }
+            }
+
+            // In a DOM environment, write the camelCase property to the state.
+            if (typeof window === 'object') { // jQuery
+              let camel;
+
+              if (property.indexOf('-') > -1) {
+                const hyphenatedArr = property.split('-');
+                const camelArr = [];
+
+                for (let i = 0; i < hyphenatedArr.length; i++) {
+                  if (i === 0) {
+                    camelArr[i] = hyphenatedArr[i];
+
+                    continue;
+                  }
+
+                  camelArr[i] = hyphenatedArr[i][0].toUpperCase() + hyphenatedArr[i].slice(1);
+                }
+
+                camel = camelArr.join('');
+              }
+
+              if (camel) {
+                if ($orgOrMember[0] && $orgOrMember[0].style && camel in $orgOrMember[0].style) {
+                  state.css[camel] = state.css[property];
+                }
+              }
+            }
+          }
         }
 
         state.style = state.css; // DEPRECATED.
@@ -2760,9 +2604,10 @@ Set one or more key:value pairs of data. Does not affect HTML data attributes.
 | keyValues | `object` | An object of key:value pairs. |
 */
       case 'data': {
-        if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          for (const i in action.args[0]) {
-            state[action.method][i] = action.args[0][i];
+        // In jQuery 3.5.0 (and probably upcoming in 4.x), the data object has no constructor.
+        if (args[0] && typeof args[0] === 'object') {
+          for (const i in args[0]) {
+            state[method][i] = args[0][i];
           }
         }
 
@@ -2791,20 +2636,14 @@ Empty innerHTML of all matches.
 
       // Internal. Do not document.
       case 'getBoundingClientRect': {
-        if (action.args.length === 1) {
-          if (
-            typeof action.args[0] === 'object' && // Exclude functions. Don't assume what its constructor is.
-            action.args[0] instanceof Object
-          ) {
+        if (args[0] && typeof args[0] === 'object') {
+          // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) or Object.assign because DOMRect is not a plain
+          // object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE.
+          const rectObj = args[0];
 
-            // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) or Object.assign because DOMRect is not a plain
-            // object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE support.
-            const rectObj = action.args[0];
-
-            for (const i in rectObj) {
-              if (typeof rectObj[i] === 'number') {
-                state.boundingClientRect[i] = rectObj[i];
-              }
+          for (const i in rectObj) {
+            if (typeof rectObj[i] === 'number') {
+              state.boundingClientRect[i] = rectObj[i];
             }
           }
         }
@@ -2821,17 +2660,8 @@ Set the height (not including padding, border, or margin) of all matches.
 | value | `number`\|`string`\|`function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
 */
       case 'height': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state[action.method] = action.args[0];
-
-            // If using Cheerio.
-            if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
-              if (state.boundingClientRect) {
-                state.boundingClientRect.height = action.args[0];
-              }
-            }
-          }
+        if (typeof args[0] === 'number') {
+          state[method] = args[0];
         }
 
         break;
@@ -2843,7 +2673,7 @@ Set the innerHTML of all matches. Will set `state.html` as per the getter below.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| htmlString | `string` | A string of HTML. Functions are not supported. |
+| htmlString | `string` | A string of HTML. |
 
 ### html()
 Dispatching an 'html' action without an htmlString parameter will set
@@ -2857,12 +2687,15 @@ data.
 */
       case 'html': {
         // Only perform this update
-        // IF there is an argument
+        // IF the argument is a string
         // AND
         //   this action is untargeted
         //   OR is targeted and is the member action (not the organism action).
-        if (action.args.length === 1 && (typeof memberIdx === 'undefined' || !state.members)) {
-          state[action.method] = action.args[0];
+        if (
+          typeof args[0] === 'string' &&
+          (typeof memberIdx === 'undefined' || typeof state.members === 'undefined')
+        ) {
+          state[method] = args[0];
           state.innerHTML = state.html; // DEPRECATED.
         }
 
@@ -2874,10 +2707,8 @@ data.
       case 'innerWidth':
       case 'outerWidth':
       case 'outerHeight': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state[action.method] = action.args[0];
-          }
+        if (typeof args[0] === 'number') {
+          state[method] = args[0];
         }
 
         break;
@@ -2913,9 +2744,9 @@ for important distinctions between attributes and properties.
 | properties | `object` | An object of property:value pairs. |
 */
       case 'prop': {
-        if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          for (const i in action.args[0]) {
-            state[action.method][i] = action.args[0][i];
+        if (args[0] && typeof args[0] === 'object') {
+          for (const i in args[0]) {
+            state[method][i] = args[0][i];
           }
         }
 
@@ -2950,12 +2781,11 @@ class.
 
       /**
 ### removeData(name)
-Remove a previously-stored piece of data. Does not affect HTML attributes in the
-DOM.
+Remove a previously-stored piece of data. Does not affect HTML data attributes.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | `string` | A string naming the piece of data to delete. |
+| name | `string` | A string naming the item of data to delete. |
 
 ### removeData(list)
 Remove previously-stored pieces of data. Does not affect HTML attributes in the
@@ -2963,22 +2793,22 @@ DOM.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| list | `string`\|`array` | A space-separated string or an array naming the pieces of data to delete. |
+| list | `string`\|`array` | A space-separated string or an array naming the items of data to delete. |
 */
       case 'removeData': {
-        if (typeof action.args[0] === 'string') {
-          if (action.args[0].indexOf(' ') > -1) {
-            for (const key of action.args[0].split(' ')) {
+        if (typeof args[0] === 'string') {
+          if (args[0].indexOf(' ') > -1) {
+            for (const key of args[0].split(' ')) {
               delete state.data[key];
             }
           }
           else {
-            delete state.data[action.args[0]];
+            delete state.data[args[0]];
           }
         }
-        else if (Array.isArray(action.args[0])) {
-          for (let i = 0; i < action.args[0].length; i++) {
-            delete state.data[action.args[0][i]];
+        else if (Array.isArray(args[0])) {
+          for (let i = 0; i < args[0].length; i++) {
+            delete state.data[args[0][i]];
           }
         }
 
@@ -2995,10 +2825,8 @@ from view to the left of the scrollable area) of the match.
 | value | `number` | The number to set the scroll position to. |
 */
       case 'scrollLeft': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state[action.method] = action.args[0];
-          }
+        if (typeof args[0] === 'number') {
+          state[method] = args[0];
         }
 
         break;
@@ -3014,10 +2842,8 @@ view above the scrollable area) of the match.
 | value | `number` | The number to set the scroll position to. |
 */
       case 'scrollTop': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state[action.method] = action.args[0];
-          }
+        if (typeof args[0] === 'number') {
+          state[method] = args[0];
         }
 
         break;
@@ -3035,8 +2861,13 @@ dispatched by an organism, this sets the 'document' organism's
 | selector | `string` | The identifying selector of the focused organism. |
 */
       case 'setActiveOrganism': {
-        if ($org.selector === 'document') {
-          state.activeOrganism = action.args[0] || null;
+        if ($orgOrMember.selector === 'document') {
+          if (args[0] && typeof args[0] === 'string') {
+            state.activeOrganism = args[0];
+          }
+          else {
+            state.activeOrganism = null;
+          }
         }
 
         break;
@@ -3052,21 +2883,17 @@ properties on `state.boundingClientRect`.
 | boundingClientRect | `object` | An object of key:values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class. |
 */
       case 'setBoundingClientRect': {
-        if (
-          typeof action.args[0] === 'object' && // Exclude functions. Don't assume what its constructor is.
-          action.args[0] instanceof Object
-        ) {
-          const rectObj = action.args[0];
+        if (args[0] && typeof args[0] === 'object') {
+          const rectObj = args[0];
 
           // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) or Object.assign because DOMRect is
-          // not a plain object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE
-          // support.
+          // not a plain object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE.
           for (const measurement in state.boundingClientRect) {
             if (
-              state.boundingClientRect[measurement] !== action.args[0][measurement] &&
-              action.args[0][measurement] != null // eslint-disable-line eqeqeq
+              state.boundingClientRect[measurement] !== args[0][measurement] &&
+              args[0][measurement] != null // eslint-disable-line eqeqeq
             ) {
-              state.boundingClientRect[measurement] = action.args[0][measurement];
+              state.boundingClientRect[measurement] = args[0][measurement];
             }
           }
 
@@ -3101,7 +2928,7 @@ getter below.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| text | `string` | A string of text. Functions are not supported. |
+| text | `string` | A string of text. |
 
 ### text()
 Dispatching a 'text' action without a parameter will set `state.textContent` to
@@ -3117,12 +2944,16 @@ many organisms with many members can add up to a large amount of data.
 */
       case 'text': {
         // Only perform this update
-        // IF there is an argument
+        // IF the argument is a string
         // AND
         //   this action is untargeted
         //   OR is targeted and is the member action (not the organism action).
-        if (action.args.length === 1 && (typeof memberIdx === 'undefined' || !state.members)) {
-          state.textContent = action.args[0];
+        if (
+          typeof args[0] === 'string' &&
+          (typeof memberIdx === 'undefined' || typeof state.members === 'undefined')
+        ) {
+
+          state.textContent = args[0];
         }
 
         break;
@@ -3153,16 +2984,15 @@ on a true/false switch.
 
       /**
 ### val(value)
-Set the value of all matches, typically form fields. This will set `state.val`.
+Set the value of all matches, typically form inputs. This will set `state.val`.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| value | `string`\|`number` | The value to which to set the form field's value. Functions are not supported. |
+| value | `string`\|`number`\|`array`\|`function` | The value(s) to which to set the form input value(s). |
 */
       case 'val': {
-        if (action.args.length === 1) {
-          // Coerce to string. It's the users' job to make sure they are submitting the right type.
-          state[action.method] = action.args[0] + '';
+        if (typeof args[0] === 'string' || typeof args[0] === 'number') {
+          state[method] = args[0] + '';
           state.value = state.val; // DEPRECATED.
         }
 
@@ -3178,23 +3008,14 @@ Set the width (not including padding, border, or margin) of all matches.
 | value | `number`\|`string`\|`function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
 */
       case 'width': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state[action.method] = action.args[0];
-
-            // If using Cheerio.
-            if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
-              if (state.boundingClientRect) {
-                state.boundingClientRect.width = action.args[0];
-              }
-            }
-          }
+        if (typeof args[0] === 'number') {
+          state[method] = args[0];
         }
 
         break;
       }
     // DO NOT REMOVE FOLLOWING COMMENT.
-    } // end switch (action.method)
+    } // end switch (method)
   }
   catch (err) {
     /* istanbul ignore next */
@@ -3281,31 +3102,29 @@ function reducerClosure(orgSelector, customReducer) {
       stateBuild($org, state, action);
 
       // Build new state for selection in $members array.
-      if (
-        typeof memberIdx === 'number' &&
-        $org.$members[memberIdx] &&
-        state.$members[memberIdx]
-      ) {
-        stateBuild($org.$members[memberIdx], state.$members[memberIdx], action);
+      if (typeof memberIdx === 'number') {
+        if ($org.$members[memberIdx] && state.$members[memberIdx]) {
+          stateBuild($org.$members[memberIdx], state.$members[memberIdx], action);
+        }
       }
       else if (Array.isArray(memberIdx)) {
         for (let i = 0; i < memberIdx.length; i++) {
           const idx = memberIdx[i];
 
-          if ($org.$members[idx]) {
+          if ($org.$members[idx] && state.$members[idx]) {
             stateBuild($org.$members[idx], state.$members[idx] || {}, action);
           }
         }
       }
 
       if (typeof customReducer === 'function') {
-        const customState = customReducer(state, action, $org, prevState);
+        const customState = customReducer(JSON.parse(JSON.stringify(state)), action, $org, prevState);
 
         // We need to validate customState because older versions of Requerio had the 4th constructor argument return an
         // object of action functions. We now want the 4th argument to be an optional custom reducer.
         if (
-          typeof customState === 'object' && // Don't want to check constructor because this is user submitted.
-          customState instanceof Object
+          typeof customState === 'object' && // Must be an object and not function.
+          customState instanceof Object // Don't want to check constructor because this is user submitted.
         ) {
           for (const i of Object.keys(customState)) {
             if (typeof customState[i] === 'function') {

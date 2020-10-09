@@ -66,7 +66,7 @@ function getStateDefault(orgSelector) {
       width: null,
       height: null,
       $members: [], // $members and members are not recursive, i.e. on organism states only, not on member states.
-      members: null
+      members: void 0
     };
   }
 
@@ -76,24 +76,28 @@ function getStateDefault(orgSelector) {
 /**
  * This builds state objects for organisms and their members.
  *
- * @param {object} $org - Organism.
+ * @param {object} $orgOrMember - Organism or member.
  * @param {object} state - Preinitialized state.
  * @param {object} action - Object defining how we'll act.
  * @returns {undefined} This function mutates the state param.
  */
-function stateBuild($org, state, action) {
+function stateBuild($orgOrMember, state, action) {
   try {
-    const memberIdx = action.memberIdx;
+    const {
+      args,
+      memberIdx,
+      method
+    } = action;
 
     // attribs
 
-    if ($org[0] && $org[0].attribs) { // Cheerio
-      state.attribs = JSON.parse(JSON.stringify($org[0].attribs));
+    if ($orgOrMember[0] && $orgOrMember[0].attribs) { // Cheerio
+      state.attribs = JSON.parse(JSON.stringify($orgOrMember[0].attribs));
     }
 
-    else if ($org[0] && $org[0].attributes && $org[0].attributes.length) { // jQuery
-      for (let i = 0; i < $org[0].attributes.length; i++) {
-        const attr = $org[0].attributes[i];
+    else if ($orgOrMember[0] && $orgOrMember[0].attributes && $orgOrMember[0].attributes.length) { // jQuery
+      for (let i = 0; i < $orgOrMember[0].attributes.length; i++) {
+        const attr = $orgOrMember[0].attributes[i];
         state.attribs[attr.name] = attr.value;
       }
     }
@@ -112,11 +116,11 @@ function stateBuild($org, state, action) {
 
     if (state.prop instanceof Object) {
       for (const i of Object.keys(state.prop)) {
-        state.prop[i] = $org[0][i];
+        state.prop[i] = $orgOrMember[0][i];
       }
     }
 
-    switch (action.method) {
+    switch (method) {
 
       /**
 ### addClass(classes)
@@ -184,12 +188,8 @@ Set one or more attributes for all matches.
 | attributes | `object` | An object of attribute:value pairs. A string value will add or update the corresponding attribute. A null value will remove the corresponding attribute. |
 */
       case 'attr': {
-        if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          for (const i in action.args[0]) {
-            state.attribs[i] = action.args[0][i];
-          }
-        }
-
+        // Handled by running the method as a side-effect and deriving state.attribs from the element's .attributes or
+        // .attribs property.
         break;
       }
 
@@ -216,25 +216,15 @@ Add HTML content immediately before all matches.
 
       /**
 ### css(properties)
-Set one or more CSS properties for all matches. Will set `state.css` as per the
-getter below.
+Set one or more CSS properties for all matches.
 
 | Param | Type | Description |
 | --- | --- | --- |
 | properties | `object` | An object of property:value pairs to set. |
-
-### css(properties)
-Update `state.css` with the style set by Cheerio or jQuery `.css()`. In a DOM
-environment, a snapshot of the real-time style will be keyed in camelCase. In
-all environments, the static style key will be hyphenated.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| properties | `string`\|`string[]` | The name or names of properties to get from the element, and set on the state. |
 */
       case 'css': {
-        // Copy the styles from the HTML style attribute to state.css in case a camelCase property was submitted without
-        // a corresponding hyphenated property.
+        // Copy the styles from the HTML style attribute to state.css. This would have been set as a side-effect of
+        // running the method.
         if (state.attribs.style) {
           for (const style of state.attribs.style.split(';')) {
             const styleTrimmed = style.trim();
@@ -242,13 +232,66 @@ all environments, the static style key will be hyphenated.
             if (styleTrimmed) {
               const styleSplit = styleTrimmed.split(':');
 
-              state[action.method][styleSplit[0].trim()] = styleSplit[1].trim();
+              state.css[styleSplit[0].trim()] = styleSplit[1].trim();
             }
           }
         }
 
-        for (const i in action.args[0]) {
-          state[action.method][i] = action.args[0][i];
+        if (args[0] instanceof Object && args[0].constructor === Object) {
+          for (const property of Object.keys(args[0])) {
+            // In a DOM environment, if args are submitted as camelCase, they will show up in attribs as hyphenated.
+            // Make sure the camelCase is applied to state as well.
+            const caps = (property.indexOf('-') === -1 && property.match(/[A-Z]/g)) || [];
+            let hyphen = property;
+
+            // First, try to convert camelCase to hyphenated and see if there is a match.
+            while (caps.length) {
+              const cap = caps.pop();
+              hyphen = hyphen.slice(0, hyphen.lastIndexOf(cap)) + '-' + cap.toLowerCase() +
+                hyphen.slice(hyphen.lastIndexOf(cap) + 1);
+            }
+
+            // If camelCase and its hyphenated property is in state.css, copy.
+            if (hyphen !== property && hyphen in state.css) {
+              state.css[property] = state.css[hyphen];
+            }
+            else if (typeof window === 'object') { // jQuery
+              // If the property was not picked up thus far, check if it is a property of the element's .style object.
+              if ($orgOrMember[0] && $orgOrMember[0].style && property in $orgOrMember[0].style) {
+                // The element's .style property is a real-time computed value. It might not equal the value submitted
+                // as an arg or written to the HTML style attribute.
+                state.css[property] = $orgOrMember[0].style[property];
+              }
+            }
+
+            // In a DOM environment, write the camelCase property to the state.
+            if (typeof window === 'object') { // jQuery
+              let camel;
+
+              if (property.indexOf('-') > -1) {
+                const hyphenatedArr = property.split('-');
+                const camelArr = [];
+
+                for (let i = 0; i < hyphenatedArr.length; i++) {
+                  if (i === 0) {
+                    camelArr[i] = hyphenatedArr[i];
+
+                    continue;
+                  }
+
+                  camelArr[i] = hyphenatedArr[i][0].toUpperCase() + hyphenatedArr[i].slice(1);
+                }
+
+                camel = camelArr.join('');
+              }
+
+              if (camel) {
+                if ($orgOrMember[0] && $orgOrMember[0].style && camel in $orgOrMember[0].style) {
+                  state.css[camel] = state.css[property];
+                }
+              }
+            }
+          }
         }
 
         state.style = state.css; // DEPRECATED.
@@ -265,9 +308,10 @@ Set one or more key:value pairs of data. Does not affect HTML data attributes.
 | keyValues | `object` | An object of key:value pairs. |
 */
       case 'data': {
-        if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          for (const i in action.args[0]) {
-            state[action.method][i] = action.args[0][i];
+        // In jQuery 3.5.0 (and probably upcoming in 4.x), the data object has no constructor.
+        if (args[0] && typeof args[0] === 'object') {
+          for (const i in args[0]) {
+            state[method][i] = args[0][i];
           }
         }
 
@@ -296,20 +340,14 @@ Empty innerHTML of all matches.
 
       // Internal. Do not document.
       case 'getBoundingClientRect': {
-        if (action.args.length === 1) {
-          if (
-            typeof action.args[0] === 'object' && // Exclude functions. Don't assume what its constructor is.
-            action.args[0] instanceof Object
-          ) {
+        if (args[0] && typeof args[0] === 'object') {
+          // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) or Object.assign because DOMRect is not a plain
+          // object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE.
+          const rectObj = args[0];
 
-            // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) or Object.assign because DOMRect is not a plain
-            // object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE support.
-            const rectObj = action.args[0];
-
-            for (const i in rectObj) {
-              if (typeof rectObj[i] === 'number') {
-                state.boundingClientRect[i] = rectObj[i];
-              }
+          for (const i in rectObj) {
+            if (typeof rectObj[i] === 'number') {
+              state.boundingClientRect[i] = rectObj[i];
             }
           }
         }
@@ -326,17 +364,8 @@ Set the height (not including padding, border, or margin) of all matches.
 | value | `number`\|`string`\|`function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
 */
       case 'height': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state[action.method] = action.args[0];
-
-            // If using Cheerio.
-            if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
-              if (state.boundingClientRect) {
-                state.boundingClientRect.height = action.args[0];
-              }
-            }
-          }
+        if (typeof args[0] === 'number') {
+          state[method] = args[0];
         }
 
         break;
@@ -348,7 +377,7 @@ Set the innerHTML of all matches. Will set `state.html` as per the getter below.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| htmlString | `string` | A string of HTML. Functions are not supported. |
+| htmlString | `string` | A string of HTML. |
 
 ### html()
 Dispatching an 'html' action without an htmlString parameter will set
@@ -362,12 +391,15 @@ data.
 */
       case 'html': {
         // Only perform this update
-        // IF there is an argument
+        // IF the argument is a string
         // AND
         //   this action is untargeted
         //   OR is targeted and is the member action (not the organism action).
-        if (action.args.length === 1 && (typeof memberIdx === 'undefined' || !state.members)) {
-          state[action.method] = action.args[0];
+        if (
+          typeof args[0] === 'string' &&
+          (typeof memberIdx === 'undefined' || typeof state.members === 'undefined')
+        ) {
+          state[method] = args[0];
           state.innerHTML = state.html; // DEPRECATED.
         }
 
@@ -379,10 +411,8 @@ data.
       case 'innerWidth':
       case 'outerWidth':
       case 'outerHeight': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state[action.method] = action.args[0];
-          }
+        if (typeof args[0] === 'number') {
+          state[method] = args[0];
         }
 
         break;
@@ -418,9 +448,9 @@ for important distinctions between attributes and properties.
 | properties | `object` | An object of property:value pairs. |
 */
       case 'prop': {
-        if (action.args[0] instanceof Object && action.args[0].constructor === Object) {
-          for (const i in action.args[0]) {
-            state[action.method][i] = action.args[0][i];
+        if (args[0] && typeof args[0] === 'object') {
+          for (const i in args[0]) {
+            state[method][i] = args[0][i];
           }
         }
 
@@ -455,12 +485,11 @@ class.
 
       /**
 ### removeData(name)
-Remove a previously-stored piece of data. Does not affect HTML attributes in the
-DOM.
+Remove a previously-stored piece of data. Does not affect HTML data attributes.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | `string` | A string naming the piece of data to delete. |
+| name | `string` | A string naming the item of data to delete. |
 
 ### removeData(list)
 Remove previously-stored pieces of data. Does not affect HTML attributes in the
@@ -468,22 +497,22 @@ DOM.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| list | `string`\|`array` | A space-separated string or an array naming the pieces of data to delete. |
+| list | `string`\|`array` | A space-separated string or an array naming the items of data to delete. |
 */
       case 'removeData': {
-        if (typeof action.args[0] === 'string') {
-          if (action.args[0].indexOf(' ') > -1) {
-            for (const key of action.args[0].split(' ')) {
+        if (typeof args[0] === 'string') {
+          if (args[0].indexOf(' ') > -1) {
+            for (const key of args[0].split(' ')) {
               delete state.data[key];
             }
           }
           else {
-            delete state.data[action.args[0]];
+            delete state.data[args[0]];
           }
         }
-        else if (Array.isArray(action.args[0])) {
-          for (let i = 0; i < action.args[0].length; i++) {
-            delete state.data[action.args[0][i]];
+        else if (Array.isArray(args[0])) {
+          for (let i = 0; i < args[0].length; i++) {
+            delete state.data[args[0][i]];
           }
         }
 
@@ -500,10 +529,8 @@ from view to the left of the scrollable area) of the match.
 | value | `number` | The number to set the scroll position to. |
 */
       case 'scrollLeft': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state[action.method] = action.args[0];
-          }
+        if (typeof args[0] === 'number') {
+          state[method] = args[0];
         }
 
         break;
@@ -519,10 +546,8 @@ view above the scrollable area) of the match.
 | value | `number` | The number to set the scroll position to. |
 */
       case 'scrollTop': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state[action.method] = action.args[0];
-          }
+        if (typeof args[0] === 'number') {
+          state[method] = args[0];
         }
 
         break;
@@ -540,8 +565,13 @@ dispatched by an organism, this sets the 'document' organism's
 | selector | `string` | The identifying selector of the focused organism. |
 */
       case 'setActiveOrganism': {
-        if ($org.selector === 'document') {
-          state.activeOrganism = action.args[0] || null;
+        if ($orgOrMember.selector === 'document') {
+          if (args[0] && typeof args[0] === 'string') {
+            state.activeOrganism = args[0];
+          }
+          else {
+            state.activeOrganism = null;
+          }
         }
 
         break;
@@ -557,21 +587,17 @@ properties on `state.boundingClientRect`.
 | boundingClientRect | `object` | An object of key:values. The object may contain one or more properties, but they must correspond to properties defined by the [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) class. |
 */
       case 'setBoundingClientRect': {
-        if (
-          typeof action.args[0] === 'object' && // Exclude functions. Don't assume what its constructor is.
-          action.args[0] instanceof Object
-        ) {
-          const rectObj = action.args[0];
+        if (args[0] && typeof args[0] === 'object') {
+          const rectObj = args[0];
 
           // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) or Object.assign because DOMRect is
-          // not a plain object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE
-          // support.
+          // not a plain object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE.
           for (const measurement in state.boundingClientRect) {
             if (
-              state.boundingClientRect[measurement] !== action.args[0][measurement] &&
-              action.args[0][measurement] != null // eslint-disable-line eqeqeq
+              state.boundingClientRect[measurement] !== args[0][measurement] &&
+              args[0][measurement] != null // eslint-disable-line eqeqeq
             ) {
-              state.boundingClientRect[measurement] = action.args[0][measurement];
+              state.boundingClientRect[measurement] = args[0][measurement];
             }
           }
 
@@ -606,7 +632,7 @@ getter below.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| text | `string` | A string of text. Functions are not supported. |
+| text | `string` | A string of text. |
 
 ### text()
 Dispatching a 'text' action without a parameter will set `state.textContent` to
@@ -622,12 +648,16 @@ many organisms with many members can add up to a large amount of data.
 */
       case 'text': {
         // Only perform this update
-        // IF there is an argument
+        // IF the argument is a string
         // AND
         //   this action is untargeted
         //   OR is targeted and is the member action (not the organism action).
-        if (action.args.length === 1 && (typeof memberIdx === 'undefined' || !state.members)) {
-          state.textContent = action.args[0];
+        if (
+          typeof args[0] === 'string' &&
+          (typeof memberIdx === 'undefined' || typeof state.members === 'undefined')
+        ) {
+
+          state.textContent = args[0];
         }
 
         break;
@@ -658,16 +688,15 @@ on a true/false switch.
 
       /**
 ### val(value)
-Set the value of all matches, typically form fields. This will set `state.val`.
+Set the value of all matches, typically form inputs. This will set `state.val`.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| value | `string`\|`number` | The value to which to set the form field's value. Functions are not supported. |
+| value | `string`\|`number`\|`array`\|`function` | The value(s) to which to set the form input value(s). |
 */
       case 'val': {
-        if (action.args.length === 1) {
-          // Coerce to string. It's the users' job to make sure they are submitting the right type.
-          state[action.method] = action.args[0] + '';
+        if (typeof args[0] === 'string' || typeof args[0] === 'number') {
+          state[method] = args[0] + '';
           state.value = state.val; // DEPRECATED.
         }
 
@@ -683,23 +712,14 @@ Set the width (not including padding, border, or margin) of all matches.
 | value | `number`\|`string`\|`function` | The number of CSS pixels, a string representing the measurement, or a function returning the measurement. |
 */
       case 'width': {
-        if (action.args.length === 1) {
-          if (typeof action.args[0] === 'number') {
-            state[action.method] = action.args[0];
-
-            // If using Cheerio.
-            if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
-              if (state.boundingClientRect) {
-                state.boundingClientRect.width = action.args[0];
-              }
-            }
-          }
+        if (typeof args[0] === 'number') {
+          state[method] = args[0];
         }
 
         break;
       }
     // DO NOT REMOVE FOLLOWING COMMENT.
-    } // end switch (action.method)
+    } // end switch (method)
   }
   catch (err) {
     /* istanbul ignore next */
@@ -786,31 +806,29 @@ function reducerClosure(orgSelector, customReducer) {
       stateBuild($org, state, action);
 
       // Build new state for selection in $members array.
-      if (
-        typeof memberIdx === 'number' &&
-        $org.$members[memberIdx] &&
-        state.$members[memberIdx]
-      ) {
-        stateBuild($org.$members[memberIdx], state.$members[memberIdx], action);
+      if (typeof memberIdx === 'number') {
+        if ($org.$members[memberIdx] && state.$members[memberIdx]) {
+          stateBuild($org.$members[memberIdx], state.$members[memberIdx], action);
+        }
       }
       else if (Array.isArray(memberIdx)) {
         for (let i = 0; i < memberIdx.length; i++) {
           const idx = memberIdx[i];
 
-          if ($org.$members[idx]) {
+          if ($org.$members[idx] && state.$members[idx]) {
             stateBuild($org.$members[idx], state.$members[idx] || {}, action);
           }
         }
       }
 
       if (typeof customReducer === 'function') {
-        const customState = customReducer(state, action, $org, prevState);
+        const customState = customReducer(JSON.parse(JSON.stringify(state)), action, $org, prevState);
 
         // We need to validate customState because older versions of Requerio had the 4th constructor argument return an
         // object of action functions. We now want the 4th argument to be an optional custom reducer.
         if (
-          typeof customState === 'object' && // Don't want to check constructor because this is user submitted.
-          customState instanceof Object
+          typeof customState === 'object' && // Must be an object and not function.
+          customState instanceof Object // Don't want to check constructor because this is user submitted.
         ) {
           for (const i of Object.keys(customState)) {
             if (typeof customState[i] === 'function') {

@@ -58,21 +58,11 @@ Add HTML content immediately before all matches.
 | content | `function` | A function that returns an HTML string. |
 
 ### css(properties)
-Set one or more CSS properties for all matches. Will set `state.css` as per the
-getter below.
+Set one or more CSS properties for all matches.
 
 | Param | Type | Description |
 | --- | --- | --- |
 | properties | `object` | An object of property:value pairs to set. |
-
-### css(properties)
-Update `state.css` with the style set by Cheerio or jQuery `.css()`. In a DOM
-environment, a snapshot of the real-time style will be keyed in camelCase. In
-all environments, the static style key will be hyphenated.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| properties | `string`\|`string[]` | The name or names of properties to get from the element, and set on the state. |
 
 ### data(keyValues)
 Set one or more key:value pairs of data. Does not affect HTML data attributes.
@@ -99,7 +89,7 @@ Set the innerHTML of all matches. Will set `state.html` as per the getter below.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| htmlString | `string` | A string of HTML. Functions are not supported. |
+| htmlString | `string` | A string of HTML. |
 
 ### html()
 Dispatching an 'html' action without an htmlString parameter will set
@@ -145,8 +135,7 @@ class.
 | classes | `string`\|`function` | A space-separated string, or a function that returns a space-separated string. |
 
 ### removeData(name)
-Remove a previously-stored piece of data. Does not affect HTML attributes in the
-DOM.
+Remove a previously-stored piece of data. Does not affect HTML data attributes.
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -201,7 +190,7 @@ getter below.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| text | `string` | A string of text. Functions are not supported. |
+| text | `string` | A string of text. |
 
 ### text()
 Dispatching a 'text' action without a parameter will set `state.textContent` to
@@ -223,20 +212,12 @@ on whether or not the member has that class.
 | --- | --- | --- |
 | classes | `string`\|`function` | A space-separated string, or a function that returns a space-separated string. |
 
-### toggleClass(paramsArray)
-For each submitted class, add or remove that class from all matches, depending
-on a true/false switch.
-
-| Param | Type | Description |
-| --- | --- | --- |
-| paramsArray | `array` | An array: where element 0 is a space-separated string, or a function that returns a space-separated string; and element 1 is a boolean switch, where true means add, false means remove. |
-
 ### val(value)
-Set the value of all matches, typically form fields. This will set `state.val`.
+Set the value of all matches, typically form inputs. This will set `state.val`.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| value | `string`\|`number` | The value to which to set the form field's value. Functions are not supported. |
+| value | `string`\|`number`\|`array`\|`function` | The value(s) to which to set the form input value(s). |
 
 ### width(value)
 Set the width (not including padding, border, or margin) of all matches.
