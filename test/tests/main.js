@@ -2237,6 +2237,83 @@ in a targeted manner', function () {
 
         expect(state.width).to.equal(1000);
       });
+
+      it('dispatches the "width" action in a targeted manner', function () {
+        requerio.$orgs['.main__div'].dispatchAction('width', 1010, 0);
+
+        const state = requerio.$orgs['.main__div'].getState(0);
+
+        expect(state.width).to.equal(1010);
+      });
+
+      it('dispatches the "width" action across multiple targets', function () {
+        requerio.$orgs['.main__div'].dispatchAction('width', 1020, [0, 1]);
+
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
+
+        expect(state0.width).to.equal(1020);
+        expect(state1.width).to.equal(1020);
+      });
+
+      it('dispatches the "width" action with a function argument', function () {
+        requerio.$orgs['#main'].dispatchAction(
+          'width',
+          function (idx, distance) {
+            return distance + parseInt(Object.keys(this).length + '' + idx, 10);
+          }
+        );
+
+        const state = requerio.$orgs['#main'].getState();
+
+        if (typeof window === 'object') {
+          expect(state.width).to.equal(1020);
+        }
+        else {
+          expect(state.width).to.equal(1110);
+        }
+      });
+
+      it('dispatches the "width" action with a function argument in a targeted manner', function () {
+        requerio.$orgs['.main__div'].dispatchAction(
+          'width',
+          function (idx, distance) {
+            return distance + parseInt(Object.keys(this).length + '' + idx, 10);
+          },
+          0
+        );
+
+        const state = requerio.$orgs['.main__div'].getState(0);
+
+        if (typeof window === 'object') {
+          expect(state.width).to.equal(1040);
+        }
+        else {
+          expect(state.width).to.equal(1130);
+        }
+      });
+
+      it('dispatches the "width" action with a function argument across multiple targets', function () {
+        requerio.$orgs['.main__div'].dispatchAction(
+          'width',
+          function (idx, distance) {
+            return distance + parseInt(Object.keys(this).length + '' + idx, 10);
+          },
+          [0, 1]
+        );
+
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
+
+        if (typeof window === 'object') {
+          expect(state0.width).to.equal(1060);
+          expect(state1.width).to.equal(1040);
+        }
+        else {
+          expect(state0.width).to.equal(1240);
+          expect(state1.width).to.equal(1131);
+        }
+      });
     });
 
     describe('augmented organism prototype methods', function () {
