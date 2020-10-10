@@ -19,10 +19,10 @@ function setMeasurement($org, measurement, distance_, idx) {
     let distance;
 
     if (typeof distance_ === 'function') {
-      distance = parseInt(distance_.call($org[i], i, $org.$members[i]['_' + measurement]), 10);
+      distance = parseFloat(distance_.call($org[i], i, $org.$members[i]['_' + measurement]));
     }
     else {
-      distance = parseInt(distance_, 10);
+      distance = parseFloat(distance_);
     }
 
     $org.$members[i]['_' + measurement] = distance;
@@ -607,14 +607,14 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       }
       else {
         if (computedStyle.boxSizing === 'content-box') {
-          return parseInt(computedStyle.width, 10) +
-            (parseInt(computedStyle.paddingLeft, 10) || 0) +
-            (parseInt(computedStyle.paddingRight, 10) || 0);
+          return parseFloat(computedStyle.width) +
+            (parseFloat(computedStyle.paddingLeft) || 0) +
+            (parseFloat(computedStyle.paddingRight) || 0);
         }
         else {
-          return parseInt(computedStyle.width, 10) -
-            (parseInt(computedStyle.borderLeftWidth, 10) || 0) -
-            (parseInt(computedStyle.borderRightWidth, 10) || 0);
+          return parseFloat(computedStyle.width) -
+            (parseFloat(computedStyle.borderLeftWidth) || 0) -
+            (parseFloat(computedStyle.borderRightWidth) || 0);
         }
       }
 
@@ -627,14 +627,14 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       }
       else {
         if (computedStyle.boxSizing === 'content-box') {
-          return parseInt(computedStyle.height, 10) +
-            (parseInt(computedStyle.paddingTop, 10) || 0) +
-            (parseInt(computedStyle.paddingBottom, 10) || 0);
+          return parseFloat(computedStyle.height) +
+            (parseFloat(computedStyle.paddingTop) || 0) +
+            (parseFloat(computedStyle.paddingBottom) || 0);
         }
         else {
-          return parseInt(computedStyle.height, 10) -
-            (parseInt(computedStyle.borderTopWidth, 10) || 0) -
-            (parseInt(computedStyle.borderBottomWidth, 10) || 0);
+          return parseFloat(computedStyle.height) -
+            (parseFloat(computedStyle.borderTopWidth) || 0) -
+            (parseFloat(computedStyle.borderBottomWidth) || 0);
         }
       }
 
@@ -647,18 +647,18 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       }
       else {
         if (computedStyle.boxSizing === 'content-box') {
-          return parseInt(computedStyle.width, 10) +
-            (parseInt(computedStyle.paddingLeft, 10) || 0) +
-            (parseInt(computedStyle.paddingRight, 10) || 0) +
-            (parseInt(computedStyle.borderLeftWidth, 10) || 0) +
-            (parseInt(computedStyle.borderRightWidth, 10) || 0) +
-            (parseInt(computedStyle.marginLeft, 10) || 0) +
-            (parseInt(computedStyle.marginRight, 10) || 0);
+          return parseFloat(computedStyle.width) +
+            (parseFloat(computedStyle.paddingLeft) || 0) +
+            (parseFloat(computedStyle.paddingRight) || 0) +
+            (parseFloat(computedStyle.borderLeftWidth) || 0) +
+            (parseFloat(computedStyle.borderRightWidth) || 0) +
+            (parseFloat(computedStyle.marginLeft) || 0) +
+            (parseFloat(computedStyle.marginRight) || 0);
         }
         else {
-          return parseInt(computedStyle.width, 10) +
-            (parseInt(computedStyle.marginLeft, 10) || 0) +
-            (parseInt(computedStyle.marginRight, 10) || 0);
+          return parseFloat(computedStyle.width) +
+            (parseFloat(computedStyle.marginLeft) || 0) +
+            (parseFloat(computedStyle.marginRight) || 0);
         }
       }
 
@@ -671,18 +671,18 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       }
       else {
         if (computedStyle.boxSizing === 'content-box') {
-          return parseInt(computedStyle.height, 10) +
-            (parseInt(computedStyle.paddingTop, 10) || 0) +
-            (parseInt(computedStyle.paddingBottom, 10) || 0) +
-            (parseInt(computedStyle.borderTopWidth, 10) || 0) +
-            (parseInt(computedStyle.borderBottomWidth, 10) || 0) +
-            (parseInt(computedStyle.marginTop, 10) || 0) +
-            (parseInt(computedStyle.marginBottom, 10) || 0);
+          return parseFloat(computedStyle.height) +
+            (parseFloat(computedStyle.paddingTop) || 0) +
+            (parseFloat(computedStyle.paddingBottom) || 0) +
+            (parseFloat(computedStyle.borderTopWidth) || 0) +
+            (parseFloat(computedStyle.borderBottomWidth) || 0) +
+            (parseFloat(computedStyle.marginTop) || 0) +
+            (parseFloat(computedStyle.marginBottom) || 0);
         }
         else {
-          return parseInt(computedStyle.height, 10) +
-            (parseInt(computedStyle.marginTop, 10) || 0) +
-            (parseInt(computedStyle.marginBottom, 10) || 0);
+          return parseFloat(computedStyle.height) +
+            (parseFloat(computedStyle.marginTop) || 0) +
+            (parseFloat(computedStyle.marginBottom) || 0);
         }
       }
 
@@ -723,14 +723,14 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       }
       else {
         if (computedStyle.boxSizing === 'content-box') {
-          return parseInt(computedStyle.width, 10);
+          return parseFloat(computedStyle.width);
         }
         else {
-          return parseInt(computedStyle.width, 10) -
-            (parseInt(computedStyle.paddingLeft, 10) || 0) -
-            (parseInt(computedStyle.paddingRight, 10) || 0) -
-            (parseInt(computedStyle.borderLeftWidth, 10) || 0) -
-            (parseInt(computedStyle.borderRightWidth, 10) || 0);
+          return parseFloat(computedStyle.width) -
+            (parseFloat(computedStyle.paddingLeft) || 0) -
+            (parseFloat(computedStyle.paddingRight) || 0) -
+            (parseFloat(computedStyle.borderLeftWidth) || 0) -
+            (parseFloat(computedStyle.borderRightWidth) || 0);
         }
       }
 
@@ -749,14 +749,14 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       }
       else {
         if (computedStyle.boxSizing === 'content-box') {
-          return parseInt(computedStyle.height, 10);
+          return parseFloat(computedStyle.height);
         }
         else {
-          return parseInt(computedStyle.height, 10) -
-            (parseInt(computedStyle.paddingTop, 10) || 0) -
-            (parseInt(computedStyle.paddingBottom, 10) || 0) -
-            (parseInt(computedStyle.borderTopWidth, 10) || 0) -
-            (parseInt(computedStyle.borderBottomWidth, 10) || 0);
+          return parseFloat(computedStyle.height) -
+            (parseFloat(computedStyle.paddingTop) || 0) -
+            (parseFloat(computedStyle.paddingBottom) || 0) -
+            (parseFloat(computedStyle.borderTopWidth) || 0) -
+            (parseFloat(computedStyle.borderBottomWidth) || 0);
         }
       }
   }
