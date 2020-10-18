@@ -58,44 +58,22 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         expect(stateAfter.activeOrganism).to.equal('input');
       });
 
-      // Cheerio.
-      if ($._root && $._root.attribs) {
-        it('dispatches the "getBoundingClientRect" action on the "window" organism', function () {
-          const stateBefore = requerio.$orgs.window.getState();
+      it('dispatches the "getBoundingClientRect" action on the "window" organism', function () {
+        const stateBefore = requerio.store.getState().window;
 
-          requerio.$orgs.window.dispatchAction('getBoundingClientRect');
+        requerio.$orgs.window.dispatchAction('getBoundingClientRect');
 
-          const stateAfter = requerio.$orgs.window.getState();
+        const stateAfter = requerio.$orgs.window.getState();
 
-          expect(JSON.stringify(stateBefore)).to.equal(
-            // eslint-disable-next-line max-len
-            '{"data":{},"innerWidth":null,"innerHeight":null,"outerWidth":null,"outerHeight":null,"scrollLeft":null,"scrollTop":null,"width":null,"height":null}'
-          );
-          expect(JSON.stringify(stateAfter)).to.equal(
-            // eslint-disable-next-line max-len
-            '{"data":{},"innerWidth":1024,"innerHeight":768,"outerWidth":1024,"outerHeight":768,"scrollLeft":0,"scrollTop":0,"width":1024,"height":768}'
-          );
-        });
-      }
-      // jQuery.
-      else {
-        it('dispatches the "getBoundingClientRect" action on the "window" organism', function () {
-          const stateBefore = requerio.$orgs.window.getState();
-
-          requerio.$orgs.window.dispatchAction('getBoundingClientRect');
-
-          const stateAfter = requerio.$orgs.window.getState();
-
-          expect(JSON.stringify(stateBefore)).to.equal(
-            // eslint-disable-next-line max-len
-            '{"data":{},"innerWidth":null,"innerHeight":null,"outerWidth":null,"outerHeight":null,"scrollLeft":null,"scrollTop":null,"width":null,"height":null}'
-          );
-          expect(JSON.stringify(stateAfter)).to.equal(
-            // eslint-disable-next-line max-len
-            '{"data":{},"innerWidth":1024,"innerHeight":768,"outerWidth":1024,"outerHeight":768,"scrollLeft":0,"scrollTop":0,"width":1024,"height":768}'
-          );
-        });
-      }
+        expect(JSON.stringify(stateBefore)).to.equal(
+          // eslint-disable-next-line max-len
+          '{"data":{},"innerWidth":null,"innerHeight":null,"outerWidth":null,"outerHeight":null,"scrollLeft":null,"scrollTop":null,"width":null,"height":null}'
+        );
+        expect(JSON.stringify(stateAfter)).to.equal(
+          // eslint-disable-next-line max-len
+          '{"data":{},"innerWidth":1024,"innerHeight":768,"outerWidth":1024,"outerHeight":768,"scrollLeft":0,"scrollTop":0,"width":1024,"height":768}'
+        );
+      });
 
       it('dispatches the "innerWidth" action on the "window" organism', function () {
         requerio.$orgs.window.dispatchAction('innerWidth');

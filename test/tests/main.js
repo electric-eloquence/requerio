@@ -809,9 +809,16 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         it('gets the state for the "document" organism when .getState() is invoked', function () {
           const state = requerio.$orgs.document.getState();
 
-          expect(JSON.stringify(state)).to.equal(
-            '{"activeOrganism":null,"data":{},"scrollLeft":null,"scrollTop":null,"width":null,"height":null}'
-          );
+          if (typeof window === 'object') {
+            expect(JSON.stringify(state)).to.equal(
+              '{"activeOrganism":null,"data":{},"scrollLeft":0,"scrollTop":0,"width":0,"height":0}'
+            );
+          }
+          else {
+            expect(JSON.stringify(state)).to.equal(
+              '{"activeOrganism":null,"data":{},"scrollLeft":null,"scrollTop":null,"width":null,"height":null}'
+            );
+          }
         });
 
         it('gets the Redux store when .getStore() is invoked', function () {
