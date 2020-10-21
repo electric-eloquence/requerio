@@ -105,7 +105,7 @@ requerio.init();
 // `.midi-chlorian` organisms. (A productive biome would want them to
 // be symbionts and not parasites!) To demonstrate that `#yoda` is
 // alive and stateful, let's dispatch a `css` action to give it a
-// `color:green` style property.
+// `color:green` css property.
 requerio.$orgs['#yoda'].dispatchAction('css', {color: 'green'});
 
 // This action will turn the organism's text green in the browser.
@@ -113,7 +113,7 @@ requerio.$orgs['#yoda'].dispatchAction('css', {color: 'green'});
 const mainState = requerio.$orgs['#main'].getState();
 
 // In Node, we can test to ensure the action updated the state correctly.
-assert.equal(mainState.style.color, 'green');
+assert.equal(mainState.css.color, 'green');
 ```
 
 [Why Requerio?](docs/why-requerio.md)
