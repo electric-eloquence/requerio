@@ -17,7 +17,7 @@ Do not to let states bloat for no reason (as it could with large html, textConte
 | prop | `object` | {} | An object of `Element` properties set by jQuery or Cheerio `.prop()`. |
 | scrollLeft | `null`\|`number` | `null` | The number of CSS pixels scrolled to the left of viewable area. |
 | scrollTop | `null`\|`number` | `null` | The number of CSS pixels scrolled above the viewable area. |
-| textContent | `null`\|`string` | `null` | To DOM `Element.textContent` spec. `null` means the textContent hasn't been touched by Requerio. `null` has a completely different meaning than empty string. |
+| textContent | `null`\|`string` | `null` | To DOM `Node.textContent` spec. `null` means the textContent hasn't been touched by Requerio. `null` has a completely different meaning than empty string. Named `textContent` and not `text` because Requerio does not concatenate texts from multiple selections, like jQuery or Cheerio `.text()` does. It therefore more closely resembles `Node.textContent`. |
 | val | `string` | `undefined` | A form input's value. Only on input element states. |
 | width | `null`\|`number` | `null` | In number of CSS pixels. Does not include padding, border, or margin. |
 | height | `null`\|`number` | `null` | In number of CSS pixels. Does not include padding, border, or margin. |

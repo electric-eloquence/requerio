@@ -5,8 +5,8 @@ const path = require('path');
 
 // Using IIFEs to scope vars and to return from false conditions.
 (() => {
-  const delimitStrStart = 'switch \\(action.method\\) \\{';
-  const delimitStrStop = 'end switch \\(action.method\\)';
+  const delimitStrStart = 'switch \\(method\\) \\{';
+  const delimitStrStop = 'end switch \\(method\\)';
   const regexStr = delimitStrStart + '[\\S\\s]*' + delimitStrStop;
   const regex = new RegExp(regexStr);
 

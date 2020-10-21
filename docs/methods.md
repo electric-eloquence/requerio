@@ -139,7 +139,7 @@ Remove a previously-stored piece of data. Does not affect HTML data attributes.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | `string` | A string naming the piece of data to delete. |
+| name | `string` | A string naming the item of data to delete. |
 
 ### removeData(list)
 Remove previously-stored pieces of data. Does not affect HTML attributes in the
@@ -147,7 +147,7 @@ DOM.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| list | `string`\|`array` | A space-separated string or an array naming the pieces of data to delete. |
+| list | `string`\|`array` | A space-separated string or an array naming the items of data to delete. |
 
 ### scrollLeft(value)
 Set the horizontal scroll position (the number of CSS pixels that are hidden
@@ -211,6 +211,14 @@ on whether or not the member has that class.
 | Param | Type | Description |
 | --- | --- | --- |
 | classes | `string`\|`function` | A space-separated string, or a function that returns a space-separated string. |
+
+### toggleClass(paramsArray)
+For each submitted class, add or remove that class from all matches, depending
+on a true/false switch.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| paramsArray | `array` | An array: where element 0 is a space-separated string, or a function that returns a space-separated string; and element 1 is a boolean switch, where true means add, false means remove. |
 
 ### val(value)
 Set the value of all matches, typically form inputs. This will set `state.val`.
