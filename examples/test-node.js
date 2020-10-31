@@ -39,11 +39,11 @@ const behaviors = behaviorsGet(requerio);
 /* Test */
 
 behaviors.mainHide();
-const hiddenDisplayStyle = requerio.$orgs['.main__section--1'].getState().style.display;
-assert.equal(hiddenDisplayStyle, 'none');
+const hiddenDisplayCss = requerio.$orgs['.main__section--1'].getState().css.display;
+assert.equal(hiddenDisplayCss, 'none');
 
 behaviors.mainShow();
-const shownDisplayStyle = requerio.$orgs['.main__section--1'].getState().style.display;
-assert.equal(shownDisplayStyle, 'block');
+const shownDisplayCss = requerio.$orgs['.main__section--1'].getState().css.display;
+assert.equal(shownDisplayCss, 'block');
 
 console.log('Tests passed'); // eslint-disable-line no-console
