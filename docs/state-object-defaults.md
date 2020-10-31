@@ -4,7 +4,7 @@ Do not to let states bloat for no reason (as it could with large html, textConte
 | Property | Type | Initial Value | Description |
 | --- | --- | --- | --- |
 | activeOrganism | `null`\|`string` | `null` | The element having focus. Only on states for `document`. |
-| attribs | `object` | {} | Equivalent to the `.attribs` property of a Cheerio object. This consists of simple key-value pairs, and as such, is preferable to use for storing state than a replica of the much more complex `Element.attributes` collection, as utilized by jQuery. |
+| attribs | `object` | {} | Equivalent to the `.attribs` property of a Cheerio object. This consists of simple key-value pairs, and as such, is preferable to use for storing state than a replica of the much more complex DOM `Element.attributes` collection. |
 | boundingClientRect | `object` | {<br>&nbsp;&nbsp;width:&nbsp;`null`,<br>&nbsp;&nbsp;height:&nbsp;`null`,<br>&nbsp;&nbsp;top:&nbsp;`null`,<br>&nbsp;&nbsp;right:&nbsp;`null`,<br>&nbsp;&nbsp;bottom:&nbsp;`null`,<br>&nbsp;&nbsp;left:&nbsp;`null`<br>} | A key-value copy of the object returned by `.getBoundingClientRect()` This object's properties are all of type `null` or `number`. Width and height for this object include padding and border, but not margin. |
 | classArray | `array` | [] | An array of classes declared in the HTML `class` attribute. |
 | css | `object` | {} | An object of CSS properties set by jQuery or Cheerio `.css()`. |
