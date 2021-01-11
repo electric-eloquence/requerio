@@ -71,7 +71,7 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         );
         expect(JSON.stringify(stateAfter)).to.equal(
           // eslint-disable-next-line max-len
-          '{"data":{},"innerWidth":1024,"innerHeight":768,"outerWidth":1024,"outerHeight":768,"scrollLeft":0,"scrollTop":0,"width":1024,"height":768}'
+          '{"data":{},"innerWidth":1024,"innerHeight":768,"outerWidth":1024,"outerHeight":768,"scrollLeft":null,"scrollTop":null,"width":1024,"height":768}'
         );
       });
 

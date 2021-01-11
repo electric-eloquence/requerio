@@ -174,8 +174,10 @@ export default ($orgs, $) => {
      * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
-    // Completely reset scroll methods.
-    if (typeof global === 'object') {
+    if (
+      typeof $org.scrollTop === 'undefined' ||
+      (typeof global === 'object' && $org.selector === 'window')
+    ) {
       $org.scrollLeft = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
@@ -192,8 +194,10 @@ export default ($orgs, $) => {
      * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
-    // Completely reset scroll methods.
-    if (typeof global === 'object') {
+    if (
+      typeof $org.scrollTop === 'undefined' ||
+      (typeof global === 'object' && $org.selector === 'window')
+    ) {
       $org.scrollTop = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {

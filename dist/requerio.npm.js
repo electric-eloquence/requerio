@@ -176,8 +176,10 @@ var organismsIncept = ($orgs, $) => {
      * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
-    // Completely reset scroll methods.
-    if (typeof global === 'object') {
+    if (
+      typeof $org.scrollTop === 'undefined' ||
+      (typeof global === 'object' && $org.selector === 'window')
+    ) {
       $org.scrollLeft = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
@@ -194,8 +196,10 @@ var organismsIncept = ($orgs, $) => {
      * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
-    // Completely reset scroll methods.
-    if (typeof global === 'object') {
+    if (
+      typeof $org.scrollTop === 'undefined' ||
+      (typeof global === 'object' && $org.selector === 'window')
+    ) {
       $org.scrollTop = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
@@ -706,7 +710,14 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
 
     case 'scrollLeft':
       if ($org.selector === 'window') {
-        return elem.pageXOffset;
+        /* istanbul ignore else */
+        // If using JSDOM.
+        if (typeof window === 'object' && typeof global === 'object') {
+          return $org.$members[0]._scrollLeft;
+        }
+        else {
+          return elem.pageXOffset;
+        }
       }
       else if ($org.selector === 'document') {
         return elem.documentElement.scrollLeft;
@@ -717,7 +728,14 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
 
     case 'scrollTop':
       if ($org.selector === 'window') {
-        return elem.pageYOffset;
+        /* istanbul ignore else */
+        // If using JSDOM.
+        if (typeof window === 'object' && typeof global === 'object') {
+          return $org.$members[0]._scrollTop;
+        }
+        else {
+          return elem.pageYOffset;
+        }
       }
       else if ($org.selector === 'document') {
         return elem.documentElement.scrollTop;
