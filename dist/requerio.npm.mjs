@@ -47,6 +47,11 @@ var organismsIncept = ($orgs, $) => {
     if (i === 'document') {
       if (typeof document === 'object') {
         $org = $(document);
+
+        // So tests work on server with JSDOM.
+        if (typeof global === 'object') {
+          $org.$members.push({});
+        }
       }
       else {
         $org = $(i);
@@ -58,6 +63,11 @@ var organismsIncept = ($orgs, $) => {
     if (i === 'window') {
       if (typeof window === 'object') {
         $org = $(window);
+
+        // So tests work on server with JSDOM.
+        if (typeof global === 'object') {
+          $org.$members.push({});
+        }
       }
       else {
         $org = $(i);
@@ -164,7 +174,8 @@ var organismsIncept = ($orgs, $) => {
      * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
-    if (typeof $org.scrollLeft === 'undefined') {
+    // Completely reset scroll methods.
+    if (typeof global === 'object') {
       $org.scrollLeft = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
@@ -181,7 +192,8 @@ var organismsIncept = ($orgs, $) => {
      * @param {number} [memberIdx] - The index of the member within $org.$members if targeting a member.
      * @returns {number|null|object} Distance, null, or organism.
      */
-    if (typeof $org.scrollTop === 'undefined') {
+    // Completely reset scroll methods.
+    if (typeof global === 'object') {
       $org.scrollTop = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
@@ -2394,7 +2406,6 @@ function stateBuild($orgOrMember, state, action) {
     if ($orgOrMember[0] && $orgOrMember[0].attribs) { // Cheerio
       state.attribs = JSON.parse(JSON.stringify($orgOrMember[0].attribs));
     }
-
     else if ($orgOrMember[0] && $orgOrMember[0].attributes && $orgOrMember[0].attributes.length) { // jQuery
       for (let i = 0; i < $orgOrMember[0].attributes.length; i++) {
         const attr = $orgOrMember[0].attributes[i];
