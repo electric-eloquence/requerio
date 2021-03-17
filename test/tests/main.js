@@ -1710,6 +1710,18 @@ in a targeted manner', function () {
         expect(state.css['background-color']).to.equal('cyan');
       });
 
+      it('dispatches the "css" action with an empty string value argument to unset a style', function () {
+        const stateBefore = requerio.$orgs['#main'].getState();
+
+        requerio.$orgs['#main'].dispatchAction('css', {color: ''});
+
+        const stateAfter = requerio.$orgs['#main'].getState();
+
+        expect(stateBefore.css.color).to.equal('cyan');
+
+        expect(stateAfter.css.color).to.be.undefined;
+      });
+
       it('dispatches the "css" action with a single string value argument in a targeted manner', function () {
         requerio.$orgs['.main__div'].dispatchAction('css', {color: 'red'}, 1);
 
@@ -1734,6 +1746,43 @@ in a targeted manner', function () {
           expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
           expect(state1.css['background-color']).to.equal('darkred');
         }
+      });
+
+      it('dispatches the "css" action with a multiple string value argument in a targeted manner', function () {
+        requerio.$orgs['.main__div'].dispatchAction('css', {color: 'blue', 'background-color': 'blue'}, 1);
+
+        const state0 = requerio.$orgs['.main__div'].getState(0);
+        const state1 = requerio.$orgs['.main__div'].getState(1);
+
+        expect(state0.css.color).to.not.equal(state1.css.color);
+        expect(state1.css.color).to.equal('blue');
+
+        if (typeof window === 'object') {
+          expect(state0.css.backgroundColor).to.not.equal(state1.css.backgroundColor);
+          expect(state1.css.backgroundColor).to.equal('blue');
+        }
+
+        expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
+        expect(state1.css['background-color']).to.equal('blue');
+      });
+
+      it('dispatches the "css" action with an empty string value argument to unset a style in a targeted matter\
+', function () {
+        requerio.$orgs['.main__div'].dispatchAction('css', {color: 'blue', 'background-color': 'blue'}, 0);
+
+        const state0Before = requerio.$orgs['.main__div'].getState(0);
+        const state1Before = requerio.$orgs['.main__div'].getState(1);
+
+        requerio.$orgs['.main__div'].dispatchAction('css', {'background-color': ''}, 1);
+
+        const state0After = requerio.$orgs['.main__div'].getState(0);
+        const state1After = requerio.$orgs['.main__div'].getState(1);
+
+        expect(state0Before.css['background-color']).to.equal('blue');
+        expect(state1Before.css['background-color']).to.equal('blue');
+
+        expect(state0After.css['background-color']).to.equal('blue');
+        expect(state1After.css['background-color']).to.be.undefined;
       });
 
       it('dispatches the "css" action with a single string value argument across multiple targets', function () {
@@ -1763,24 +1812,6 @@ in a targeted manner', function () {
         }
       });
 
-      it('dispatches the "css" action with a multiple string value argument in a targeted manner', function () {
-        requerio.$orgs['.main__div'].dispatchAction('css', {color: 'blue', 'background-color': 'blue'}, 1);
-
-        const state0 = requerio.$orgs['.main__div'].getState(0);
-        const state1 = requerio.$orgs['.main__div'].getState(1);
-
-        expect(state0.css.color).to.not.equal(state1.css.color);
-        expect(state1.css.color).to.equal('blue');
-
-        if (typeof window === 'object') {
-          expect(state0.css.backgroundColor).to.not.equal(state1.css.backgroundColor);
-          expect(state1.css.backgroundColor).to.equal('blue');
-        }
-
-        expect(state0.css['background-color']).to.not.equal(state1.css['background-color']);
-        expect(state1.css['background-color']).to.equal('blue');
-      });
-
       it('dispatches the "css" action with a multiple string value argument across multiple targets', function () {
         requerio.$orgs['.main__div'].dispatchAction('css', {color: 'cyan', 'background-color': 'cyan'}, [0, 1]);
 
@@ -1797,6 +1828,23 @@ in a targeted manner', function () {
 
         expect(state0.css['background-color']).to.equal('cyan');
         expect(state1.css['background-color']).to.equal('cyan');
+      });
+
+      it('dispatches the "css" action with an empty string value argument to unset a style across multiple targets\
+', function () {
+        const state0Before = requerio.$orgs['.main__div'].getState(0);
+        const state1Before = requerio.$orgs['.main__div'].getState(1);
+
+        requerio.$orgs['.main__div'].dispatchAction('css', {backgroundColor: ''}, [0, 1]);
+
+        const state0After = requerio.$orgs['.main__div'].getState(0);
+        const state1After = requerio.$orgs['.main__div'].getState(1);
+
+        expect(state0Before.css.backgroundColor).to.equal('cyan');
+        expect(state1Before.css.backgroundColor).to.equal('cyan');
+
+        expect(state0After.css.backgroundColor).to.be.undefined;
+        expect(state1After.css.backgroundColor).to.be.undefined;
       });
 
       it('dispatches the "data" action to update state with data from a data attribute', function () {

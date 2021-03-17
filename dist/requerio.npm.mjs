@@ -2552,7 +2552,7 @@ Set one or more CSS properties for all matches.
 | properties | `object` | An object of property:value pairs to set. |
 */
       case 'css': {
-        // Copy the styles from the HTML style attribute to state.css. This would have been set as a side-effect of
+        // Copy the styles from the HTML style attribute to state.css. They would have been set as a side-effect of
         // running the method.
         if (state.attribs.style) {
           for (const style of state.attribs.style.split(';')) {
@@ -2560,7 +2560,6 @@ Set one or more CSS properties for all matches.
 
             if (styleTrimmed) {
               const styleSplit = styleTrimmed.split(':');
-
               state.css[styleSplit[0].trim()] = styleSplit[1].trim();
             }
           }
@@ -2568,56 +2567,53 @@ Set one or more CSS properties for all matches.
 
         if (args[0] instanceof Object && args[0].constructor === Object) {
           for (const property of Object.keys(args[0])) {
-            // In a DOM environment, if args are submitted as camelCase, they will show up in attribs as hyphenated.
-            // Make sure the camelCase is applied to state as well.
+            if (args[0][property] === '') {
+              delete state.css[property];
+            }
+
+            // If the arg is submitted as hyphenated, also write the camelCase property to the state.
+            let camel;
+
+            if (property.indexOf('-') > -1) {
+              const hyphenatedArr = property.split('-');
+              const camelArr = [];
+
+              for (let i = 0; i < hyphenatedArr.length; i++) {
+                if (i === 0) {
+                  camelArr[i] = hyphenatedArr[i];
+
+                  continue;
+                }
+
+                camelArr[i] = hyphenatedArr[i][0].toUpperCase() + hyphenatedArr[i].slice(1);
+              }
+
+              camel = camelArr.join('');
+            }
+
+            if (camel) {
+              state.css[camel] = state.css[property];
+            }
+
+            // In a DOM environment, if the arg is submitted as camelCase, it will show up in attribs as hyphenated,
+            // but not as camelCase. Make sure the camelCase is applied to state as well.
             const caps = (property.indexOf('-') === -1 && property.match(/[A-Z]/g)) || [];
-            let hyphen = property;
+            let hyphenated = property;
 
             // First, try to convert camelCase to hyphenated and see if there is a match.
             while (caps.length) {
               const cap = caps.pop();
-              hyphen = hyphen.slice(0, hyphen.lastIndexOf(cap)) + '-' + cap.toLowerCase() +
-                hyphen.slice(hyphen.lastIndexOf(cap) + 1);
+              hyphenated = hyphenated.slice(0, hyphenated.lastIndexOf(cap)) + '-' + cap.toLowerCase() +
+                hyphenated.slice(hyphenated.lastIndexOf(cap) + 1);
             }
 
-            // If camelCase and its hyphenated property is in state.css, copy.
-            if (hyphen !== property && hyphen in state.css) {
-              state.css[property] = state.css[hyphen];
-            }
-            else if (typeof window === 'object') { // jQuery
-              // If the property was not picked up thus far, check if it is a property of the element's .style object.
-              if ($orgOrMember[0] && $orgOrMember[0].style && property in $orgOrMember[0].style) {
-                // Be aware that the element's .style property might not equal the value submitted as an arg or written
-                // to the HTML style attribute.
-                state.css[property] = $orgOrMember[0].style[property];
+            // If the arg is camelCase and its hyphenated property is in state.css, apply.
+            if (hyphenated !== property && hyphenated in state.css) {
+              if (args[0][property] === '') {
+                delete state.css[hyphenated];
               }
-            }
-
-            // In a DOM environment, write the camelCase property to the state.
-            if (typeof window === 'object') { // jQuery
-              let camel;
-
-              if (property.indexOf('-') > -1) {
-                const hyphenatedArr = property.split('-');
-                const camelArr = [];
-
-                for (let i = 0; i < hyphenatedArr.length; i++) {
-                  if (i === 0) {
-                    camelArr[i] = hyphenatedArr[i];
-
-                    continue;
-                  }
-
-                  camelArr[i] = hyphenatedArr[i][0].toUpperCase() + hyphenatedArr[i].slice(1);
-                }
-
-                camel = camelArr.join('');
-              }
-
-              if (camel) {
-                if ($orgOrMember[0] && $orgOrMember[0].style && camel in $orgOrMember[0].style) {
-                  state.css[camel] = state.css[property];
-                }
+              else {
+                state.css[property] = args[0][property];
               }
             }
           }
