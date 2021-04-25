@@ -1251,7 +1251,10 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
           }
           else { // Cheerio
             html = this.html();
-            text = this.$members[0].text();
+
+            if (this.$members[0] && typeof this.$members[0].text === 'function') {
+              text = this.$members[0].text();
+            }
           }
         }
 
