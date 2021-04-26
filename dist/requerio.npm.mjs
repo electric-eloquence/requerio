@@ -2382,11 +2382,9 @@ function getStateDefault(orgSelector) {
         y: null
       },
       classArray: [],
-      classList: [], // DEPRECATED.
       css: {},
       data: {},
       html: null,
-      innerHTML: null, // DEPRECATED.
       innerWidth: null,
       innerHeight: null,
       outerWidth: null,
@@ -2394,7 +2392,6 @@ function getStateDefault(orgSelector) {
       prop: {},
       scrollLeft: null,
       scrollTop: null,
-      style: {}, // DEPRECATED.
       textContent: null,
       width: null,
       height: null,
@@ -2441,7 +2438,6 @@ function stateBuild($orgOrMember, state, action) {
     if (state.attribs && typeof state.attribs.class === 'string') {
       classesForReduction = state.attribs.class.trim() ? state.attribs.class.split(/\s+/) : [];
       state.classArray = classesForReduction;
-      state.classList = state.classArray; // DEPRECATED.
     }
 
     // prop
@@ -2622,8 +2618,6 @@ Set one or more CSS properties for all matches.
           }
         }
 
-        state.style = state.css; // DEPRECATED.
-
         break;
       }
 
@@ -2728,7 +2722,6 @@ data.
           (typeof memberIdx === 'undefined' || typeof state.members === 'undefined')
         ) {
           state[method] = args[0];
-          state.innerHTML = state.html; // DEPRECATED.
         }
 
         break;
@@ -3025,7 +3018,6 @@ Set the value of all matches, typically form inputs. This will set `state.val`.
       case 'val': {
         if (typeof args[0] === 'string' || typeof args[0] === 'number') {
           state[method] = args[0] + '';
-          state.value = state.val; // DEPRECATED.
         }
 
         break;
