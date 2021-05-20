@@ -1,6 +1,6 @@
 'use strict';
 
-function getMeasurement($org, measurement, idx) {
+function getMeasurement$1($org, measurement, idx) {
   /* istanbul ignore else */
   if ($org.$members[idx]) {
     return $org.$members[idx]['_' + measurement];
@@ -112,7 +112,7 @@ var organismsIncept = ($orgs, $) => {
       $org.innerWidth = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
-          return getMeasurement($org, 'innerWidth', memberIdx || 0);
+          return getMeasurement$1($org, 'innerWidth', memberIdx || 0);
         }
         else {
           return setMeasurement($org, 'innerWidth', distance, memberIdx);
@@ -129,7 +129,7 @@ var organismsIncept = ($orgs, $) => {
       $org.innerHeight = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
-          return getMeasurement($org, 'innerHeight', memberIdx || 0);
+          return getMeasurement$1($org, 'innerHeight', memberIdx || 0);
         }
         else {
           return setMeasurement($org, 'innerHeight', distance, memberIdx);
@@ -146,7 +146,7 @@ var organismsIncept = ($orgs, $) => {
       $org.outerWidth = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
-          return getMeasurement($org, 'outerWidth', memberIdx || 0);
+          return getMeasurement$1($org, 'outerWidth', memberIdx || 0);
         }
         else {
           return setMeasurement($org, 'outerWidth', distance, memberIdx);
@@ -163,7 +163,7 @@ var organismsIncept = ($orgs, $) => {
       $org.outerHeight = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
-          return getMeasurement($org, 'outerHeight', memberIdx || 0);
+          return getMeasurement$1($org, 'outerHeight', memberIdx || 0);
         }
         else {
           return setMeasurement($org, 'outerHeight', distance, memberIdx);
@@ -183,7 +183,7 @@ var organismsIncept = ($orgs, $) => {
       $org.scrollLeft = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
-          return getMeasurement($org, 'scrollLeft', memberIdx || 0);
+          return getMeasurement$1($org, 'scrollLeft', memberIdx || 0);
         }
         else {
           return setMeasurement($org, 'scrollLeft', distance, memberIdx);
@@ -203,7 +203,7 @@ var organismsIncept = ($orgs, $) => {
       $org.scrollTop = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
-          return getMeasurement($org, 'scrollTop', memberIdx || 0);
+          return getMeasurement$1($org, 'scrollTop', memberIdx || 0);
         }
         else {
           return setMeasurement($org, 'scrollTop', distance, memberIdx);
@@ -220,7 +220,7 @@ var organismsIncept = ($orgs, $) => {
       $org.width = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
-          return getMeasurement($org, 'width', memberIdx || 0);
+          return getMeasurement$1($org, 'width', memberIdx || 0);
         }
         else {
           return setMeasurement($org, 'width', distance, memberIdx);
@@ -237,7 +237,7 @@ var organismsIncept = ($orgs, $) => {
       $org.height = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
         if (distance == null) {
-          return getMeasurement($org, 'height', memberIdx || 0);
+          return getMeasurement$1($org, 'height', memberIdx || 0);
         }
         else {
           return setMeasurement($org, 'height', distance, memberIdx);
@@ -810,7 +810,7 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
  * @param {number|number[]} [memberIdx] - The index of the member within $org.$members, or array of member indices.
  * @returns {array} The `args` array.
  */
-function getMeasurement$1($org, method, args, computedStyle, $member, memberIdx) {
+function getMeasurement($org, method, args, computedStyle, $member, memberIdx) {
   if (Array.isArray($member)) {
     // Apply on first valid iteration of $member array.
     for (let i = 0; i < $member.length; i++) {
@@ -1337,7 +1337,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
           applyMeasurement(this, method, args, $member, memberIdx);
         }
         else {
-          getMeasurement$1(this, method, args, computedStyle, $member); // Mutates args.
+          getMeasurement(this, method, args, computedStyle, $member); // Mutates args.
         }
 
         break;
@@ -2284,7 +2284,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
     ]) {
       const args = [];
 
-      getMeasurement$1(this, method, args, computedStyle, $member, memberIdx); // Mutates args.
+      getMeasurement(this, method, args, computedStyle, $member, memberIdx); // Mutates args.
 
       // eslint-disable-next-line eqeqeq
       if (state[method] != args[0]) { // Allow undefined == null to satisfy condition.
