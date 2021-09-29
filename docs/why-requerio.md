@@ -21,9 +21,10 @@ developers architect their applications any better.
 
 ### State Machines/Containers/Organisms?
 
-The state machine concept is generally purposed for describing engineering 
-models. A system with on and off states and an on/off switch is a very basic 
-state machine.
+The state machine concept is widely used in engineering to model machines and 
+systems with reference to state. The state comprises properties that can be 
+changed by external or internal influence. A system with on and off states and 
+an on/off switch is a very basic state machine.
 
 Requerio uses Redux, which is described as a "state container." An application 
 using Requerio or Redux would in turn be a logical state machine where the state 
