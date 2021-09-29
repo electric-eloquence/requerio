@@ -45,11 +45,12 @@ consistently across browsers. If a facimile for this abstraction layer existed
 for Node, then the state contained by Redux could be tested in Node. jQuery and 
 Cheerio fit this bill nicely.
 
-Requerio enables state at the HTML element level. jQuery (from here on out, when 
-we say "jQuery," we also mean Cheerio) encapsulates an HTML element within a 
-unique object. Requerio applies Redux to give state to that jQuery object. In 
-the Requerio context, state is what distinguishes a living thing from non-living 
-things. Therefore, an HTML element with state is alive, and hence, an organism.
+Requerio defines a consistent meaning of state at the HTML element level. jQuery 
+(from here on out, when we say "jQuery," we also mean Cheerio) encapsulates an 
+HTML element within a unique object. Requerio applies Redux to give state to 
+that jQuery object. In the Requerio context, state is what distinguishes a 
+living thing from non-living things. Therefore, an HTML element with state is 
+alive, and hence, an organism.
 
 ### The Problem Again, and the Solution
 
