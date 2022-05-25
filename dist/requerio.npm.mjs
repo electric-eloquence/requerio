@@ -30,10 +30,10 @@ function setMeasurement($org, measurement, distance_, idx) {
 }
 
 /**
- * Populate $orgs values with jQuery or Cheerio components.
+ * Populate $orgs values with jQuery components.
  *
  * @param {object} $orgs - Organisms keyed by selector.
- * @param {object} $ - jQuery or Cheerio.
+ * @param {object} $ - jQuery.
  */
 var organismsIncept = ($orgs, $) => {
   for (const i of Object.keys($orgs)) {
@@ -423,7 +423,7 @@ organism, set the focused organism's selector as `state.activeOrganism`.
 };
 
 /**
- * Apply the jQuery or Cheerio method on the organism.
+ * Apply the jQuery method on the organism.
  *
  * @param {object} $org - Organism object.
  * @param {string} method - Name of the method to be applied.
@@ -454,7 +454,7 @@ function applyMethod($org, method, args, $member) {
 }
 
 /**
- * Apply the jQuery or Cheerio .`data()` method on the organism and  prep data for copying directly to state.
+ * Apply the jQuery .`data()` method on the organism and  prep data for copying directly to state.
  *
  * @param {object} $org - Organism object.
  * @param {array} args - Arguments array, (not array-like object).
@@ -545,7 +545,7 @@ function applyMeasurement($org, method, args, $member, memberIdx) {
 /**
  * Convert camelCase "method" to CAPS_SNAKE_CASE "type".
  *
- * @param {string} method - The jQuery/Cheerio/Requerio "method" name.
+ * @param {string} method - The jQuery/Requerio "method" name.
  * @returns {string} The Redux action "type" per Redux casing convention.
  */
 function convertMethodToType(method) {
@@ -869,7 +869,7 @@ var prototypeOverride = (requerio) => {
 
   /**
    * Must redefine .after() because we may need to reset the elements and members of sibling and descendent organisms.
-   * Same params as jQuery/Cheerio .after().
+   * Same params as jQuery .after().
    * Do not document.
    */
   const afterFnOrig = $.prototype.after;
@@ -908,7 +908,7 @@ var prototypeOverride = (requerio) => {
 
   /**
    * Must redefine .append() because we may need to reset the elements and members of descendent organisms.
-   * Same params as jQuery/Cheerio .append().
+   * Same params as jQuery .append().
    * Do not document.
    */
   const appendFnOrig = $.prototype.append;
@@ -945,7 +945,7 @@ var prototypeOverride = (requerio) => {
 
   /**
    * Must redefine .before() because we may need to reset the elements and members of sibling and descendent organisms
-   * Same params as jQuery/Cheerio .before().
+   * Same params as jQuery .before().
    * Do not document.
    */
   const beforeFnOrig = $.prototype.before;
@@ -1026,7 +1026,7 @@ A server-side stand-in for client-side `.blur()`.
   /**
 ### .dispatchAction(method, [args], [memberIdx])
 Dispatches actions for reduction. Side-effects occur here (not in the reducer).
-1. Applies the jQuery or Cheerio method.
+1. Applies the jQuery method.
 2. Applies any additional changes.
 3. Calls the Redux `store.dispatch()` method.
 
@@ -1383,7 +1383,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
 
   /**
    * Must redefine .empty() because we may need to reset the elements and members of descendent organisms.
-   * Same params as jQuery/Cheerio .empty().
+   * Same params as jQuery .empty().
    * Do not document.
    */
 
@@ -1426,7 +1426,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of selected e
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string`\|`object`\|`function` | A selector string, a DOM (or DOM-like) element, a jQuery/Cheerio component, or a function returning true or false. |
+| selector | `string`\|`object`\|`function` | A selector string, a DOM (or DOM-like) element, a jQuery component, or a function returning true or false. |
 */
   $.prototype.exclude = function (selector) {
     if (typeof selector === 'function') {
@@ -1778,7 +1778,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery/Cheerio components. |
+| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery components. |
 */
   $.prototype.hasChild = function (selector) {
     for (let i = 0; i < this.$members.length; i++) {
@@ -1839,7 +1839,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery/Cheerio components. |
+| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery components. |
 */
   $.prototype.hasNext = function (selector) {
     for (let i = 0; i < this.$members.length; i++) {
@@ -1874,7 +1874,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery/Cheerio components. |
+| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery components. |
 */
   $.prototype.hasParent = function (selector) {
     for (let i = 0; i < this.$members.length; i++) {
@@ -1909,7 +1909,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery/Cheerio components. |
+| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery components. |
 */
   $.prototype.hasPrev = function (selector) {
     for (let i = 0; i < this.$members.length; i++) {
@@ -1944,7 +1944,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string` | A jQuery/Cheerio selector. |
+| selector | `string` | A jQuery selector. |
 */
   $.prototype.hasSelector = function (selector) {
     const $selection = $(selector);
@@ -2008,7 +2008,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
   /**
    * Must redefine .html() because we may need to reset the elements and members of descendent organisms.
-   * Same params as jQuery/Cheerio .html(). However, unlike jQuery, does not accept function params.
+   * Same params as jQuery .html(). However, unlike jQuery, does not accept function params.
    * Do not document.
    */
   const htmlFnOrig = $.prototype.html;
@@ -2046,7 +2046,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
   /**
 ### .populateMembers()
 (Re)populate an organism's `.$members` array with its (recalculated) members.
-`.$members` are jQuery/Cheerio components, not fully incepted organisms.
+`.$members` are jQuery components, not fully incepted organisms.
 */
   $.prototype.populateMembers = function () {
     if (!this.selector || !(this.selector in $orgs)) {
@@ -2068,7 +2068,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
   /**
    * Must redefine .prepend() because we may need to reset the elements and members of descendent organisms.
-   * Same params as jQuery/Cheerio .prepend().
+   * Same params as jQuery .prepend().
    * Do not document.
    */
   const prependFnOrig = $.prototype.prepend;
@@ -2134,8 +2134,8 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
   /**
 ### .resetElementsAndMembers()
 Reset the organism's elements and members as they are added or removed. This is
-necessary because neither jQuery nor Cheerio dynamically updates the indexed
-elements or length properties on a saved jQuery or Cheerio component.
+necessary because jQuery does not dynamically update the indexed elements or 
+length properties on a saved jQuery component.
 */
   $.prototype.resetElementsAndMembers = function () {
     if (!this.selector || !(this.selector in $orgs)) {
@@ -2191,7 +2191,7 @@ testing.
 
   /**
    * Must redefine .text() because we may need to reset the elements and members of descendent organisms.
-   * Same params as jQuery/Cheerio .text(). However, unlike jQuery, does not accept function params.
+   * Same params as jQuery .text(). However, unlike jQuery, does not accept function params.
    * Do not document.
    */
   const textFnOrig = $.prototype.text;
@@ -2472,7 +2472,7 @@ Add HTML content immediately after all matches.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery/Cheerio component, an array thereof, or a comma-separated combination thereof. |
+| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery component, an array thereof, or a comma-separated combination thereof. |
 
 ### after(content)
 Add HTML content immediately after all matches.
@@ -2493,7 +2493,7 @@ Append HTML content to the innerHTML of all matches.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery/Cheerio component, an array thereof, or a comma-separated combination thereof. |
+| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery component, an array thereof, or a comma-separated combination thereof. |
 
 ### append(content)
 Append HTML content to the innerHTML of all matches.
@@ -2527,7 +2527,7 @@ Add HTML content immediately before all matches.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery/Cheerio component, an array thereof, or a comma-separated combination thereof. |
+| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery component, an array thereof, or a comma-separated combination thereof. |
 
 ### before(content)
 Add HTML content immediately before all matches.
@@ -2745,7 +2745,7 @@ Prepend HTML content to the innerHTML of all matches.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery/Cheerio component, an array thereof, or a comma-separated combination thereof. |
+| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery component, an array thereof, or a comma-separated combination thereof. |
 
 ### prepend(content)
 Prepend HTML content to the innerHTML of all matches.
@@ -2958,14 +2958,14 @@ getter below.
 ### text()
 Dispatching a 'text' action without a parameter will set `state.textContent` to
 the textContent of the targeted element, or if untargeted, the textContent of
-the first element. This contrasts with the return value of jQuery/Cheerio
-`.text()` which concatenates the textContent of all matching elements. Prior to
-the first 'text' action, `state.textContent` will be null. Simply invoking
-`.getState()` where `state.textContent` is null will not update
-`state.textContent`. However, once `state.textContent` has been set to a string,
-subsequent invocations of `.getState()` will update `state.textContent`. Set
-`state.textContent` only when necessary, since very large text strings across
-many organisms with many members can add up to a large amount of data.
+the first element. This contrasts with the return value of jQuery `.text()` 
+which concatenates the textContent of all matching elements. Prior to the first 
+'text' action, `state.textContent` will be null. Simply invoking `.getState()` 
+where `state.textContent` is null will not update `state.textContent`. However, 
+once `state.textContent` has been set to a string, subsequent invocations of 
+`.getState()` will update `state.textContent`. Set `state.textContent` only when 
+necessary, since very large text strings across many organisms with many members 
+can add up to a large amount of data.
 */
       case 'text': {
         // Only perform this update
@@ -3203,7 +3203,7 @@ var reducerGet = ($orgs, Redux, customReducer) => {
 class Requerio {
 
   /**
-   * @param {object} $ - jQuery or Cheerio.
+   * @param {object} $ - jQuery.
    * @param {object} Redux - Redux.
    * @param {object} $organisms - Key:value pairs of selector names and null values.
    * @param {function} [customReducer] - Custom Redux reducer for extending the built-in reducer.
@@ -3232,7 +3232,7 @@ class Requerio {
   }
 
   /**
-   * @param {...string} selectors - jQuery/Cheerio selectors.
+   * @param {...string} selectors - jQuery selectors.
    */
   incept(...selectors) {
     const $organisms = {};
