@@ -6,7 +6,7 @@ In order to answer "Why Requerio?" we need to ask "What's the Problem?"
 
 Does jQuery cause problems for manipulating the DOM? Does it cause problems when 
 expecting the same results in different browsers? Does it expose a problematic 
-API such that an abstracted layer like Requerio would find it difficult or 
+API such that an abstracted layer like Requerio would make it difficult or 
 impossible to override the jQuery prototype, or apply jQuery methods in a 
 predictable manner?
 
@@ -43,14 +43,13 @@ Redux work with the DOM alone. An abstraction layer needed to sit between Redux
 and the DOM, so a consistent API would be exposed, and so API methods would work 
 consistently across browsers. If a facimile for this abstraction layer existed 
 for Node, then the state contained by Redux could be tested in Node. jQuery and 
-Cheerio fit this bill nicely.
+JSDOM fit this bill nicely.
 
 Requerio defines a consistent meaning of state at the HTML element level. jQuery 
-(from here on out, when we say "jQuery," we also mean Cheerio) encapsulates an 
-HTML element within a unique object. Requerio applies Redux to give state to 
-that jQuery object. In the Requerio context, state is what distinguishes a 
-living thing from non-living things. Therefore, an HTML element with state is 
-alive, and hence, an organism.
+encapsulates an HTML element within a unique object. Requerio applies Redux to 
+give state to that jQuery object. In the Requerio context, state is what 
+distinguishes a living thing from non-living things. Therefore, an HTML element 
+with state is alive, and hence, an organism.
 
 ### The Problem Again, and the Solution
 

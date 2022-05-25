@@ -88,7 +88,7 @@ these properties by default:
 | selector | `string` | The organism's identifying selector. |
 | $org | `object` | The organism instance. |
 | method | `string` | The method being applied, or empty string. The 1st param to `.dispatchAction()`. |
-| args | `*` | The arguments being submitted for the method, as per jQuery/Cheerio documentation. The 2nd param to `.dispatchAction()`. |
+| args | `*` | The arguments being submitted for the method, as per jQuery documentation. The 2nd param to `.dispatchAction()`. |
 | memberIdx | `number`\|`undefined` | The index of the targeted organism member (if targeting a member). The 3rd param to `.dispatchAction()`. |
 
 When using Redux's native `store.dispatch()` method, be sure to construct the 
@@ -154,8 +154,8 @@ function forGreatJusticeBehavior() {
 ```
 
 jQuery's `.animate()` method can be applied directly on the organism (as can any 
-jQuery/Cheerio method). Requerio has no plans to set state on each frame render 
+jQuery method). Requerio has no plans to set state on each frame render 
 for the case of animation. Therefore, the state needs to be set at the end of 
 the animation. Since calling `.dispatchMethod()` with the `css` method would 
-apply an unnecessary jQuery/Cheerio `.css()` invocation, it is better to call 
+apply an unnecessary jQuery `.css()` invocation, it is better to call 
 Redux's `store.dispatch()` with the `action` argument.

@@ -1,7 +1,7 @@
 {
   "name": "requerio",
   "version": "0.7.1",
-  "description": "Redux + jQuery + Cheerio = predictable client-side state + server-side testability",
+  "description": "Requerio: predictable client-side state + server-side testability",
   "main": "dist/requerio.npm",
   "scripts": {
     "bundle": "rollup --config && node run/bundle-client.js",

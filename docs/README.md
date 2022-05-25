@@ -34,7 +34,7 @@ A server-side stand-in for client-side `.blur()`.
 
 ### .dispatchAction(method, [args], [memberIdx])
 Dispatches actions for reduction. Side-effects occur here (not in the reducer).
-1. Applies the jQuery or Cheerio method.
+1. Applies the jQuery method.
 2. Applies any additional changes.
 3. Calls the Redux `store.dispatch()` method.
 
@@ -55,7 +55,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of selected e
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string`\|`object`\|`function` | A selector string, a DOM (or DOM-like) element, a jQuery/Cheerio component, or a function returning true or false. |
+| selector | `string`\|`object`\|`function` | A selector string, a DOM (or DOM-like) element, a jQuery component, or a function returning true or false. |
 
 ### .focus([options])
 A server-side stand-in for client-side `.focus()`.
@@ -84,7 +84,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery/Cheerio components. |
+| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery components. |
 
 ### .hasElement(element)
 Filters (temporarily) an organism's `.$members` to include only those whose
@@ -108,7 +108,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery/Cheerio components. |
+| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery components. |
 
 ### .hasParent(selector)
 Filters (temporarily) an organism's `.$members` to include only those with a
@@ -120,7 +120,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery/Cheerio components. |
+| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery components. |
 
 ### .hasPrev(selector)
 Filters (temporarily) an organism's `.$members` to include only those whose
@@ -132,7 +132,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery/Cheerio components. |
+| selector | `string`\|`object` | A selector string or DOM (or DOM-like) element. No jQuery components. |
 
 ### .hasSelector(selector)
 Filters (temporarily) an organism's `.$members` to include only those that match
@@ -144,7 +144,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selector | `string` | A jQuery/Cheerio selector. |
+| selector | `string` | A jQuery selector. |
 
 ### .hasSibling(selector)
 Filters (temporarily) an organism's `.$members` to include only those with a
@@ -160,12 +160,12 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 
 ### .populateMembers()
 (Re)populate an organism's `.$members` array with its (recalculated) members.
-`.$members` are jQuery/Cheerio components, not fully incepted organisms.
+`.$members` are jQuery components, not fully incepted organisms.
 
 ### .resetElementsAndMembers()
 Reset the organism's elements and members as they are added or removed. This is
-necessary because neither jQuery nor Cheerio dynamically updates the indexed
-elements or length properties on a saved jQuery or Cheerio component.
+necessary because jQuery does not dynamically update the indexed elements or 
+length properties on a saved jQuery component.
 
 ### .setBoundingClientRect(rectObj, [memberIdx])
 Give the ability to set `boundingClientRect` properties. Only for server-side

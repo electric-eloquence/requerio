@@ -1,4 +1,4 @@
-# Redux + jQuery + Cheerio = predictable client-side state + server-side testability
+# Requerio: predictable client-side state + server-side testability
 
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![Linux Build Status][linux-image]][linux-url]
@@ -7,33 +7,18 @@
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![License][license-image]][license-url]
 
-While Requerio was named with 
-<a href="https://www.npmjs.com/package/cheerio" target="_blank">Cheerio</a> in 
-mind, Cheerio is optional and can be replaced by jQuery on the server via 
+While Requerio was named with Cheerio in mind, Cheerio is no longer recommended 
+for server-side tests. Server-side tests should use jQuery with 
 <a href="https://www.npmjs.com/package/jsdom" target="_blank">JSDOM</a>, or any 
 other DOM emulator.
 
 #### Install:
 
 ```shell
-npm install requerio redux cheerio
-```
-
-##### - or -
-
-```shell
 npm install requerio redux jquery jsdom
 ```
 
 #### Declare `$`:
-
-```javascript
-const cheerio = require('cheerio');
-const html = fs.readFileSync('./index.html', 'utf8');
-const $ = global.$ = cheerio.load(html);
-```
-
-##### - or -
 
 ```javascript
 const {JSDOM} = require('jsdom');

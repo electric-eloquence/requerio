@@ -139,7 +139,7 @@ Add HTML content immediately after all matches.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery/Cheerio component, an array thereof, or a comma-separated combination thereof. |
+| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery component, an array thereof, or a comma-separated combination thereof. |
 
 ### after(content)
 Add HTML content immediately after all matches.
@@ -160,7 +160,7 @@ Append HTML content to the innerHTML of all matches.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery/Cheerio component, an array thereof, or a comma-separated combination thereof. |
+| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery component, an array thereof, or a comma-separated combination thereof. |
 
 ### append(content)
 Append HTML content to the innerHTML of all matches.
@@ -194,7 +194,7 @@ Add HTML content immediately before all matches.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery/Cheerio component, an array thereof, or a comma-separated combination thereof. |
+| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery component, an array thereof, or a comma-separated combination thereof. |
 
 ### before(content)
 Add HTML content immediately before all matches.
@@ -412,7 +412,7 @@ Prepend HTML content to the innerHTML of all matches.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery/Cheerio component, an array thereof, or a comma-separated combination thereof. |
+| ...content | `string`\|`object`\|`array` | A string, a DOM (or DOM-like) element, a jQuery component, an array thereof, or a comma-separated combination thereof. |
 
 ### prepend(content)
 Prepend HTML content to the innerHTML of all matches.
@@ -625,14 +625,14 @@ getter below.
 ### text()
 Dispatching a 'text' action without a parameter will set `state.textContent` to
 the textContent of the targeted element, or if untargeted, the textContent of
-the first element. This contrasts with the return value of jQuery/Cheerio
-`.text()` which concatenates the textContent of all matching elements. Prior to
-the first 'text' action, `state.textContent` will be null. Simply invoking
-`.getState()` where `state.textContent` is null will not update
-`state.textContent`. However, once `state.textContent` has been set to a string,
-subsequent invocations of `.getState()` will update `state.textContent`. Set
-`state.textContent` only when necessary, since very large text strings across
-many organisms with many members can add up to a large amount of data.
+the first element. This contrasts with the return value of jQuery `.text()` 
+which concatenates the textContent of all matching elements. Prior to the first 
+'text' action, `state.textContent` will be null. Simply invoking `.getState()` 
+where `state.textContent` is null will not update `state.textContent`. However, 
+once `state.textContent` has been set to a string, subsequent invocations of 
+`.getState()` will update `state.textContent`. Set `state.textContent` only when 
+necessary, since very large text strings across many organisms with many members 
+can add up to a large amount of data.
 */
       case 'text': {
         // Only perform this update

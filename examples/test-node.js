@@ -1,15 +1,16 @@
-'use strict'; // eslint-disable-line strict
-
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 
-const cheerio = require('cheerio');
+const {JSDOM} = require('jsdom');
 const Redux = global.Redux = require('redux');
 const Requerio = require(path.join(__dirname, '..', 'dist', 'requerio.npm.js'));
 
 const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
-const $ = global.$ = cheerio.load(html);
+const {window} = new JSDOM(html);
+global.window = window;
+global.document = window.document;
+const $ = global.$ = require('jquery')
 
 const $organisms = {
   window: null,
