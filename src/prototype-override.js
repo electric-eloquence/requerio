@@ -1710,7 +1710,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
   /**
 ### .resetElementsAndMembers()
 Reset the organism's elements and members as they are added or removed. This is
-necessary because jQuery does not dynamically update the indexed elements or 
+necessary because jQuery does not dynamically update the indexed elements or
 length properties on a saved jQuery component.
 */
   $.prototype.resetElementsAndMembers = function () {
