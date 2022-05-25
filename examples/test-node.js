@@ -10,7 +10,7 @@ const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 const {window} = new JSDOM(html);
 global.window = window;
 global.document = window.document;
-const $ = global.$ = require('jquery')
+const $ = global.$ = require('jquery');
 
 const $organisms = {
   window: null,
