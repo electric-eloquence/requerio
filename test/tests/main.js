@@ -44,33 +44,38 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
         Object.keys($organismsAfter).forEach((selector) => {
           const $organism = $organismsAfter[selector];
 
-          expect($organism).to.be.an.instanceof(Object);
-          expect($organism.selector).to.equal(selector);
-
-          if (selector === 'window' || selector === 'document') {
-            return;
+          if (selector === '#non-existent-element') {
+            expect($organism).to.be.null;
           }
+          else {
+            expect($organism).to.be.an.instanceof(Object);
+            expect($organism.selector).to.equal(selector);
 
-          expect($organism.hasRequerio).to.be.true;
-          expect($organism.$members).to.be.an('array');
-          // The following are documented in docs/README.md.
-          expect($organism.blur).to.be.a('function');
-          expect($organism.dispatchAction).to.be.a('function');
-          expect($organism.exclude).to.be.a('function');
-          expect($organism.focus).to.be.a('function');
-          expect($organism.getState).to.be.a('function');
-          expect($organism.getStore).to.be.a('function');
-          expect($organism.hasChild).to.be.a('function');
-          expect($organism.hasElement).to.be.a('function');
-          expect($organism.hasNext).to.be.a('function');
-          expect($organism.hasParent).to.be.a('function');
-          expect($organism.hasPrev).to.be.a('function');
-          expect($organism.hasSelector).to.be.a('function');
-          expect($organism.hasSibling).to.be.a('function');
-          expect($organism.populateMembers).to.be.a('function');
-          expect($organism.resetElementsAndMembers).to.be.a('function');
-          expect($organism.setBoundingClientRect).to.be.a('function');
-          expect($organism.updateMeasurements).to.be.a('function');
+            if (selector === 'window' || selector === 'document') {
+              return;
+            }
+
+            expect($organism.hasRequerio).to.be.true;
+            expect($organism.$members).to.be.an('array');
+            // The following are documented in docs/README.md.
+            expect($organism.blur).to.be.a('function');
+            expect($organism.dispatchAction).to.be.a('function');
+            expect($organism.exclude).to.be.a('function');
+            expect($organism.focus).to.be.a('function');
+            expect($organism.getState).to.be.a('function');
+            expect($organism.getStore).to.be.a('function');
+            expect($organism.hasChild).to.be.a('function');
+            expect($organism.hasElement).to.be.a('function');
+            expect($organism.hasNext).to.be.a('function');
+            expect($organism.hasParent).to.be.a('function');
+            expect($organism.hasPrev).to.be.a('function');
+            expect($organism.hasSelector).to.be.a('function');
+            expect($organism.hasSibling).to.be.a('function');
+            expect($organism.populateMembers).to.be.a('function');
+            expect($organism.resetElementsAndMembers).to.be.a('function');
+            expect($organism.setBoundingClientRect).to.be.a('function');
+            expect($organism.updateMeasurements).to.be.a('function');
+          }
         });
       });
     });
@@ -1336,9 +1341,12 @@ in a targeted manner', function () {
 
               default:
                 $organism = requerio.$orgs[selector];
-                scrollTopRetVal = $organism.scrollTop(top);
 
-                expect(scrollTopRetVal).to.equal($organism);
+                if ($organism) {
+                  scrollTopRetVal = $organism.scrollTop(top);
+
+                  expect(scrollTopRetVal).to.equal($organism);
+                }
             }
           });
         });
@@ -1355,9 +1363,12 @@ in a targeted manner', function () {
 
               default:
                 $organism = requerio.$orgs[selector];
-                scrollTopRetVal = $organism.scrollTop();
 
-                expect(scrollTopRetVal).to.equal(top);
+                if ($organism) {
+                  scrollTopRetVal = $organism.scrollTop();
+
+                  expect(scrollTopRetVal).to.equal(top);
+                }
             }
           });
         });

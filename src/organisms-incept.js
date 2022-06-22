@@ -77,7 +77,14 @@ export default ($orgs, $) => {
     }
 
     if (!$org) {
-      $org = $(i);
+      const $orgTmp = $(i);
+
+      if ($orgTmp.length) {
+        $org = $orgTmp;
+      }
+      else {
+        continue;
+      }
     }
 
     // Use this property to save the Redux action object returned by a Redux dispatch.

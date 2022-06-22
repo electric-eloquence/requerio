@@ -52,5 +52,6 @@ export default {
   '.remove': null,
   '.remove--0': null,
   '.text': null,
-  '.text--0': null
+  '.text--0': null,
+  '#non-existent-element': null
 };

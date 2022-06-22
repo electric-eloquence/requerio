@@ -77,7 +77,14 @@ var organismsIncept = ($orgs, $) => {
     }
 
     if (!$org) {
-      $org = $(i);
+      const $orgTmp = $(i);
+
+      if ($orgTmp.length) {
+        $org = $orgTmp;
+      }
+      else {
+        continue;
+      }
     }
 
     // Use this property to save the Redux action object returned by a Redux dispatch.
@@ -330,7 +337,7 @@ var postInception = (requerio) => {
   const {$orgs, store} = requerio;
 
   for (const orgSelector of Object.keys($orgs)) {
-    if ($orgs[orgSelector] && $orgs[orgSelector].hasRequerio) {
+    if (!$orgs[orgSelector] || ($orgs[orgSelector] && $orgs[orgSelector].hasRequerio)) {
       continue;
     }
 
@@ -882,6 +889,10 @@ var prototypeOverride = (requerio) => {
       for (const orgSelector1 of Object.keys($orgs)) {
         const $org1 = $orgs[orgSelector1];
 
+        if (!$org1) {
+          continue;
+        }
+
         // Iterate through organisms and check if the parent of this organism (dispatching the 'after' action)
         // is an ancestor.
         // This is much more efficient than searching through branches of descendants.
@@ -920,6 +931,10 @@ var prototypeOverride = (requerio) => {
       for (const orgSelector1 of Object.keys($orgs)) {
         const $org1 = $orgs[orgSelector1];
 
+        if (!$org1) {
+          continue;
+        }
+
         // Iterate through organisms and check if this organism (dispatching the 'append' action) is an ancestor.
         // This is much more efficient than searching through branches of descendants.
         for (let i = 0; i < this.length; i++) {
@@ -957,6 +972,10 @@ var prototypeOverride = (requerio) => {
     if (arguments.length) {
       for (const orgSelector1 of Object.keys($orgs)) {
         const $org1 = $orgs[orgSelector1];
+
+        if (!$org1) {
+          continue;
+        }
 
         // Iterate through organisms and check if the parent of this organism (dispatching the 'before' action)
         // is an ancestor.
@@ -1001,6 +1020,10 @@ A server-side stand-in for client-side `.blur()`.
     const parentsToReset = [];
 
     for (const orgSelector1 of Object.keys($orgs)) {
+      if (!$orgs[orgSelector1]) {
+        continue;
+      }
+
       for (let i = 0; i < this.$members.length; i++) {
         if (this.$members[i].parent(orgSelector1).length) {
           parentsToReset.push($orgs[orgSelector1]);
@@ -1398,7 +1421,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       // Iterate through organisms and check if this organism (dispatching the 'empty' action) is an ancestor.
       // This is much more efficient than searching through branches of descendants.
       for (let i = 0; i < this.length; i++) {
-        if ($org1.parents(this[i]).length) {
+        if ($org1 && $org1.parents(this[i]).length) {
           descendantsToReset.push($org1);
 
           break;
@@ -2023,7 +2046,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
         // Iterate through organisms and check if this organism (dispatching the 'html' action) is an ancestor.
         // This is much more efficient than searching through branches of descendants.
         for (let i = 0; i < this.length; i++) {
-          if ($org1.parents(this[i]).length) {
+          if ($org1 && $org1.parents(this[i]).length) {
             descendantsToReset.push($org1);
 
             break;
@@ -2081,6 +2104,10 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
       for (const orgSelector1 of Object.keys($orgs)) {
         const $org1 = $orgs[orgSelector1];
 
+        if (!$org1) {
+          continue;
+        }
+
         // Iterate through organisms and check if this organism (dispatching the 'prepend' action) is an ancestor.
         // This is much more efficient than searching through branches of descendants.
         for (let i = 0; i < $parent.length; i++) {
@@ -2115,6 +2142,10 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
     const parentsToReset = [];
 
     for (const orgSelector1 of Object.keys($orgs)) {
+      if (!$orgs[orgSelector1]) {
+        continue;
+      }
+
       for (let i = 0; i < this.$members.length; i++) {
         if (this.$members[i].parent(orgSelector1).length) {
           parentsToReset.push($orgs[orgSelector1]);
@@ -2202,6 +2233,10 @@ testing.
     if (arguments.length) {
       for (const orgSelector1 of Object.keys($orgs)) {
         const $org1 = $orgs[orgSelector1];
+
+        if (!$org1) {
+          continue;
+        }
 
         // Iterate through organisms and check if this organism (dispatching the 'text' action) is an ancestor.
         // This is much more efficient than searching through branches of descendants.

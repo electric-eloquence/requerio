@@ -77,7 +77,7 @@ export default (requerio) => {
   const {$orgs, store} = requerio;
 
   for (const orgSelector of Object.keys($orgs)) {
-    if ($orgs[orgSelector] && $orgs[orgSelector].hasRequerio) {
+    if (!$orgs[orgSelector] || ($orgs[orgSelector] && $orgs[orgSelector].hasRequerio)) {
       continue;
     }
 
