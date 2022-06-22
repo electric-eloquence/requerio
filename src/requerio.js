@@ -43,7 +43,8 @@ class Requerio {
     for (let i = 0; i < selectors.length; i++) {
       const selector = selectors[i];
 
-      if (typeof this.$orgs[selector] === 'undefined') {
+      // eslint-disable-next-line eqeqeq
+      if (this.$orgs[selector] == null) {
         $organisms[selector] = null;
       }
     }
