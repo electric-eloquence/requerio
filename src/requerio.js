@@ -45,7 +45,7 @@ class Requerio {
 
       // eslint-disable-next-line eqeqeq
       if (this.$orgs[selector] == null) {
-        $organisms[selector] = null;
+        this.$orgs[selector] = $organisms[selector] = null;
       }
     }
 

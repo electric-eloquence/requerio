@@ -442,7 +442,6 @@ export default (requerio) => {
   /* eslint-disable valid-jsdoc */
 
   const {$, $orgs, store} = requerio;
-  $.prototype.$members = [];
 
   /**
    * Must redefine .after() because we may need to reset the elements and members of sibling and descendent organisms.
@@ -641,35 +640,36 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       args = [args_];
     }
 
+    let $member;
+    // Submission of memberIdx indicates that the action is to be dispatched on the specific member of the CSS class.
     let memberIdx = memberIdx_;
     let membersLength = 0;
 
-    this.$members.forEach(() => membersLength++);
+    if (Array.isArray(this.$members)) {
+      this.$members.forEach(() => membersLength++);
 
-    if (membersLength < this.$members.length) {
-      memberIdx = [];
+      if (membersLength < this.$members.length) {
+        memberIdx = [];
 
-      // forEach loop necessary to retain original idx in case items were deleted.
-      this.$members.forEach(($member, idx) => memberIdx.push(idx));
-    }
-
-    // Submission of memberIdx indicates that the action is to be dispatched on the specific member of the CSS class.
-    let $member;
-
-    if (Array.isArray(memberIdx)) {
-      $member = [];
-
-      for (let i = 0; i < memberIdx.length; i++) {
-        $member.push($(this[memberIdx[i]]));
-      }
-    }
-    else if (typeof memberIdx === 'number') {
-      // Exit if the memberIdx points to nothing.
-      if (typeof this[memberIdx] === 'undefined') {
-        return;
+        // forEach loop necessary to retain original idx in case items were deleted.
+        this.$members.forEach(($member, idx) => memberIdx.push(idx));
       }
 
-      $member = $(this[memberIdx]);
+      if (Array.isArray(memberIdx)) {
+        $member = [];
+
+        for (let i = 0; i < memberIdx.length; i++) {
+          $member.push($(this[memberIdx[i]]));
+        }
+      }
+      else if (typeof memberIdx === 'number') {
+        // Exit if the memberIdx points to nothing.
+        if (typeof this[memberIdx] === 'undefined') {
+          return;
+        }
+
+        $member = $(this[memberIdx]);
+      }
     }
 
     // Side-effects must happen here. store.dispatch() depends on this.
@@ -958,7 +958,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       }
     }
 
-    if (membersLength < this.$members.length) {
+    if (Array.isArray(this.$members) && membersLength < this.$members.length) {
       this.populateMembers();
     }
 
@@ -1178,7 +1178,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
       attribsNow = this[orgIdx].attribs;
     }
 
-    if (JSON.stringify(state.attribs) !== JSON.stringify(attribsNow)) {
+    if (state.attribs && JSON.stringify(state.attribs) !== JSON.stringify(attribsNow)) {
       store.dispatch({
         type: 'ATTR',
         selector: this.selector,

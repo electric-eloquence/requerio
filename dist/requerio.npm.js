@@ -875,7 +875,6 @@ var prototypeOverride = (requerio) => {
   /* eslint-disable valid-jsdoc */
 
   const {$, $orgs, store} = requerio;
-  $.prototype.$members = [];
 
   /**
    * Must redefine .after() because we may need to reset the elements and members of sibling and descendent organisms.
@@ -1074,35 +1073,36 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       args = [args_];
     }
 
+    let $member;
+    // Submission of memberIdx indicates that the action is to be dispatched on the specific member of the CSS class.
     let memberIdx = memberIdx_;
     let membersLength = 0;
 
-    this.$members.forEach(() => membersLength++);
+    if (Array.isArray(this.$members)) {
+      this.$members.forEach(() => membersLength++);
 
-    if (membersLength < this.$members.length) {
-      memberIdx = [];
+      if (membersLength < this.$members.length) {
+        memberIdx = [];
 
-      // forEach loop necessary to retain original idx in case items were deleted.
-      this.$members.forEach(($member, idx) => memberIdx.push(idx));
-    }
-
-    // Submission of memberIdx indicates that the action is to be dispatched on the specific member of the CSS class.
-    let $member;
-
-    if (Array.isArray(memberIdx)) {
-      $member = [];
-
-      for (let i = 0; i < memberIdx.length; i++) {
-        $member.push($(this[memberIdx[i]]));
-      }
-    }
-    else if (typeof memberIdx === 'number') {
-      // Exit if the memberIdx points to nothing.
-      if (typeof this[memberIdx] === 'undefined') {
-        return;
+        // forEach loop necessary to retain original idx in case items were deleted.
+        this.$members.forEach(($member, idx) => memberIdx.push(idx));
       }
 
-      $member = $(this[memberIdx]);
+      if (Array.isArray(memberIdx)) {
+        $member = [];
+
+        for (let i = 0; i < memberIdx.length; i++) {
+          $member.push($(this[memberIdx[i]]));
+        }
+      }
+      else if (typeof memberIdx === 'number') {
+        // Exit if the memberIdx points to nothing.
+        if (typeof this[memberIdx] === 'undefined') {
+          return;
+        }
+
+        $member = $(this[memberIdx]);
+      }
     }
 
     // Side-effects must happen here. store.dispatch() depends on this.
@@ -1391,7 +1391,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       }
     }
 
-    if (membersLength < this.$members.length) {
+    if (Array.isArray(this.$members) && membersLength < this.$members.length) {
       this.populateMembers();
     }
 
@@ -1611,7 +1611,7 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
       attribsNow = this[orgIdx].attribs;
     }
 
-    if (JSON.stringify(state.attribs) !== JSON.stringify(attribsNow)) {
+    if (state.attribs && JSON.stringify(state.attribs) !== JSON.stringify(attribsNow)) {
       store.dispatch({
         type: 'ATTR',
         selector: this.selector,
@@ -2591,7 +2591,7 @@ Set one or more CSS properties for all matches.
       case 'css': {
         // Copy the styles from the HTML style attribute to state.css. They would have been set as a side-effect of
         // running the method.
-        if (state.attribs.style) {
+        if (state.attribs && state.attribs.style) {
           for (const style of state.attribs.style.split(';')) {
             const styleTrimmed = style.trim();
 
@@ -2741,9 +2741,9 @@ Set the innerHTML of all matches. Will set `state.html` as per the getter below.
 | htmlString | `string` | A string of HTML. |
 
 ### html()
-Dispatching an 'html' action without an htmlString parameter will set
-`state.html` to the string value of the innerHTML of the actual element. Prior
-to that, `state.html` will be null. Simply invoking `.getState()` where
+Dispatching an 'html' action with an undefined or null htmlString parameter will
+set `state.html` to the string value of the innerHTML of the actual element.
+Prior to that, `state.html` will be null. Simply invoking `.getState()` where
 `state.html` is null will not update `state.html`. However, once `state.html`
 has been set to a string, subsequent invocations of `.getState()` will update
 `state.html`. Set `state.html` only when necessary, since very large innerHTML
@@ -2751,17 +2751,7 @@ strings across many organisms with many members can add up to a large amount of
 data.
 */
       case 'html': {
-        // Only perform this update
-        // IF the argument is a string
-        // AND
-        //   this action is untargeted
-        //   OR is targeted and is the member action (not the organism action).
-        if (
-          typeof args[0] === 'string' &&
-          (typeof memberIdx === 'undefined' || typeof state.members === 'undefined')
-        ) {
-          state[method] = args[0];
-        }
+        state[method] = args[0];
 
         break;
       }
@@ -2994,30 +2984,19 @@ getter below.
 | text | `string` | A string of text. |
 
 ### text()
-Dispatching a 'text' action without a parameter will set `state.textContent` to
-the textContent of the targeted element, or if untargeted, the textContent of
-the first element. This contrasts with the return value of jQuery `.text()`
-which concatenates the textContent of all matching elements. Prior to the first
-'text' action, `state.textContent` will be null. Simply invoking `.getState()`
-where `state.textContent` is null will not update `state.textContent`. However,
-once `state.textContent` has been set to a string, subsequent invocations of
-`.getState()` will update `state.textContent`. Set `state.textContent` only when
-necessary, since very large text strings across many organisms with many members
-can add up to a large amount of data.
+Dispatching a 'text' action with an undefined or null parameter will set
+`state.textContent` to the textContent of the targeted element, or if
+untargeted, the textContent of the first element. This contrasts with the return
+value of jQuery `.text()` which concatenates the textContent of all matching
+elements. Prior to the first 'text' action, `state.textContent` will be null.
+Simply invoking `.getState()` where `state.textContent` is null will not update
+`state.textContent`. However, once `state.textContent` has been set to a string,
+subsequent invocations of `.getState()` will update `state.textContent`. Set
+`state.textContent` only when necessary, since very large text strings across
+many organisms with many members can add up to a large amount of data.
 */
       case 'text': {
-        // Only perform this update
-        // IF the argument is a string
-        // AND
-        //   this action is untargeted
-        //   OR is targeted and is the member action (not the organism action).
-        if (
-          typeof args[0] === 'string' &&
-          (typeof memberIdx === 'undefined' || typeof state.members === 'undefined')
-        ) {
-
-          state.textContent = args[0];
-        }
+        state.textContent = args[0];
 
         break;
       }
@@ -3157,7 +3136,9 @@ function reducerClosure(orgSelector, customReducer) {
           }
         }
 
-        state.members = state.$members.length;
+        if (state.$members) {
+          state.members = state.$members.length;
+        }
       }
 
       // Build new state for organism.
@@ -3280,7 +3261,7 @@ class Requerio {
 
       // eslint-disable-next-line eqeqeq
       if (this.$orgs[selector] == null) {
-        $organisms[selector] = null;
+        this.$orgs[selector] = $organisms[selector] = null;
       }
     }
 
