@@ -31,7 +31,7 @@ function applyMethod($org, method, args, $member) {
 
 /**
  * Apply the jQuery .`data()` method on the organism and prep data for copying directly to state.
- * Circular references are not allowed, and the data must be stringifiable.
+ * The data must be stringifiable like for HTML data attributes.
  *
  * @param {object} $org - Organism object.
  * @param {array} args - Arguments array, (not array-like object).
