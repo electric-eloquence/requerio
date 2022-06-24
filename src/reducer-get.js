@@ -290,7 +290,8 @@ Set one or more CSS properties for all matches.
 
       /**
 ### data(keyValues)
-Set one or more key:value pairs of data. Does not affect HTML data attributes.
+Set one or more key:value pairs of data. Must be stringifiable like HTML data
+attributes, but does not affect actual HTML data attributes.
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -473,15 +474,14 @@ class.
 
       /**
 ### removeData(name)
-Remove a previously-stored piece of data. Does not affect HTML data attributes.
+Remove a previously-stored piece of data. Does not affect actual HTML data attributes.
 
 | Param | Type | Description |
 | --- | --- | --- |
 | name | `string` | A string naming the item of data to delete. |
 
 ### removeData(list)
-Remove previously-stored pieces of data. Does not affect HTML attributes in the
-DOM.
+Remove previously-stored pieces of data. Does not affect actual HTML data attributes.
 
 | Param | Type | Description |
 | --- | --- | --- |
