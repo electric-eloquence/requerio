@@ -464,7 +464,7 @@ function applyMethod($org, method, args, $member) {
 
 /**
  * Apply the jQuery .`data()` method on the organism and prep data for copying directly to state.
- * The data must be stringifiable like for HTML data attributes.
+ * The data must be a stringifiable instance of Object.
  *
  * @param {object} $org - Organism object.
  * @param {array} args - Arguments array, (not array-like object).
@@ -2662,8 +2662,8 @@ Set one or more CSS properties for all matches.
 
       /**
 ### data(keyValues)
-Set one or more key:value pairs of data. Must be stringifiable like HTML data
-attributes, but does not affect actual HTML data attributes.
+Set one or more key:value pairs of data. The data must be a stringifiable
+instance of Object. Will not affect actual HTML data attributes.
 
 | Param | Type | Description |
 | --- | --- | --- |

@@ -8,7 +8,7 @@ Do not to let states bloat for no reason (as it could with large html, textConte
 | boundingClientRect | `object` | {<br>&nbsp;&nbsp;width:&nbsp;`null`,<br>&nbsp;&nbsp;height:&nbsp;`null`,<br>&nbsp;&nbsp;top:&nbsp;`null`,<br>&nbsp;&nbsp;right:&nbsp;`null`,<br>&nbsp;&nbsp;bottom:&nbsp;`null`,<br>&nbsp;&nbsp;left:&nbsp;`null`,<br>&nbsp;&nbsp;x:&nbsp;`null`,<br>&nbsp;&nbsp;y:&nbsp;`null`<br>} | A key-value copy of the object returned by `.getBoundingClientRect()` This object's properties are all of type `null` or `number`. Width and height for this object include padding and border, but not margin. |
 | classArray | `array` | [] | An array of classes declared in the HTML `class` attribute. |
 | css | `object` | {} | An object of CSS properties set by jQuery `.css()`. |
-| data | `object` | {} | An object of data to be saved to the DOM. Must be stringifiable like HTML data attributes. |
+| data | `object` | {} | An object of data to be saved to the DOM. Must be a stringifiable instance of Object. |
 | html | `null`\|`string` | `null` | To DOM `Element.innerHTML` spec. `null` means the html hasn't been touched by Requerio. `null` has a completely different meaning than empty string. |
 | innerWidth | `null`\|`number` | `null` | In number of CSS pixels. Includes padding, but not border or margin. |
 | innerHeight | `null`\|`number` | `null` | In number of CSS pixels. Includes padding, but not border or margin. |

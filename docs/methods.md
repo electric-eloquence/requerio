@@ -65,8 +65,8 @@ Set one or more CSS properties for all matches.
 | properties | `object` | An object of property:value pairs to set. |
 
 ### data(keyValues)
-Set one or more key:value pairs of data. Must be stringifiable like HTML data
-attributes, but does not affect actual HTML data attributes.
+Set one or more key:value pairs of data. The data must be a stringifiable
+instance of Object. Will not affect actual HTML data attributes.
 
 | Param | Type | Description |
 | --- | --- | --- |

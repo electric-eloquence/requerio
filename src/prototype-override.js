@@ -31,7 +31,7 @@ function applyMethod($org, method, args, $member) {
 
 /**
  * Apply the jQuery .`data()` method on the organism and prep data for copying directly to state.
- * The data must be stringifiable like for HTML data attributes.
+ * The data must be a stringifiable instance of Object.
  *
  * @param {object} $org - Organism object.
  * @param {array} args - Arguments array, (not array-like object).
