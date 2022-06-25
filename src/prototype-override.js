@@ -38,7 +38,8 @@ function applyMethod($org, method, args, $member) {
  * @param {object|object[]} [$member] - Organism member, or array of members.
  */
 function applyData($org, args, $member) {
-  if (args[0] instanceof Object && args[0].constructor === Object) {
+  // instanceof Object doesn't work on args since it has been passed as an argument.
+  if (args[0] && args[0].constructor && args[0].constructor.name === 'Object') {
     applyMethod($org, 'data', args, $member);
   }
 
