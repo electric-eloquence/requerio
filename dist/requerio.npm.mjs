@@ -1644,20 +1644,8 @@ __Returns__: `object`\|`null` - The organism's or member's state or `null` if th
         memberIdx
       });
 
-      let textNow;
-
       // If html has changed, text has probably changed.
-      if (typeof window === 'object') { // jQuery
-        textNow = this[orgIdx].textContent;
-      }
-      else { // Cheerio
-        if ($member) {
-          textNow = $member.text();
-        }
-        else {
-          textNow = this.text();
-        }
-      }
+      const textNow = $('<div></div>').html(htmlNow).text();
 
       if (state.textContent !== textNow) {
         store.dispatch({
