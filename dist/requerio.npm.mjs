@@ -51,6 +51,11 @@ var organismsIncept = ($orgs, $) => {
     if (i === 'window') {
       if (typeof window === 'object') {
         $org = $(window);
+
+        // So tests work on server with JSDOM.
+        if (typeof global === 'object') {
+          $org.$members = [{}];
+        }
       }
       else {
         $org = $(i);
@@ -59,6 +64,11 @@ var organismsIncept = ($orgs, $) => {
     else if (i === 'document') {
       if (typeof document === 'object') {
         $org = $(document);
+
+        // So tests work on server with JSDOM.
+        if (typeof global === 'object') {
+          $org.$members = [{}];
+        }
       }
       else {
         $org = $(i);
