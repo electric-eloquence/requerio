@@ -290,7 +290,7 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       if ($org.selector === 'window') {
         /* istanbul ignore else */
         // If using JSDOM.
-        if (typeof window === 'object' && typeof global === 'object') {
+        if (typeof global === 'object' && typeof window === 'object') {
           return $org.$members[0]._scrollLeft;
         }
         else {
@@ -308,7 +308,7 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       if ($org.selector === 'window') {
         /* istanbul ignore else */
         // If using JSDOM.
-        if (typeof window === 'object' && typeof global === 'object') {
+        if (typeof global === 'object' && typeof window === 'object') {
           return $org.$members[0]._scrollTop;
         }
         else {

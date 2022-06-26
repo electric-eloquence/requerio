@@ -1,6 +1,6 @@
 function getMeasurement($org, measurement, idx) {
   /* istanbul ignore else */
-  if ($org.$members[idx]) {
+  if ($org.$members && $org.$members[idx]) {
     return $org.$members[idx]['_' + measurement];
   }
   else {
@@ -9,6 +9,10 @@ function getMeasurement($org, measurement, idx) {
 }
 
 function setMeasurement($org, measurement, distance_, idx) {
+  if (!$org.$members) {
+    return $org;
+  }
+
   for (let i = 0; i < $org.$members.length; i++) {
     if (typeof idx === 'number' && idx !== i) {
       continue;
@@ -44,39 +48,23 @@ export default ($orgs, $) => {
 
     let $org;
 
-    if (i === 'document') {
-      if (typeof document === 'object') {
-        $org = $(document);
-
-        // So tests work on server with JSDOM.
-        if (typeof global === 'object') {
-          $org.$members.push({});
-        }
-      }
-      else {
-        $org = $(i);
-
-        $org.$members.push({});
-      }
-    }
-
     if (i === 'window') {
       if (typeof window === 'object') {
         $org = $(window);
-
-        // So tests work on server with JSDOM.
-        if (typeof global === 'object') {
-          $org.$members.push({});
-        }
       }
       else {
         $org = $(i);
-
-        $org.$members.push({});
       }
     }
-
-    if (!$org) {
+    else if (i === 'document') {
+      if (typeof document === 'object') {
+        $org = $(document);
+      }
+      else {
+        $org = $(i);
+      }
+    }
+    else {
       const $orgTmp = $(i);
 
       if ($orgTmp.length) {
@@ -98,7 +86,7 @@ export default ($orgs, $) => {
       $org.selector = i;
     }
 
-    if (i !== 'document' && i !== 'window') {
+    if (i !== 'window' && i !== 'document') {
       $org.populateMembers();
     }
 

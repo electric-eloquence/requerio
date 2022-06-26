@@ -2,7 +2,7 @@
 
 function getMeasurement$1($org, measurement, idx) {
   /* istanbul ignore else */
-  if ($org.$members[idx]) {
+  if ($org.$members && $org.$members[idx]) {
     return $org.$members[idx]['_' + measurement];
   }
   else {
@@ -11,6 +11,10 @@ function getMeasurement$1($org, measurement, idx) {
 }
 
 function setMeasurement($org, measurement, distance_, idx) {
+  if (!$org.$members) {
+    return $org;
+  }
+
   for (let i = 0; i < $org.$members.length; i++) {
     if (typeof idx === 'number' && idx !== i) {
       continue;
@@ -46,39 +50,23 @@ var organismsIncept = ($orgs, $) => {
 
     let $org;
 
-    if (i === 'document') {
-      if (typeof document === 'object') {
-        $org = $(document);
-
-        // So tests work on server with JSDOM.
-        if (typeof global === 'object') {
-          $org.$members.push({});
-        }
-      }
-      else {
-        $org = $(i);
-
-        $org.$members.push({});
-      }
-    }
-
     if (i === 'window') {
       if (typeof window === 'object') {
         $org = $(window);
-
-        // So tests work on server with JSDOM.
-        if (typeof global === 'object') {
-          $org.$members.push({});
-        }
       }
       else {
         $org = $(i);
-
-        $org.$members.push({});
       }
     }
-
-    if (!$org) {
+    else if (i === 'document') {
+      if (typeof document === 'object') {
+        $org = $(document);
+      }
+      else {
+        $org = $(i);
+      }
+    }
+    else {
       const $orgTmp = $(i);
 
       if ($orgTmp.length) {
@@ -100,7 +88,7 @@ var organismsIncept = ($orgs, $) => {
       $org.selector = i;
     }
 
-    if (i !== 'document' && i !== 'window') {
+    if (i !== 'window' && i !== 'document') {
       $org.populateMembers();
     }
 
@@ -401,10 +389,10 @@ organism, set the focused organism's selector as `state.activeOrganism`.
     }
 
     /**
-     * For document and window organisms only.
+     * For window and document organisms only.
      * Do not document.
      */
-    if (orgSelector === 'document' || orgSelector === 'window') {
+    if (orgSelector === 'window' || orgSelector === 'document') {
       $org.getState = () => {
         if (orgSelector === 'document' && typeof document === 'object') {
           const lastActiveOrganism = store.getState()[orgSelector].activeOrganism;
@@ -723,7 +711,7 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       if ($org.selector === 'window') {
         /* istanbul ignore else */
         // If using JSDOM.
-        if (typeof window === 'object' && typeof global === 'object') {
+        if (typeof global === 'object' && typeof window === 'object') {
           return $org.$members[0]._scrollLeft;
         }
         else {
@@ -741,7 +729,7 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       if ($org.selector === 'window') {
         /* istanbul ignore else */
         // If using JSDOM.
-        if (typeof window === 'object' && typeof global === 'object') {
+        if (typeof global === 'object' && typeof window === 'object') {
           return $org.$members[0]._scrollTop;
         }
         else {

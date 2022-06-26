@@ -139,10 +139,10 @@ organism, set the focused organism's selector as `state.activeOrganism`.
     }
 
     /**
-     * For document and window organisms only.
+     * For window and document organisms only.
      * Do not document.
      */
-    if (orgSelector === 'document' || orgSelector === 'window') {
+    if (orgSelector === 'window' || orgSelector === 'document') {
       $org.getState = () => {
         if (orgSelector === 'document' && typeof document === 'object') {
           const lastActiveOrganism = store.getState()[orgSelector].activeOrganism;
