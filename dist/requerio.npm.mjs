@@ -461,16 +461,18 @@ function applyMethod($org, method, args, $member) {
 }
 
 /**
- * Apply the jQuery .`data()` method on the organism and prep data for copying directly to state.
- * The data must be a stringifiable instance of Object.
+ * Apply the jQuery `.data()` method on the organism and prep data for copying directly to state.
+ * The data passed to `.dispatchAction()` must be a stringifiable instance of Object.
  *
  * @param {object} $org - Organism object.
  * @param {array} args - Arguments array, (not array-like object).
  * @param {object|object[]} [$member] - Organism member, or array of members.
  */
 function applyData($org, args, $member) {
-  // instanceof Object doesn't work on args since it has been passed as an argument.
-  if (args[0] && args[0].constructor && args[0].constructor.name === 'Object') {
+  // While the original data must be an instanceof Object, actually using instanceof Object doesn't work on args
+  // submitted to prototype methods, in this case .prototype.dispatchAction().
+  // As such, we use the more ungainly way of checking whether the arg is an object (or array).
+  if (args[0] && typeof args[0] === 'object') {
     applyMethod($org, 'data', args, $member);
   }
 
@@ -3164,10 +3166,10 @@ function reducerClosure(orgSelector, customReducer) {
           const customState = customReducer(JSON.parse(JSON.stringify(state)), action, $org, prevState);
 
           if (
-            customState &&                  // Must not be null. Must be an object
-            typeof customState === 'object' // but don't want to check the constructor because this is user submitted.
+            customState &&                  // Must not be null. Must be an object.
+            typeof customState === 'object' // But don't check instanceof or constructor because this is user submitted.
           ) {
-            for (const i of Object.keys(customState)) {
+            for (const i in customState) {
               if (typeof customState[i] === 'function') {
                 // The older Requerio versions would have functions as properties of this object.
                 // If this is the case, ignore the output of customReducer and return the state as built earlier.

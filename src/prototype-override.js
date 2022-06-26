@@ -30,16 +30,18 @@ function applyMethod($org, method, args, $member) {
 }
 
 /**
- * Apply the jQuery .`data()` method on the organism and prep data for copying directly to state.
- * The data must be a stringifiable instance of Object.
+ * Apply the jQuery `.data()` method on the organism and prep data for copying directly to state.
+ * The data passed to `.dispatchAction()` must be a stringifiable instance of Object.
  *
  * @param {object} $org - Organism object.
  * @param {array} args - Arguments array, (not array-like object).
  * @param {object|object[]} [$member] - Organism member, or array of members.
  */
 function applyData($org, args, $member) {
-  // instanceof Object doesn't work on args since it has been passed as an argument.
-  if (args[0] && args[0].constructor && args[0].constructor.name === 'Object') {
+  // While the original data must be an instanceof Object, actually using instanceof Object doesn't work on args
+  // submitted to prototype methods, in this case .prototype.dispatchAction().
+  // As such, we use the more ungainly way of checking whether the arg is an object (or array).
+  if (args[0] && typeof args[0] === 'object') {
     applyMethod($org, 'data', args, $member);
   }
 

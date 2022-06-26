@@ -794,10 +794,10 @@ function reducerClosure(orgSelector, customReducer) {
           const customState = customReducer(JSON.parse(JSON.stringify(state)), action, $org, prevState);
 
           if (
-            customState &&                  // Must not be null. Must be an object
-            typeof customState === 'object' // but don't want to check the constructor because this is user submitted.
+            customState &&                  // Must not be null. Must be an object.
+            typeof customState === 'object' // But don't check instanceof or constructor because this is user submitted.
           ) {
-            for (const i of Object.keys(customState)) {
+            for (const i in customState) {
               if (typeof customState[i] === 'function') {
                 // The older Requerio versions would have functions as properties of this object.
                 // If this is the case, ignore the output of customReducer and return the state as built earlier.
