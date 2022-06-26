@@ -9,6 +9,7 @@ function getMeasurement($org, measurement, idx) {
 }
 
 function setMeasurement($org, measurement, distance_, idx) {
+  /* istanbul ignore if */
   if (!$org.$members) {
     return $org;
   }

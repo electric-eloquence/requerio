@@ -1633,6 +1633,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 `.$members` are jQuery components, not fully incepted organisms.
 */
   $.prototype.populateMembers = function () {
+    /* istanbul ignore if */
     if (!this.selector || !(this.selector in $orgs)) {
       return;
     }

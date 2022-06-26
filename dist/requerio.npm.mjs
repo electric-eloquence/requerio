@@ -9,6 +9,7 @@ function getMeasurement$1($org, measurement, idx) {
 }
 
 function setMeasurement($org, measurement, distance_, idx) {
+  /* istanbul ignore if */
   if (!$org.$members) {
     return $org;
   }
@@ -2062,6 +2063,7 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
 `.$members` are jQuery components, not fully incepted organisms.
 */
   $.prototype.populateMembers = function () {
+    /* istanbul ignore if */
     if (!this.selector || !(this.selector in $orgs)) {
       return;
     }
