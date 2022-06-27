@@ -961,7 +961,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       }
     }
 
-    if (Array.isArray(this.$members) && membersLength < this.$members.length) {
+    if (typeof memberIdx === 'undefined' && Array.isArray(this.$members) && membersLength < this.$members.length) {
       this.populateMembers();
     }
 
@@ -1731,7 +1731,7 @@ necessary because jQuery does not dynamically update the indexed elements or
 length properties on a saved jQuery component.
 */
   $.prototype.resetElementsAndMembers = function () {
-    if (!this.selector || !(this.selector in $orgs)) {
+    if (!this.$members || !this.selector || !(this.selector in $orgs)) {
       return;
     }
 

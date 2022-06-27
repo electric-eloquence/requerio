@@ -1391,7 +1391,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       }
     }
 
-    if (Array.isArray(this.$members) && membersLength < this.$members.length) {
+    if (typeof memberIdx === 'undefined' && Array.isArray(this.$members) && membersLength < this.$members.length) {
       this.populateMembers();
     }
 
@@ -2161,7 +2161,7 @@ necessary because jQuery does not dynamically update the indexed elements or
 length properties on a saved jQuery component.
 */
   $.prototype.resetElementsAndMembers = function () {
-    if (!this.selector || !(this.selector in $orgs)) {
+    if (!this.$members || !this.selector || !(this.selector in $orgs)) {
       return;
     }
 
@@ -2367,9 +2367,10 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
  * Be sure to update docs/state-object-defaults.md when updating any of these defaults.
  *
  * @param {string} orgSelector - The organism's selector.
+ * @param {number} [memberIdx] - The array index of the organism's member, if targeting a member.
  * @returns {object} Default state.
  */
-function getStateDefault(orgSelector) {
+function getStateDefault(orgSelector, memberIdx) {
   let stateDefault = {};
 
   if (orgSelector === 'window') {
@@ -2421,10 +2422,14 @@ function getStateDefault(orgSelector) {
       scrollTop: null,
       textContent: null,
       width: null,
-      height: null,
-      $members: [], // $members and members are not recursive, i.e. on organism states only, not on member states.
-      members: void 0
+      height: null
     };
+
+    // $members and members are not recursive, i.e. on organism states only, not on member states.
+    if (typeof memberIdx === 'undefined') {
+      stateDefault.$members = [];
+      stateDefault.members = void 0;
+    }
   }
 
   return stateDefault;
@@ -3072,11 +3077,11 @@ function reducerClosure(orgSelector, customReducer) {
    * @returns {object} New state.
    */
   return function (prevState, action) {
+    const {memberIdx, $org} = action;
+
     // If this is the reducer for the selected organism, reduce and return a new state.
     if (action.selector === orgSelector) {
-      const memberIdx = action.memberIdx;
-      const $org = action.$org;
-      const stateDefault = getStateDefault(orgSelector);
+      const stateDefault = getStateDefault(orgSelector, memberIdx);
       let state;
 
       try {
@@ -3115,7 +3120,7 @@ function reducerClosure(orgSelector, customReducer) {
             // Populate $members array with clones of stateDefault if necessary.
             for (let i = 0; i < $org.length; i++) {
               if (!state.$members[i]) {
-                state.$members[i] = JSON.parse(JSON.stringify(stateDefault));
+                state.$members[i] = getStateDefault(orgSelector, i);
               }
             }
           }
@@ -3125,9 +3130,7 @@ function reducerClosure(orgSelector, customReducer) {
           }
         }
 
-        if (state.$members) {
-          state.members = state.$members.length;
-        }
+        state.members = state.$members.length;
       }
 
       // Build new state for organism.
@@ -3184,7 +3187,7 @@ function reducerClosure(orgSelector, customReducer) {
         return prevState;
       }
       else {
-        return getStateDefault(orgSelector);
+        return getStateDefault(orgSelector, memberIdx);
       }
     }
   };
