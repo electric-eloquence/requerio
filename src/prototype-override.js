@@ -649,12 +649,13 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
     let membersLength = 0;
 
     if (Array.isArray(this.$members)) {
+      // .forEach() skips deleted items.
       this.$members.forEach(() => membersLength++);
 
       if (membersLength < this.$members.length) {
         memberIdx = [];
 
-        // forEach loop necessary to retain original idx in case items were deleted.
+        // .forEach() skips deleted items and writes original idx.
         this.$members.forEach(($member, idx) => memberIdx.push(idx));
       }
 
@@ -961,7 +962,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       }
     }
 
-    if (typeof memberIdx === 'undefined' && Array.isArray(this.$members) && membersLength < this.$members.length) {
+    if (typeof memberIdx_ === 'undefined' && Array.isArray(this.$members) && membersLength < this.$members.length) {
       this.populateMembers();
     }
 

@@ -1079,12 +1079,13 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
     let membersLength = 0;
 
     if (Array.isArray(this.$members)) {
+      // .forEach() skips deleted items.
       this.$members.forEach(() => membersLength++);
 
       if (membersLength < this.$members.length) {
         memberIdx = [];
 
-        // forEach loop necessary to retain original idx in case items were deleted.
+        // .forEach() skips deleted items and writes original idx.
         this.$members.forEach(($member, idx) => memberIdx.push(idx));
       }
 
@@ -1391,7 +1392,7 @@ __Returns__: `object` - The organism. Allows for action dispatches to be chained
       }
     }
 
-    if (typeof memberIdx === 'undefined' && Array.isArray(this.$members) && membersLength < this.$members.length) {
+    if (typeof memberIdx_ === 'undefined' && Array.isArray(this.$members) && membersLength < this.$members.length) {
       this.populateMembers();
     }
 
@@ -2945,7 +2946,7 @@ properties on `state.boundingClientRect`.
           }
 
           // If this is dispatched on the server, we need to copy the rectObj to the state $members.
-          if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
+          if (state.$members && typeof global === 'object' && global.$._root && global.$._root.attribs) {
             if (
               typeof memberIdx === 'number' &&
               state.$members[memberIdx]
@@ -2956,8 +2957,10 @@ properties on `state.boundingClientRect`.
             }
             else {
               for (let i = 0; i < state.$members.length; i++) {
-                for (const j in rectObj) {
-                  state.$members[i].boundingClientRect[j] = rectObj[j];
+                if (state.$members[i]) {
+                  for (const j in rectObj) {
+                    state.$members[i].boundingClientRect[j] = rectObj[j];
+                  }
                 }
               }
             }
@@ -3138,7 +3141,7 @@ function reducerClosure(orgSelector, customReducer) {
 
       // Build new state for selection in $members array.
       if (typeof memberIdx === 'number') {
-        if ($org.$members[memberIdx] && state.$members[memberIdx]) {
+        if ($org.$members && $org.$members[memberIdx] && state.$members && state.$members[memberIdx]) {
           stateBuild($org.$members[memberIdx], state.$members[memberIdx], action);
         }
       }
@@ -3146,7 +3149,7 @@ function reducerClosure(orgSelector, customReducer) {
         for (let i = 0; i < memberIdx.length; i++) {
           const idx = memberIdx[i];
 
-          if ($org.$members[idx] && state.$members[idx]) {
+          if ($org.$members && $org.$members[idx] && state.$members && state.$members[idx]) {
             stateBuild($org.$members[idx], state.$members[idx] || {}, action);
           }
         }

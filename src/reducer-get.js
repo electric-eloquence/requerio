@@ -585,7 +585,7 @@ properties on `state.boundingClientRect`.
           }
 
           // If this is dispatched on the server, we need to copy the rectObj to the state $members.
-          if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
+          if (state.$members && typeof global === 'object' && global.$._root && global.$._root.attribs) {
             if (
               typeof memberIdx === 'number' &&
               state.$members[memberIdx]
@@ -596,8 +596,10 @@ properties on `state.boundingClientRect`.
             }
             else {
               for (let i = 0; i < state.$members.length; i++) {
-                for (const j in rectObj) {
-                  state.$members[i].boundingClientRect[j] = rectObj[j];
+                if (state.$members[i]) {
+                  for (const j in rectObj) {
+                    state.$members[i].boundingClientRect[j] = rectObj[j];
+                  }
                 }
               }
             }
@@ -778,7 +780,7 @@ function reducerClosure(orgSelector, customReducer) {
 
       // Build new state for selection in $members array.
       if (typeof memberIdx === 'number') {
-        if ($org.$members[memberIdx] && state.$members[memberIdx]) {
+        if ($org.$members && $org.$members[memberIdx] && state.$members && state.$members[memberIdx]) {
           stateBuild($org.$members[memberIdx], state.$members[memberIdx], action);
         }
       }
@@ -786,7 +788,7 @@ function reducerClosure(orgSelector, customReducer) {
         for (let i = 0; i < memberIdx.length; i++) {
           const idx = memberIdx[i];
 
-          if ($org.$members[idx] && state.$members[idx]) {
+          if ($org.$members && $org.$members[idx] && state.$members && state.$members[idx]) {
             stateBuild($org.$members[idx], state.$members[idx] || {}, action);
           }
         }
