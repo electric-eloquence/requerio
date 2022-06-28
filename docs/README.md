@@ -176,7 +176,7 @@ testing.
 | rectObj | `object` | An object of `boundingClientRect` measurements. Does not need to include all of them. |
 | [memberIdx] | `number`\|`number[]` | The index (or array of indices) of the organism member(s) if targeting one or more members. |
 
-### .updateMeasurements()
+### .updateMeasurements(state, [$member], [memberIdx])
 Update measurements on the state object as per changes to attributes and styles.
 
 __Returns__: `boolean` - Whether or not to update state based on a change in measurement.
@@ -184,7 +184,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
 | Param | Type | Description |
 | --- | --- | --- |
 | state | `object` | The most recent state. |
-| [member] | `object`\|`object[]` | The object (or array or objects) representing the organism member(s) (if targeting one or more members). |
+| [$member] | `object`\|`object[]` | The object (or array of objects) representing the organism member(s) (if targeting one or more members). |
 | [memberIdx] | `number`\|`number[]` | The index (or array of indices) of the organism member(s) (if targeting one or more members). |
 <!-- STOP GENERATED API DOC -->
 
