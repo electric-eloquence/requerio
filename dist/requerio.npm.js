@@ -2266,12 +2266,30 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
 | --- | --- | --- |
 | state | `object` | The most recent state. |
 | [$member] | `object`\|`object[]` | The object (or array of objects) representing the organism member(s) (if targeting one or more members). |
-| [memberIdx] | `number`\|`number[]` | The index (or array of indices) of the organism member(s) (if targeting one or more members). |
+| [memberIdx] | `number`\|`number[]` | The index (or array of indices) of the organism member(s) (if targeting one or more members). Submitting $member and omitting memberIdx will set the index to start at 0 and increment up. |
 */
-  $.prototype.updateMeasurements = function (state, $member, memberIdx) {
+  $.prototype.updateMeasurements = function (state, $member, memberIdx_) {
     /* istanbul ignore if */
-    if (typeof memberIdx === 'number' && !this[memberIdx]) {
+    if (typeof memberIdx_ === 'number' && !this[memberIdx_]) {
       return false;
+    }
+
+    let memberIdx;
+
+    if ($member) {
+      if (typeof memberIdx_ === 'number' || Array.isArray(memberIdx_)) {
+        memberIdx = memberIdx_;
+      }
+      else {
+        if (Array.isArray($member)) {
+          memberIdx = [];
+
+          $member.forEach((val, idx) => memberIdx.push(idx));
+        }
+        else {
+          memberIdx = 0;
+        }
+      }
     }
 
     let computedStyle;

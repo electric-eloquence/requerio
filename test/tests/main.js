@@ -1043,7 +1043,96 @@ in a targeted manner', function () {
           expect(stateAfter.height).to.equal(height);
         });
 
-        it('.updateMeasurements() updates measurement properties in a targeted manner', function () {
+        it('.updateMeasurements() updates measurement properties in a targeted manner with the default index\
+', function () {
+          const $org = requerio.$orgs['.main__div']; // Necessary to set .main__div for the .reducer-get tests.
+          const stateBefore0 = $org.getState(0);
+
+          width++;
+          height++;
+          top++;
+          right++;
+          bottom++;
+          left++;
+          x++;
+          y++;
+
+          // Cheerio.
+          if ($._root && $._root.attribs) {
+            $org.innerWidth(width, 0);
+            $org.innerHeight(height, 0);
+            $org.outerWidth(width, 0);
+            $org.outerHeight(height, 0);
+            $org.scrollLeft(left, 0);
+            $org.scrollTop(top, 0);
+            $org.width(width, 0);
+            $org.height(height, 0);
+          }
+          // jQuery.
+          else {
+            $org.$members[0].innerWidth(width);
+            $org.$members[0].innerHeight(height);
+            $org.$members[0].outerWidth(width);
+            $org.$members[0].outerHeight(height);
+            $org.$members[0].scrollLeft(left);
+            $org.$members[0].scrollTop(top);
+            $org.$members[0].width(width);
+            $org.$members[0].height(height);
+          }
+          $org.setBoundingClientRect(
+            {
+              width,
+              height,
+              top,
+              right,
+              bottom,
+              left,
+              x,
+              y
+            },
+            0
+          );
+          $org.updateMeasurements(stateBefore0, $org.$members[0]);
+
+          const stateAfter0 = $org.getState(0);
+
+          expect(stateAfter0.boundingClientRect.width).to.not.equal(stateBefore0.boundingClientRect.width);
+          expect(stateAfter0.boundingClientRect.height).to.not.equal(stateBefore0.boundingClientRect.height);
+          expect(stateAfter0.boundingClientRect.top).to.not.equal(stateBefore0.boundingClientRect.top);
+          expect(stateAfter0.boundingClientRect.right).to.not.equal(stateBefore0.boundingClientRect.right);
+          expect(stateAfter0.boundingClientRect.bottom).to.not.equal(stateBefore0.boundingClientRect.bottom);
+          expect(stateAfter0.boundingClientRect.left).to.not.equal(stateBefore0.boundingClientRect.left);
+          expect(stateAfter0.boundingClientRect.x).to.not.equal(stateBefore0.boundingClientRect.x);
+          expect(stateAfter0.boundingClientRect.y).to.not.equal(stateBefore0.boundingClientRect.y);
+          expect(stateAfter0.innerWidth).to.not.equal(stateBefore0.innerWidth);
+          expect(stateAfter0.innerHeight).to.not.equal(stateBefore0.innerHeight);
+          expect(stateAfter0.outerWidth).to.not.equal(stateBefore0.outerWidth);
+          expect(stateAfter0.outerHeight).to.not.equal(stateBefore0.outerHeight);
+          expect(stateAfter0.scrollLeft).to.not.equal(stateBefore0.scrollLeft);
+          expect(stateAfter0.scrollTop).to.not.equal(stateBefore0.scrollTop);
+          expect(stateAfter0.width).to.not.equal(stateBefore0.width);
+          expect(stateAfter0.height).to.not.equal(stateBefore0.height);
+
+          expect(stateAfter0.boundingClientRect.width).to.equal(width);
+          expect(stateAfter0.boundingClientRect.height).to.equal(height);
+          expect(stateAfter0.boundingClientRect.top).to.equal(top);
+          expect(stateAfter0.boundingClientRect.right).to.equal(right);
+          expect(stateAfter0.boundingClientRect.bottom).to.equal(bottom);
+          expect(stateAfter0.boundingClientRect.left).to.equal(left);
+          expect(stateAfter0.boundingClientRect.x).to.equal(x);
+          expect(stateAfter0.boundingClientRect.y).to.equal(y);
+          expect(stateAfter0.innerWidth).to.equal(width);
+          expect(stateAfter0.innerHeight).to.equal(height);
+          expect(stateAfter0.outerWidth).to.equal(width);
+          expect(stateAfter0.outerHeight).to.equal(height);
+          expect(stateAfter0.scrollLeft).to.equal(left);
+          expect(stateAfter0.scrollTop).to.equal(top);
+          expect(stateAfter0.width).to.equal(width);
+          expect(stateAfter0.height).to.equal(height);
+        });
+
+        it('.updateMeasurements() updates measurement properties in a targeted manner with a specific index\
+', function () {
           const $org = requerio.$orgs['.main__div']; // Necessary to set .main__div for the .reducer-get tests.
           const stateBefore1 = $org.getState(1);
 
@@ -1148,7 +1237,200 @@ in a targeted manner', function () {
           expect(stateAfter1.height).to.equal(height);
         });
 
-        it('.updateMeasurements() updates measurement properties across multiple targets', function () {
+        it('.updateMeasurements() updates measurement properties across multiple targets with default indices\
+', function () {
+          const $org = requerio.$orgs['.dispatchAction__css']; // Has 3 members.
+          const stateBefore0 = $org.getState(0);
+          const stateBefore1 = $org.getState(1);
+          const stateBefore2 = $org.getState(2);
+
+          width++;
+          height++;
+          top++;
+          right++;
+          bottom++;
+          left++;
+          x++;
+          y++;
+
+          // Cheerio.
+          if ($._root && $._root.attribs) {
+            $org.innerWidth(width, 0);
+            $org.innerHeight(height, 0);
+            $org.outerWidth(width, 0);
+            $org.outerHeight(height, 0);
+            $org.scrollLeft(left, 0);
+            $org.scrollTop(top, 0);
+            $org.width(width, 0);
+            $org.height(height, 0);
+            $org.innerWidth(width, 1);
+            $org.innerHeight(height, 1);
+            $org.outerWidth(width, 1);
+            $org.outerHeight(height, 1);
+            $org.scrollLeft(left, 1);
+            $org.scrollTop(top, 1);
+            $org.width(width, 1);
+            $org.height(height, 1);
+            $org.innerWidth(width, 2);
+            $org.innerHeight(height, 2);
+            $org.outerWidth(width, 2);
+            $org.outerHeight(height, 2);
+            $org.scrollLeft(left, 2);
+            $org.scrollTop(top, 2);
+            $org.width(width, 2);
+            $org.height(height, 2);
+          }
+          // jQuery.
+          else {
+            $org.$members[0].innerWidth(width);
+            $org.$members[0].innerHeight(height);
+            $org.$members[0].outerWidth(width);
+            $org.$members[0].outerHeight(height);
+            $org.$members[0].scrollLeft(left);
+            $org.$members[0].scrollTop(top);
+            $org.$members[0].width(width);
+            $org.$members[0].height(height);
+            $org.$members[1].innerWidth(width);
+            $org.$members[1].innerHeight(height);
+            $org.$members[1].outerWidth(width);
+            $org.$members[1].outerHeight(height);
+            $org.$members[1].scrollLeft(left);
+            $org.$members[1].scrollTop(top);
+            $org.$members[1].width(width);
+            $org.$members[1].height(height);
+            $org.$members[2].innerWidth(width);
+            $org.$members[2].innerHeight(height);
+            $org.$members[2].outerWidth(width);
+            $org.$members[2].outerHeight(height);
+            $org.$members[2].scrollLeft(left);
+            $org.$members[2].scrollTop(top);
+            $org.$members[2].width(width);
+            $org.$members[2].height(height);
+          }
+          $org.setBoundingClientRect(
+            {
+              width,
+              height,
+              top,
+              right,
+              bottom,
+              left,
+              x,
+              y
+            },
+            [0, 1, 2]
+          );
+          $org.updateMeasurements(stateBefore0, $org.$members);
+
+          const stateAfter0 = $org.getState(0);
+          const stateAfter1 = $org.getState(1);
+          const stateAfter2 = $org.getState(2);
+
+          expect(stateAfter0.boundingClientRect.width).to.not.equal(stateBefore0.boundingClientRect.width);
+          expect(stateAfter0.boundingClientRect.height).to.not.equal(stateBefore0.boundingClientRect.height);
+          expect(stateAfter0.boundingClientRect.top).to.not.equal(stateBefore0.boundingClientRect.top);
+          expect(stateAfter0.boundingClientRect.right).to.not.equal(stateBefore0.boundingClientRect.right);
+          expect(stateAfter0.boundingClientRect.bottom).to.not.equal(stateBefore0.boundingClientRect.bottom);
+          expect(stateAfter0.boundingClientRect.left).to.not.equal(stateBefore0.boundingClientRect.left);
+          expect(stateAfter0.boundingClientRect.x).to.not.equal(stateBefore0.boundingClientRect.x);
+          expect(stateAfter0.boundingClientRect.y).to.not.equal(stateBefore0.boundingClientRect.y);
+          expect(stateAfter0.innerWidth).to.not.equal(stateBefore0.innerWidth);
+          expect(stateAfter0.innerHeight).to.not.equal(stateBefore0.innerHeight);
+          expect(stateAfter0.outerWidth).to.not.equal(stateBefore0.outerWidth);
+          expect(stateAfter0.outerHeight).to.not.equal(stateBefore0.outerHeight);
+          expect(stateAfter0.scrollLeft).to.not.equal(stateBefore0.scrollLeft);
+          expect(stateAfter0.scrollTop).to.not.equal(stateBefore0.scrollTop);
+          expect(stateAfter0.width).to.not.equal(stateBefore0.width);
+          expect(stateAfter0.height).to.not.equal(stateBefore0.height);
+
+          expect(stateAfter1.boundingClientRect.width).to.not.equal(stateBefore1.boundingClientRect.width);
+          expect(stateAfter1.boundingClientRect.height).to.not.equal(stateBefore1.boundingClientRect.height);
+          expect(stateAfter1.boundingClientRect.top).to.not.equal(stateBefore1.boundingClientRect.top);
+          expect(stateAfter1.boundingClientRect.right).to.not.equal(stateBefore1.boundingClientRect.right);
+          expect(stateAfter1.boundingClientRect.bottom).to.not.equal(stateBefore1.boundingClientRect.bottom);
+          expect(stateAfter1.boundingClientRect.left).to.not.equal(stateBefore1.boundingClientRect.left);
+          expect(stateAfter1.boundingClientRect.x).to.not.equal(stateBefore1.boundingClientRect.x);
+          expect(stateAfter1.boundingClientRect.y).to.not.equal(stateBefore1.boundingClientRect.y);
+          expect(stateAfter1.innerWidth).to.not.equal(stateBefore1.innerWidth);
+          expect(stateAfter1.innerHeight).to.not.equal(stateBefore1.innerHeight);
+          expect(stateAfter1.outerWidth).to.not.equal(stateBefore1.outerWidth);
+          expect(stateAfter1.outerHeight).to.not.equal(stateBefore1.outerHeight);
+          expect(stateAfter1.scrollLeft).to.not.equal(stateBefore1.scrollLeft);
+          expect(stateAfter1.scrollTop).to.not.equal(stateBefore1.scrollTop);
+          expect(stateAfter1.width).to.not.equal(stateBefore1.width);
+          expect(stateAfter1.height).to.not.equal(stateBefore1.height);
+
+          expect(stateAfter2.boundingClientRect.width).to.not.equal(stateBefore2.boundingClientRect.width);
+          expect(stateAfter2.boundingClientRect.height).to.not.equal(stateBefore2.boundingClientRect.height);
+          expect(stateAfter2.boundingClientRect.top).to.not.equal(stateBefore2.boundingClientRect.top);
+          expect(stateAfter2.boundingClientRect.right).to.not.equal(stateBefore2.boundingClientRect.right);
+          expect(stateAfter2.boundingClientRect.bottom).to.not.equal(stateBefore2.boundingClientRect.bottom);
+          expect(stateAfter2.boundingClientRect.left).to.not.equal(stateBefore2.boundingClientRect.left);
+          expect(stateAfter2.boundingClientRect.x).to.not.equal(stateBefore2.boundingClientRect.x);
+          expect(stateAfter2.boundingClientRect.y).to.not.equal(stateBefore2.boundingClientRect.y);
+          expect(stateAfter2.innerWidth).to.not.equal(stateBefore2.innerWidth);
+          expect(stateAfter2.innerHeight).to.not.equal(stateBefore2.innerHeight);
+          expect(stateAfter2.outerWidth).to.not.equal(stateBefore2.outerWidth);
+          expect(stateAfter2.outerHeight).to.not.equal(stateBefore2.outerHeight);
+          expect(stateAfter2.scrollLeft).to.not.equal(stateBefore2.scrollLeft);
+          expect(stateAfter2.scrollTop).to.not.equal(stateBefore2.scrollTop);
+          expect(stateAfter2.width).to.not.equal(stateBefore2.width);
+          expect(stateAfter2.height).to.not.equal(stateBefore2.height);
+
+          expect(stateAfter0.boundingClientRect.width).to.equal(width);
+          expect(stateAfter0.boundingClientRect.height).to.equal(height);
+          expect(stateAfter0.boundingClientRect.top).to.equal(top);
+          expect(stateAfter0.boundingClientRect.right).to.equal(right);
+          expect(stateAfter0.boundingClientRect.bottom).to.equal(bottom);
+          expect(stateAfter0.boundingClientRect.left).to.equal(left);
+          expect(stateAfter0.boundingClientRect.x).to.equal(x);
+          expect(stateAfter0.boundingClientRect.y).to.equal(y);
+          expect(stateAfter0.innerWidth).to.equal(width);
+          expect(stateAfter0.innerHeight).to.equal(height);
+          expect(stateAfter0.outerWidth).to.equal(width);
+          expect(stateAfter0.outerHeight).to.equal(height);
+          expect(stateAfter0.scrollLeft).to.equal(left);
+          expect(stateAfter0.scrollTop).to.equal(top);
+          expect(stateAfter0.width).to.equal(width);
+          expect(stateAfter0.height).to.equal(height);
+
+          expect(stateAfter1.boundingClientRect.width).to.equal(width);
+          expect(stateAfter1.boundingClientRect.height).to.equal(height);
+          expect(stateAfter1.boundingClientRect.top).to.equal(top);
+          expect(stateAfter1.boundingClientRect.right).to.equal(right);
+          expect(stateAfter1.boundingClientRect.bottom).to.equal(bottom);
+          expect(stateAfter1.boundingClientRect.left).to.equal(left);
+          expect(stateAfter1.boundingClientRect.x).to.equal(x);
+          expect(stateAfter1.boundingClientRect.y).to.equal(y);
+          expect(stateAfter1.innerWidth).to.equal(width);
+          expect(stateAfter1.innerHeight).to.equal(height);
+          expect(stateAfter1.outerWidth).to.equal(width);
+          expect(stateAfter1.outerHeight).to.equal(height);
+          expect(stateAfter1.scrollLeft).to.equal(left);
+          expect(stateAfter1.scrollTop).to.equal(top);
+          expect(stateAfter1.width).to.equal(width);
+          expect(stateAfter1.height).to.equal(height);
+
+          expect(stateAfter2.boundingClientRect.width).to.equal(width);
+          expect(stateAfter2.boundingClientRect.height).to.equal(height);
+          expect(stateAfter2.boundingClientRect.top).to.equal(top);
+          expect(stateAfter2.boundingClientRect.right).to.equal(right);
+          expect(stateAfter2.boundingClientRect.bottom).to.equal(bottom);
+          expect(stateAfter2.boundingClientRect.left).to.equal(left);
+          expect(stateAfter2.boundingClientRect.x).to.equal(x);
+          expect(stateAfter2.boundingClientRect.y).to.equal(y);
+          expect(stateAfter2.innerWidth).to.equal(width);
+          expect(stateAfter2.innerHeight).to.equal(height);
+          expect(stateAfter2.outerWidth).to.equal(width);
+          expect(stateAfter2.outerHeight).to.equal(height);
+          expect(stateAfter2.scrollLeft).to.equal(left);
+          expect(stateAfter2.scrollTop).to.equal(top);
+          expect(stateAfter2.width).to.equal(width);
+          expect(stateAfter2.height).to.equal(height);
+        });
+
+        it('.updateMeasurements() updates measurement properties across multiple targets with specific indices\
+', function () {
           const $org = requerio.$orgs['.dispatchAction__css']; // Has 3 members.
           const stateBefore0 = $org.getState(0);
           const stateBefore2 = $org.getState(2);
@@ -2262,14 +2544,14 @@ in a targeted manner', function () {
         expect(boundingClientRect0.x).to.not.equal(boundingClientRect1.x);
         expect(boundingClientRect0.y).to.not.equal(boundingClientRect1.y);
 
-        expect(boundingClientRect1.width).to.equal(6);
-        expect(boundingClientRect1.height).to.equal(6);
-        expect(boundingClientRect1.top).to.equal(6);
-        expect(boundingClientRect1.right).to.equal(6);
-        expect(boundingClientRect1.bottom).to.equal(6);
-        expect(boundingClientRect1.left).to.equal(6);
-        expect(boundingClientRect1.x).to.equal(6);
-        expect(boundingClientRect1.y).to.equal(6);
+        expect(boundingClientRect1.width).to.equal(8);
+        expect(boundingClientRect1.height).to.equal(8);
+        expect(boundingClientRect1.top).to.equal(8);
+        expect(boundingClientRect1.right).to.equal(8);
+        expect(boundingClientRect1.bottom).to.equal(8);
+        expect(boundingClientRect1.left).to.equal(8);
+        expect(boundingClientRect1.x).to.equal(8);
+        expect(boundingClientRect1.y).to.equal(8);
       });
 
       it('dispatches the "val" action', function () {
