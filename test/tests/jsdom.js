@@ -106,6 +106,69 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
 
         expect(state.outerHeight).to.equal(768);
       });
+
+      // Leave .populateMembers() tests to the end because we'll be manipulating the DOM.
+      if (!$._root || !$._root.attribs) { // jQuery only.
+        it('resets .$members when .populateMembers() is invoked, and a member has been added, but not by way of \
+Requerio', function () {
+          const $org = requerio.$orgs['.populateMembers'];
+          const $membersLengthBefore = $org.$members.length;
+
+          const container = document.getElementById('prototype-override');
+          const div = document.createElement('div');
+          div.className = 'populateMembers populateMembers--2';
+          div.style.color = 'green';
+          div.innerHTML = '<span>test</span>';
+          container.appendChild(div);
+
+          $org.populateMembers();
+
+          const $members = $org.$members;
+          const $membersLengthAfter = $members.length;
+
+          expect($membersLengthBefore).to.equal(2);
+          expect($membersLengthAfter).to.equal(3);
+
+          expect($members[0][0].className).to.equal('populateMembers populateMembers--0');
+          expect($members[1][0].className).to.equal('populateMembers populateMembers--1');
+          expect($members[2][0].className).to.equal('populateMembers populateMembers--2');
+        });
+
+        it('.getState() gets the new state of a $member added by .populateMembers()', function () {
+          const $org = requerio.$orgs['.populateMembers'];
+
+          $org.dispatchAction('html', null, 2);
+
+          const stateOfAddedElement = $org.getState(2);
+
+          expect(stateOfAddedElement.classArray).to.include('populateMembers--2');
+          expect(stateOfAddedElement.attribs.class).to.include('populateMembers--2');
+          expect(stateOfAddedElement.attribs.style).to.equal('color: green;');
+          expect(stateOfAddedElement.html).to.equal('<span>test</span>');
+          expect(stateOfAddedElement.textContent).to.equal('test');
+        });
+
+        it('resets .$members when .populateMembers() is invoked, and a member has been removed, but not by way of \
+Requerio', function () {
+          const $org = requerio.$orgs['.populateMembers'];
+          const $membersLengthBefore = $org.$members.length;
+
+          const container = document.getElementById('prototype-override');
+          container.lastChild.remove();
+
+          $org.populateMembers();
+
+          const $members = $org.$members;
+          const $membersLengthAfter = $members.length;
+
+          expect($membersLengthBefore).to.equal(3);
+          expect($membersLengthAfter).to.equal(2);
+
+          expect($members[0][0].className).to.equal('populateMembers populateMembers--0');
+          expect($members[1][0].className).to.equal('populateMembers populateMembers--1');
+          expect($members[2]).to.be.undefined;
+        });
+      }
     });
   };
 };

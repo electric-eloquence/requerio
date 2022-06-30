@@ -2077,11 +2077,35 @@ __Returns__: `object` - The organism with its `.$members` winnowed of exclusions
     }
 
     const $org = this;
+    const $tmp = $($org.selector);
+    let l = $org.length;
+    let repopulate = false;
     $org.$members = [];
 
-    $org.each((i, elem) => {
-      $org.$members.push($(elem));
-    });
+    if ($org.length > $tmp.length) {
+      repopulate = true;
+    }
+    else if ($org.length < $tmp.length) {
+      l = $tmp.length;
+      repopulate = true;
+    }
+
+    for (let i = 0; i < l; i++) {
+      if (repopulate) {
+        if (typeof $org[i] !== 'undefined' && typeof $tmp[i] === 'undefined') {
+          delete $org[i];
+        }
+        else {
+          $org[i] = $tmp[i];
+        }
+
+        $org.length = $tmp.length;
+      }
+
+      if (typeof $tmp[i] !== 'undefined') {
+        $org.$members.push($($tmp[i]));
+      }
+    }
   };
 
   /**
@@ -2282,9 +2306,7 @@ __Returns__: `boolean` - Whether or not to update state based on a change in mea
       }
       else {
         if (Array.isArray($member)) {
-          memberIdx = [];
-
-          $member.forEach((val, idx) => memberIdx.push(idx));
+          memberIdx = $member.map((val, idx) => idx);
         }
         else {
           memberIdx = 0;
