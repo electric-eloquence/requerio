@@ -48,12 +48,12 @@ JSDOM fit this bill nicely.
 Requerio defines a consistent meaning of state at the HTML element level. jQuery 
 encapsulates an HTML element within a unique object. Requerio applies Redux to 
 give state to that jQuery object. In the Requerio context, state is what 
-distinguishes a living thing from non-living things. Therefore, an HTML element 
+distinguishes a living thing from a non-living thing. Therefore, an HTML element 
 with state is alive, and hence, an organism.
 
 ### The Problem Again, and the Solution
 
-The problem again is disorganized application architecture. Requerio helps keep 
+The problem, then, is disorganized application architecture. Requerio helps keep 
 applications organized in a number of ways. First, organisms are declared about 
 as simply as possible. They must exist as plain HTML. Their selector names must 
 be declared in an object submitted to the Requerio constructor. At this point, 

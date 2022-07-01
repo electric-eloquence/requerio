@@ -73,7 +73,7 @@ const $organisms = {
 #### Instantiate `requerio`:
 
 ```javascript
-const requerio = new Requerio($, Redux, $organisms);
+const requerio = window.requerio = new Requerio($, Redux, $organisms);
 ```
 
 #### Initialize `requerio`:
