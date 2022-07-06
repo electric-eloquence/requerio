@@ -297,6 +297,10 @@ function getActiveOrganism($orgs, lastActiveOrganism) {
   for (const orgSelector of Object.keys($orgs)) {
     const $org = $orgs[orgSelector];
 
+    if (!$org) {
+      continue;
+    }
+
     for (let i = 0; i < $org.length; i++) {
       const elem = $org[i];
 
@@ -389,7 +393,7 @@ organism, set the focused organism's selector as `state.activeOrganism`.
         focusOrig.call($org);
 
         // If using JSDOM.
-        if (typeof global === 'object' && document && document.querySelector) {
+        if (typeof global === 'object' && document && document.querySelector && document.querySelector($org.selector)) {
           document.querySelector($org.selector).focus();
         }
 
