@@ -2257,7 +2257,7 @@ in a targeted manner', function () {
         requerio.$orgs['#main'].dispatchAction(
           'height',
           function (idx, distance) {
-            return distance + parseInt(Object.keys(this).length + '' + idx, 10);
+            return distance + parseInt(Object.keys(this).length + '' + idx);
           }
         );
 
@@ -2275,7 +2275,7 @@ in a targeted manner', function () {
         requerio.$orgs['.main__div'].dispatchAction(
           'height',
           function (idx, distance) {
-            return distance + parseInt(Object.keys(this).length + '' + idx, 10);
+            return distance + parseInt(Object.keys(this).length + '' + idx);
           },
           0
         );
@@ -2294,7 +2294,7 @@ in a targeted manner', function () {
         requerio.$orgs['.main__div'].dispatchAction(
           'height',
           function (idx, distance) {
-            return distance + parseInt(Object.keys(this).length + '' + idx, 10);
+            return distance + parseInt(Object.keys(this).length + '' + idx);
           },
           [0, 1]
         );
@@ -2608,7 +2608,7 @@ in a targeted manner', function () {
         requerio.$orgs['#main'].dispatchAction(
           'width',
           function (idx, distance) {
-            return distance + parseInt(Object.keys(this).length + '' + idx, 10);
+            return distance + parseInt(Object.keys(this).length + '' + idx);
           }
         );
 
@@ -2626,7 +2626,7 @@ in a targeted manner', function () {
         requerio.$orgs['.main__div'].dispatchAction(
           'width',
           function (idx, distance) {
-            return distance + parseInt(Object.keys(this).length + '' + idx, 10);
+            return distance + parseInt(Object.keys(this).length + '' + idx);
           },
           0
         );
@@ -2645,7 +2645,7 @@ in a targeted manner', function () {
         requerio.$orgs['.main__div'].dispatchAction(
           'width',
           function (idx, distance) {
-            return distance + parseInt(Object.keys(this).length + '' + idx, 10);
+            return distance + parseInt(Object.keys(this).length + '' + idx);
           },
           [0, 1]
         );
