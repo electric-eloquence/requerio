@@ -395,8 +395,12 @@ organism, set the focused organism's selector as `state.activeOrganism`.
         focusOrig.call($org);
 
         // If using JSDOM.
-        if (typeof global === 'object' && document && document.querySelector && document.querySelector($org.selector)) {
-          document.querySelector($org.selector).focus();
+        if (typeof global === 'object' && document && document.querySelector) {
+          const toFocus = document.querySelector($org.selector);
+
+          if (toFocus) {
+            toFocus.focus();
+          }
         }
 
         $orgs.document.dispatchAction('setActiveOrganism', $org.selector);
