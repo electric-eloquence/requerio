@@ -297,6 +297,7 @@ function getActiveOrganism($orgs, lastActiveOrganism) {
   for (const orgSelector of Object.keys($orgs)) {
     const $org = $orgs[orgSelector];
 
+    /* istanbul ignore if */
     if (!$org) {
       continue;
     }
