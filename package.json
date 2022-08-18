@@ -1,6 +1,6 @@
 {
   "name": "requerio",
-  "version": "0.7.4",
+  "version": "0.7.5-rc.0",
   "description": "Requerio: predictable client-side state + server-side testability",
   "main": "dist/requerio.npm",
   "scripts": {
