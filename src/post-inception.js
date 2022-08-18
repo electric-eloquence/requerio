@@ -46,7 +46,7 @@ function getActiveOrganism($orgs, lastActiveOrganism) {
     for (let i = 0; i < $org.length; i++) {
       const elem = $org[i];
 
-      // If using Cheerio and JSDOM.
+      // If using Cheerio.
       /* istanbul ignore else */
       if (typeof global === 'object' && typeof document === 'object' && global.$._root && global.$._root.attribs) {
         if (
