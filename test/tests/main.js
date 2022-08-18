@@ -73,8 +73,11 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
             expect($organism.hasSibling).to.be.a('function');
             expect($organism.populateMembers).to.be.a('function');
             expect($organism.resetElementsAndMembers).to.be.a('function');
-            expect($organism.setBoundingClientRect).to.be.a('function');
             expect($organism.updateMeasurements).to.be.a('function');
+
+            if (typeof global === 'object' && global.$._root && global.$._root.attribs) { // Cheerio only.
+              expect($organism.setBoundingClientRect).to.be.a('function');
+            }
           }
         });
       });
@@ -861,115 +864,128 @@ export default ($organismsBefore, Requerio, $, Redux, $organismsAfter) => {
           }
         });
 
-        it('sets .boundingClientRect properties when .setBoundingClientRect() is invoked', function () {
-          const $org = requerio.$orgs['.setBoundingClientRect--0'];
-          const boundingClientRectBefore = $org.getState().boundingClientRect;
+        // BEGIN CHEERIO-ONLY BLOCK.
+        if (typeof global === 'object' && global.$._root && global.$._root.attribs) {
+          it('sets .boundingClientRect properties when .setBoundingClientRect() is invoked', function () {
+            const $org = requerio.$orgs['.setBoundingClientRect--0'];
+            const boundingClientRectBefore = $org.getState().boundingClientRect;
 
-          width++;
-          height++;
-          top++;
-          right++;
-          bottom++;
-          left++;
-          x++;
-          y++;
+            width++;
+            height++;
+            top++;
+            right++;
+            bottom++;
+            left++;
+            x++;
+            y++;
 
-          $org.setBoundingClientRect(
-            {
-              width,
-              height,
-              top,
-              right,
-              bottom,
-              left,
-              x,
-              y
-            }
-          );
+            $org.setBoundingClientRect(
+              {
+                width,
+                height,
+                top,
+                right,
+                bottom,
+                left,
+                x,
+                y
+              }
+            );
 
-          const boundingClientRectAfter = $org.getState().boundingClientRect;
+            const boundingClientRectAfter = $org.getState().boundingClientRect;
 
-          Object.keys(boundingClientRectBefore).forEach((i) => {
-            expect(boundingClientRectBefore[i]).to.be.null;
+            Object.keys(boundingClientRectBefore).forEach((i) => {
+              expect(boundingClientRectBefore[i]).to.be.null;
+            });
+            expect(boundingClientRectAfter.width).to.equal(width);
+            expect(boundingClientRectAfter.height).to.equal(height);
+            expect(boundingClientRectAfter.top).to.equal(top);
+            expect(boundingClientRectAfter.right).to.equal(right);
+            expect(boundingClientRectAfter.bottom).to.equal(bottom);
+            expect(boundingClientRectAfter.left).to.equal(left);
+            expect(boundingClientRectAfter.x).to.equal(x);
+            expect(boundingClientRectAfter.y).to.equal(y);
           });
-          expect(boundingClientRectAfter.width).to.equal(width);
-          expect(boundingClientRectAfter.height).to.equal(height);
-          expect(boundingClientRectAfter.top).to.equal(top);
-          expect(boundingClientRectAfter.right).to.equal(right);
-          expect(boundingClientRectAfter.bottom).to.equal(bottom);
-          expect(boundingClientRectAfter.left).to.equal(left);
-          expect(boundingClientRectAfter.x).to.equal(x);
-          expect(boundingClientRectAfter.y).to.equal(y);
-        });
 
-        it('sets .boundingClientRect properties on a specific organism member when .setBoundingClientRect() is invoked \
-in a targeted manner', function () {
-          const $org = requerio.$orgs['.setBoundingClientRect'];
-          const stateBefore0 = $org.getState(0);
-          const stateBefore1 = $org.getState(1);
+          it('sets .boundingClientRect properties on a specific organism member when .setBoundingClientRect() is \
+invoked in a targeted manner', function () {
+            const $org = requerio.$orgs['.setBoundingClientRect'];
+            const stateBefore0 = $org.getState(0);
+            const stateBefore1 = $org.getState(1);
 
-          width++;
-          height++;
-          top++;
-          right++;
-          bottom++;
-          left++;
-          x++;
-          y++;
+            width++;
+            height++;
+            top++;
+            right++;
+            bottom++;
+            left++;
+            x++;
+            y++;
 
-          $org.setBoundingClientRect(
-            {
-              width,
-              height,
-              top,
-              right,
-              bottom,
-              left,
-              x,
-              y
-            },
-            1
-          );
+            $org.setBoundingClientRect(
+              {
+                width,
+                height,
+                top,
+                right,
+                bottom,
+                left,
+                x,
+                y
+              },
+              1
+            );
 
-          const stateAfter0 = $org.getState(0);
-          const stateAfter1 = $org.getState(1);
-          const boundingClientRectBefore0 = stateBefore0.boundingClientRect;
-          const boundingClientRectBefore1 = stateBefore1.boundingClientRect;
-          const boundingClientRectAfter0 = stateAfter0.boundingClientRect;
-          const boundingClientRectAfter1 = stateAfter1.boundingClientRect;
+            const stateAfter0 = $org.getState(0);
+            const stateAfter1 = $org.getState(1);
+            const boundingClientRectBefore0 = stateBefore0.boundingClientRect;
+            const boundingClientRectBefore1 = stateBefore1.boundingClientRect;
+            const boundingClientRectAfter0 = stateAfter0.boundingClientRect;
+            const boundingClientRectAfter1 = stateAfter1.boundingClientRect;
 
-          Object.keys(boundingClientRectBefore0).forEach((i) => {
-            expect(boundingClientRectBefore0[i]).to.be.null;
+            Object.keys(boundingClientRectBefore0).forEach((i) => {
+              expect(boundingClientRectBefore0[i]).to.be.null;
+            });
+            Object.keys(boundingClientRectBefore1).forEach((i) => {
+              expect(boundingClientRectBefore1[i]).to.be.null;
+            });
+            Object.keys(boundingClientRectAfter0).forEach((i) => {
+              expect(boundingClientRectAfter0[i]).to.be.null;
+            });
+            expect(boundingClientRectAfter1.width).to.equal(width);
+            expect(boundingClientRectAfter1.height).to.equal(height);
+            expect(boundingClientRectAfter1.top).to.equal(top);
+            expect(boundingClientRectAfter1.right).to.equal(right);
+            expect(boundingClientRectAfter1.bottom).to.equal(bottom);
+            expect(boundingClientRectAfter1.left).to.equal(left);
+            expect(boundingClientRectAfter1.x).to.equal(x);
+            expect(boundingClientRectAfter1.y).to.equal(y);
           });
-          Object.keys(boundingClientRectBefore1).forEach((i) => {
-            expect(boundingClientRectBefore1[i]).to.be.null;
-          });
-          Object.keys(boundingClientRectAfter0).forEach((i) => {
-            expect(boundingClientRectAfter0[i]).to.be.null;
-          });
-          expect(boundingClientRectAfter1.width).to.equal(width);
-          expect(boundingClientRectAfter1.height).to.equal(height);
-          expect(boundingClientRectAfter1.top).to.equal(top);
-          expect(boundingClientRectAfter1.right).to.equal(right);
-          expect(boundingClientRectAfter1.bottom).to.equal(bottom);
-          expect(boundingClientRectAfter1.left).to.equal(left);
-          expect(boundingClientRectAfter1.x).to.equal(x);
-          expect(boundingClientRectAfter1.y).to.equal(y);
-        });
 
-        it('gets .boundingClientRect properties when .getBoundingClientRect() is invoked', function () {
-          const $org = requerio.$orgs['.setBoundingClientRect--0'];
-          const boundingClientRect = $org.getBoundingClientRect();
+          it('gets .boundingClientRect properties when .getBoundingClientRect() is invoked', function () {
+            const $org = requerio.$orgs['.setBoundingClientRect--0'];
+            const boundingClientRect = $org.getBoundingClientRect();
 
-          expect(boundingClientRect.width).to.equal(1);
-          expect(boundingClientRect.height).to.equal(1);
-          expect(boundingClientRect.top).to.equal(1);
-          expect(boundingClientRect.right).to.equal(1);
-          expect(boundingClientRect.bottom).to.equal(1);
-          expect(boundingClientRect.left).to.equal(1);
-          expect(boundingClientRect.x).to.equal(1);
-          expect(boundingClientRect.y).to.equal(1);
-        });
+            expect(boundingClientRect.width).to.equal(1);
+            expect(boundingClientRect.height).to.equal(1);
+            expect(boundingClientRect.top).to.equal(1);
+            expect(boundingClientRect.right).to.equal(1);
+            expect(boundingClientRect.bottom).to.equal(1);
+            expect(boundingClientRect.left).to.equal(1);
+            expect(boundingClientRect.x).to.equal(1);
+            expect(boundingClientRect.y).to.equal(1);
+          });
+        } // END CHEERIO-ONLY BLOCK.
+        else {
+          width += 2;
+          height += 2;
+          top += 2;
+          right += 2;
+          bottom += 2;
+          left += 2;
+          x += 2;
+          y += 2;
+        }
 
         it('.updateMeasurements() updates measurement properties', function () {
           const $org = requerio.$orgs['#main']; // Necessary to set #main for the .reducer-get tests.
@@ -984,7 +1000,16 @@ in a targeted manner', function () {
           x++;
           y++;
 
-          $org.setBoundingClientRect(
+          $org.innerWidth(width);
+          $org.innerHeight(height);
+          $org.outerWidth(width);
+          $org.outerHeight(height);
+          $org.scrollLeft(left);
+          $org.scrollTop(top);
+          $org.width(width);
+          $org.height(height);
+          $org.dispatchAction(
+            'setBoundingClientRect',
             {
               width,
               height,
@@ -996,14 +1021,6 @@ in a targeted manner', function () {
               y
             }
           );
-          $org.innerWidth(width);
-          $org.innerHeight(height);
-          $org.outerWidth(width);
-          $org.outerHeight(height);
-          $org.scrollLeft(left);
-          $org.scrollTop(top);
-          $org.width(width);
-          $org.height(height);
           $org.updateMeasurements(stateBefore);
 
           const stateAfter = $org.getState();
@@ -1067,6 +1084,19 @@ in a targeted manner', function () {
             $org.scrollTop(top, 0);
             $org.width(width, 0);
             $org.height(height, 0);
+            $org.setBoundingClientRect(
+              {
+                width,
+                height,
+                top,
+                right,
+                bottom,
+                left,
+                x,
+                y
+              },
+              0
+            );
           }
           // jQuery.
           else {
@@ -1078,20 +1108,21 @@ in a targeted manner', function () {
             $org.$members[0].scrollTop(top);
             $org.$members[0].width(width);
             $org.$members[0].height(height);
+            $org.dispatchAction(
+              'setBoundingClientRect',
+              {
+                width,
+                height,
+                top,
+                right,
+                bottom,
+                left,
+                x,
+                y
+              },
+              0
+            );
           }
-          $org.setBoundingClientRect(
-            {
-              width,
-              height,
-              top,
-              right,
-              bottom,
-              left,
-              x,
-              y
-            },
-            0
-          );
           $org.updateMeasurements(stateBefore0, $org.$members[0]);
 
           const stateAfter0 = $org.getState(0);
@@ -1155,6 +1186,19 @@ in a targeted manner', function () {
             $org.scrollTop(top, 1);
             $org.width(width, 1);
             $org.height(height, 1);
+            $org.setBoundingClientRect(
+              {
+                width,
+                height,
+                top,
+                right,
+                bottom,
+                left,
+                x,
+                y
+              },
+              1
+            );
           }
           // jQuery.
           else {
@@ -1166,20 +1210,21 @@ in a targeted manner', function () {
             $org.$members[1].scrollTop(top);
             $org.$members[1].width(width);
             $org.$members[1].height(height);
+            $org.dispatchAction(
+              'setBoundingClientRect',
+              {
+                width,
+                height,
+                top,
+                right,
+                bottom,
+                left,
+                x,
+                y
+              },
+              1
+            );
           }
-          $org.setBoundingClientRect(
-            {
-              width,
-              height,
-              top,
-              right,
-              bottom,
-              left,
-              x,
-              y
-            },
-            1
-          );
           $org.updateMeasurements(stateBefore1, $org.$members[1], 1);
 
           const stateAfter0 = $org.getState(0);
@@ -1279,6 +1324,19 @@ in a targeted manner', function () {
             $org.scrollTop(top, 2);
             $org.width(width, 2);
             $org.height(height, 2);
+            $org.setBoundingClientRect(
+              {
+                width,
+                height,
+                top,
+                right,
+                bottom,
+                left,
+                x,
+                y
+              },
+              [0, 1, 2]
+            );
           }
           // jQuery.
           else {
@@ -1306,20 +1364,21 @@ in a targeted manner', function () {
             $org.$members[2].scrollTop(top);
             $org.$members[2].width(width);
             $org.$members[2].height(height);
+            $org.dispatchAction(
+              'setBoundingClientRect',
+              {
+                width,
+                height,
+                top,
+                right,
+                bottom,
+                left,
+                x,
+                y
+              },
+              [0, 1, 2]
+            );
           }
-          $org.setBoundingClientRect(
-            {
-              width,
-              height,
-              top,
-              right,
-              bottom,
-              left,
-              x,
-              y
-            },
-            [0, 1, 2]
-          );
           $org.updateMeasurements(stateBefore0, $org.$members);
 
           const stateAfter0 = $org.getState(0);
@@ -1462,6 +1521,19 @@ in a targeted manner', function () {
             $org.scrollTop(top, 2);
             $org.width(width, 2);
             $org.height(height, 2);
+            $org.setBoundingClientRect(
+              {
+                width,
+                height,
+                top,
+                right,
+                bottom,
+                left,
+                x,
+                y
+              },
+              [0, 2]
+            );
           }
           // jQuery.
           else {
@@ -1481,20 +1553,21 @@ in a targeted manner', function () {
             $org.$members[2].scrollTop(top);
             $org.$members[2].width(width);
             $org.$members[2].height(height);
+            $org.dispatchAction(
+              'setBoundingClientRect',
+              {
+                width,
+                height,
+                top,
+                right,
+                bottom,
+                left,
+                x,
+                y
+              },
+              [0, 2]
+            );
           }
-          $org.setBoundingClientRect(
-            {
-              width,
-              height,
-              top,
-              right,
-              bottom,
-              left,
-              x,
-              y
-            },
-            [0, 2]
-          );
           $org.updateMeasurements(stateBefore0, [$org.$members[0], $org.$members[2]], [0, 2]);
 
           const stateAfter0 = $org.getState(0);
