@@ -55,7 +55,7 @@ var organismsIncept = ($orgs, $) => {
       if (typeof window === 'object') {
         $org = $(window);
 
-        // So tests work on server with JSDOM.
+        // So tests work on server with JSDOM or Cheerio.
         if (typeof global === 'object') {
           $org.$members = [{}];
         }
@@ -68,7 +68,7 @@ var organismsIncept = ($orgs, $) => {
       if (typeof document === 'object') {
         $org = $(document);
 
-        // So tests work on server with JSDOM.
+        // So tests work on server with JSDOM or Cheerio.
         if (typeof global === 'object') {
           $org.$members = [{}];
         }
@@ -184,7 +184,7 @@ var organismsIncept = ($orgs, $) => {
      */
     if (
       typeof $org.scrollTop === 'undefined' ||
-      (typeof global === 'object' && $org.selector === 'window')
+      (typeof global === 'object' && $org.selector === 'window') // JSDOM or Cheerio.
     ) {
       $org.scrollLeft = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
@@ -204,7 +204,7 @@ var organismsIncept = ($orgs, $) => {
      */
     if (
       typeof $org.scrollTop === 'undefined' ||
-      (typeof global === 'object' && $org.selector === 'window')
+      (typeof global === 'object' && $org.selector === 'window') // JSDOM or Cheerio.
     ) {
       $org.scrollTop = (distance, memberIdx) => {
         // eslint-disable-next-line eqeqeq
@@ -307,7 +307,7 @@ function getActiveOrganism($orgs, lastActiveOrganism) {
     for (let i = 0; i < $org.length; i++) {
       const elem = $org[i];
 
-      // If using Cheerio and JSDOM.
+      // If using Cheerio.
       /* istanbul ignore else */
       if (typeof global === 'object' && typeof document === 'object' && global.$._root && global.$._root.attribs) {
         if (
@@ -731,7 +731,7 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       if ($org.selector === 'window') {
         /* istanbul ignore else */
         // If using JSDOM.
-        if (typeof global === 'object' && typeof window === 'object') {
+        if (typeof global === 'object' && typeof global.window === 'object') {
           return $org.$members[0]._scrollLeft;
         }
         else {
@@ -749,7 +749,7 @@ function getMeasurementSwitch($org, method, computedStyle = {}, elem) {
       if ($org.selector === 'window') {
         /* istanbul ignore else */
         // If using JSDOM.
-        if (typeof global === 'object' && typeof window === 'object') {
+        if (typeof global === 'object' && typeof global.window === 'object') {
           return $org.$members[0]._scrollTop;
         }
         else {
@@ -1522,7 +1522,9 @@ A server-side stand-in for client-side `.focus()`.
    *
    * @param {number} [memberIdx] - The index of the organism member (if targeting a member).
    */
-  if (typeof global === 'object') {
+  // /dist/requerio.min.js for browser defines a globally-scoped "global". WTF???
+  // So it isn't enough to check for EITHER global OR window. Must check that global doesn't EQUAL window. WTF???
+  if (typeof global === 'object' && (typeof window === 'undefined' || global !== window)) {
     $.prototype.getBoundingClientRect = function (memberIdx) {
       const state = store.getState()[this.selector];
       let rectState = {};
@@ -2242,7 +2244,7 @@ testing.
 | rectObj | `object` | An object of `boundingClientRect` measurements. Does not need to include all of them. |
 | [memberIdx] | `number`\|`number[]` | The index (or array of indices) of the organism member(s) if targeting one or more members. |
 */
-  if (typeof global === 'object') {
+  if (typeof global === 'object' && global.$._root && global.$._root.attribs) { // Cheerio only.
     $.prototype.setBoundingClientRect = function (rectObj, memberIdx) {
       this.dispatchAction('setBoundingClientRect', rectObj, memberIdx);
     };
@@ -2986,7 +2988,7 @@ properties on `state.boundingClientRect`.
           const rectObj = args[0];
 
           // Must copy, not reference, but can't use JSON.parse(JSON.stringify()) or Object.assign because DOMRect is
-          // not a plain object. Couldn't use Object.assign anyway because the bundler doesn't transpile that for IE.
+          // not a plain object. Couldn't use Object.assign anyway because the bundler doesn't (didn't?) transpile that.
           for (const measurement in state.boundingClientRect) {
             if (
               state.boundingClientRect[measurement] !== args[0][measurement] &&
