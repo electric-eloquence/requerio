@@ -115,7 +115,7 @@ assert.equal(mainState.css.color, 'green');
 * [before](docs/methods.md#beforecontent)
 * [css](docs/methods.md#cssproperties)
 * [data](docs/methods.md#datakeyvalues)
-* [detach](docs/methods.md#detachvalues)
+* [detach](docs/methods.md#detach)
 * [empty](docs/methods.md#empty)
 * [height](docs/methods.md#heightvalue)
 * [html](docs/methods.md#htmlhtmlstring)
